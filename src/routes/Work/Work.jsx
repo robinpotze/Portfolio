@@ -4,8 +4,7 @@ import { ANIMATION_TIMING, SCROLL_THRESHOLDS } from '@config/animations';
 import { NavigationMenu } from '@components/layout/NavigationMenu/NavigationMenu';
 import { useWorkStore } from '@/stores/workStore';
 import WorkCanvas from '@canvas/work/WorkCanvas';
-import { CurtainTransition, ErrorBoundary } from '@components';
-import { LaserFlow } from '@canvas/laser/Laser';
+import { CurtainTransition, ErrorBoundary, LaserFlow } from '@components';
 import './Work.css';
 
 export default function Work() {

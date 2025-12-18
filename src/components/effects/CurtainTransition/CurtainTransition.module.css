@@ -1,4 +1,4 @@
-.curtain-transition {
+.curtainTransition {
     position: fixed;
     top: 0;
     left: 0;
@@ -9,11 +9,11 @@
     overflow: hidden;
 }
 
-.curtain-transition[data-active] {
+.curtainTransition[data-active] {
     pointer-events: auto;
 }
 
-.curtain-layer {
+.curtainLayer {
     position: absolute;
     top: 0;
     left: 0;

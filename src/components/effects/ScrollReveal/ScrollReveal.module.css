@@ -1,0 +1,9 @@
+.scrollReveal {
+    /* Animations handled by Framer Motion */
+}
+
+.scrollRevealText {
+    font: var(--f-PARAGRAPH);
+    text-transform: none;
+    margin: 0;
+}

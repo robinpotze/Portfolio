@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 
-import './GradualBlur.css';
+import styles from './GradualBlur.module.css';
 
 const DEFAULT_CONFIG = {
     position: 'bottom',
@@ -208,13 +208,13 @@ function GradualBlur(props) {
     return (
         <div
             ref={containerRef}
-            className={`gradual-blur ${config.target === 'page' ? 'gradual-blur-page' : 'gradual-blur-parent'} ${config.className}`}
+            className={`${styles.gradualBlur} ${config.target === 'page' ? 'gradual-blur-page' : 'gradual-blur-parent'} ${config.className}`}
             style={containerStyle}
             onMouseEnter={hoverIntensity ? () => setIsHovered(true) : undefined}
             onMouseLeave={hoverIntensity ? () => setIsHovered(false) : undefined}
         >
             <div
-                className="gradual-blur-inner"
+                className={styles.gradualBlurInner}
                 style={{
                     position: 'relative',
                     width: '100%',
@@ -242,9 +242,7 @@ const injectStyles = () => {
     const styleElement = document.createElement('style');
     styleElement.id = styleId;
     styleElement.textContent = `
-  .gradual-blur { pointer-events: none; transition: opacity 0.3s ease-out; }
-  .gradual-blur-parent { overflow: hidden; }
-  .gradual-blur-inner { pointer-events: none; }`;
+  .gradual-blur-parent { overflow: hidden; }`;
 
     document.head.appendChild(styleElement);
 };

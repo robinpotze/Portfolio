@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ANIMATION_TIMING, ANIMATION_EASING } from '@config/animations';
-import './CurtainTransition.css';
+import styles from './CurtainTransition.module.css';
 
 const LAYER_COLORS = ['var(--c-LGHT)', 'var(--c-BRND)', 'var(--c-DRK)'];
 const EASE = ANIMATION_EASING.CURTAIN;
@@ -68,7 +68,7 @@ export default function CurtainTransition({
     };
 
     return (
-        <div className="curtain-transition" data-active={isOpen || undefined}>
+        <div className={styles.curtainTransition} data-active={isOpen || undefined}>
             {LAYER_COLORS.map((color, i) => {
                 const isLastLayer = i === LAYER_COLORS.length - 1;
 
@@ -76,7 +76,7 @@ export default function CurtainTransition({
                     <motion.div
                         key={i}
                         ref={isLastLayer ? lastLayerRef : null}
-                        className="curtain-layer"
+                        className={styles.curtainLayer}
                         style={{
                             background: color,
                             zIndex: 5 + i

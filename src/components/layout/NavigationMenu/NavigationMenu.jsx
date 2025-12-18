@@ -1,4 +1,4 @@
-import { CurtainTransition } from '@components/effects';
+import { CurtainTransition } from '@components';
 import { ANIMATION_TIMING } from '@config/animations';
 import { useAnimation } from 'framer-motion';
 import { createContext, useCallback, useContext, useLayoutEffect, useRef, useState } from 'react';

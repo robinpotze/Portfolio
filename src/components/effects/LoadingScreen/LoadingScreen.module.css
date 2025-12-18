@@ -1,4 +1,4 @@
-.loading-screen {
+.loadingScreen {
     position: fixed;
     inset: 0;
     background: #000;
@@ -7,34 +7,16 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    transition: opacity 0.6s ease-out;
     pointer-events: none;
 }
 
-.loading-screen.hidden {
-    opacity: 0;
-}
-
-.loading-screen.visible {
-    opacity: 1;
-    pointer-events: all;
-}
-
-.loading-logo {
+.loadingLogo {
     width: 80px;
     height: 80px;
     margin-bottom: 2rem;
-    opacity: 0;
-    transform: scale(0.8);
-    transition: opacity 0.4s ease-out, transform 0.4s ease-out;
 }
 
-.loading-screen.visible .loading-logo {
-    opacity: 1;
-    transform: scale(1);
-}
-
-.loading-bar-container {
+.loadingBarContainer {
     width: 300px;
     height: 2px;
     background: rgba(255, 255, 255, 0.1);
@@ -43,15 +25,13 @@
     position: relative;
 }
 
-.loading-bar {
+.loadingBar {
     height: 100%;
     background: linear-gradient(90deg, #29D8FF, #4466aa);
-    width: 0%;
-    transition: width 0.3s ease-out;
     box-shadow: 0 0 10px rgba(41, 216, 255, 0.5);
 }
 
-.loading-text {
+.loadingText {
     margin-top: 1rem;
     font: var(--f-CAPTION);
     color: rgba(255, 255, 255, 0.6);

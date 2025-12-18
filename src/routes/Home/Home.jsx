@@ -1,6 +1,5 @@
 import HomeCanvas from '@canvas/home/HomeCanvas';
-import { LaserFlow } from '@canvas/laser/Laser';
-import { CurtainTransition, ErrorBoundary, LoadingScreen, RadialGrid, RedoAnimText, ScrollDown } from '@components';
+import { CurtainTransition, ErrorBoundary, LoadingScreen, RadialGrid, RedoAnimText, ScrollDown, LaserFlow } from '@components';
 import { NavigationMenu } from '@components/layout/NavigationMenu/NavigationMenu';
 import { ANIMATION_TIMING, SCROLL_THRESHOLDS } from '@config/animations';
 import { useEffect, useReducer, useRef } from 'react';

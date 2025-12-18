@@ -1,8 +1,8 @@
-.work-card-wrap {
+.workCardWrap {
     perspective: 900px;
 }
 
-.work-card {
+.workCard {
     display: block;
     width: 100%;
     height: 100%;
@@ -15,11 +15,11 @@
     cursor: pointer;
 }
 
-.work-card:hover {
+.workCard:hover {
     box-shadow: 0 20px 50px var(--c-BRND_TRNS);
 }
 
-.work-card-content {
+.workCardContent {
     position: absolute;
     left: 16px;
     bottom: 16px;
@@ -74,7 +74,7 @@
     font: var(--f-DECORATIONAL);
 }
 
-.pixel-card-inner {
+.pixelCardInner {
     position: relative;
     width: 100%;
     height: 100%;
@@ -83,7 +83,7 @@
     pointer-events: auto;
 }
 
-.pixel-card-inner .pixel-canvas {
+.pixelCardInner .pixel-canvas {
     position: absolute;
     inset: 0;
     z-index: 1;

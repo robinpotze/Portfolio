@@ -1,8 +1,7 @@
-import { Suspense } from 'react';
+import { Suspense, lazy } from 'react';
 import { motion } from 'framer-motion';
-import { lazy } from 'react';
 import PropTypes from 'prop-types';
-import './WorkCardContent.css';
+import styles from './WorkCardContent.module.css';
 
 const PixelCard = lazy(() => import('@components/ui/PixelCard/PixelCard.jsx'));
 
@@ -27,7 +26,7 @@ export default function WorkCardContent({
 
     return (
         <motion.article
-            className="work-card"
+            className={styles.workCard}
             style={{
                 '--i': index,
                 ...(banner ? { backgroundImage: `url(${banner})` } : {})
@@ -39,12 +38,12 @@ export default function WorkCardContent({
             onClick={handleClick}
             {...dispAttr}
         >
-            <Suspense fallback={<div className="pixel-card-fallback" />}>
-                <PixelCard variant="default" className="pixel-card-inner">
-                    <div className="work-card-content">
+            <Suspense fallback={<div className={styles.pixelCardFallback} />}>
+                <PixelCard variant="default" className={styles.pixelCardInner}>
+                    <div className={styles.workCardContent}>
                         <h3 id='project-name'>{data?.title || pageKey}</h3>
                         <span className='deco-small' id='project-number'>{idLabel}</span>
-                        <p className="synopsis" id='project-software'>{data?.skills.map(skill => skill.toString().toLowerCase().replace(/\s+/g, '_') + "_/ ") || ''}</p>
+                        <p className={styles.synopsis} id='project-software'>{data?.skills.map(skill => skill.toString().toLowerCase().replace(/\s+/g, '_') + "_/ ") || ''}</p>
                         <span className="deco-small" id='project-client'>{data?.client || ''}</span>
                         <h3 id='project-year'>{data?.year || ''}</h3>
                     </div>

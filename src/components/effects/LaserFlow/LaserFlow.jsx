@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
-import laserFragmentShader from '../shared/shaders/laser/laser.frag?raw';
-import laserVertexShader from '../shared/shaders/laser/laser.vert?raw';
-import './Laser.css';
+import laserFragmentShader from '../../../canvas/shared/shaders/laser/laser.frag?raw';
+import laserVertexShader from '../../../canvas/shared/shaders/laser/laser.vert?raw';
+import styles from './LaserFlow.module.css';
 
 const VERT = laserVertexShader;
 const FRAG = laserFragmentShader;
@@ -361,7 +361,7 @@ export const LaserFlow = ({
         color
     ]);
 
-    return <div ref={mountRef} className={`laser-flow-container ${className || ''}`} style={style} />;
+    return <div ref={mountRef} className={`${styles.laserFlowContainer} ${className || ''}`} style={style} />;
 };
 
 export default LaserFlow;

@@ -6,7 +6,7 @@ import { Bloom, EffectComposer, N8AO } from '@react-three/postprocessing';
 import { useEffect, useRef, useState } from 'react';
 // import RoomMesh from '@canvas/shared/meshes/RoomMesh';
 import Rig from '@canvas/shared/camera/Rig';
-import { useCameraAnimation, useEntryAnimation, useFadeAnimation } from '@hooks/animation/useAnimationHooks';
+import { useCameraAnimation, useEntryAnimation, useFadeAnimation } from '@hooks';
 
 export default function HomeScene({ scrollProgress = 0, startAnimations = true }) {
     const logoRef = useRef();

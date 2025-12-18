@@ -2,7 +2,8 @@ import { ANIMATION_TIMING } from '@config/animations';
 import { useProgress } from '@react-three/drei';
 import PropTypes from 'prop-types';
 import { useEffect, useRef, useState } from 'react';
-import './LoadingScreen.css';
+import { motion, AnimatePresence } from 'framer-motion';
+import styles from './LoadingScreen.module.css';
 
 export default function LoadingScreen({
     onComplete,
@@ -38,24 +39,38 @@ export default function LoadingScreen({
     }, [progress, minDisplayTime, onComplete]);
 
     return (
-        <div className={`loading-screen ${isHidden ? 'hidden' : 'visible'}`}>
-            {logoSrc && (
-                <img
-                    src={logoSrc}
-                    alt="Loading"
-                    className="loading-logo"
-                />
+        <AnimatePresence>
+            {!isHidden && (
+                <motion.div
+                    className={styles.loadingScreen}
+                    initial={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.6, ease: 'easeOut' }}
+                >
+                    {logoSrc && (
+                        <motion.img
+                            src={logoSrc}
+                            alt="Loading"
+                            className={styles.loadingLogo}
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ duration: 0.4, ease: 'easeOut' }}
+                        />
+                    )}
+                    <div className={styles.loadingBarContainer}>
+                        <motion.div
+                            className={styles.loadingBar}
+                            initial={{ width: '0%' }}
+                            animate={{ width: `${progress}%` }}
+                            transition={{ duration: 0.3, ease: 'easeOut' }}
+                        />
+                    </div>
+                    <div className={`${styles.loadingText} deco-small`}>
+                        LOADING // {Math.floor(progress)}%
+                    </div>
+                </motion.div>
             )}
-            <div className="loading-bar-container">
-                <div
-                    className="loading-bar"
-                    style={{ width: `${progress}%` }}
-                />
-            </div>
-            <div className="loading-text deco-small">
-                LOADING // {Math.floor(progress)}%
-            </div>
-        </div>
+        </AnimatePresence>
     );
 }
 
