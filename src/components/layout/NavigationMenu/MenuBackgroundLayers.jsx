@@ -1,5 +1,5 @@
-import PropTypes from 'prop-types';
 import { motion } from 'framer-motion';
+import PropTypes from 'prop-types';
 
 const BG_COLORS = ['var(--c-LGHT)', 'var(--c-BRND)'];
 

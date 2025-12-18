@@ -1,10 +1,10 @@
-import { useCallback, useLayoutEffect, useRef, useState, createContext, useContext } from 'react';
-import { useAnimation } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
-import { ANIMATION_TIMING } from '@config/animations';
 import { CurtainTransition } from '@components/effects';
-import MenuButton from './MenuButton';
+import { ANIMATION_TIMING } from '@config/animations';
+import { useAnimation } from 'framer-motion';
+import { createContext, useCallback, useContext, useLayoutEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import MenuBackgroundLayers from './MenuBackgroundLayers';
+import MenuButton from './MenuButton';
 import MenuPanel from './MenuPanel';
 import './NavigationMenu.css';
 

@@ -2,8 +2,8 @@
  * Navigation Header - Menu toggle button with glitch effect
  */
 
-import React, { forwardRef } from 'react';
 import { motion } from 'framer-motion';
+import { forwardRef } from 'react';
 
 const MenuButton = forwardRef(({ open, label, toggle, mainText, glitchR, glitchB }, ref) => {
     const ease = [0.22, 1, 0.36, 1];

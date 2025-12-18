@@ -2,9 +2,8 @@
  * Menu Panel - Side panel with logo, links, and socials
  */
 
-import React from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import PropTypes from 'prop-types';
-import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import MenuLinks from './MenuLinks';
 import MenuSocials from './MenuSocials';
