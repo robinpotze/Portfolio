@@ -1,10 +1,10 @@
-import { useNavigate } from 'react-router-dom';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { ANIMATION_TIMING, SCROLL_THRESHOLDS } from '@config/animations';
-import { NavigationMenu } from '@components/layout/NavigationMenu/NavigationMenu';
 import { useWorkStore } from '@/stores/workStore';
 import WorkCanvas from '@canvas/work/WorkCanvas';
-import { CurtainTransition, ErrorBoundary, LaserFlow } from '@components';
+import { CurtainTransition, ErrorBoundary } from '@components';
+import { NavigationMenu } from '@components/layout/NavigationMenu/NavigationMenu';
+import { ANIMATION_TIMING, SCROLL_THRESHOLDS } from '@config/animations';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Work.css';
 
 export default function Work() {

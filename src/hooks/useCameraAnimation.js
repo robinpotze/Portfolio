@@ -1,7 +1,7 @@
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
-import { useAnimationState } from './useAnimationState.js';
 import { easeCurve, entryEase } from './easingFunctions.js';
+import { useAnimationState } from './useAnimationState.js';
 
 /**
  * Animates camera position and FOV with entry and scroll phases

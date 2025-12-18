@@ -1,7 +1,7 @@
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
-import { useAnimationState } from './useAnimationState.js';
 import { entryEase } from './easingFunctions.js';
+import { useAnimationState } from './useAnimationState.js';
 
 /**
  * Fades a property (typically intensity) during entry phase only

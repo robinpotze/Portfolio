@@ -1,6 +1,6 @@
-import { Suspense, lazy } from 'react';
 import { motion } from 'framer-motion';
 import PropTypes from 'prop-types';
+import { Suspense, lazy } from 'react';
 import styles from './WorkCardContent.module.css';
 
 const PixelCard = lazy(() => import('@components/ui/PixelCard/PixelCard.jsx'));

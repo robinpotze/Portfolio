@@ -1,4 +1,4 @@
-import { useInView, motion } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import PropTypes from 'prop-types';
 import { useMemo, useRef } from 'react';
 
