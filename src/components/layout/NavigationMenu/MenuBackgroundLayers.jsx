@@ -13,8 +13,8 @@ export default function MenuBackgroundLayers({ open }) {
                     key={i}
                     className="sm-prelayer"
                     style={{ background: color }}
-                    initial={{ x: '100%' }}
-                    animate={{ x: open ? '0%' : '100%' }}
+                    initial={{ x: '-100%' }}
+                    animate={{ x: open ? '0%' : '-100%' }}
                     transition={{ duration: 0.2, ease, delay: i * 0.07 }}
                 />
             ))}

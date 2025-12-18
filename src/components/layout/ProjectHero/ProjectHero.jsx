@@ -32,6 +32,14 @@ export default function ProjectHero({ content }) {
                 animate={'visible'}
             />
 
+            <motion.div className='hero-content' id='work-hero-content' variants={sideVars} custom={1} initial='hidden' animate={'visible'}>
+                <motion.div className='hero-title-wrapper' id='work-hero-title-wrapper' variants={titleVars} initial='hidden' animate={'visible'}>
+                    <img className='hero-title-decal' id='work-hero-decal' src='/img/icon/PLS.svg' alt='Plus Sign' />
+                    <h2 id='work-hero-title'>{content.title.replace(/\s+/g, '_')}</h2>
+                    <img className='hero-title-decal' id='work-hero-decal' src='/img/icon/PLS.svg' alt='Plus Sign' />
+                </motion.div>
+            </motion.div>
+
             <motion.div className='hero-side' id='work-hero-side' variants={sideVars} custom={0} initial='hidden' animate={'visible'}>
                 <div className="icon-array-vertical" id='work-hero-icons'>
                     {content.software.map((software) => (
@@ -50,14 +58,6 @@ export default function ProjectHero({ content }) {
                 </div>
                 <p className='functional tr90' id='work-hero-side-deco-text'>{content.year}</p>
                 <ScrollDown />
-            </motion.div>
-
-            <motion.div className='hero-content' id='work-hero-content' variants={sideVars} custom={1} initial='hidden' animate={'visible'}>
-                <motion.div className='hero-title-wrapper' id='work-hero-title-wrapper' variants={titleVars} initial='hidden' animate={'visible'}>
-                    <img className='hero-title-decal' id='work-hero-decal' src='/img/icon/PLS.svg' alt='Plus Sign' />
-                    <h2 id='work-hero-title'>{content.title.replace(/\s+/g, '_')}</h2>
-                    <img className='hero-title-decal' id='work-hero-decal' src='/img/icon/PLS.svg' alt='Plus Sign' />
-                </motion.div>
             </motion.div>
         </div>
     );

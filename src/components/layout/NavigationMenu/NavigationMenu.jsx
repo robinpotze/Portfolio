@@ -119,13 +119,14 @@ export const NavigationMenu = () => {
         <NavigationContext.Provider value={{ navigateWithCurtain }}>
             <CurtainTransition
                 isOpen={curtainOpen}
-                direction="left"
+                direction="right"
                 onCoverComplete={handleCurtainCoverComplete}
                 onRevealComplete={handleCurtainRevealComplete}
             />
             <div
                 className="staggered-menu-wrapper fixed-wrapper"
                 data-open={open || undefined}
+                data-position="left"
             >
                 <MenuBackgroundLayers open={open} />
 

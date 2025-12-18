@@ -1,10 +1,10 @@
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useEffect, useRef, useReducer } from 'react';
-import { ANIMATION_TIMING, SCROLL_THRESHOLDS } from '@config/animations';
 import HomeCanvas from '@canvas/home/HomeCanvas';
 import { LaserFlow } from '@canvas/laser/Laser';
-import { CurtainTransition, LoadingScreen, ErrorBoundary, RadialGrid, RedoAnimText, ScrollDown } from '@components';
+import { CurtainTransition, ErrorBoundary, LoadingScreen, RadialGrid, RedoAnimText, ScrollDown } from '@components';
 import { NavigationMenu } from '@components/layout/NavigationMenu/NavigationMenu';
+import { ANIMATION_TIMING, SCROLL_THRESHOLDS } from '@config/animations';
+import { useEffect, useReducer, useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import './Home.css';
 
 // State machine for page lifecycle
@@ -137,6 +137,9 @@ export default function Home() {
                             <RadialGrid type='CRCL' />
                             <img className='home-accent-decal' src='img/decal/OFS.svg' alt='Offset cyberpunk dorito decal' />
                         </div>
+                        <div className='home-scroll-bottom'>
+                            <ScrollDown />
+                        </div>
                     </div>
                     <div className='home-side'>
                         <div className='home-side-rotation-wrapper'>
@@ -151,9 +154,7 @@ export default function Home() {
                         </div>
                         <img className='home-side-decal' src='img/decal/MORSE.svg' alt='robin potze in barcode' />
                         <img className='home-side-decal' src='img/decal/PILL.svg' alt='pill with four arrows point downwards' />
-                        <div className='home-scroll-trigger'>
-                            <ScrollDown />
-                        </div>
+                        <img className='home-side-decal' id='decal-sound' src='img/decal/SND.svg' alt='ROBIN in sound waves' />
                     </div>
                 </div>
                 <div className='home-transition-section' />

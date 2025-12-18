@@ -13,7 +13,7 @@
 .fixed-wrapper {
     position: fixed;
     top: 0;
-    right: 0;
+    left: 0;
     width: 26vw;
     height: 100vh;
     overflow: hidden;
@@ -124,6 +124,12 @@
 [data-position='left'] .sm-prelayers {
     right: auto;
     left: 0;
+}
+
+[data-position='left'] .staggered-menu-header {
+    right: auto;
+    left: 0;
+    justify-content: left;
 }
 
 .sm-prelayer {

@@ -112,7 +112,7 @@ p {
 }
 
 .tr90 {
-  writing-mode: sideways-lr;
+  writing-mode: sideways-rl;
 }
 
 .logo-home-link {

@@ -18,8 +18,8 @@ export default function MenuPanel({ open, onClose }) {
             <motion.aside
                 className="staggered-menu-panel"
                 aria-hidden={!open}
-                initial={{ x: '100%' }}
-                animate={{ x: open ? '0%' : '100%' }}
+                initial={{ x: '-100%' }}
+                animate={{ x: open ? '0%' : '-100%' }}
                 transition={{
                     duration: open ? 0.3 : 0.2,
                     ease: open ? ease : [0.55, 0.06, 0.68, 0.19],
