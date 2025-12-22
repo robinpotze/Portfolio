@@ -105,7 +105,7 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
 
             <group ref={subtitleRef}>
                 <Text fontSize={0.6} font="/assets/fonts/Kode_Mono/static/KodeMono-Regular.ttf" color="#eee">
-                    PRJNo::000 | C://PRJ/PF/CUSTOM | V1 |GRONINGEN | NL
+                    PRJNo::000 | C://PRJ/PF/CUSTOM | V1 | GRONINGEN | NL
                 </Text>
             </group>
 

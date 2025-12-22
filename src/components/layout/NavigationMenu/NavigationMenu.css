@@ -34,7 +34,7 @@
     display: flex;
     align-items: center;
     justify-content: right;
-    padding: 1em;
+    padding: 2em;
     z-index: 20;
 }
 
@@ -47,6 +47,7 @@
     cursor: pointer;
     color: var(--c-LGHT);
     font: var(--f-FUNCTIONAL);
+    font-size: 1.25rem;
     transition: color 0.25s;
 }
 

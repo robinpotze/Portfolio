@@ -1,8 +1,3 @@
-/**
- * Menu Links - Animated navigation links
- */
-
-import React from 'react';
 import PropTypes from 'prop-types';
 import { motion } from 'framer-motion';
 import { useNavigationCurtain } from './NavigationMenu';
