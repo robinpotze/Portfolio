@@ -15,9 +15,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           clean: true
-          
-      - name: Fix Git case sensitivity
-        run: git config core.ignorecase false
         
       - name: Setup Node.js
         uses: actions/setup-node@v4
