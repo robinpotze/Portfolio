@@ -17,12 +17,38 @@ export function useObjectAnimation(ref, routeName, options = {}) {
         scrollProgress = 0
     } = options;
 
-    const finalEndPosition = scrollEndPosition || endPosition;
-    const finalEndScale = scrollEndScale || endScale;
+    const optionsRef = useRef({
+        finalEndPosition: scrollEndPosition || endPosition,
+        finalEndScale: scrollEndScale || endScale,
+        duration,
+        delay,
+        startPosition,
+        endPosition,
+        startScale,
+        endScale
+    });
+
+    useEffect(() => {
+        optionsRef.current = {
+            finalEndPosition: scrollEndPosition || endPosition,
+            finalEndScale: scrollEndScale || endScale,
+            duration,
+            delay,
+            startPosition,
+            endPosition,
+            startScale,
+            endScale
+        };
+    }, [duration, delay, startPosition, endPosition, startScale, endScale, scrollEndPosition, scrollEndScale]);
 
     const startTime = useRef(null);
     const hasCompletedEntry = useRef(false);
     const initializedRoute = useRef(routeName);
+    const scrollProgressRef = useRef(scrollProgress);
+
+    useEffect(() => {
+        scrollProgressRef.current = scrollProgress;
+    }, [scrollProgress]);
 
     useEffect(() => {
         if (initializedRoute.current !== routeName) {
@@ -35,39 +61,41 @@ export function useObjectAnimation(ref, routeName, options = {}) {
     useFrame(({ clock }) => {
         if (!ref.current || !enabled) return;
 
+        const opts = optionsRef.current;
+
         if (!hasCompletedEntry.current) {
             if (startTime.current === null) {
                 startTime.current = clock.getElapsedTime();
             }
 
-            const elapsed = clock.getElapsedTime() - startTime.current - delay;
+            const elapsed = clock.getElapsedTime() - startTime.current - opts.delay;
 
             if (elapsed < 0) return;
 
-            const entryProgress = Math.min(elapsed / duration, 1);
+            const entryProgress = Math.min(elapsed / opts.duration, 1);
             const eased = entryEase(entryProgress);
 
             if (entryProgress >= 1) {
                 hasCompletedEntry.current = true;
             }
 
-            ref.current.position.x = THREE.MathUtils.lerp(startPosition[0], endPosition[0], eased);
-            ref.current.position.y = THREE.MathUtils.lerp(startPosition[1], endPosition[1], eased);
-            ref.current.position.z = THREE.MathUtils.lerp(startPosition[2], endPosition[2], eased);
+            ref.current.position.x = THREE.MathUtils.lerp(opts.startPosition[0], opts.endPosition[0], eased);
+            ref.current.position.y = THREE.MathUtils.lerp(opts.startPosition[1], opts.endPosition[1], eased);
+            ref.current.position.z = THREE.MathUtils.lerp(opts.startPosition[2], opts.endPosition[2], eased);
 
-            ref.current.scale.x = THREE.MathUtils.lerp(startScale[0], endScale[0], eased);
-            ref.current.scale.y = THREE.MathUtils.lerp(startScale[1], endScale[1], eased);
-            ref.current.scale.z = THREE.MathUtils.lerp(startScale[2], endScale[2], eased);
+            ref.current.scale.x = THREE.MathUtils.lerp(opts.startScale[0], opts.endScale[0], eased);
+            ref.current.scale.y = THREE.MathUtils.lerp(opts.startScale[1], opts.endScale[1], eased);
+            ref.current.scale.z = THREE.MathUtils.lerp(opts.startScale[2], opts.endScale[2], eased);
         } else {
-            const scrollEased = easeCurve(scrollProgress);
+            const scrollEased = easeCurve(scrollProgressRef.current);
 
-            ref.current.position.x = THREE.MathUtils.lerp(endPosition[0], finalEndPosition[0], scrollEased);
-            ref.current.position.y = THREE.MathUtils.lerp(endPosition[1], finalEndPosition[1], scrollEased);
-            ref.current.position.z = THREE.MathUtils.lerp(endPosition[2], finalEndPosition[2], scrollEased);
+            ref.current.position.x = THREE.MathUtils.lerp(opts.endPosition[0], opts.finalEndPosition[0], scrollEased);
+            ref.current.position.y = THREE.MathUtils.lerp(opts.endPosition[1], opts.finalEndPosition[1], scrollEased);
+            ref.current.position.z = THREE.MathUtils.lerp(opts.endPosition[2], opts.finalEndPosition[2], scrollEased);
 
-            ref.current.scale.x = THREE.MathUtils.lerp(endScale[0], finalEndScale[0], scrollEased);
-            ref.current.scale.y = THREE.MathUtils.lerp(endScale[1], finalEndScale[1], scrollEased);
-            ref.current.scale.z = THREE.MathUtils.lerp(endScale[2], finalEndScale[2], scrollEased);
+            ref.current.scale.x = THREE.MathUtils.lerp(opts.endScale[0], opts.finalEndScale[0], scrollEased);
+            ref.current.scale.y = THREE.MathUtils.lerp(opts.endScale[1], opts.finalEndScale[1], scrollEased);
+            ref.current.scale.z = THREE.MathUtils.lerp(opts.endScale[2], opts.finalEndScale[2], scrollEased);
         }
     });
 }

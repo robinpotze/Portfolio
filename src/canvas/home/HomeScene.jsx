@@ -1,12 +1,13 @@
 import BackgroundMesh from '@canvas/shared/meshes/BackgroundMesh';
 import LogoMesh from '@canvas/shared/meshes/LogoMesh';
+import Rig from '@canvas/shared/camera/Rig';
 import { ANIMATION_TIMING } from '@config/animations';
+import { useCameraAnimation } from '@hooks/useCameraAnimation';
+import { useObjectAnimation } from '@hooks/useObjectAnimation';
+import { useAdaptiveQuality } from '@hooks/useAdaptiveQuality';
 import { Float, PerspectiveCamera, Text } from '@react-three/drei';
 import { Bloom, EffectComposer, N8AO } from '@react-three/postprocessing';
-import { useEffect, useRef, useState } from 'react';
-import Rig from '@canvas/shared/camera/Rig';
-import { useObjectAnimation } from '@hooks/useObjectAnimation';
-import { useCameraAnimation } from '@hooks/useCameraAnimation';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 export default function HomeScene({ scrollProgress = 0, startAnimations = true }) {
     const logoRef = useRef();
@@ -14,8 +15,47 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
     const subtitleRef = useRef();
     const lightRef = useRef();
     const cameraRef = useRef();
-    // const roomRef = useRef();
     const [entryComplete, setEntryComplete] = useState(false);
+
+    // Adaptive quality monitoring
+    const { quality, fps } = useAdaptiveQuality({ 
+        targetFps: 55, 
+        enabled: startAnimations && entryComplete 
+    });
+
+    // Memoize quality-based post-processing settings
+    const postProcessingSettings = useMemo(() => {
+        switch (quality) {
+            case 'low':
+                return {
+                    aoSamples: 4,
+                    denoiseSamples: 2,
+                    aoIntensity: 1.2,
+                    bloomIntensity: 0.4,
+                    bloomLevels: 4,
+                    multisampling: 0
+                };
+            case 'medium':
+                return {
+                    aoSamples: 6,
+                    denoiseSamples: 3,
+                    aoIntensity: 1.35,
+                    bloomIntensity: 0.5,
+                    bloomLevels: 5,
+                    multisampling: 0
+                };
+            case 'high':
+            default:
+                return {
+                    aoSamples: 8,
+                    denoiseSamples: 4,
+                    aoIntensity: 1.5,
+                    bloomIntensity: 0.55,
+                    bloomLevels: 6,
+                    multisampling: 0
+                };
+        }
+    }, [quality]);
 
     useEffect(() => {
         if (!startAnimations) return;
@@ -25,7 +65,8 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
         return () => clearTimeout(timer);
     }, [startAnimations]);
 
-    useObjectAnimation(logoRef, 'home', {
+    // Memoize animation configs to prevent recreation
+    const logoAnimConfig = useMemo(() => ({
         duration: ANIMATION_TIMING.ENTRY_DURATION,
         startPosition: [0, 0, 20],
         endPosition: [0, 0, -5],
@@ -35,9 +76,9 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
         scrollEndScale: [2, 2, 2],
         scrollProgress,
         enabled: startAnimations
-    });
+    }), [scrollProgress, startAnimations]);
 
-    useObjectAnimation(backgroundRef, 'home', {
+    const backgroundAnimConfig = useMemo(() => ({
         duration: ANIMATION_TIMING.ENTRY_DURATION,
         startPosition: [0, 0, -15],
         endPosition: [0, 0, -30],
@@ -47,9 +88,9 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
         scrollEndScale: [5, 5, 5],
         scrollProgress,
         enabled: startAnimations
-    });
+    }), [scrollProgress, startAnimations]);
 
-    useObjectAnimation(subtitleRef, 'home', {
+    const subtitleAnimConfig = useMemo(() => ({
         duration: ANIMATION_TIMING.ENTRY_DURATION,
         delay: ANIMATION_TIMING.ENTRY_DELAY,
         startPosition: [0, -10, 20],
@@ -60,9 +101,9 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
         scrollEndScale: [0.9, 0.9, 0.9],
         scrollProgress,
         enabled: startAnimations
-    });
+    }), [scrollProgress, startAnimations]);
 
-    useCameraAnimation(cameraRef, 'home', {
+    const cameraAnimConfig = useMemo(() => ({
         duration: ANIMATION_TIMING.CAMERA_DURATION,
         startPosition: [0, 0, 30],
         endPosition: [0, 0, 20],
@@ -72,9 +113,13 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
         scrollEndFov: 100,
         scrollProgress,
         enabled: startAnimations
-    });
+    }), [scrollProgress, startAnimations]);
 
-    // Light intensity fade
+    useObjectAnimation(logoRef, 'home', logoAnimConfig);
+    useObjectAnimation(backgroundRef, 'home', backgroundAnimConfig);
+    useObjectAnimation(subtitleRef, 'home', subtitleAnimConfig);
+    useCameraAnimation(cameraRef, 'home', cameraAnimConfig);
+
     useEffect(() => {
         if (!startAnimations || !lightRef.current) return;
         lightRef.current.intensity = 0;
@@ -105,26 +150,25 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
                 speed={0.5}
             >
                 <group ref={logoRef} scale={0.5}>
-                    <LogoMesh enableFBO={startAnimations && entryComplete} />
+                    <LogoMesh enableFBO={startAnimations && entryComplete && quality !== 'low'} />
                 </group>
             </Float>
 
-            {/* <group ref={roomRef} rotation={[0, Math.PI, 0]}>
-                <RoomMesh scrollProgress={scrollProgress} />
-            </group> */}
-
-            <EffectComposer multisampling={0}>
-                <N8AO aoRadius={1} intensity={1.5} aoSamples={8} denoiseSamples={4} />
+            {/* Adaptive post-processing based on FPS */}
+            <EffectComposer multisampling={postProcessingSettings.multisampling}>
+                <N8AO 
+                    aoRadius={1} 
+                    intensity={postProcessingSettings.aoIntensity} 
+                    aoSamples={postProcessingSettings.aoSamples} 
+                    denoiseSamples={postProcessingSettings.denoiseSamples} 
+                />
                 <Bloom
                     mipmapBlur
                     luminanceThreshold={0.92}
-                    intensity={0.55}
+                    intensity={postProcessingSettings.bloomIntensity}
                     radius={0.4}
-                    levels={6}  // Reduced from 8 for performance
+                    levels={postProcessingSettings.bloomLevels}
                 />
-                {/* Disabled expensive effects for better performance */}
-                {/* <TiltShift2 blur={0.05} /> */}
-                {/* <ChromaticAberration distortion={0.02} /> */}
             </EffectComposer>
 
             <Rig intensity={0.3} />

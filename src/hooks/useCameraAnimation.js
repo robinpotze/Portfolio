@@ -33,14 +33,16 @@ export function useCameraAnimation(cameraRef, routeName, options = {}) {
     const startTime = useRef(null);
     const hasCompletedEntry = useRef(false);
     const initializedRoute = useRef(routeName);
+    const lastFov = useRef(startFov); // Track last FOV to avoid redundant updates
 
     useEffect(() => {
         if (initializedRoute.current !== routeName) {
             hasCompletedEntry.current = false;
             startTime.current = null;
             initializedRoute.current = routeName;
+            lastFov.current = startFov;
         }
-    }, [routeName]);
+    }, [routeName, startFov]);
 
     useFrame(({ clock, camera }) => {
         if (!enabled) return;
@@ -66,11 +68,14 @@ export function useCameraAnimation(cameraRef, routeName, options = {}) {
             targetCamera.position.z = THREE.MathUtils.lerp(startPosition[2], endPosition[2], eased);
 
             if (targetCamera.isPerspectiveCamera) {
-                targetCamera.fov = THREE.MathUtils.lerp(startFov, endFov, eased);
-                targetCamera.updateProjectionMatrix();
+                const newFov = THREE.MathUtils.lerp(startFov, endFov, eased);
+                if (Math.abs(newFov - lastFov.current) > 0.01) {
+                    targetCamera.fov = newFov;
+                    targetCamera.updateProjectionMatrix();
+                    lastFov.current = newFov;
+                }
             }
         } else {
-            // After entry, apply scroll-based animation
             const scrollEased = easeCurve(scrollProgress);
 
             targetCamera.position.x = THREE.MathUtils.lerp(endPosition[0], finalEndPosition[0], scrollEased);
@@ -78,8 +83,12 @@ export function useCameraAnimation(cameraRef, routeName, options = {}) {
             targetCamera.position.z = THREE.MathUtils.lerp(endPosition[2], finalEndPosition[2], scrollEased);
 
             if (targetCamera.isPerspectiveCamera) {
-                targetCamera.fov = THREE.MathUtils.lerp(endFov, finalEndFov, scrollEased);
-                targetCamera.updateProjectionMatrix();
+                const newFov = THREE.MathUtils.lerp(endFov, finalEndFov, scrollEased);
+                if (Math.abs(newFov - lastFov.current) > 0.01) {
+                    targetCamera.fov = newFov;
+                    targetCamera.updateProjectionMatrix();
+                    lastFov.current = newFov;
+                }
             }
         }
     });
