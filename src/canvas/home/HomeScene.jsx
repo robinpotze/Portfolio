@@ -18,9 +18,9 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
     const [entryComplete, setEntryComplete] = useState(false);
 
     // Adaptive quality monitoring
-    const { quality, fps } = useAdaptiveQuality({ 
-        targetFps: 55, 
-        enabled: startAnimations && entryComplete 
+    const { quality, fps } = useAdaptiveQuality({
+        targetFps: 55,
+        enabled: startAnimations && entryComplete
     });
 
     // Memoize quality-based post-processing settings
@@ -156,11 +156,11 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
 
             {/* Adaptive post-processing based on FPS */}
             <EffectComposer multisampling={postProcessingSettings.multisampling}>
-                <N8AO 
-                    aoRadius={1} 
-                    intensity={postProcessingSettings.aoIntensity} 
-                    aoSamples={postProcessingSettings.aoSamples} 
-                    denoiseSamples={postProcessingSettings.denoiseSamples} 
+                <N8AO
+                    aoRadius={1}
+                    intensity={postProcessingSettings.aoIntensity}
+                    aoSamples={postProcessingSettings.aoSamples}
+                    denoiseSamples={postProcessingSettings.denoiseSamples}
                 />
                 <Bloom
                     mipmapBlur
