@@ -1,5 +1,4 @@
 import { animate, motion, useMotionValue, useTransform } from "framer-motion";
-import PropTypes from "prop-types";
 import { useEffect } from "react";
 
 export default function RedoAnimText({ delay }) {
@@ -44,7 +43,3 @@ export default function RedoAnimText({ delay }) {
 
     return <motion.span>{displayText}</motion.span>;
 }
-
-RedoAnimText.propTypes = {
-    delay: PropTypes.number.isRequired
-};

@@ -1,4 +1,4 @@
-import { useRandomNumber } from "@hooks";
+import useRandomNumber from "@hooks/useRandomNumber";
 
 import RAD_CRCL from "./RAD_CRCL";
 

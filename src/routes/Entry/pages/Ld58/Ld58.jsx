@@ -1,4 +1,5 @@
-import { ScrollReveal, DashLine } from '@components';
+import ScrollReveal from '@components/effects/ScrollReveal';
+import DashLine from '@components/decoration/DashLine';
 
 export const Data = {
     id: 2,
@@ -24,7 +25,7 @@ export default function Ld58() {
             <div className='work-header'>
                 <div className='work-header-chapter'>
                     <h3>TELEVISION</h3>
-                    <img src='/img/icon/PLS.svg' alt='plus icon divider'/>
+                    <img src='/img/icon/PLS.svg' alt='plus icon divider' />
                     <p className='tech-small'>SALVATION:::CONSUMPTION</p>
                 </div>
                 <ScrollReveal>

@@ -4,9 +4,9 @@ import { ANIMATION_TIMING } from '@config/animations';
 import { Float, PerspectiveCamera, Text } from '@react-three/drei';
 import { Bloom, EffectComposer, N8AO } from '@react-three/postprocessing';
 import { useEffect, useRef, useState } from 'react';
-// import RoomMesh from '@canvas/shared/meshes/RoomMesh';
 import Rig from '@canvas/shared/camera/Rig';
-import { useCameraAnimation, useEntryAnimation, useFadeAnimation } from '@hooks';
+import { useObjectAnimation } from '@hooks/useObjectAnimation';
+import { useCameraAnimation } from '@hooks/useCameraAnimation';
 
 export default function HomeScene({ scrollProgress = 0, startAnimations = true }) {
     const logoRef = useRef();
@@ -25,7 +25,7 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
         return () => clearTimeout(timer);
     }, [startAnimations]);
 
-    useEntryAnimation(logoRef, 'home', {
+    useObjectAnimation(logoRef, 'home', {
         duration: ANIMATION_TIMING.ENTRY_DURATION,
         startPosition: [0, 0, 20],
         endPosition: [0, 0, -5],
@@ -37,7 +37,7 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
         enabled: startAnimations
     });
 
-    useEntryAnimation(backgroundRef, 'home', {
+    useObjectAnimation(backgroundRef, 'home', {
         duration: ANIMATION_TIMING.ENTRY_DURATION,
         startPosition: [0, 0, -15],
         endPosition: [0, 0, -30],
@@ -49,7 +49,7 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
         enabled: startAnimations
     });
 
-    useEntryAnimation(subtitleRef, 'home', {
+    useObjectAnimation(subtitleRef, 'home', {
         duration: ANIMATION_TIMING.ENTRY_DURATION,
         delay: ANIMATION_TIMING.ENTRY_DELAY,
         startPosition: [0, -10, 20],
@@ -74,25 +74,15 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
         enabled: startAnimations
     });
 
-    useFadeAnimation(lightRef, 'home', {
-        duration: ANIMATION_TIMING.FADE_DURATION,
-        startValue: 0,
-        endValue: 1,
-        property: 'intensity',
-        scrollProgress,
-        enabled: startAnimations
-    });
-
-    // useEntryAnimation(roomRef, 'home', {
-    //     duration: 0.6,
-    //     startPosition: [0, -5, 30],
-    //     endPosition: [0, -5, 22],
-    //     scrollEndPosition: [0, -5, 15],
-    //     startScale: [1, 1, 1],
-    //     endScale: [1, 1, 1],
-    //     scrollEndScale: [1, 1, 1],
-    //     scrollProgress
-    // });
+    // Light intensity fade
+    useEffect(() => {
+        if (!startAnimations || !lightRef.current) return;
+        lightRef.current.intensity = 0;
+        const timer = setTimeout(() => {
+            if (lightRef.current) lightRef.current.intensity = 1;
+        }, ANIMATION_TIMING.FADE_DURATION * 1000);
+        return () => clearTimeout(timer);
+    }, [startAnimations]);
 
     return (
         <>

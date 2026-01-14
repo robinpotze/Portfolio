@@ -1,11 +1,6 @@
-const modules = import.meta.glob('./**/*.{jsx,js}', { eager: true });
+import { normalizeKey } from '@utils/stringUtils';
 
-function normalizeKey(s) {
-    return String(s || '')
-        .toLowerCase()
-        .replace(/[\s-]+/g, '')
-        .replace(/[^a-z0-9]/g, '');
-}
+const modules = import.meta.glob('./**/*.{jsx,js}', { eager: true });
 
 const pages = Object.entries(modules).reduce((acc, [path, mod]) => {
     const Component = mod && mod.default ? mod.default : null;

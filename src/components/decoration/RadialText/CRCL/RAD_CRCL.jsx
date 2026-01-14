@@ -1,5 +1,4 @@
 import { motion } from 'framer-motion';
-import PropTypes from 'prop-types';
 
 export default function RAD_CRCL({ value = 0 }) {
     const radius = 5;
@@ -39,7 +38,3 @@ export default function RAD_CRCL({ value = 0 }) {
         </svg>
     );
 }
-
-RAD_CRCL.propTypes = {
-    value: PropTypes.number,
-};

@@ -1,4 +1,5 @@
 import React from 'react';
+import styles from './ErrorBoundary.module.css';
 
 /**
  * Error Boundary Component
@@ -37,53 +38,18 @@ class ErrorBoundary extends React.Component {
     render() {
         if (this.state.hasError) {
             return (
-                <div style={{
-                    position: 'fixed',
-                    inset: 0,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    background: 'var(--c-DRK)',
-                    color: 'var(--c-LGHT)',
-                    padding: '2rem',
-                    textAlign: 'center',
-                    fontFamily: 'var(--f-FUNCTIONAL)',
-                    zIndex: 9999
-                }}>
-                    <h1 style={{ marginBottom: '1rem', color: 'var(--c-BRND)' }}>
+                <div className={styles.container}>
+                    <h1 className={styles.title}>
                         Something went wrong
                     </h1>
-                    <p style={{ marginBottom: '2rem', opacity: 0.7 }}>
+                    <p className={styles.message}>
                         An unexpected error occurred while rendering this component.
                     </p>
-                    <div style={{ display: 'flex', gap: '1rem' }}>
-                        <button
-                            onClick={this.handleReset}
-                            style={{
-                                padding: '0.75rem 1.5rem',
-                                background: 'var(--c-BRND)',
-                                color: 'var(--c-DRK)',
-                                border: 'none',
-                                cursor: 'pointer',
-                                fontFamily: 'inherit',
-                                fontWeight: 600
-                            }}
-                        >
+                    <div className={styles.actions}>
+                        <button onClick={this.handleReset} className={styles.retryButton}>
                             Try Again
                         </button>
-                        <a
-                            href="/"
-                            style={{
-                                padding: '0.75rem 1.5rem',
-                                background: 'transparent',
-                                color: 'var(--c-LGHT)',
-                                border: '1px solid var(--c-LGHT)',
-                                textDecoration: 'none',
-                                fontFamily: 'inherit',
-                                fontWeight: 600
-                            }}
-                        >
+                        <a href="/" className={styles.homeLink}>
                             Go Home
                         </a>
                     </div>

@@ -1,16 +1,26 @@
 import { Outlet } from 'react-router-dom';
-import { useEffect } from 'react';
-import { useWorkStore } from '@/stores/workStore';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { sortItems } from '@utils/workUtils';
 import { pages as autogenPages } from '@routes/Entry/pages/autogen';
 
+const WorkContext = createContext(null);
+
+export const useWorkItems = () => {
+    const context = useContext(WorkContext);
+    if (!context) throw new Error('useWorkItems must be used within App');
+    return context;
+};
+
 export default function App() {
-    const setItems = useWorkStore((state) => state.setItems);
+    const [items, setItems] = useState([]);
 
     useEffect(() => {
-        const items = sortItems(autogenPages);
-        setItems(items);
-    }, [setItems]);
+        setItems(sortItems(autogenPages));
+    }, []);
 
-    return <Outlet />;
+    return (
+        <WorkContext.Provider value={items}>
+            <Outlet />
+        </WorkContext.Provider>
+    );
 }

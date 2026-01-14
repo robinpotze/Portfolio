@@ -1,5 +1,4 @@
 import { motion } from 'framer-motion';
-import PropTypes from 'prop-types';
 import { Suspense, lazy } from 'react';
 import styles from './WorkCardContent.module.css';
 
@@ -52,10 +51,3 @@ export default function WorkCardContent({
         </motion.article>
     );
 }
-
-WorkCardContent.propTypes = {
-    item: PropTypes.object.isRequired,
-    index: PropTypes.number.isRequired,
-    progress: PropTypes.number.isRequired,
-    onNavigate: PropTypes.func
-};

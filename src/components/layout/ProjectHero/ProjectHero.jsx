@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion';
-import PropTypes from 'prop-types';
-import { ScrollDown } from '@components';
+import ScrollDown from '@components/decoration/ScrollDown';
 import "./ProjectHero.css";
 
 export default function ProjectHero({ content }) {
@@ -61,8 +60,4 @@ export default function ProjectHero({ content }) {
             </motion.div>
         </div>
     );
-}
-
-ProjectHero.propTypes = {
-    content: PropTypes.object.isRequired,
 }

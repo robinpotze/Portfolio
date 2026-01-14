@@ -1,4 +1,3 @@
-import PropTypes from "prop-types";
 import { useEffect, useRef, useState } from "react";
 
 export default function DashLine({ direction }) {
@@ -42,7 +41,3 @@ export default function DashLine({ direction }) {
         </svg>
     );
 }
-
-DashLine.propTypes = {
-    direction: PropTypes.oneOf(["Horizontal", "Vertical"]).isRequired,
-};

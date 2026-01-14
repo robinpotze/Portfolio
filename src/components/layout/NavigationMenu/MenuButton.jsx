@@ -5,7 +5,7 @@
 import { motion } from 'framer-motion';
 import { forwardRef } from 'react';
 
-const MenuButton = forwardRef(({ open, label, toggle, mainText, glitchR, glitchB }, ref) => {
+const MenuButton = forwardRef(({ open, label, toggle, glitchRefs }, ref) => {
     const ease = [0.22, 1, 0.36, 1];
 
     return (
@@ -41,26 +41,26 @@ const MenuButton = forwardRef(({ open, label, toggle, mainText, glitchR, glitchB
 
                 <span className="sm-toggle-textWrap">
                     <span className="sm-glitch-stack">
-                        <motion.span
+                        <span
+                            ref={(el) => { glitchRefs.current.main = el; }}
                             className="sm-glitch-layer main"
-                            animate={mainText}
                         >
                             {label}
-                        </motion.span>
-                        <motion.span
+                        </span>
+                        <span
+                            ref={(el) => { glitchRefs.current.red = el; }}
                             className="sm-glitch-layer red"
-                            animate={glitchR}
                             aria-hidden="true"
                         >
                             {label}
-                        </motion.span>
-                        <motion.span
+                        </span>
+                        <span
+                            ref={(el) => { glitchRefs.current.blue = el; }}
                             className="sm-glitch-layer blue"
-                            animate={glitchB}
                             aria-hidden="true"
                         >
                             {label}
-                        </motion.span>
+                        </span>
                     </span>
                 </span>
             </button>

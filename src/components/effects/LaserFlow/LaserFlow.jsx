@@ -1,11 +1,16 @@
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
-import laserFragmentShader from '../../../canvas/shared/shaders/laser/laser.frag?raw';
-import laserVertexShader from '../../../canvas/shared/shaders/laser/laser.vert?raw';
+import laserFragmentShader from '@canvas/shared/shaders/laser/laser.frag?raw';
+import laserVertexShader from '@canvas/shared/shaders/laser/laser.vert?raw';
 import styles from './LaserFlow.module.css';
 
-const VERT = laserVertexShader;
-const FRAG = laserFragmentShader;
+const hexToRGB = hex => {
+    let c = hex.trim();
+    if (c[0] === '#') c = c.slice(1);
+    if (c.length === 3) c = c.split('').map(x => x + x).join('');
+    const n = parseInt(c, 16) || 0xffffff;
+    return { r: ((n >> 16) & 255) / 255, g: ((n >> 8) & 255) / 255, b: (n & 255) / 255 };
+};
 
 export const LaserFlow = ({
     className,
@@ -34,31 +39,20 @@ export const LaserFlow = ({
     const uniformsRef = useRef(null);
     const hasFadedRef = useRef(false);
     const rectRef = useRef(null);
-    const baseDprRef = useRef(1);
-    const currentDprRef = useRef(1);
-    const lastSizeRef = useRef({ width: 0, height: 0, dpr: 0 });
-    const fpsSamplesRef = useRef([]);
-    const lastFpsCheckRef = useRef(performance.now());
-    const emaDtRef = useRef(16.7);
-    const pausedRef = useRef(false);
-    const inViewRef = useRef(true);
-
-    const hexToRGB = hex => {
-        let c = hex.trim();
-        if (c[0] === '#') c = c.slice(1);
-        if (c.length === 3)
-            c = c
-                .split('')
-                .map(x => x + x)
-                .join('');
-        const n = parseInt(c, 16) || 0xffffff;
-        return { r: ((n >> 16) & 255) / 255, g: ((n >> 8) & 255) / 255, b: (n & 255) / 255 };
-    };
 
     useEffect(() => {
         const mount = mountRef.current;
-
         window.scrollTo(0, 0);
+
+        const baseDpr = Math.min(dpr ?? (window.devicePixelRatio || 1), 2);
+        let currentDpr = baseDpr;
+        const lastSize = { width: 0, height: 0, dpr: 0 };
+        const fpsSamples = [];
+        let lastFpsCheck = performance.now();
+        let emaDt = 16.7;
+        let paused = false;
+        let inView = true;
+        let lastDprChange = 0;
 
         const renderer = new THREE.WebGLRenderer({
             antialias: false,
@@ -73,10 +67,7 @@ export const LaserFlow = ({
         });
         rendererRef.current = renderer;
 
-        baseDprRef.current = Math.min(dpr ?? (window.devicePixelRatio || 1), 2);
-        currentDprRef.current = baseDprRef.current;
-
-        renderer.setPixelRatio(currentDprRef.current);
+        renderer.setPixelRatio(currentDpr);
         renderer.shadowMap.enabled = false;
         renderer.outputColorSpace = THREE.SRGBColorSpace;
         renderer.setClearColor(0x000000, 0);
@@ -119,8 +110,8 @@ export const LaserFlow = ({
         uniformsRef.current = uniforms;
 
         const material = new THREE.RawShaderMaterial({
-            vertexShader: VERT,
-            fragmentShader: FRAG,
+            vertexShader: laserVertexShader,
+            fragmentShader: laserFragmentShader,
             uniforms,
             transparent: false,
             depthTest: false,
@@ -140,33 +131,23 @@ export const LaserFlow = ({
         const mouseSmooth = new THREE.Vector2(0, 0);
 
         const setSizeNow = () => {
-            let w = mount.clientWidth || 1;
-            let h = mount.clientHeight || 1;
+            let w = mount.clientWidth || window.innerWidth;
+            let h = mount.clientHeight || window.innerHeight;
+            const pr = currentDpr;
 
-            // Fallback if container hasn't computed size yet
-            if (w === 0 || h === 0) {
-                w = window.innerWidth;
-                h = window.innerHeight;
-            }
-
-            const pr = currentDprRef.current;
-
-            const last = lastSizeRef.current;
-            const sizeChanged = Math.abs(w - last.width) > 0.5 || Math.abs(h - last.height) > 0.5;
-            const dprChanged = Math.abs(pr - last.dpr) > 0.01;
-            if (!sizeChanged && !dprChanged) {
+            if (Math.abs(w - lastSize.width) < 0.5 && Math.abs(h - lastSize.height) < 0.5 && Math.abs(pr - lastSize.dpr) < 0.01) {
                 return;
             }
 
-            lastSizeRef.current = { width: w, height: h, dpr: pr };
+            lastSize.width = w;
+            lastSize.height = h;
+            lastSize.dpr = pr;
             renderer.setPixelRatio(pr);
             renderer.setSize(w, h, false);
             uniforms.iResolution.value.set(w * pr, h * pr, pr);
             rectRef.current = canvas.getBoundingClientRect();
 
-            if (!pausedRef.current) {
-                renderer.render(scene, camera);
-            }
+            if (!paused) renderer.render(scene, camera);
         };
 
         let resizeRaf = 0;
@@ -175,106 +156,78 @@ export const LaserFlow = ({
             resizeRaf = requestAnimationFrame(setSizeNow);
         };
 
-        requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-                setSizeNow();
-            });
-        });
-
-        const ro = new ResizeObserver(scheduleResize);
-        ro.observe(mount);
-
-        const io = new IntersectionObserver(
-            entries => {
-                inViewRef.current = entries[0]?.isIntersecting ?? true;
-            },
-            { root: null, threshold: 0 }
-        );
-        io.observe(mount);
-
-        const onVis = () => {
-            pausedRef.current = document.hidden;
-        };
-        document.addEventListener('visibilitychange', onVis, { passive: true });
+        requestAnimationFrame(() => requestAnimationFrame(setSizeNow));
 
         const updateMouse = (clientX, clientY) => {
             const rect = rectRef.current;
             if (!rect) return;
             const x = clientX - rect.left;
             const y = clientY - rect.top;
-            const ratio = currentDprRef.current;
+            const ratio = currentDpr;
             const hb = rect.height * ratio;
             mouseTarget.set(x * ratio, hb - y * ratio);
         };
+
         const onMove = ev => updateMouse(ev.clientX, ev.clientY);
         const onLeave = () => mouseTarget.set(0, 0);
+        const onVis = () => { paused = document.hidden; };
+        const onCtxLost = e => { e.preventDefault(); paused = true; };
+        const onCtxRestored = () => { paused = false; scheduleResize(); };
+
         canvas.addEventListener('pointermove', onMove, { passive: true });
         canvas.addEventListener('pointerdown', onMove, { passive: true });
         canvas.addEventListener('pointerenter', onMove, { passive: true });
         canvas.addEventListener('pointerleave', onLeave, { passive: true });
-
-        const onCtxLost = e => {
-            e.preventDefault();
-            pausedRef.current = true;
-        };
-        const onCtxRestored = () => {
-            pausedRef.current = false;
-            scheduleResize();
-        };
         canvas.addEventListener('webglcontextlost', onCtxLost, false);
         canvas.addEventListener('webglcontextrestored', onCtxRestored, false);
+        document.addEventListener('visibilitychange', onVis, { passive: true });
 
-        let raf = 0;
+        const ro = new ResizeObserver(scheduleResize);
+        ro.observe(mount);
+
+        const io = new IntersectionObserver(entries => {
+            inView = entries[0]?.isIntersecting ?? true;
+        }, { root: null, threshold: 0 });
+        io.observe(mount);
 
         const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
-        const dprFloor = 0.6;
-        const lowerThresh = 50;
-        const upperThresh = 58;
-        let lastDprChangeRef = 0;
-        const dprChangeCooldown = 2000;
 
         const adjustDprIfNeeded = now => {
-            const elapsed = now - lastFpsCheckRef.current;
-            if (elapsed < 750) return;
+            const elapsed = now - lastFpsCheck;
+            if (elapsed < 750 || fpsSamples.length === 0) return;
 
-            const samples = fpsSamplesRef.current;
-            if (samples.length === 0) {
-                lastFpsCheckRef.current = now;
-                return;
-            }
-            const avgFps = samples.reduce((a, b) => a + b, 0) / samples.length;
+            const avgFps = fpsSamples.reduce((a, b) => a + b, 0) / fpsSamples.length;
+            let next = currentDpr;
 
-            let next = currentDprRef.current;
-            const base = baseDprRef.current;
-
-            if (avgFps < lowerThresh) {
-                next = clamp(currentDprRef.current * 0.85, dprFloor, base);
-            } else if (avgFps > upperThresh && currentDprRef.current < base) {
-                next = clamp(currentDprRef.current * 1.1, dprFloor, base);
+            if (avgFps < 50) {
+                next = clamp(currentDpr * 0.85, 0.6, baseDpr);
+            } else if (avgFps > 58 && currentDpr < baseDpr) {
+                next = clamp(currentDpr * 1.1, 0.6, baseDpr);
             }
 
-            if (Math.abs(next - currentDprRef.current) > 0.01 && now - lastDprChangeRef > dprChangeCooldown) {
-                currentDprRef.current = next;
-                lastDprChangeRef = now;
+            if (Math.abs(next - currentDpr) > 0.01 && now - lastDprChange > 2000) {
+                currentDpr = next;
+                lastDprChange = now;
                 setSizeNow();
             }
 
-            fpsSamplesRef.current = [];
-            lastFpsCheckRef.current = now;
+            fpsSamples.length = 0;
+            lastFpsCheck = now;
         };
 
+        let raf = 0;
         const animate = () => {
             raf = requestAnimationFrame(animate);
-            if (pausedRef.current || !inViewRef.current) return;
+            if (paused || !inView) return;
 
             const t = clock.getElapsedTime();
             const dt = Math.max(0, t - prevTime);
             prevTime = t;
 
             const dtMs = dt * 1000;
-            emaDtRef.current = emaDtRef.current * 0.9 + dtMs * 0.1;
-            const instFps = 1000 / Math.max(1, emaDtRef.current);
-            fpsSamplesRef.current.push(instFps);
+            emaDt = emaDt * 0.9 + dtMs * 0.1;
+            const instFps = 1000 / Math.max(1, emaDt);
+            fpsSamples.push(instFps);
 
             uniforms.iTime.value = t;
 
@@ -283,8 +236,7 @@ export const LaserFlow = ({
             uniforms.uFogTime.value += cdt;
 
             if (!hasFadedRef.current) {
-                const fadeDur = 1.0;
-                fade = Math.min(1, fade + cdt / fadeDur);
+                fade = Math.min(1, fade + cdt);
                 uniforms.uFade.value = fade;
                 if (fade >= 1) hasFadedRef.current = true;
             }
@@ -295,7 +247,6 @@ export const LaserFlow = ({
             uniforms.iMouse.value.set(mouseSmooth.x, mouseSmooth.y, 0, 0);
 
             renderer.render(scene, camera);
-
             adjustDprIfNeeded(performance.now());
         };
 
@@ -365,3 +316,4 @@ export const LaserFlow = ({
 };
 
 export default LaserFlow;
+

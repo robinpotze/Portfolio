@@ -1,4 +1,5 @@
-import { ScrollReveal, DashLine } from '@components';
+import ScrollReveal from '@components/effects/ScrollReveal';
+import DashLine from '@components/decoration/DashLine';
 
 export const Data = {
     id: 1,
@@ -24,7 +25,7 @@ export default function LsdJam() {
             <div className='work-header'>
                 <div className='work-header-chapter'>
                     <h3>THE COMMAND ROOM</h3>
-                    <img src='/img/icon/PLS.svg' alt='plus icon divider'/>
+                    <img src='/img/icon/PLS.svg' alt='plus icon divider' />
                     <p className='tech-small'>LVL::001 - HIBERNATION</p>
                 </div>
                 <ScrollReveal>

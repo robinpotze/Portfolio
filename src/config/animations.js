@@ -45,7 +45,19 @@ export const ANIMATION_EASING = {
 };
 
 export const SCROLL_THRESHOLDS = {
-    HOME_TRANSITION: 0.95, // 95% scroll triggers transition
-    WORK_RETURN: 0.5, // 50% upward scroll triggers return
-    WORK_MAX_SCROLL: 600, // Max pixels for upward scroll tracking
+    HOME_TRANSITION: 0.95,
+    WORK_RETURN: 0.5,
+    WORK_MAX_SCROLL: 600,
+};
+
+export const FLOAT_CONFIG = {
+    X_FREQUENCY: 0.3,
+    X_AMPLITUDE: 0.03,
+    Y_FREQUENCY: 0.4,
+    Y_AMPLITUDE: 0.04,
+    Z_FREQUENCY: 0.35,
+    Z_AMPLITUDE: 0.02,
+    SPEED_MIN: 0.5,
+    SPEED_MAX: 1.0,
+    PHASE_SEED: 13.7,
 };

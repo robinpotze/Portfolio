@@ -1,7 +1,6 @@
 import { ANIMATION_TIMING } from '@config/animations';
 import { useProgress } from '@react-three/drei';
 import { AnimatePresence, motion } from 'framer-motion';
-import PropTypes from 'prop-types';
 import { useEffect, useRef, useState } from 'react';
 import styles from './LoadingScreen.module.css';
 
@@ -73,9 +72,3 @@ export default function LoadingScreen({
         </AnimatePresence>
     );
 }
-
-LoadingScreen.propTypes = {
-    onComplete: PropTypes.func,
-    minDisplayTime: PropTypes.number,
-    logoSrc: PropTypes.string
-};

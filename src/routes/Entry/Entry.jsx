@@ -1,10 +1,13 @@
-import { useLenisScroll } from '@hooks';
-import { DashLine, ScrollReveal, GradualBlur } from '@components';
+import useLenisScroll from '@hooks/useLenisScroll';
+import DashLine from '@components/decoration/DashLine';
+import ScrollReveal from '@components/effects/ScrollReveal';
+import GradualBlur from '@components/effects/GradualBlur';
 import ProjectHero from '@components/layout/ProjectHero/ProjectHero';
 import { NavigationMenu } from '@components/layout/NavigationMenu/NavigationMenu';
 import { ANIMATION_TIMING } from '@config/animations';
+import { normalizeKey } from '@utils/stringUtils';
 import { useParams } from 'react-router-dom';
-import { pages } from './pages';
+import { pages } from './pages/autogen';
 import './Entry.css';
 
 export default function Entry() {
@@ -17,12 +20,12 @@ export default function Entry() {
     });
 
     const { title } = useParams();
-    const normalizedTitle = title.toLowerCase().replaceAll(/[\s-]+/g, '');
+    const normalizedTitle = normalizeKey(title);
     const { Component: PageComponent, data } = pages[normalizedTitle] || {};
 
     if (!PageComponent || !data) {
         return <div className='work-page' id='work-overview'>
-            <StaggeredMenu />
+            <NavigationMenu />
             404 - Project Not Found
         </div>;
     }

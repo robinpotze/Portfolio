@@ -1,6 +1,6 @@
-import { CurtainTransition } from '@components';
+import CurtainTransition from '@components/effects/CurtainTransition';
 import { ANIMATION_TIMING } from '@config/animations';
-import { useAnimation } from 'framer-motion';
+import { animate } from 'framer-motion';
 import { createContext, useCallback, useContext, useLayoutEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MenuBackgroundLayers from './MenuBackgroundLayers';
@@ -23,57 +23,52 @@ export const NavigationMenu = () => {
     const busy = useRef(false);
     const pendingNavigation = useRef(null);
 
-    const glitchR = useAnimation();
-    const glitchB = useAnimation();
-    const mainText = useAnimation();
+    const glitchRefs = useRef({ main: null, red: null, blue: null });
 
     useLayoutEffect(() => {
         if (buttonRef.current) buttonRef.current.style.color = BTN_COLOR;
     }, []);
 
     const runGlitch = useCallback(async (newLabel) => {
+        const { main, red, blue } = glitchRefs.current;
+        if (!main || !red || !blue) return;
+
         await Promise.all([
-            mainText.start({
+            animate(main, {
                 opacity: [1, 0.3, 0.8, 0.2, 0],
                 x: [0, -2, 1, -3, 0],
-                transition: { duration: 0.2 }
-            }),
-            glitchR.start({
+            }, { duration: 0.2 }),
+            animate(red, {
                 opacity: [0, 0.8, 0.4, 0.9, 0.6],
                 x: [0, 3, -2, 4, 2],
                 y: [0, -1, 1, -2, 0],
-                transition: { duration: 0.2 }
-            }),
-            glitchB.start({
+            }, { duration: 0.2 }),
+            animate(blue, {
                 opacity: [0, 0.7, 0.5, 0.8, 0.5],
                 x: [0, -3, 2, -4, -2],
                 y: [0, 1, -1, 2, 1],
-                transition: { duration: 0.2 }
-            })
+            }, { duration: 0.2 })
         ]);
 
         setLabel(newLabel);
 
         await Promise.all([
-            mainText.start({
+            animate(main, {
                 opacity: [0, 0.2, 0.7, 0.4, 1],
                 x: [0, 2, -1, 3, 0],
-                transition: { duration: 0.2 }
-            }),
-            glitchR.start({
+            }, { duration: 0.2 }),
+            animate(red, {
                 opacity: [0.6, 0.9, 0.3, 0.7, 0],
                 x: [2, -3, 4, -2, 0],
                 y: [0, 1, -2, 1, 0],
-                transition: { duration: 0.2 }
-            }),
-            glitchB.start({
+            }, { duration: 0.2 }),
+            animate(blue, {
                 opacity: [0.5, 0.8, 0.4, 0.6, 0],
                 x: [-2, 3, -4, 2, 0],
                 y: [1, -1, 2, -1, 0],
-                transition: { duration: 0.2 }
-            })
+            }, { duration: 0.2 })
         ]);
-    }, [glitchR, glitchB, mainText]);
+    }, []);
 
     const toggle = useCallback(() => {
         if (busy.current) return;
@@ -135,9 +130,7 @@ export const NavigationMenu = () => {
                     open={open}
                     label={label}
                     toggle={toggle}
-                    mainText={mainText}
-                    glitchR={glitchR}
-                    glitchB={glitchB}
+                    glitchRefs={glitchRefs}
                 />
 
                 <MenuPanel open={open} onClose={handleClose} />

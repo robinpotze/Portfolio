@@ -3,7 +3,6 @@
  */
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import { motion } from 'framer-motion';
 
 const SOCIALS = [
@@ -38,7 +37,3 @@ export default function MenuSocials({ open }) {
         </div>
     );
 }
-
-MenuSocials.propTypes = {
-    open: PropTypes.bool.isRequired,
-};

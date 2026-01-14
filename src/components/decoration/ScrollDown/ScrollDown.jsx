@@ -1,5 +1,4 @@
 import { motion } from "framer-motion";
-import PropTypes from 'prop-types';
 
 export default function ScrollDown({ color = "var(--c-LGHT)", width = 32, height = 64, speed = 1.2 }) {
 
@@ -69,11 +68,4 @@ export default function ScrollDown({ color = "var(--c-LGHT)", width = 32, height
             />
         </motion.svg>
     );
-};
-
-ScrollDown.propTypes = {
-    color: PropTypes.string,
-    width: PropTypes.number,
-    height: PropTypes.number,
-    speed: PropTypes.number,
 };

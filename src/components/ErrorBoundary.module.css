@@ -1,0 +1,49 @@
+.container {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--c-DRK);
+    color: var(--c-LGHT);
+    padding: 2rem;
+    text-align: center;
+    font-family: var(--f-FUNCTIONAL);
+    z-index: 9999;
+}
+
+.title {
+    margin-bottom: 1rem;
+    color: var(--c-BRND);
+}
+
+.message {
+    margin-bottom: 2rem;
+    opacity: 0.7;
+}
+
+.actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.retryButton {
+    padding: 0.75rem 1.5rem;
+    background: var(--c-BRND);
+    color: var(--c-DRK);
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 600;
+}
+
+.homeLink {
+    padding: 0.75rem 1.5rem;
+    background: transparent;
+    color: var(--c-LGHT);
+    border: 1px solid var(--c-LGHT);
+    text-decoration: none;
+    font-family: inherit;
+    font-weight: 600;
+}

@@ -1,8 +1,7 @@
 import { GlassLogoMaterial } from '@canvas/shared/materials/GlassLogoMaterial';
-import { useNoiseTexture } from '@hooks';
+import useNoiseTexture from '@hooks/useNoiseTexture';
 import { useFBO, useGLTF } from "@react-three/drei";
 import { extend, useFrame } from "@react-three/fiber";
-import PropTypes from 'prop-types';
 import React, { useRef } from 'react';
 import * as THREE from 'three';
 
@@ -82,9 +81,5 @@ function LogoMesh({ enableFBO = true, ...props }) {
         </mesh>
     )
 }
-
-LogoMesh.propTypes = {
-    enableFBO: PropTypes.bool,
-};
 
 export default React.memo(LogoMesh);

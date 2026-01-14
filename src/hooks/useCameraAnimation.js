@@ -1,7 +1,7 @@
 import { useFrame } from '@react-three/fiber';
+import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { easeCurve, entryEase } from './easingFunctions.js';
-import { useAnimationState } from './useAnimationState.js';
 
 /**
  * Animates camera position and FOV with entry and scroll phases
@@ -29,7 +29,18 @@ export function useCameraAnimation(cameraRef, routeName, options = {}) {
 
     const finalEndPosition = scrollEndPosition || endPosition;
     const finalEndFov = scrollEndFov || endFov;
-    const { animationStartTime, hasCompletedEntry } = useAnimationState(routeName);
+
+    const startTime = useRef(null);
+    const hasCompletedEntry = useRef(false);
+    const initializedRoute = useRef(routeName);
+
+    useEffect(() => {
+        if (initializedRoute.current !== routeName) {
+            hasCompletedEntry.current = false;
+            startTime.current = null;
+            initializedRoute.current = routeName;
+        }
+    }, [routeName]);
 
     useFrame(({ clock, camera }) => {
         if (!enabled) return;
@@ -38,11 +49,11 @@ export function useCameraAnimation(cameraRef, routeName, options = {}) {
         if (!targetCamera) return;
 
         if (!hasCompletedEntry.current) {
-            if (animationStartTime.current === null) {
-                animationStartTime.current = clock.getElapsedTime();
+            if (startTime.current === null) {
+                startTime.current = clock.getElapsedTime();
             }
 
-            const elapsed = clock.getElapsedTime() - animationStartTime.current;
+            const elapsed = clock.getElapsedTime() - startTime.current;
             const progress = Math.min(elapsed / duration, 1);
             const eased = entryEase(progress);
 

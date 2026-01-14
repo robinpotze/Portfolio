@@ -1,6 +1,7 @@
-import { useWorkStore } from '@/stores/workStore';
+import { useWorkItems } from '@/app/App';
 import WorkCanvas from '@canvas/work/WorkCanvas';
-import { CurtainTransition, ErrorBoundary } from '@components';
+import CurtainTransition from '@components/effects/CurtainTransition';
+import ErrorBoundary from '@components/ErrorBoundary';
 import { NavigationMenu } from '@components/layout/NavigationMenu/NavigationMenu';
 import { ANIMATION_TIMING, SCROLL_THRESHOLDS } from '@config/animations';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -9,7 +10,7 @@ import './Work.css';
 
 export default function Work() {
     const navigate = useNavigate();
-    const items = useWorkStore((state) => state.items);
+    const items = useWorkItems();
     const [scrollProgress, setScrollProgress] = useState(0);
     const [canvasScrollOffset, setCanvasScrollOffset] = useState(0);
     const [curtainOpen, setCurtainOpen] = useState(false);

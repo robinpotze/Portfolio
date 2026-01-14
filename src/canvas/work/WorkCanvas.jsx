@@ -1,8 +1,8 @@
-import PropTypes from 'prop-types';
 import { Canvas } from '@react-three/fiber';
 import { PerspectiveCamera, ScrollControls } from '@react-three/drei';
 import WorkScene from './WorkScene';
-import { CAROUSEL_CONFIG, calculateScrollPages } from '@config/carousel.config';
+import { CAROUSEL_CONFIG } from '@config/carousel';
+import { calculateScrollPages } from '@utils/carousel';
 
 export default function WorkCanvas({ items, onCardNavigate, onScrollChange }) {
     const pages = calculateScrollPages(items.length);
@@ -29,9 +29,3 @@ export default function WorkCanvas({ items, onCardNavigate, onScrollChange }) {
         </div>
     );
 }
-
-WorkCanvas.propTypes = {
-    items: PropTypes.array.isRequired,
-    onCardNavigate: PropTypes.func.isRequired,
-    onScrollChange: PropTypes.func.isRequired,
-};

@@ -1,26 +1,16 @@
 import { useFrame } from '@react-three/fiber';
+import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { easeCurve, entryEase } from './easingFunctions.js';
-import { useAnimationState } from './useAnimationState.js';
 
-/**
- * Animates 3D object position and scale with entry and scroll phases
- * Entry phase: Animates from start to end position/scale
- * Scroll phase: Animates from end to scrollEnd position/scale based on scroll progress
- * 
- * @param {object} ref - React ref to the 3D object to animate
- * @param {string} routeName - Current route name for animation reset
- * @param {object} options - Animation configuration
- * @returns {void}
- */
-export function useEntryAnimation(ref, routeName, options = {}) {
+export function useObjectAnimation(ref, routeName, options = {}) {
     const {
         duration = 1.5,
         delay = 0,
-        startPosition = [0, -15, -5],
-        endPosition = [0, 0, -5],
-        startScale = [0.5, 0.5, 0.5],
-        endScale = [2.8, 2.8, 2.8],
+        startPosition = [0, 0, 0],
+        endPosition = [0, 0, 0],
+        startScale = [1, 1, 1],
+        endScale = [1, 1, 1],
         scrollEndPosition = null,
         scrollEndScale = null,
         enabled = true,
@@ -29,17 +19,28 @@ export function useEntryAnimation(ref, routeName, options = {}) {
 
     const finalEndPosition = scrollEndPosition || endPosition;
     const finalEndScale = scrollEndScale || endScale;
-    const { animationStartTime, hasCompletedEntry } = useAnimationState(routeName);
+
+    const startTime = useRef(null);
+    const hasCompletedEntry = useRef(false);
+    const initializedRoute = useRef(routeName);
+
+    useEffect(() => {
+        if (initializedRoute.current !== routeName) {
+            hasCompletedEntry.current = false;
+            startTime.current = null;
+            initializedRoute.current = routeName;
+        }
+    }, [routeName]);
 
     useFrame(({ clock }) => {
         if (!ref.current || !enabled) return;
 
         if (!hasCompletedEntry.current) {
-            if (animationStartTime.current === null) {
-                animationStartTime.current = clock.getElapsedTime();
+            if (startTime.current === null) {
+                startTime.current = clock.getElapsedTime();
             }
 
-            const elapsed = clock.getElapsedTime() - animationStartTime.current - delay;
+            const elapsed = clock.getElapsedTime() - startTime.current - delay;
 
             if (elapsed < 0) return;
 
@@ -58,7 +59,6 @@ export function useEntryAnimation(ref, routeName, options = {}) {
             ref.current.scale.y = THREE.MathUtils.lerp(startScale[1], endScale[1], eased);
             ref.current.scale.z = THREE.MathUtils.lerp(startScale[2], endScale[2], eased);
         } else {
-            // After entry, apply scroll-based animation
             const scrollEased = easeCurve(scrollProgress);
 
             ref.current.position.x = THREE.MathUtils.lerp(endPosition[0], finalEndPosition[0], scrollEased);

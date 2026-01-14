@@ -1,5 +1,4 @@
 import { motion, useInView } from 'framer-motion';
-import PropTypes from 'prop-types';
 import { useMemo, useRef } from 'react';
 
 import styles from './ScrollReveal.module.css';
@@ -28,10 +27,6 @@ const ScrollReveal = ({ children }) => {
             </p>
         </motion.div>
     );
-};
-
-ScrollReveal.propTypes = {
-    children: PropTypes.node.isRequired
 };
 
 export default ScrollReveal;

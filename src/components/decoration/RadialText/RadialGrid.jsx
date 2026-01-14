@@ -1,5 +1,3 @@
-import PropTypes from 'prop-types';
-
 import RadialGridCircle from './CRCL/RAD_GRID_CRCL';
 import RadialGridText from './TXT/RAD_GRID_TXT';
 
@@ -15,8 +13,4 @@ export default function RadialGrid({ type }) {
         default:
             return null;
     }
-};
-
-RadialGrid.propTypes = {
-    type: PropTypes.string.isRequired,
 };

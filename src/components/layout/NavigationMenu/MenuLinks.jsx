@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { motion } from 'framer-motion';
 import { useNavigationCurtain } from './NavigationMenu';
 
@@ -48,8 +47,3 @@ export default function MenuLinks({ open, onItemClick }) {
         </motion.ul>
     );
 }
-
-MenuLinks.propTypes = {
-    open: PropTypes.bool.isRequired,
-    onItemClick: PropTypes.func.isRequired,
-};

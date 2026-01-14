@@ -35,8 +35,6 @@ const DIRECTION_CONFIG = {
     }
 };
 
-import PropTypes from 'prop-types';
-
 export default function CurtainTransition({
     isOpen = false,
     direction = 'up',
@@ -95,10 +93,3 @@ export default function CurtainTransition({
         </div>
     );
 }
-
-CurtainTransition.propTypes = {
-    isOpen: PropTypes.bool,
-    direction: PropTypes.oneOf(['up', 'down', 'left', 'right']),
-    onCoverComplete: PropTypes.func,
-    onRevealComplete: PropTypes.func,
-};
