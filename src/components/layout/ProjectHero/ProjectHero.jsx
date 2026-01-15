@@ -21,15 +21,17 @@ export default function ProjectHero({ content }) {
 
     return (
         <div className='hero-section' id='work-hero-section'>
-            <motion.img
-                className='hero-banner'
-                id={content.title.replace(/\s+/g, '-') + '-hero-banner'}
-                src={content.banner}
-                alt={content.title.replace(/\s+/g, '-') + 'hero banner'}
-                variants={bannerVars}
-                initial='hidden'
-                animate={'visible'}
-            />
+            <div className='hero-banner-wrapper'>
+                <motion.img
+                    className='hero-banner'
+                    id={content.title.replace(/\s+/g, '-') + '-hero-banner'}
+                    src={content.banner}
+                    alt={content.title.replace(/\s+/g, '-') + 'hero banner'}
+                    variants={bannerVars}
+                    initial='hidden'
+                    animate={'visible'}
+                />
+            </div>
 
             <motion.div className='hero-content' id='work-hero-content' variants={sideVars} custom={1} initial='hidden' animate={'visible'}>
                 <motion.div className='hero-title-wrapper' id='work-hero-title-wrapper' variants={titleVars} initial='hidden' animate={'visible'}>

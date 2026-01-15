@@ -10,13 +10,29 @@
     align-items: end;
 }
 
-.hero-banner {
+.hero-banner-wrapper {
     position: fixed;
-    object-fit: cover;
     width: 100%;
     height: 100%;
     z-index: -1;
     top: 0;
+}
+
+.hero-banner-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, transparent 70%, var(--c-DRK) 100%);
+    pointer-events: none;
+}
+
+.hero-banner {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .hero-side {
