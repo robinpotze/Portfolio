@@ -1,10 +1,10 @@
+import Rig from '@canvas/shared/camera/Rig';
 import BackgroundMesh from '@canvas/shared/meshes/BackgroundMesh';
 import LogoMesh from '@canvas/shared/meshes/LogoMesh';
-import Rig from '@canvas/shared/camera/Rig';
 import { ANIMATION_TIMING } from '@config/animations';
+import { useAdaptiveQuality } from '@hooks/useAdaptiveQuality';
 import { useCameraAnimation } from '@hooks/useCameraAnimation';
 import { useObjectAnimation } from '@hooks/useObjectAnimation';
-import { useAdaptiveQuality } from '@hooks/useAdaptiveQuality';
 import { Float, PerspectiveCamera, Text } from '@react-three/drei';
 import { Bloom, EffectComposer, N8AO } from '@react-three/postprocessing';
 import { useEffect, useMemo, useRef, useState } from 'react';

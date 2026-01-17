@@ -1,8 +1,8 @@
-import { useRef } from "react";
+import { CAROUSEL_CONFIG } from '@config/carousel';
 import { Float, Html } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
-import { CAROUSEL_CONFIG } from '@config/carousel';
 import { calculateCardCenteredness, calculateCardScale } from '@utils/carousel';
+import { useRef } from "react";
 import WorkCardContent from './WorkCardContent';
 
 export default function WorkCard({ item, index, progress, onNavigate, rigRef }) {

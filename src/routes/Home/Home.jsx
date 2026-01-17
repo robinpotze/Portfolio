@@ -1,11 +1,11 @@
 import HomeCanvas from '@canvas/home/HomeCanvas';
-import CurtainTransition from '@components/effects/CurtainTransition';
-import ErrorBoundary from '@components/ErrorBoundary';
-import LaserFlow from '@components/effects/LaserFlow';
-import LoadingScreen from '@components/effects/LoadingScreen';
 import RadialGrid from '@components/decoration/RadialText/RadialGrid';
 import RedoAnimText from '@components/decoration/RandomText/RedoAnimText';
 import ScrollDown from '@components/decoration/ScrollDown';
+import CurtainTransition from '@components/effects/CurtainTransition';
+import LaserFlow from '@components/effects/LaserFlow';
+import LoadingScreen from '@components/effects/LoadingScreen';
+import ErrorBoundary from '@components/ErrorBoundary';
 import { NavigationMenu } from '@components/layout/NavigationMenu/NavigationMenu';
 import { ANIMATION_TIMING, SCROLL_THRESHOLDS } from '@config/animations';
 import { useEffect, useRef, useState } from 'react';
