@@ -41,10 +41,11 @@ export default function WorkCard({ item, index, progress, onNavigate, rigRef }) 
                     distanceFactor={1}
                     position={[0, 0, 0]}
                     style={{
-                        width: '50vw',
-                        height: '50vh',
+                        width: 'min(50vw, 88.89vh)',
+                        aspectRatio: '16 / 9',
                         pointerEvents: 'auto'
                     }}
+                    className="work-card-html"
                 >
                     <WorkCardContent
                         item={item}

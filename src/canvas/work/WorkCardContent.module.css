@@ -21,56 +21,33 @@
 
 .workCardContent {
     position: absolute;
-    left: 16px;
-    bottom: 16px;
-    width: 40%;
-    height: 40%;
+    width: 100%;
+    height: 100%;
     display: grid;
     grid-template-rows: 1fr 1fr 1fr 1fr;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     grid-template-areas:
-        "title software"
-        "project software"
-        "deco deco"
-        "client date";
-    padding: 8px;
+        "title"
+        "."
+        "date"
+        "client";
     color: var(--c-LGHT);
-    border: 1px solid var(--c-LGHT);
-    background: var(--c-DRK_TRNS);
-}
-
-#project-number {
-    grid-area: project;
-    align-self: start;
-    justify-self: start;
-    font: var(--f-DECORATIONAL_SMALL);
+    justify-content: center;
+    align-items: center;
 }
 
 #project-name {
     grid-area: title;
-    align-self: start;
-    justify-self: start;
     font: var(--f-DECORATIONAL);
-}
-
-#project-software {
-    grid-area: software;
-    align-self: start;
-    justify-self: end;
-    font: var(--f-DECORATIONAL_TINY);
 }
 
 #project-client {
     grid-area: client;
-    align-self: end;
-    justify-self: start;
     font: var(--f-DECORATIONAL_SMALL);
 }
 
 #project-year {
     grid-area: date;
-    align-self: end;
-    justify-self: end;
     font: var(--f-DECORATIONAL);
 }
 

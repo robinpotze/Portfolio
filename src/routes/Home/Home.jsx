@@ -111,15 +111,13 @@ export default function Home() {
                 <div className='home-section'>
                     <div className='home-content'>
                         <NavigationMenu />
-                        <p className='deco-small home-name'>ROBIN <br /> POTZE</p>
-                        <p className='deco-tiny home-quote'>
+                        <p className='deco-small home-name'>ROBIN <br /> POTZE</p>                        <p className='deco-tiny home-quote'>
                             | THOSE WHO DOUBT |<br />
                             | CAST THEMSELVES|<br />
                             | INTO A VOID |<br />
                             <RedoAnimText delay={0.5} /><br />
                             | AMBIGUOUS AMBIVALENCE |
-                        </p>
-                        <div className='home-accents-bottom'>
+                        </p>                        <div className='home-accents-bottom'>
                             <RadialGrid type='CRCL' />
                             <img className='home-accent-decal' src='img/decal/OFS.svg' alt='Offset cyberpunk dorito decal' />
                         </div>

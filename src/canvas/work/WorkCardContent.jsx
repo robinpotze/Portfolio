@@ -41,8 +41,6 @@ export default function WorkCardContent({
                 <PixelCard variant="default" className={styles.pixelCardInner}>
                     <div className={styles.workCardContent}>
                         <h3 id='project-name'>{data?.title || pageKey}</h3>
-                        <span className='deco-small' id='project-number'>{idLabel}</span>
-                        <p className={styles.synopsis} id='project-software'>{data?.skills.map(skill => skill.toString().toLowerCase().replace(/\s+/g, '_') + "_/ ") || ''}</p>
                         <span className="deco-small" id='project-client'>{data?.client || ''}</span>
                         <h3 id='project-year'>{data?.year || ''}</h3>
                     </div>

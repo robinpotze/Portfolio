@@ -4,3 +4,16 @@
     background: linear-gradient(180deg, var(--c-DRK) 70%, var(--c-BRND_TRNS) 100%);
     overflow: hidden;
 }
+
+/* Mobile view - scale cards based on height */
+@media (max-width: 768px) {
+    .work-card-html {
+        width: 55vh !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .work-card-html {
+        width: 60vh !important;
+    }
+}

@@ -66,17 +66,22 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
     }, [startAnimations]);
 
     // Memoize animation configs to prevent recreation
-    const logoAnimConfig = useMemo(() => ({
-        duration: ANIMATION_TIMING.ENTRY_DURATION,
-        startPosition: [0, 0, 20],
-        endPosition: [0, 0, -5],
-        scrollEndPosition: [0, 0, -15],
-        startScale: [4, 4, 4],
-        endScale: [2.5, 2.5, 2.5],
-        scrollEndScale: [2, 2, 2],
-        scrollProgress,
-        enabled: startAnimations
-    }), [scrollProgress, startAnimations]);
+    const logoAnimConfig = useMemo(() => {
+        const isMobile = window.innerWidth <= 768;
+        const scaleFactor = isMobile ? 0.5 : 1;
+        
+        return {
+            duration: ANIMATION_TIMING.ENTRY_DURATION,
+            startPosition: [0, 0, 20],
+            endPosition: [0, 0, -5],
+            scrollEndPosition: [0, 0, -15],
+            startScale: [4 * scaleFactor, 4 * scaleFactor, 4 * scaleFactor],
+            endScale: [2.5 * scaleFactor, 2.5 * scaleFactor, 2.5 * scaleFactor],
+            scrollEndScale: [2 * scaleFactor, 2 * scaleFactor, 2 * scaleFactor],
+            scrollProgress,
+            enabled: startAnimations
+        };
+    }, [scrollProgress, startAnimations]);
 
     const backgroundAnimConfig = useMemo(() => ({
         duration: ANIMATION_TIMING.ENTRY_DURATION,
