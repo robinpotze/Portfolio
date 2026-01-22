@@ -9,16 +9,23 @@ export default function WorkScene({ items = [], progress = 1, onCardNavigate, on
     const eased = Math.min(1, Math.max(0, progress));
     const scroll = useScroll();
     const rigRef = useRef();
+    const targetRotationRef = useRef(0);
 
-    useFrame(({ clock }) => {
+    useFrame(() => {
         if (onScrollChange && scroll) {
             onScrollChange(scroll.offset);
         }
 
-        if (rigRef.current) {
+        if (rigRef.current && items.length > 0) {
             const totalRotation = (items.length - 1) * CAROUSEL_CONFIG.ANGLE_STEP;
             const targetRotation = -scroll.offset * totalRotation;
-            rigRef.current.rotation.y += (targetRotation - rigRef.current.rotation.y) * CAROUSEL_CONFIG.LERP_SPEED;
+            
+            // Update target
+            targetRotationRef.current = targetRotation;
+            
+            // Smooth lerp towards target
+            const delta = targetRotation - rigRef.current.rotation.y;
+            rigRef.current.rotation.y += delta * CAROUSEL_CONFIG.LERP_SPEED;
         }
     });
 

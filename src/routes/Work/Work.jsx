@@ -3,7 +3,7 @@ import WorkCanvas from '@canvas/work/WorkCanvas';
 import CurtainTransition from '@components/effects/CurtainTransition';
 import ErrorBoundary from '@components/ErrorBoundary';
 import { NavigationMenu } from '@components/layout/NavigationMenu/NavigationMenu';
-import { ANIMATION_TIMING, SCROLL_THRESHOLDS } from '@config/animations';
+import { ANIMATION_TIMING } from '@config/animations';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Work.css';
@@ -11,8 +11,6 @@ import './Work.css';
 export default function Work() {
     const navigate = useNavigate();
     const items = useWorkItems();
-    const [scrollProgress, setScrollProgress] = useState(0);
-    const [canvasScrollOffset, setCanvasScrollOffset] = useState(0);
     const [curtainOpen, setCurtainOpen] = useState(false);
     const hasNavigated = useRef(false);
     const hasEntryAnimated = useRef(false);
@@ -22,7 +20,6 @@ export default function Work() {
         if (hasEntryAnimated.current) return;
         hasEntryAnimated.current = true;
 
-        // Start covered, then reveal after a brief moment
         setCurtainOpen(true);
         setTimeout(() => {
             setCurtainOpen(false);
@@ -30,58 +27,68 @@ export default function Work() {
     }, []);
 
     const handleCardNavigate = useCallback((pageKey) => {
-        navigate(`/work/${pageKey}`);
+        if (hasNavigated.current) return;
+        hasNavigated.current = true;
+        setCurtainOpen(true);
+        
+        setTimeout(() => {
+            navigate(`/work/${pageKey}`);
+        }, ANIMATION_TIMING.CURTAIN_DURATION + ANIMATION_TIMING.LAYER_STAGGER_DELAY * 3);
     }, [navigate]);
 
+    // Handle scroll-to-exit only when at very top and scrolling up persistently
+    const scrollAccumulator = useRef(0);
+    const lastScrollTime = useRef(Date.now());
+    const isAtTop = useRef(true);
+
     const handleCanvasScrollChange = useCallback((offset) => {
-        setCanvasScrollOffset(offset);
+        isAtTop.current = offset < 0.02; // Consider "at top" if within 2% of start
+        
+        // Reset accumulator if not at top
+        if (!isAtTop.current) {
+            scrollAccumulator.current = 0;
+        }
     }, []);
 
-    // Track upward scroll for transition back to home (only when at top)
     useEffect(() => {
-        let scrollAmount = 0;
-        const maxScroll = SCROLL_THRESHOLDS.WORK_MAX_SCROLL;
-
         const handleWheel = (e) => {
-            // Only track if canvas is at the top (offset near 0)
-            if (canvasScrollOffset > 0.01) {
-                setScrollProgress(0);
-                scrollAmount = 0;
-                return;
+            const now = Date.now();
+            const timeSinceLastScroll = now - lastScrollTime.current;
+            lastScrollTime.current = now;
+
+            // Reset accumulator if too much time has passed
+            if (timeSinceLastScroll > 500) {
+                scrollAccumulator.current = 0;
             }
 
-            if (e.deltaY < 0) {
-                // Scrolling up
-                scrollAmount += Math.abs(e.deltaY);
+            // Only accumulate upward scroll when at the very top
+            if (isAtTop.current && e.deltaY < 0) {
+                scrollAccumulator.current += Math.abs(e.deltaY);
+
+                // Trigger exit after persistent upward scrolling (600px equivalent)
+                if (scrollAccumulator.current > 600 && !hasNavigated.current) {
+                    hasNavigated.current = true;
+                    setCurtainOpen(true);
+                    setTimeout(() => {
+                        navigate('/', { state: { fromNavigation: true } });
+                    }, ANIMATION_TIMING.CURTAIN_DURATION + ANIMATION_TIMING.LAYER_STAGGER_DELAY * 3);
+                }
             } else {
-                // Scrolling down - reset
-                scrollAmount = Math.max(0, scrollAmount - Math.abs(e.deltaY));
-            }
-
-            // Map 0-600px of upward scroll to 0-1 progress
-            const progress = Math.min(scrollAmount, maxScroll) / maxScroll;
-            setScrollProgress(progress);
-
-            // Trigger curtain at threshold
-            if (progress >= SCROLL_THRESHOLDS.WORK_RETURN && !hasNavigated.current) {
-                setCurtainOpen(true);
+                // Any downward scroll resets the accumulator
+                scrollAccumulator.current = 0;
             }
         };
 
         window.addEventListener('wheel', handleWheel, { passive: true });
         return () => window.removeEventListener('wheel', handleWheel);
-    }, [canvasScrollOffset]);
+    }, [navigate]);
 
     const handleRevealComplete = () => {
-        // Entry animation finished, allow interactions
-        // Curtain is already closed (isOpen=false)
+        // Entry animation finished
     };
 
     const handleCoverComplete = () => {
-        // Only navigate if this is an exit transition (not entry animation)
-        if (hasNavigated.current || !hasEntryAnimated.current) return;
-        hasNavigated.current = true;
-        navigate('/', { state: { fromNavigation: true } });
+        // Curtain cover animation finished
     };
 
     return (

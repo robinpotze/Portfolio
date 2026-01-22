@@ -11,7 +11,7 @@
     height: 100vh;
     width: 100vw;
     box-sizing: border-box;
-    padding: 64px 64px 0 64px;
+    padding: 64px 0 0 64px;
     position: fixed;
 }
 

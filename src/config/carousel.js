@@ -4,8 +4,8 @@ export const CAROUSEL_CONFIG = {
     VERTICAL_STEP: -0.2,
     SCALE_FACTOR: 1.5,
 
-    LERP_SPEED: 0.15,
-    SCROLL_DAMPING: 0.25,
+    LERP_SPEED: 0.12,
+    SCROLL_DAMPING: 0.15,
 
     SCALE_RANGE: 0.3,
 
