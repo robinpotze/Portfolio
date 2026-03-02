@@ -1,34 +1,31 @@
 import ScrollReveal from '@components/effects/ScrollReveal';
 import DashLine from '@components/decoration/DashLine';
 
-const assetPath = '/img/work/lsdjam/';
+const assetPath = '/img/work/ssgnl/';
 
 export const Data = {
     id: 1,
-    title: "LSD JAM",
-    synopsis: "Where games meet drugs",
-    description: "LSD Jam is a game jam I participated in during April 2024 together with Cyril Ojoga. The theme was LSD, and the goal was to create a game that makes the player question which of the realities they experience is their actual life. The game takes the player through a series of realities, dying and waking up after a short series of events in each one. I created the 3D art, Textures, level layouts and lighting setups for the jam, as well as the promotional material. The game was made in Unity, and the 3D art was created in Blender.",
+    title: "SSGNL",
+    synopsis: "The world is how we shape it.",
+    description: "Sopra Steria is a European leader in digital transformation, providing one of the most comprehensive portfolios of end-to-end service offerings in the market: consulting, systems integration, software development, infrastructure management and business process services. I personally was a UX Designer, Full-Stack developer, and contributed to multiple games developed for Sopra Steria's internal innovation program. It explores themes of cyber security and corporate responsibility through strategic gameplay and immersive design.",
     client: "TRIPADVISORS",
     year: 2024,
-    software: ["Illustrator", "Unity", "Blender"],
-    skills: ["Adobe Illustrator", "Figma", "Unity", "Blender"],
-    banner: `${assetPath}Corridor.png`
+    software: ["Illustrator","After Effects", "Blender", "Figma"],
+    skills: ["Graphic Design", "Game Design", "3D Graphics", "Motion Graphics"],
+    banner: `${assetPath}CyberSec_Render.png`
 }
 
-export default function LsdJam() {
+export default function SsgNL() {
     return (
         <div>
-            <div className='work-full'>
-                <img src={`${assetPath}hibernation.png`} className='img-full-width' alt='A retro-futurist room with a VR setup in the middle.' />
-            </div>
             <div className='work-full-thin'>
-                <img src={`${assetPath}SpaceShip.png`} alt='low fidelity render of a spaceship bridge.' />
+                <img src={`${assetPath}CyberSec_Rulebook.png`} alt='low fidelity render of a spaceship bridge.' />
             </div>
             <div className='work-header'>
                 <div className='work-header-chapter'>
-                    <h3>THE COMMAND ROOM</h3>
+                    <h3>CyberScurity</h3>
                     <img src='/img/icon/PLS.svg' alt='plus icon divider' />
-                    <p className='deco-small'>LVL::001 - HIBERNATION</p>
+                    <p className='deco-small'>PRJ_003 - BOARD GAME</p>
                 </div>
                 <ScrollReveal>
                     Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos

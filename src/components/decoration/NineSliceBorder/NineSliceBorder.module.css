@@ -1,0 +1,30 @@
+/*
+ * Nine-slice viewport overlay using MRKR.svg (601 × 651).
+ *
+ * Uses native CSS border-image for proper nine-slicing:
+ * corners stay fixed, edges stretch (not repeat).
+ *
+ * The SVG outer corner decorations span ~42 SVG units from each edge.
+ * border-image-slice cuts the image at those offsets.
+ * width/height/top/left are driven by JS every frame.
+ */
+
+.nineSliceBorder {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+
+    /* Start invisible until JS positions it */
+    top: 50%;
+    left: 50%;
+
+    /* border-image does all the nine-slicing */
+    border: 42px solid transparent;
+    border-image-source: url('/img/decal/MRKR.svg');
+    border-image-slice: 42 42 42 42;
+    border-image-width: 42px;
+    border-image-repeat: stretch;
+
+    /* Ensure box-sizing so border is included in dimensions */
+    box-sizing: border-box;
+}

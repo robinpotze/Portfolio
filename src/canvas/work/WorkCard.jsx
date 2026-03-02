@@ -45,7 +45,7 @@ export default function WorkCard({ item, index, progress, onNavigate, rigRef }) 
                         aspectRatio: '16 / 9',
                         pointerEvents: 'auto'
                     }}
-                    className="work-card-html"
+                    className={`work-card-html work-card-${index}`}
                 >
                     <WorkCardContent
                         item={item}

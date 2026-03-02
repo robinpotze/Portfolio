@@ -40,9 +40,9 @@ export default function WorkCardContent({
             <Suspense fallback={<div className={styles.pixelCardFallback} />}>
                 <PixelCard variant="default" className={styles.pixelCardInner}>
                     <div className={styles.workCardContent}>
-                        <h3 id='project-name'>{data?.title || pageKey}</h3>
+                        <span className="deco-small" id='project-year'>{data?.year || ''}</span>
+                        <h2 id='project-name'>{data?.title || pageKey}</h2>
                         <span className="deco-small" id='project-client'>{data?.client || ''}</span>
-                        <h3 id='project-year'>{data?.year || ''}</h3>
                     </div>
                 </PixelCard>
             </Suspense>
