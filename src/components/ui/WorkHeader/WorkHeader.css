@@ -1,0 +1,13 @@
+.work-header-chapter {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 4px;
+    background-color: var(--c-LGHT);
+    color: var(--c-DRK)
+}
+
+.work-header-chapter img {
+    height: 24px;
+    mix-blend-mode: difference;
+}

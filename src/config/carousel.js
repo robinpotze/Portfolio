@@ -1,5 +1,5 @@
 export const CAROUSEL_CONFIG = {
-    RADIUS: 3,
+    RADIUS: 3.1,
     ANGLE_STEP: 0.7,
     VERTICAL_STEP: -0.2,
     SCALE_FACTOR: 1.5,

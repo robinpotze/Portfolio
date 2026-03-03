@@ -5,7 +5,7 @@
 .work-header {
     display: flex;
     flex-direction: column;
-    gap: 32px;
+    gap: 1rem;
     padding: 0 96px;
     margin: 0 auto;
     max-width: 60%;
@@ -27,20 +27,6 @@
 
 .work-synopsis-subtitle img {
     height: 16px;
-}
-
-.work-header-chapter {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    padding: 0 4px;
-    background-color: var(--c-LGHT);
-    color: var(--c-DRK)
-}
-
-.work-header-chapter img {
-    height: 24px;
-    mix-blend-mode: difference;
 }
 
 .work-full {

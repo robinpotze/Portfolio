@@ -32,7 +32,7 @@ export default function WorkCard({ item, index, progress, onNavigate, rigRef }) 
     return (
         <Float
             speed={floatSpeed}
-            rotationIntensity={0.2}
+            rotationIntensity={0.1}
             floatIntensity={0.2}
         >
             <group ref={groupRef} position={basePosition} rotation={rotation}>

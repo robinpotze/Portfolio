@@ -38,7 +38,7 @@ export default function WorkCanvas({ items, onCardNavigate, onScrollChange }) {
         const vh = window.innerHeight;
 
         // Overshoot: at t=1 the border extends well past the viewport corners
-        const overshoot = 2;
+        const overshoot = 1.5;
         const maxW = vw * overshoot;
         const maxH = vh * overshoot;
 

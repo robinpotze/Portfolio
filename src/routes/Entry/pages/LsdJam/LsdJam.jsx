@@ -1,5 +1,6 @@
 import ScrollReveal from '@components/effects/ScrollReveal';
 import DashLine from '@components/decoration/DashLine';
+import WorkHeader from '@components/ui/WorkHeader/WorkHeader';
 
 const assetPath = '/img/work/lsdjam/';
 
@@ -24,16 +25,11 @@ export default function LsdJam() {
             <div className='work-full-thin'>
                 <img src={`${assetPath}SpaceShip.png`} alt='low fidelity render of a spaceship bridge.' />
             </div>
-            <div className='work-header'>
-                <div className='work-header-chapter'>
-                    <h3>THE COMMAND ROOM</h3>
-                    <img src='/img/icon/PLS.svg' alt='plus icon divider' />
-                    <p className='deco-small'>LVL::001 - HIBERNATION</p>
-                </div>
-                <ScrollReveal>
-                    Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos
-                </ScrollReveal>
-            </div>
+            <WorkHeader 
+                title="COMMAND_ROOM"
+                subtitle="LVL_001:::HIBERNATION"
+                description="The first actual level of the game has you, the player, wake up from cryosleep in an unknown spaceship. As you navigate the narrow hallways, large storage rooms, and eventually end up on the bridge, you realize you have awakened due to a system error, the sun is burning away the ship's system as you've steered off-course."
+            />
             <div className='work-double'>
                 <img src={`${assetPath}CasetteWire.png`} alt='The wireframe of the CassetteRoom scene' />
                 <DashLine direction="Vertical" />
