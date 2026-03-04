@@ -6,23 +6,15 @@ import styles from './WorkCardContent.module.css';
 
 const PixelCard = lazy(() => import('@components/effects/PixelCard/PixelCard.jsx'));
 
-export default function WorkCardContent({
-    item,
-    index,
-    progress,
-    onNavigate
-}) {
+export default function WorkCardContent({ item, index, onNavigate }) {
     const { data, key: pageKey } = item;
 
     const banner = data.banner;
     const dispAttr = data?.dispMap ? { 'data-disp': data.dispMap } : {};
-    const idLabel = `PRJ_${(data.id || index).toString().padStart(3, '0')}`;
 
     const handleClick = (e) => {
         e.preventDefault();
-        if (onNavigate) {
-            onNavigate(pageKey);
-        }
+        if (onNavigate) onNavigate(pageKey);
     };
 
     return (
@@ -34,7 +26,7 @@ export default function WorkCardContent({
             }}
             whileHover={{ scale: 1.02 }}
             initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: progress, y: 0 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ delay: ANIMATION_TIMING.CARD_ENTER_DELAY + index * ANIMATION_TIMING.CARD_STAGGER }}
             onClick={handleClick}
             {...dispAttr}

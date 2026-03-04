@@ -83,22 +83,12 @@ export default function Work() {
         return () => window.removeEventListener('wheel', handleWheel);
     }, [navigate]);
 
-    const handleRevealComplete = () => {
-        // Entry animation finished
-    };
-
-    const handleCoverComplete = () => {
-        // Curtain cover animation finished
-    };
-
     return (
         <ErrorBoundary>
             <div className='work-page-container'>
                 <CurtainTransition
                     isOpen={curtainOpen}
                     direction="up"
-                    onCoverComplete={handleCoverComplete}
-                    onRevealComplete={handleRevealComplete}
                 />
                 <NavigationMenu />
                 <ErrorBoundary>

@@ -1,46 +1,33 @@
 import { FLOAT_CONFIG } from '@config/animation.config';
-import { CAROUSEL_CONFIG } from '@config/carousel.config';
 import { Float, Html } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
-import { calculateCardCenteredness, calculateCardScale } from '@utils/carousel';
-import { useRef } from "react";
+import { calculateCardPosition, calculateCardRotation, calculateCardScale } from '@utils/carousel';
+import { useMemo, useRef } from 'react';
 import WorkCardContent from './WorkCardContent';
 
-export default function WorkCard({ item, index, progress, onNavigate, rigRef }) {
+export default function WorkCard({ item, index, onNavigate, centerednessRef }) {
     const groupRef = useRef();
 
-    const floatSpeed = useRef(
-        ((index * 0.1234567) % 1) * (FLOAT_CONFIG.SPEED_MAX - FLOAT_CONFIG.SPEED_MIN) + FLOAT_CONFIG.SPEED_MIN
-    ).current;
+    const floatSpeed = useMemo(
+        () => ((index * 0.1234567) % 1) * (FLOAT_CONFIG.SPEED_MAX - FLOAT_CONFIG.SPEED_MIN) + FLOAT_CONFIG.SPEED_MIN,
+        [index]
+    );
 
-    const angle = index * CAROUSEL_CONFIG.ANGLE_STEP;
-    const yOffset = index * CAROUSEL_CONFIG.VERTICAL_STEP;
-    const basePosition = [
-        Math.sin(angle) * CAROUSEL_CONFIG.RADIUS,
-        yOffset,
-        Math.cos(angle) * CAROUSEL_CONFIG.RADIUS
-    ];
-    const rotation = [0, angle, 0];
+    const position = useMemo(() => calculateCardPosition(index), [index]);
+    const rotation = useMemo(() => calculateCardRotation(index), [index]);
 
     useFrame(() => {
-        if (!groupRef.current || !rigRef.current) return;
-
-        const centeredness = calculateCardCenteredness(rigRef.current.rotation.y, index);
-        const scale = calculateCardScale(centeredness);
-        groupRef.current.scale.setScalar(scale);
+        if (!groupRef.current) return;
+        const centeredness = centerednessRef.current[index] ?? 1;
+        groupRef.current.scale.setScalar(calculateCardScale(centeredness));
     });
 
     return (
-        <Float
-            speed={floatSpeed}
-            rotationIntensity={0.1}
-            floatIntensity={0.2}
-        >
-            <group ref={groupRef} position={basePosition} rotation={rotation}>
+        <Float speed={floatSpeed} rotationIntensity={0.1} floatIntensity={0.2}>
+            <group ref={groupRef} position={position} rotation={rotation}>
                 <Html
                     transform
                     distanceFactor={1}
-                    position={[0, 0, 0]}
                     style={{
                         width: 'min(50vw, 88.89vh)',
                         aspectRatio: '16 / 9',
@@ -51,7 +38,6 @@ export default function WorkCard({ item, index, progress, onNavigate, rigRef }) 
                     <WorkCardContent
                         item={item}
                         index={index}
-                        progress={progress}
                         onNavigate={onNavigate}
                     />
                 </Html>
