@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 import { Suspense, lazy } from 'react';
 import styles from './WorkCardContent.module.css';
 
-const PixelCard = lazy(() => import('@components/ui/PixelCard/PixelCard.jsx'));
+const PixelCard = lazy(() => import('@components/effects/PixelCard/PixelCard.jsx'));
 
 export default function WorkCardContent({
     item,

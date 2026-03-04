@@ -104,9 +104,8 @@ export default function PixelCard({ gap = 6, speed = 200, noFocus = true, classN
     const initPixels = () => {
         if (!containerRef.current || !canvasRef.current) return;
 
-        const rect = containerRef.current.getBoundingClientRect();
-        const width = Math.floor(rect.width);
-        const height = Math.floor(rect.height);
+        const width = Math.floor(containerRef.current.offsetWidth);
+        const height = Math.floor(containerRef.current.offsetHeight);
         const ctx = canvasRef.current.getContext('2d');
 
         canvasRef.current.width = width;
