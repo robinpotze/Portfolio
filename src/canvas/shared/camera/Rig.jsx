@@ -3,6 +3,8 @@ import { useRef } from "react"
 
 export default function Rig({ intensity = 0.5 }) {
     const offsetRef = useRef({ x: 0, y: 0, z: 0 })
+    const basePosRef = useRef({ x: 0, y: 0, z: 0 })
+    const previousOffsetRef = useRef({ x: 0, y: 0, z: 0 })
 
     useFrame((state, delta) => {
         const targetOffsetX = Math.sin(-state.pointer.x) * 5 * intensity
@@ -16,14 +18,23 @@ export default function Rig({ intensity = 0.5 }) {
         offsetRef.current.y += (targetOffsetY - offsetRef.current.y) * smoothing
         offsetRef.current.z += (targetOffsetZ - offsetRef.current.z) * smoothing
 
-        // Apply offset (camera position is managed by useCameraAnimation)
-        // This only adds the mouse parallax offset on top
-        const basePos = state.camera.position
+        // Remove previous offset to get base position, then add new offset
+        // This prevents offset accumulation and preserves animation-driven position changes
+        basePosRef.current.x = state.camera.position.x - previousOffsetRef.current.x
+        basePosRef.current.y = state.camera.position.y - previousOffsetRef.current.y
+        basePosRef.current.z = state.camera.position.z - previousOffsetRef.current.z
+
+        // Apply new offset
         state.camera.position.set(
-            basePos.x + offsetRef.current.x,
-            basePos.y + offsetRef.current.y,
-            basePos.z + offsetRef.current.z
+            basePosRef.current.x + offsetRef.current.x,
+            basePosRef.current.y + offsetRef.current.y,
+            basePosRef.current.z + offsetRef.current.z
         )
+
+        // Store current offset for next frame
+        previousOffsetRef.current.x = offsetRef.current.x
+        previousOffsetRef.current.y = offsetRef.current.y
+        previousOffsetRef.current.z = offsetRef.current.z
 
         state.camera.lookAt(0, 0, 0)
     })

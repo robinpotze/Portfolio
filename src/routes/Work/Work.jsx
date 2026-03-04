@@ -2,8 +2,8 @@ import { useWorkItems } from '@/app/App';
 import WorkCanvas from '@canvas/work/WorkCanvas';
 import CurtainTransition from '@components/effects/CurtainTransition';
 import ErrorBoundary from '@components/ErrorBoundary';
-import { NavigationMenu } from '@components/layout/NavigationMenu/NavigationMenu';
-import { ANIMATION_TIMING } from '@config/animations';
+import NavigationMenu from '@components/layout/NavigationMenu/NavigationMenu';
+import { ANIMATION_TIMING } from '@config/animation.config';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Work.css';
@@ -92,21 +92,23 @@ export default function Work() {
     };
 
     return (
-        <div className='work-page-container'>
-            <CurtainTransition
-                isOpen={curtainOpen}
-                direction="up"
-                onCoverComplete={handleCoverComplete}
-                onRevealComplete={handleRevealComplete}
-            />
-            <NavigationMenu />
-            <ErrorBoundary>
-                <WorkCanvas
-                    items={items}
-                    onCardNavigate={handleCardNavigate}
-                    onScrollChange={handleCanvasScrollChange}
+        <ErrorBoundary>
+            <div className='work-page-container'>
+                <CurtainTransition
+                    isOpen={curtainOpen}
+                    direction="up"
+                    onCoverComplete={handleCoverComplete}
+                    onRevealComplete={handleRevealComplete}
                 />
-            </ErrorBoundary>
-        </div>
+                <NavigationMenu />
+                <ErrorBoundary>
+                    <WorkCanvas
+                        items={items}
+                        onCardNavigate={handleCardNavigate}
+                        onScrollChange={handleCanvasScrollChange}
+                    />
+                </ErrorBoundary>
+            </div>
+        </ErrorBoundary>
     );
 }

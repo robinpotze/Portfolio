@@ -1,5 +1,5 @@
 import { useGLTF, useVideoTexture } from "@react-three/drei";
-import React, { Suspense } from 'react';
+import { Suspense, memo } from 'react';
 import * as THREE from 'three';
 
 function BackgroundMeshInner({ ...props }) {
@@ -53,4 +53,4 @@ function BackgroundMesh(props) {
     );
 }
 
-export default React.memo(BackgroundMesh);
+export default memo(BackgroundMesh);

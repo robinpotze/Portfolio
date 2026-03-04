@@ -1,4 +1,4 @@
-import { ANIMATION_TIMING } from '@config/animations';
+import { ANIMATION_TIMING } from '@config/animation.config';
 import { useProgress } from '@react-three/drei';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
@@ -44,7 +44,7 @@ export default function LoadingScreen({
                     className={styles.loadingScreen}
                     initial={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 0.6, ease: 'easeOut' }}
+                    transition={{ duration: ANIMATION_TIMING.LOADING_EXIT_DURATION, ease: 'easeOut' }}
                 >
                     {logoSrc && (
                         <motion.img
@@ -53,7 +53,7 @@ export default function LoadingScreen({
                             className={styles.loadingLogo}
                             initial={{ opacity: 0, scale: 0.8 }}
                             animate={{ opacity: 1, scale: 1 }}
-                            transition={{ duration: 0.4, ease: 'easeOut' }}
+                            transition={{ duration: ANIMATION_TIMING.LOADING_PROGRESS_DURATION, ease: 'easeOut' }}
                         />
                     )}
                     <div className={styles.loadingBarContainer}>
@@ -61,7 +61,7 @@ export default function LoadingScreen({
                             className={styles.loadingBar}
                             initial={{ width: '0%' }}
                             animate={{ width: `${progress}%` }}
-                            transition={{ duration: 0.3, ease: 'easeOut' }}
+                            transition={{ duration: ANIMATION_TIMING.LOADING_TEXT_DURATION, ease: 'easeOut' }}
                         />
                     </div>
                     <div className={`${styles.loadingText} deco-small`}>

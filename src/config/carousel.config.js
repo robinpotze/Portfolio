@@ -9,6 +9,11 @@ export const CAROUSEL_CONFIG = {
 
     SCALE_RANGE: 0.3,
 
+    // Scroll sensitivity multiplier for canvas-internal scrolling
+    // Increase for slower/more deliberate scrolling (requires more movement)
+    // Decrease for faster/more sensitive scrolling (requires less movement)
+    SCROLL_PAGES_MULTIPLIER: 2,
+
     CAMERA: {
         POSITION: [0, 0, 8],
         FOV: 50,

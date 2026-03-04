@@ -1,4 +1,5 @@
-import { CAROUSEL_CONFIG } from '@config/carousel';
+import { FLOAT_CONFIG } from '@config/animation.config';
+import { CAROUSEL_CONFIG } from '@config/carousel.config';
 import { Float, Html } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { calculateCardCenteredness, calculateCardScale } from '@utils/carousel';
@@ -9,7 +10,7 @@ export default function WorkCard({ item, index, progress, onNavigate, rigRef }) 
     const groupRef = useRef();
 
     const floatSpeed = useRef(
-        ((index * 0.1234567) % 1) * 0.5 + 0.5
+        ((index * 0.1234567) % 1) * (FLOAT_CONFIG.SPEED_MAX - FLOAT_CONFIG.SPEED_MIN) + FLOAT_CONFIG.SPEED_MIN
     ).current;
 
     const angle = index * CAROUSEL_CONFIG.ANGLE_STEP;

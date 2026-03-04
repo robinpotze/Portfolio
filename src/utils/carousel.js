@@ -1,4 +1,4 @@
-import { CAROUSEL_CONFIG } from '@config/carousel';
+import { CAROUSEL_CONFIG } from '@config/carousel.config';
 
 export function calculateScrollPages(itemCount) {
     if (itemCount === 0) return 1;

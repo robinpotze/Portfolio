@@ -1,11 +1,7 @@
-import React from 'react';
+import { Component } from 'react';
 import styles from './ErrorBoundary.module.css';
 
-/**
- * Error Boundary Component
- * Catches errors in child components and displays fallback UI
- */
-class ErrorBoundary extends React.Component {
+class ErrorBoundary extends Component {
     constructor(props) {
         super(props);
         this.state = {

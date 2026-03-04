@@ -1,4 +1,4 @@
-import { ANIMATION_EASING, ANIMATION_TIMING } from '@config/animations';
+import { ANIMATION_EASING, ANIMATION_TIMING } from '@config/animation.config';
 import { motion } from 'framer-motion';
 import { useEffect, useRef } from 'react';
 import styles from './CurtainTransition.module.css';

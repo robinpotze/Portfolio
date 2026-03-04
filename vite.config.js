@@ -34,9 +34,6 @@ export default defineConfig({
             '@utils': '/src/utils',
         }
     },
-    optimizeDeps: {
-        exclude: []
-    },
     server: {
         port: 3000,
     },

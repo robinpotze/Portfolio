@@ -1,5 +1,5 @@
 import CurtainTransition from '@components/effects/CurtainTransition';
-import { ANIMATION_TIMING } from '@config/animations';
+import { ANIMATION_TIMING } from '@config/animation.config';
 import { animate } from 'framer-motion';
 import { createContext, useCallback, useContext, useLayoutEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -14,7 +14,7 @@ export const useNavigationCurtain = () => useContext(NavigationContext);
 const BTN_COLOR = 'var(--c-LGHT)';
 const BTN_COLOR_OPEN = 'var(--c-BRND)';
 
-export const NavigationMenu = () => {
+export default function NavigationMenu() {
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
     const [label, setLabel] = useState('Menu');
@@ -37,17 +37,17 @@ export const NavigationMenu = () => {
             animate(main, {
                 opacity: [1, 0.3, 0.8, 0.2, 0],
                 x: [0, -2, 1, -3, 0],
-            }, { duration: 0.2 }),
+            }, { duration: ANIMATION_TIMING.GLITCH_DURATION }),
             animate(red, {
                 opacity: [0, 0.8, 0.4, 0.9, 0.6],
                 x: [0, 3, -2, 4, 2],
                 y: [0, -1, 1, -2, 0],
-            }, { duration: 0.2 }),
+            }, { duration: ANIMATION_TIMING.GLITCH_DURATION }),
             animate(blue, {
                 opacity: [0, 0.7, 0.5, 0.8, 0.5],
                 x: [0, -3, 2, -4, -2],
                 y: [0, 1, -1, 2, 1],
-            }, { duration: 0.2 })
+            }, { duration: ANIMATION_TIMING.GLITCH_DURATION })
         ]);
 
         setLabel(newLabel);
@@ -56,17 +56,17 @@ export const NavigationMenu = () => {
             animate(main, {
                 opacity: [0, 0.2, 0.7, 0.4, 1],
                 x: [0, 2, -1, 3, 0],
-            }, { duration: 0.2 }),
+            }, { duration: ANIMATION_TIMING.GLITCH_DURATION }),
             animate(red, {
                 opacity: [0.6, 0.9, 0.3, 0.7, 0],
                 x: [2, -3, 4, -2, 0],
                 y: [0, 1, -2, 1, 0],
-            }, { duration: 0.2 }),
+            }, { duration: ANIMATION_TIMING.GLITCH_DURATION }),
             animate(blue, {
                 opacity: [0.5, 0.8, 0.4, 0.6, 0],
                 x: [-2, 3, -4, 2, 0],
                 y: [1, -1, 2, -1, 0],
-            }, { duration: 0.2 })
+            }, { duration: ANIMATION_TIMING.GLITCH_DURATION })
         ]);
     }, []);
 
@@ -82,9 +82,9 @@ export const NavigationMenu = () => {
             if (buttonRef.current) {
                 buttonRef.current.style.color = willOpen ? BTN_COLOR_OPEN : BTN_COLOR;
             }
-        }, 180);
+        }, ANIMATION_TIMING.GLITCH_COLOR_DELAY);
 
-        setTimeout(() => { busy.current = false; }, 500);
+        setTimeout(() => { busy.current = false; }, ANIMATION_TIMING.GLITCH_BUSY_TIMEOUT);
     }, [open, runGlitch]);
 
     const handleClose = useCallback(() => {
@@ -137,6 +137,4 @@ export const NavigationMenu = () => {
             </div>
         </NavigationContext.Provider>
     );
-};
-
-export default NavigationMenu;
+}

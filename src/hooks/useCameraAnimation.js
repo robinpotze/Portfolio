@@ -1,3 +1,4 @@
+import { ANIMATION_TIMING } from '@config/animation.config';
 import { useFrame } from '@react-three/fiber';
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
@@ -16,7 +17,7 @@ import { easeCurve, entryEase } from './easingFunctions.js';
  */
 export function useCameraAnimation(cameraRef, routeName, options = {}) {
     const {
-        duration = 1.5,
+        duration = ANIMATION_TIMING.CAMERA_DURATION,
         startPosition = [0, 0, 30],
         endPosition = [0, 0, 20],
         scrollEndPosition = null,

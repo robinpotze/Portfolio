@@ -2,7 +2,7 @@ import { GlassLogoMaterial } from '@canvas/shared/materials/GlassLogoMaterial';
 import useNoiseTexture from '@hooks/useNoiseTexture';
 import { useFBO, useGLTF } from "@react-three/drei";
 import { extend, useFrame } from "@react-three/fiber";
-import React, { useRef } from 'react';
+import { memo, useRef } from 'react';
 import * as THREE from 'three';
 
 // Register the custom material with R3F
@@ -82,4 +82,4 @@ function LogoMesh({ enableFBO = true, ...props }) {
     )
 }
 
-export default React.memo(LogoMesh);
+export default memo(LogoMesh);

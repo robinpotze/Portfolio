@@ -1,8 +1,3 @@
-/**
- * Menu Socials - Social links footer
- */
-
-import React from 'react';
 import { motion } from 'framer-motion';
 
 const SOCIALS = [

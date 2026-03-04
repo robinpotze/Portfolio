@@ -1,22 +1,23 @@
-import { motion } from 'framer-motion';
 import ScrollDown from '@components/decoration/ScrollDown';
+import { ANIMATION_EASING, ANIMATION_TIMING } from '@config/animation.config';
+import { motion } from 'framer-motion';
 import "./ProjectHero.css";
 
 export default function ProjectHero({ content }) {
 
     const bannerVars = {
         hidden: { opacity: 0, scale: 1.02 },
-        visible: { opacity: 1, scale: 1, transition: { duration: 0.7, ease: [0.2, 0.9, 0.2, 1] } }
+        visible: { opacity: 1, scale: 1, transition: { duration: ANIMATION_TIMING.PROJECT_HERO_BANNER_DURATION, ease: ANIMATION_EASING.PROJECT_HERO } }
     };
 
     const sideVars = {
         hidden: { opacity: 0, x: 12 },
-        visible: (i = 0) => ({ opacity: 1, x: 0, transition: { duration: 0.6, delay: 0.08 + i * 0.06, ease: [0.2, 0.9, 0.2, 1] } })
+        visible: (i = 0) => ({ opacity: 1, x: 0, transition: { duration: ANIMATION_TIMING.PROJECT_HERO_DURATION, delay: ANIMATION_TIMING.PROJECT_HERO_SIDE_DELAY + i * ANIMATION_TIMING.PROJECT_HERO_SIDE_STAGGER, ease: ANIMATION_EASING.PROJECT_HERO } })
     };
 
     const titleVars = {
         hidden: { opacity: 0, y: 8 },
-        visible: { opacity: 1, y: 0, transition: { duration: 0.6, delay: 0.18, ease: [0.2, 0.9, 0.2, 1] } }
+        visible: { opacity: 1, y: 0, transition: { duration: ANIMATION_TIMING.PROJECT_HERO_DURATION, delay: ANIMATION_TIMING.PROJECT_HERO_TITLE_DELAY, ease: ANIMATION_EASING.PROJECT_HERO } }
     };
 
     return (

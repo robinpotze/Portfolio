@@ -1,7 +1,7 @@
 import Rig from '@canvas/shared/camera/Rig';
 import BackgroundMesh from '@canvas/shared/meshes/BackgroundMesh';
 import LogoMesh from '@canvas/shared/meshes/LogoMesh';
-import { ANIMATION_TIMING } from '@config/animations';
+import { ANIMATION_TIMING, FLOAT_CONFIG } from '@config/animation.config';
 import { useAdaptiveQuality } from '@hooks/useAdaptiveQuality';
 import { useCameraAnimation } from '@hooks/useCameraAnimation';
 import { useObjectAnimation } from '@hooks/useObjectAnimation';
@@ -150,9 +150,9 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
             </group>
 
             <Float
-                floatIntensity={entryComplete ? 2 : 0}
-                rotationIntensity={entryComplete ? 0.5 : 0}
-                speed={0.5}
+                floatIntensity={entryComplete ? FLOAT_CONFIG.INTENSITY : 0}
+                rotationIntensity={entryComplete ? FLOAT_CONFIG.ROTATION_INTENSITY : 0}
+                speed={FLOAT_CONFIG.SPEED}
             >
                 <group ref={logoRef} scale={0.5}>
                     <LogoMesh enableFBO={startAnimations && entryComplete && quality !== 'low'} />

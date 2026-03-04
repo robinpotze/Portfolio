@@ -1,7 +1,7 @@
-import { useEffect, useRef } from 'react';
-import * as THREE from 'three';
 import laserFragmentShader from '@canvas/shared/shaders/laser/laser.frag?raw';
 import laserVertexShader from '@canvas/shared/shaders/laser/laser.vert?raw';
+import { useEffect, useRef } from 'react';
+import * as THREE from 'three';
 import styles from './LaserFlow.module.css';
 
 const hexToRGB = hex => {
@@ -12,7 +12,7 @@ const hexToRGB = hex => {
     return { r: ((n >> 16) & 255) / 255, g: ((n >> 8) & 255) / 255, b: (n & 255) / 255 };
 };
 
-export const LaserFlow = ({
+export default function LaserFlow({
     className,
     style,
     wispDensity = 1.0,
@@ -33,7 +33,7 @@ export const LaserFlow = ({
     falloffStart = 1.2,
     fogFallSpeed = 0.6,
     color = '#FF79C6'
-}) => {
+}) {
     const mountRef = useRef(null);
     const rendererRef = useRef(null);
     const uniformsRef = useRef(null);
@@ -313,7 +313,5 @@ export const LaserFlow = ({
     ]);
 
     return <div ref={mountRef} className={`${styles.laserFlowContainer} ${className || ''}`} style={style} />;
-};
-
-export default LaserFlow;
+}
 

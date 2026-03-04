@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import styles from './GradualBlur.module.css';
 
 function GradualBlur({
@@ -75,10 +75,7 @@ function GradualBlur({
             pointerEvents: 'none',
             zIndex: isPageTarget ? zIndex + 100 : zIndex,
             [position]: 0,
-            left: isVertical ? 0 : undefined,
-            right: isVertical ? 0 : undefined,
-            top: !isVertical ? 0 : undefined,
-            bottom: !isVertical ? 0 : undefined,
+            ...(isVertical ? { left: 0, right: 0 } : { top: 0, bottom: 0 }),
             height: isVertical ? height : '100%',
             width: isVertical ? '100%' : height,
             ...style
@@ -97,4 +94,4 @@ function GradualBlur({
     );
 }
 
-export default React.memo(GradualBlur);
+export default memo(GradualBlur);

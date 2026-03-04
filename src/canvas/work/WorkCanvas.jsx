@@ -1,16 +1,15 @@
-import { Canvas } from '@react-three/fiber';
-import { PerspectiveCamera, ScrollControls } from '@react-three/drei';
-import { useCallback, useRef } from 'react';
-import { useMotionValue, useSpring } from 'framer-motion';
-import WorkScene from './WorkScene';
-import { CAROUSEL_CONFIG } from '@config/carousel';
-import { calculateScrollPages } from '@utils/carousel';
 import NineSliceBorder from '@components/decoration/NineSliceBorder';
-
-const SPRING_CONFIG = { stiffness: 900, damping: 50, mass: 0.1 };
+import { SPRING_CONFIG } from '@config/animation.config';
+import { CAROUSEL_CONFIG } from '@config/carousel.config';
+import { PerspectiveCamera, ScrollControls } from '@react-three/drei';
+import { Canvas } from '@react-three/fiber';
+import { calculateScrollPages } from '@utils/carousel';
+import { useMotionValue, useSpring } from 'framer-motion';
+import { useCallback, useRef } from 'react';
+import WorkScene from './WorkScene';
 
 export default function WorkCanvas({ items, onCardNavigate, onScrollChange }) {
-    const pages = calculateScrollPages(items.length);
+    const pages = calculateScrollPages(items.length) * CAROUSEL_CONFIG.SCROLL_PAGES_MULTIPLIER;
     const initializedRef = useRef(false);
 
     // Raw motion values written every frame from useFrame callback
@@ -20,10 +19,10 @@ export default function WorkCanvas({ items, onCardNavigate, onScrollChange }) {
     const rawH = useMotionValue(0);
 
     // Springs that smooth out the raw values
-    const x = useSpring(rawX, SPRING_CONFIG);
-    const y = useSpring(rawY, SPRING_CONFIG);
-    const w = useSpring(rawW, SPRING_CONFIG);
-    const h = useSpring(rawH, SPRING_CONFIG);
+    const x = useSpring(rawX, SPRING_CONFIG.BORDER_ANIMATION);
+    const y = useSpring(rawY, SPRING_CONFIG.BORDER_ANIMATION);
+    const w = useSpring(rawW, SPRING_CONFIG.BORDER_ANIMATION);
+    const h = useSpring(rawH, SPRING_CONFIG.BORDER_ANIMATION);
 
     const handleCenterednessChange = useCallback((centeredness, bestIndex) => {
         // Query the actual rendered DOM element of the most-centered card

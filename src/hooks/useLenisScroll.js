@@ -1,9 +1,10 @@
+import { ANIMATION_TIMING } from '@config/animation.config';
 import Lenis from 'lenis';
 import { useEffect, useRef } from 'react';
 
 export default function useLenisScroll({
-    lerp = 0.1,
-    duration = 1.2,
+    lerp = ANIMATION_TIMING.LENIS_LERP,
+    duration = ANIMATION_TIMING.LENIS_DURATION,
     orientation = 'vertical',
     gestureOrientation = 'vertical',
     smoothWheel = true,

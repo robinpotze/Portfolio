@@ -1,14 +1,14 @@
-import useLenisScroll from '@hooks/useLenisScroll';
 import DashLine from '@components/decoration/DashLine';
-import ScrollReveal from '@components/effects/ScrollReveal';
 import GradualBlur from '@components/effects/GradualBlur';
+import ScrollReveal from '@components/effects/ScrollReveal';
+import NavigationMenu from '@components/layout/NavigationMenu/NavigationMenu';
 import ProjectHero from '@components/layout/ProjectHero/ProjectHero';
-import { NavigationMenu } from '@components/layout/NavigationMenu/NavigationMenu';
-import { ANIMATION_TIMING } from '@config/animations';
+import { ANIMATION_TIMING } from '@config/animation.config';
+import useLenisScroll from '@hooks/useLenisScroll';
 import { normalizeKey } from '@utils/stringUtils';
 import { useParams } from 'react-router-dom';
-import { pages } from './pages/autogen';
 import './Entry.css';
+import { pages } from './pages/autogen';
 
 export default function Entry() {
     useLenisScroll({

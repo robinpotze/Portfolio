@@ -1,7 +1,8 @@
-import { Outlet } from 'react-router-dom';
-import { createContext, useContext, useEffect, useState } from 'react';
-import { sortItems } from '@utils/workUtils';
+import ErrorBoundary from '@components/ErrorBoundary';
 import { pages as autogenPages } from '@routes/Entry/pages/autogen';
+import { sortItems } from '@utils/workUtils';
+import { createContext, useContext, useEffect, useState } from 'react';
+import { Outlet } from 'react-router-dom';
 
 const WorkContext = createContext(null);
 
@@ -20,7 +21,9 @@ export default function App() {
 
     return (
         <WorkContext.Provider value={items}>
-            <Outlet />
+            <ErrorBoundary>
+                <Outlet />
+            </ErrorBoundary>
         </WorkContext.Provider>
     );
 }

@@ -1,8 +1,8 @@
-import { useRef } from "react";
+import { CAROUSEL_CONFIG } from '@config/carousel.config';
 import { useScroll } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
-import { CAROUSEL_CONFIG } from '@config/carousel';
 import { calculateCardCenteredness } from '@utils/carousel';
+import { useRef } from "react";
 import WorkCard from './WorkCard';
 import './WorkScene.css';
 

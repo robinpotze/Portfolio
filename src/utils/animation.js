@@ -1,4 +1,4 @@
-import { FLOAT_CONFIG } from '@config/animations';
+import { FLOAT_CONFIG } from '@config/animation.config';
 
 export function calculateFloatOffset(time, index, speedMultiplier, config = FLOAT_CONFIG) {
     const t = time * speedMultiplier;
