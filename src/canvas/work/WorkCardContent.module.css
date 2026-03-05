@@ -12,10 +12,6 @@
     transition: transform 0.25s ease, box-shadow 0.25s ease;
     will-change: transform;
     cursor: pointer;
-
-    /* Cutout effect: banner is rendered larger than the card so
-       only a portion shows through, as if the card is a window
-       cut from the full-size entry-page banner */
     background-size: 250% auto;
     background-position: center 40%;
     background-repeat: no-repeat;

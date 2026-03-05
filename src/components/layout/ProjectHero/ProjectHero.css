@@ -42,26 +42,30 @@
     justify-content: space-between;
     padding: 1rem 0 4rem 0;
     width: 4rem;
-    mix-blend-mode: difference;
+    mix-blend-mode: luminosity;
 }
 
-.icon-array-vertical {
+.hero-side-top, .hero-side-bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+}
+
+.icon-array {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 8px;
-    padding: 0 4px;
+    padding: 0.25rem;
 }
 
 .text-array {
     display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    justify-content: end;
-    align-items: center;
+    flex-wrap: wrap-reverse;
+    align-items: start;
     gap: 4px;
-    padding: 0 12px;
-    height: 230px;
+    padding: 0 0.75rem;
 }
 
 .text-array p {
@@ -71,7 +75,7 @@
 
 .hero-side-text {
     display: flex;
-    align-items: baseline;
+    flex-direction: row-reverse;
     gap: 4px;
 }
 

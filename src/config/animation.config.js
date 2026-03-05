@@ -7,7 +7,7 @@ export const ANIMATION_TIMING = {
     // Curtain transition
     CURTAIN_REVEAL_DELAY: 100,
     CURTAIN_COVER_DELAY: 300,
-    CURTAIN_DURATION: 200,
+    CURTAIN_DURATION: 500,
     LAYER_STAGGER_DELAY: 70,
 
     // Loading screen

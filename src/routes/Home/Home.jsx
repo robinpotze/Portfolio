@@ -95,6 +95,7 @@ export default function Home() {
                 <CurtainTransition
                     isOpen={curtainOpen}
                     direction="up"
+                    pageName="Work"
                     onCoverComplete={handleCoverComplete}
                 />
                 <LaserFlow
@@ -111,7 +112,8 @@ export default function Home() {
                 <div className='home-section'>
                     <div className='home-content'>
                         <NavigationMenu />
-                        <p className='deco-small home-name'>ROBIN <br /> POTZE</p>                        <p className='deco-tiny home-quote'>
+                        <p className='deco-small home-name'>ROBIN <br /> POTZE</p>
+                        <p className='deco-tiny home-quote'>
                             | THOSE WHO DOUBT |<br />
                             | CAST THEMSELVES|<br />
                             | INTO A VOID |<br />

@@ -20,7 +20,7 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
     // Adaptive quality monitoring
     const { quality, fps } = useAdaptiveQuality({
         targetFps: 55,
-        enabled: startAnimations && entryComplete
+        enabled: startAnimations && entryComplete,
     });
 
     // Memoize quality-based post-processing settings
@@ -33,7 +33,7 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
                     aoIntensity: 1.2,
                     bloomIntensity: 0.4,
                     bloomLevels: 4,
-                    multisampling: 0
+                    multisampling: 0,
                 };
             case 'medium':
                 return {
@@ -42,7 +42,7 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
                     aoIntensity: 1.35,
                     bloomIntensity: 0.5,
                     bloomLevels: 5,
-                    multisampling: 0
+                    multisampling: 0,
                 };
             case 'high':
             default:
@@ -52,7 +52,7 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
                     aoIntensity: 1.5,
                     bloomIntensity: 0.55,
                     bloomLevels: 6,
-                    multisampling: 0
+                    multisampling: 0,
                 };
         }
     }, [quality]);
@@ -69,7 +69,7 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
     const logoAnimConfig = useMemo(() => {
         const isMobile = window.innerWidth <= 768;
         const scaleFactor = isMobile ? 0.5 : 1;
-        
+
         return {
             duration: ANIMATION_TIMING.ENTRY_DURATION,
             startPosition: [0, 0, 20],
@@ -79,46 +79,55 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
             endScale: [2.5 * scaleFactor, 2.5 * scaleFactor, 2.5 * scaleFactor],
             scrollEndScale: [2 * scaleFactor, 2 * scaleFactor, 2 * scaleFactor],
             scrollProgress,
-            enabled: startAnimations
+            enabled: startAnimations,
         };
     }, [scrollProgress, startAnimations]);
 
-    const backgroundAnimConfig = useMemo(() => ({
-        duration: ANIMATION_TIMING.ENTRY_DURATION,
-        startPosition: [0, 0, -15],
-        endPosition: [0, 0, -30],
-        scrollEndPosition: [0, 0, -10],
-        startScale: [8, 8, 8],
-        endScale: [6, 6, 6],
-        scrollEndScale: [5, 5, 5],
-        scrollProgress,
-        enabled: startAnimations
-    }), [scrollProgress, startAnimations]);
+    const backgroundAnimConfig = useMemo(
+        () => ({
+            duration: ANIMATION_TIMING.ENTRY_DURATION,
+            startPosition: [0, 0, -15],
+            endPosition: [0, 0, -30],
+            scrollEndPosition: [0, 0, -10],
+            startScale: [8, 8, 8],
+            endScale: [6, 6, 6],
+            scrollEndScale: [5, 5, 5],
+            scrollProgress,
+            enabled: startAnimations,
+        }),
+        [scrollProgress, startAnimations]
+    );
 
-    const subtitleAnimConfig = useMemo(() => ({
-        duration: ANIMATION_TIMING.ENTRY_DURATION,
-        delay: ANIMATION_TIMING.ENTRY_DELAY,
-        startPosition: [0, -10, 20],
-        endPosition: [0, -9, -5],
-        scrollEndPosition: [0, -7, -5],
-        startScale: [1, 1, 1],
-        endScale: [1, 1, 1],
-        scrollEndScale: [0.9, 0.9, 0.9],
-        scrollProgress,
-        enabled: startAnimations
-    }), [scrollProgress, startAnimations]);
+    const subtitleAnimConfig = useMemo(
+        () => ({
+            duration: ANIMATION_TIMING.ENTRY_DURATION,
+            delay: ANIMATION_TIMING.ENTRY_DELAY,
+            startPosition: [0, -10, 20],
+            endPosition: [0, -9, -5],
+            scrollEndPosition: [0, -7, -5],
+            startScale: [1, 1, 1],
+            endScale: [1, 1, 1],
+            scrollEndScale: [0.9, 0.9, 0.9],
+            scrollProgress,
+            enabled: startAnimations,
+        }),
+        [scrollProgress, startAnimations]
+    );
 
-    const cameraAnimConfig = useMemo(() => ({
-        duration: ANIMATION_TIMING.CAMERA_DURATION,
-        startPosition: [0, 0, 30],
-        endPosition: [0, 0, 20],
-        scrollEndPosition: [0, 0, 10],
-        startFov: 70,
-        endFov: 50,
-        scrollEndFov: 100,
-        scrollProgress,
-        enabled: startAnimations
-    }), [scrollProgress, startAnimations]);
+    const cameraAnimConfig = useMemo(
+        () => ({
+            duration: ANIMATION_TIMING.CAMERA_DURATION,
+            startPosition: [0, 0, 30],
+            endPosition: [0, 0, 20],
+            scrollEndPosition: [0, 0, 10],
+            startFov: 70,
+            endFov: 50,
+            scrollEndFov: 100,
+            scrollProgress,
+            enabled: startAnimations,
+        }),
+        [scrollProgress, startAnimations]
+    );
 
     useObjectAnimation(logoRef, 'home', logoAnimConfig);
     useObjectAnimation(backgroundRef, 'home', backgroundAnimConfig);
@@ -141,11 +150,14 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
 
             <group ref={backgroundRef} scale={8}>
                 <BackgroundMesh />
+                <Text font="/assets/fonts/Orbitron/static/Orbitron-Medium.ttf" color="#eee">
+                    ROBIN POTZE
+                </Text>
             </group>
 
             <group ref={subtitleRef}>
                 <Text fontSize={0.6} font="/assets/fonts/Kode_Mono/static/KodeMono-Regular.ttf" color="#eee">
-                    PRJNo::000 | ~ % /PRJ/PF/CUSTOM | V1 | GRONINGEN | NL
+                    PRJNo::000 | _CREATIVE_/DEVELOPER | /DIGITAL_/ARTIST | ~% /PRJ/PRT/V1
                 </Text>
             </group>
 
@@ -159,7 +171,6 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
                 </group>
             </Float>
 
-            {/* Adaptive post-processing based on FPS */}
             <EffectComposer multisampling={postProcessingSettings.multisampling}>
                 <N8AO
                     aoRadius={1}

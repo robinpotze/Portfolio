@@ -20,4 +20,15 @@
     width: 100%;
     height: 100%;
     will-change: transform;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.curtainLabel {
+    font: var(--f-HEADER);
+    text-transform: uppercase;
+    color: var(--c-LGHT);
+    pointer-events: none;
+    user-select: none;
 }

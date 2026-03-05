@@ -12,6 +12,7 @@ export default function Work() {
     const navigate = useNavigate();
     const items = useWorkItems();
     const [curtainOpen, setCurtainOpen] = useState(false);
+    const [targetPageName, setTargetPageName] = useState(null);
     const hasNavigated = useRef(false);
     const hasEntryAnimated = useRef(false);
 
@@ -29,6 +30,8 @@ export default function Work() {
     const handleCardNavigate = useCallback((pageKey) => {
         if (hasNavigated.current) return;
         hasNavigated.current = true;
+        const item = items.find(i => i.key === pageKey);
+        setTargetPageName(item?.data?.title || pageKey);
         setCurtainOpen(true);
         
         setTimeout(() => {
@@ -68,6 +71,7 @@ export default function Work() {
                 // Trigger exit after persistent upward scrolling (600px equivalent)
                 if (scrollAccumulator.current > 600 && !hasNavigated.current) {
                     hasNavigated.current = true;
+                    setTargetPageName('Home');
                     setCurtainOpen(true);
                     setTimeout(() => {
                         navigate('/', { state: { fromNavigation: true } });
@@ -89,6 +93,7 @@ export default function Work() {
                 <CurtainTransition
                     isOpen={curtainOpen}
                     direction="up"
+                    pageName={targetPageName}
                 />
                 <NavigationMenu />
                 <ErrorBoundary>

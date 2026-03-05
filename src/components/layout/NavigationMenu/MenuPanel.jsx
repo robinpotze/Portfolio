@@ -1,7 +1,3 @@
-/**
- * Menu Panel - Side panel with logo, links, and socials
- */
-
 import { AnimatePresence, motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import MenuLinks from './MenuLinks';
@@ -21,15 +17,11 @@ export default function MenuPanel({ open, onClose }) {
                 transition={{
                     duration: open ? 0.3 : 0.2,
                     ease: open ? ease : [0.55, 0.06, 0.68, 0.19],
-                    delay: open ? 0.22 : 0
+                    delay: open ? 0.22 : 0,
                 }}
             >
                 <div className="sm-panel-inner">
-                    <motion.div
-                        className='sm-panel-logo'
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: open ? 1 : 0 }}
-                    >
+                    <motion.div className="sm-panel-logo" initial={{ opacity: 0 }} animate={{ opacity: open ? 1 : 0 }}>
                         <a
                             href="/"
                             className="sm-panel-logo-link"

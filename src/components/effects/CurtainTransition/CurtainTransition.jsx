@@ -5,42 +5,37 @@ import styles from './CurtainTransition.module.css';
 
 const LAYER_COLORS = ['var(--c-LGHT)', 'var(--c-BRND)', 'var(--c-DRK)'];
 const EASE = ANIMATION_EASING.CURTAIN;
-const DURATION = ANIMATION_TIMING.CURTAIN_DURATION / 1000; // Convert to seconds
-const STAGGER_DELAY = ANIMATION_TIMING.LAYER_STAGGER_DELAY / 1000; // Convert to seconds
+const DURATION = ANIMATION_TIMING.CURTAIN_DURATION / 1000;
+const STAGGER_DELAY = ANIMATION_TIMING.LAYER_STAGGER_DELAY / 1000;
 
 const DIRECTION_CONFIG = {
     up: {
         axis: 'y',
         initial: '100%',
         covered: '0%',
-        revealed: '-100%'
+        revealed: '-100%',
     },
     down: {
         axis: 'y',
         initial: '-100%',
         covered: '0%',
-        revealed: '100%'
+        revealed: '100%',
     },
     left: {
         axis: 'x',
         initial: '100%',
         covered: '0%',
-        revealed: '-100%'
+        revealed: '-100%',
     },
     right: {
         axis: 'x',
         initial: '-100%',
         covered: '0%',
-        revealed: '100%'
-    }
+        revealed: '100%',
+    },
 };
 
-export default function CurtainTransition({
-    isOpen = false,
-    direction = 'up',
-    onCoverComplete,
-    onRevealComplete
-}) {
+export default function CurtainTransition({ isOpen = false, direction = 'up', pageName, onCoverComplete, onRevealComplete }) {
     const config = DIRECTION_CONFIG[direction] || DIRECTION_CONFIG.up;
     const lastLayerRef = useRef(null);
     const prevIsOpenRef = useRef(isOpen);
@@ -77,17 +72,19 @@ export default function CurtainTransition({
                         className={styles.curtainLayer}
                         style={{
                             background: color,
-                            zIndex: 5 + i
+                            zIndex: 5 + i,
                         }}
                         initial={{ [config.axis]: config.initial }}
                         animate={{ [config.axis]: getAnimateValue() }}
                         transition={{
                             duration: DURATION,
                             ease: EASE,
-                            delay: i * STAGGER_DELAY
+                            delay: i * STAGGER_DELAY,
                         }}
                         onAnimationComplete={isLastLayer ? handleAnimationComplete : undefined}
-                    />
+                    >
+                        {isLastLayer && pageName && <span className={styles.curtainLabel}>{pageName}</span>}
+                    </motion.div>
                 );
             })}
         </div>
