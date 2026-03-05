@@ -1,0 +1,59 @@
+.container {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    isolation: isolate;
+}
+
+/* ── Stripe grid ─────────────────────────────── */
+.stripeLayer {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(var(--cols), 1fr);
+    grid-template-rows: repeat(var(--rows), 1fr);
+}
+
+.stripeCell {
+    backdrop-filter: blur(var(--cell-blur));
+    -webkit-backdrop-filter: blur(var(--cell-blur));
+    background: repeating-linear-gradient(
+        90deg,
+        transparent 0,
+        transparent calc(var(--stripe-w) / 2),
+        rgba(255, 255, 255, var(--stripe-opacity)) calc(var(--stripe-w) / 2),
+        rgba(255, 255, 255, var(--stripe-opacity)) var(--stripe-w)
+    );
+    -webkit-mask-image: repeating-linear-gradient(
+        90deg,
+        transparent 0,
+        transparent calc(var(--stripe-w) / 2),
+        black calc(var(--stripe-w) / 2),
+        black var(--stripe-w)
+    );
+    mask-image: repeating-linear-gradient(
+        90deg,
+        transparent 0,
+        transparent calc(var(--stripe-w) / 2),
+        black calc(var(--stripe-w) / 2),
+        black var(--stripe-w)
+    );
+}
+
+.emptyCell {
+    /* no pattern — transparent pass-through */
+    content: '';
+}
+
+/* ── Crosshair / plus-sign layer ──────────── */
+.crosshairLayer {
+    position: absolute;
+    inset: 0;
+}
+
+.crosshair {
+    position: absolute;
+    user-select: none;
+    filter: brightness(0);
+}

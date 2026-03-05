@@ -1,3 +1,4 @@
+import GridOverlay from '@components/decoration/GridOverlay';
 import ScrollDown from '@components/decoration/ScrollDown';
 import { ANIMATION_EASING, ANIMATION_TIMING } from '@config/animation.config';
 import { motion } from 'framer-motion';
@@ -50,6 +51,17 @@ export default function ProjectHero({ content }) {
                     variants={bannerVars}
                     initial="hidden"
                     animate={'visible'}
+                />
+                <GridOverlay
+                    className="hero-grid-overlay"
+                    cellMinSize={100}
+                    cellMaxSize={200}
+                    stripeChance={0.35}
+                    stripeCount={30}
+                    stripeOpacity={0.1}
+                    crosshairSize={64}
+                    crosshairOpacity={0.3}
+                    parallaxStrength={10}
                 />
             </div>
 

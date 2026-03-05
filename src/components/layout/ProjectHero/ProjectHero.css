@@ -18,6 +18,10 @@
     top: 0;
 }
 
+.hero-grid-overlay {
+    z-index: 1;
+}
+
 .hero-banner-wrapper::after {
     content: '';
     position: absolute;
@@ -27,6 +31,7 @@
     height: 100%;
     background: radial-gradient(circle, transparent 70%, var(--c-DRK) 100%);
     pointer-events: none;
+    z-index: 2;
 }
 
 .hero-banner {
@@ -45,7 +50,8 @@
     mix-blend-mode: luminosity;
 }
 
-.hero-side-top, .hero-side-bottom {
+.hero-side-top,
+.hero-side-bottom {
     display: flex;
     flex-direction: column;
     align-items: center;
