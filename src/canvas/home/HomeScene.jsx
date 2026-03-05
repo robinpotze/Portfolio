@@ -150,13 +150,13 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
 
             <group ref={backgroundRef} scale={8}>
                 <BackgroundMesh />
-                <Text font="/assets/fonts/Orbitron/static/Orbitron-Medium.ttf" color="#eee">
+                <Text font="/assets/fonts/Orbitron/static/Orbitron-Medium.ttf" color="#EEE">
                     ROBIN POTZE
                 </Text>
             </group>
 
             <group ref={subtitleRef}>
-                <Text fontSize={0.6} font="/assets/fonts/Kode_Mono/static/KodeMono-Regular.ttf" color="#eee">
+                <Text fontSize={0.6} font="/assets/fonts/Kode_Mono/static/KodeMono-Regular.ttf" color="#EEE">
                     PRJNo::000 | _CREATIVE_/DEVELOPER | /DIGITAL_/ARTIST | ~% /PRJ/PRT/V1
                 </Text>
             </group>

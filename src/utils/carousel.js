@@ -2,11 +2,7 @@ import { CAROUSEL_CONFIG } from '@config/carousel.config';
 
 export function calculateCardPosition(index) {
     const angle = index * CAROUSEL_CONFIG.ANGLE_STEP;
-    return [
-        Math.sin(angle) * CAROUSEL_CONFIG.RADIUS,
-        index * CAROUSEL_CONFIG.VERTICAL_STEP,
-        Math.cos(angle) * CAROUSEL_CONFIG.RADIUS
-    ];
+    return [Math.sin(angle) * CAROUSEL_CONFIG.RADIUS, index * CAROUSEL_CONFIG.VERTICAL_STEP, Math.cos(angle) * CAROUSEL_CONFIG.RADIUS];
 }
 
 export function calculateCardRotation(index) {
