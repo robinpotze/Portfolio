@@ -11,8 +11,8 @@ export default function MenuLinks({ open, onItemClick }) {
     const ease = [0.22, 1, 0.36, 1];
     const { navigateWithCurtain } = useNavigationCurtain();
 
-    const handleClick = (link) => {
-        navigateWithCurtain(link);
+    const handleClick = (link, label) => {
+        navigateWithCurtain(link, label);
     };
 
     return (
@@ -37,7 +37,7 @@ export default function MenuLinks({ open, onItemClick }) {
                         <button
                             className="sm-panel-item"
                             data-index={i + 1}
-                            onClick={() => handleClick(item.link)}
+                            onClick={() => handleClick(item.link, item.label)}
                         >
                             {item.label}
                         </button>

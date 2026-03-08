@@ -10,10 +10,11 @@
     pointer-events: none;
 }
 
-.loadingLogo {
-    width: 80px;
-    height: 80px;
+.blockLogo {
+    width: 288px;
+    height: 192px;
     margin-bottom: 2rem;
+    image-rendering: pixelated;
 }
 
 .loadingBarContainer {

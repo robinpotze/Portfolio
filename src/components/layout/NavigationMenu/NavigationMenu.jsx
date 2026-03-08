@@ -19,6 +19,7 @@ export default function NavigationMenu() {
     const [open, setOpen] = useState(false);
     const [label, setLabel] = useState('Menu');
     const [curtainOpen, setCurtainOpen] = useState(false);
+    const [pageName, setPageName] = useState(null);
     const buttonRef = useRef(null);
     const busy = useRef(false);
     const pendingNavigation = useRef(null);
@@ -91,8 +92,9 @@ export default function NavigationMenu() {
         setOpen(false);
     }, []);
 
-    const navigateWithCurtain = useCallback((path) => {
+    const navigateWithCurtain = useCallback((path, name) => {
         pendingNavigation.current = path;
+        setPageName(name || null);
         setOpen(false);
         setTimeout(() => {
             setCurtainOpen(true);
@@ -104,10 +106,12 @@ export default function NavigationMenu() {
             navigate(pendingNavigation.current, { state: { fromNavigation: true } });
             pendingNavigation.current = null;
         }
+        setCurtainOpen(false);
     }, [navigate]);
 
     const handleCurtainRevealComplete = useCallback(() => {
         setCurtainOpen(false);
+        setPageName(null);
     }, []);
 
     return (
@@ -115,6 +119,7 @@ export default function NavigationMenu() {
             <CurtainTransition
                 isOpen={curtainOpen}
                 direction="right"
+                pageName={pageName}
                 onCoverComplete={handleCurtainCoverComplete}
                 onRevealComplete={handleCurtainRevealComplete}
             />
