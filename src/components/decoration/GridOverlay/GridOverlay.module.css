@@ -6,6 +6,12 @@
     isolation: isolate;
 }
 
+/* ── Parallax wrapper (moves both layers together) ── */
+.parallaxWrapper {
+    position: absolute;
+    inset: 0;
+}
+
 /* ── Stripe grid ─────────────────────────────── */
 .stripeLayer {
     position: absolute;
@@ -18,27 +24,27 @@
 .stripeCell {
     backdrop-filter: blur(var(--cell-blur));
     -webkit-backdrop-filter: blur(var(--cell-blur));
-    background: repeating-linear-gradient(
-        90deg,
-        transparent 0,
-        transparent calc(var(--stripe-w) / 2),
-        rgba(255, 255, 255, var(--stripe-opacity)) calc(var(--stripe-w) / 2),
-        rgba(255, 255, 255, var(--stripe-opacity)) var(--stripe-w)
+
+    /* Checkered stripe pattern using conic-gradient:
+       Each tile is --stripe-w wide × full cell height,
+       split into 4 quadrants that alternate filled/transparent */
+    background-image: conic-gradient(
+        rgba(255, 255, 255, var(--stripe-opacity)) 25%,
+        transparent 25% 50%,
+        rgba(255, 255, 255, var(--stripe-opacity)) 50% 75%,
+        transparent 75%
     );
-    -webkit-mask-image: repeating-linear-gradient(
-        90deg,
-        transparent 0,
-        transparent calc(var(--stripe-w) / 2),
-        black calc(var(--stripe-w) / 2),
-        black var(--stripe-w)
+    background-size: var(--stripe-w) 100%;
+
+    -webkit-mask-image: conic-gradient(
+        black 25%, transparent 25% 50%, black 50% 75%, transparent 75%
     );
-    mask-image: repeating-linear-gradient(
-        90deg,
-        transparent 0,
-        transparent calc(var(--stripe-w) / 2),
-        black calc(var(--stripe-w) / 2),
-        black var(--stripe-w)
+    -webkit-mask-size: var(--stripe-w) 100%;
+
+    mask-image: conic-gradient(
+        black 25%, transparent 25% 50%, black 50% 75%, transparent 75%
     );
+    mask-size: var(--stripe-w) 100%;
 }
 
 .emptyCell {

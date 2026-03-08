@@ -209,18 +209,20 @@ export default function GridOverlay({
 
     return (
         <div ref={containerRef} className={`${styles.container} ${className}`} style={style}>
-            <motion.div
-                className={styles.stripeLayer}
-                style={{ '--cols': cols, '--rows': rows }}
-                variants={layerVars}
-                initial="hidden"
-                animate="visible"
-            >
-                {stripeCells}
-            </motion.div>
+            <motion.div className={styles.parallaxWrapper} style={{ x: px, y: py }}>
+                <motion.div
+                    className={styles.stripeLayer}
+                    style={{ '--cols': cols, '--rows': rows }}
+                    variants={layerVars}
+                    initial="hidden"
+                    animate="visible"
+                >
+                    {stripeCells}
+                </motion.div>
 
-            <motion.div className={styles.crosshairLayer} style={{ x: px, y: py }} variants={layerVars} initial="hidden" animate="visible">
-                {crosshairs}
+                <motion.div className={styles.crosshairLayer} variants={layerVars} initial="hidden" animate="visible">
+                    {crosshairs}
+                </motion.div>
             </motion.div>
         </div>
     );
