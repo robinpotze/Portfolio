@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { motion, useMotionValue, useSpring } from 'framer-motion';
 import { ANIMATION_EASING, ANIMATION_TIMING } from '@config/animation.config';
+import { motion, useMotionValue, useSpring } from 'framer-motion';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styles from './GridOverlay.module.css';
 
 /**
