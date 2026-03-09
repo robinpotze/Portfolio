@@ -1,7 +1,7 @@
 .loadingScreen {
     position: fixed;
     inset: 0;
-    background: #000;
+    background: var(--c-DRK);
     z-index: 9999;
     display: flex;
     flex-direction: column;
@@ -17,24 +17,9 @@
     image-rendering: pixelated;
 }
 
-.loadingBarContainer {
-    width: 300px;
-    height: 2px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 2px;
-    overflow: hidden;
-    position: relative;
-}
-
-.loadingBar {
-    height: 100%;
-    background: linear-gradient(90deg, #29D8FF, #4466aa);
-    box-shadow: 0 0 10px rgba(41, 216, 255, 0.5);
-}
-
 .loadingText {
     margin-top: 1rem;
     font: var(--f-CAPTION);
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--c-LGHT);
     letter-spacing: 0.1em;
 }

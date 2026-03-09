@@ -88,17 +88,17 @@ export default function ProjectHero({ content }) {
                         ))}
                     </div>
                     <img className="hero-side-decal" src="/img/icon/CRS.svg" alt="A Cross Divider" />
-                    <div className="hero-side-text" id="work-project-code">
-                        <p className="functional tr90" id="work-hero-project-id">
+                    <div className="hero-side-text" id="work-hero-side-details">
+                        <p className="functional tr90" id="work-hero-side-id">
                             {'PRJ_' + content.id.toString().padStart(3, '0') + ':::'}
                         </p>
-                        <p className="functional tr90" id="work-hero-project-client">
+                        <p className="functional tr90" id="work-hero-side-client">
                             {content.client}
                         </p>
                     </div>
                 </div>
                 <div className="hero-side-bottom" id="work-hero-bottom">
-                    <p className="functional tr90" id="work-hero-side-deco-text">
+                    <p className="functional tr90" id="work-hero-side-year">
                         {content.year}
                     </p>
                     <ScrollDown />

@@ -1,5 +1,6 @@
 import { ANIMATION_TIMING } from '@config/animation.config';
 import { useProgress } from '@react-three/drei';
+import { getCSSColorRGBA } from '@utils/cssUtils';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import styles from './LoadingScreen.module.css';
@@ -22,15 +23,20 @@ const BLOCK_SIZE = 6;
 const BLOCK_GAP = 2;
 const GLITCH_CHARS = '!@#$%^&*01<>{}[]';
 
-// Colors: darker base → blue pulse
-const COLOR_BASE = { r: 160, g: 160, b: 170, a: 0.4 };
-const COLOR_PULSE = { r: 34, g: 85, b: 255, a: 1 };
-
 function BlockLogo({ logoSrc, cycleIndex }) {
     const canvasRef = useRef(null);
     const blockDataRef = useRef(null);
     const animRef = useRef(null);
     const cycleStartRef = useRef(Date.now());
+    const colorsRef = useRef(null);
+
+    // Resolve CSS variables once on mount
+    useEffect(() => {
+        colorsRef.current = {
+            base: getCSSColorRGBA('--c-LGHT_TRNS'),
+            pulse: getCSSColorRGBA('--c-BRND'),
+        };
+    }, []);
 
     useEffect(() => {
         cycleStartRef.current = Date.now();
@@ -97,7 +103,8 @@ function BlockLogo({ logoSrc, cycleIndex }) {
 
             const canvas = canvasRef.current;
             const data = blockDataRef.current;
-            if (!canvas || !data) {
+            const colors = colorsRef.current;
+            if (!canvas || !data || !colors) {
                 animRef.current = requestAnimationFrame(render);
                 return;
             }
@@ -118,10 +125,10 @@ function BlockLogo({ logoSrc, cycleIndex }) {
                 const waveIntensity = Math.max(0, 1 - Math.abs(distFromWave) / waveWidth);
                 const intensity = Math.min(1, waveIntensity + scatter);
 
-                const r = Math.round(COLOR_BASE.r + (COLOR_PULSE.r - COLOR_BASE.r) * intensity);
-                const g = Math.round(COLOR_BASE.g + (COLOR_PULSE.g - COLOR_BASE.g) * intensity);
-                const b = Math.round(COLOR_BASE.b + (COLOR_PULSE.b - COLOR_BASE.b) * intensity);
-                const a = COLOR_BASE.a + (COLOR_PULSE.a - COLOR_BASE.a) * intensity;
+                const r = Math.round(colors.base.r + (colors.pulse.r - colors.base.r) * intensity);
+                const g = Math.round(colors.base.g + (colors.pulse.g - colors.base.g) * intensity);
+                const b = Math.round(colors.base.b + (colors.pulse.b - colors.base.b) * intensity);
+                const a = colors.base.a + (colors.pulse.a - colors.base.a) * intensity;
 
                 // Glitch: random block displacement
                 let ox = 0, oy = 0;
@@ -239,14 +246,6 @@ export default function LoadingScreen({
                     transition={{ duration: ANIMATION_TIMING.LOADING_EXIT_DURATION, ease: 'easeOut' }}
                 >
                     {logoSrc && <BlockLogo logoSrc={logoSrc} cycleIndex={messageIndex} />}
-                    <div className={styles.loadingBarContainer}>
-                        <motion.div
-                            className={styles.loadingBar}
-                            initial={{ width: '0%' }}
-                            animate={{ width: `${progress}%` }}
-                            transition={{ duration: ANIMATION_TIMING.LOADING_TEXT_DURATION, ease: 'easeOut' }}
-                        />
-                    </div>
                     <div className={`${styles.loadingText} deco-small`}>
                         {displayText} ::: {Math.floor(progress)}%
                     </div>

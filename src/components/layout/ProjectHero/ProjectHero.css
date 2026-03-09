@@ -47,7 +47,6 @@
     justify-content: space-between;
     padding: 1rem 0 4rem 0;
     width: 4rem;
-    mix-blend-mode: luminosity;
 }
 
 .hero-side-top,
@@ -96,3 +95,11 @@
     margin: 0 3rem 4rem 0;
     mix-blend-mode: difference;
 }
+
+#work-hero-side-id, #work-hero-side-client, #work-hero-side-year {
+    color: var(--c-DRK);
+    background-color: var(--c-BRND);
+    padding: 0.25rem 0;
+}
+
+
