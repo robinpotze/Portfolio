@@ -21,22 +21,7 @@ export default function MenuPanel({ open, onClose }) {
                 }}
             >
                 <div className="sm-panel-inner">
-                    <motion.div className="sm-panel-logo" initial={{ opacity: 0 }} animate={{ opacity: open ? 1 : 0 }}>
-                        <a
-                            href="/"
-                            className="sm-panel-logo-link"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                onClose();
-                                navigate('/');
-                            }}
-                        >
-                            <img src="/img/logo/logo.svg" alt="Logo" />
-                        </a>
-                    </motion.div>
-
                     <MenuLinks open={open} onItemClick={onClose} />
-
                     <MenuSocials open={open} />
                 </div>
             </motion.aside>

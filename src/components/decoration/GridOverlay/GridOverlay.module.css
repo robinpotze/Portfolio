@@ -6,13 +6,11 @@
     isolation: isolate;
 }
 
-/* ── Parallax wrapper (moves both layers together) ── */
 .parallaxWrapper {
     position: absolute;
     inset: 0;
 }
 
-/* ── Stripe grid ─────────────────────────────── */
 .stripeLayer {
     position: absolute;
     inset: 0;
@@ -48,11 +46,9 @@
 }
 
 .emptyCell {
-    /* no pattern — transparent pass-through */
     content: '';
 }
 
-/* ── Crosshair / plus-sign layer ──────────── */
 .crosshairLayer {
     position: absolute;
     inset: 0;

@@ -48,6 +48,13 @@ export const ANIMATION_TIMING = {
     PROJECT_HERO_SIDE_STAGGER: 0.06,
     PROJECT_HERO_TITLE_DELAY: 0.18,
 
+    // About page
+    ABOUT_ITEM_DURATION: 0.6,
+    ABOUT_ITEM_STAGGER: 0.08,
+    ABOUT_SECTION_DELAY: 0.1,
+    ABOUT_EXIT_DURATION: 0.2,
+    ABOUT_HEADER_DURATION: 0.5,
+
     // Scroll reveal
     SCROLL_REVEAL_DURATION: 0.6,
 
@@ -68,6 +75,7 @@ export const ANIMATION_EASING = {
     MENU_CLOSE: [0.55, 0.06, 0.68, 0.19],
     SMOOTH: [0.25, 0.1, 0.25, 1],
     PROJECT_HERO: [0.2, 0.9, 0.2, 1],
+    ABOUT: [0.22, 1, 0.36, 1],
 };
 
 export const SCROLL_THRESHOLDS = {

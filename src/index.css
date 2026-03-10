@@ -1,47 +1,49 @@
 :root {
-  --c-BRND: #2AD0D5;
-  --c-LGHT: #EEE;
-  --c-DRK: #0A0A0A;
-  --c-BRND_TRNS: rgba(42, 208, 213, 0.15);
-  --c-DRK_TRNS: rgba(17, 17, 17, 0.6);
-  --c-LGHT_TRNS: rgba(238, 238, 238, 0.6);
-  --c-TRNS: rgba(0, 0, 0, 0);
-  --c-BRND-CNTRST: #d52a2a;
-  --c-GOLD: radial-gradient(90deg. #FFBB00 0%, #A95B17 100%);
+    --c-BRND: #2ad0d5;
+    --c-LGHT: #eee;
+    --c-DRK: #0a0a0a;
+    --c-BRND_TRNS: rgba(42, 208, 213, 0.15);
+    --c-DRK_TRNS: rgba(17, 17, 17, 0.6);
+    --c-LGHT_TRNS: rgba(238, 238, 238, 0.6);
+    --c-TRNS: rgba(0, 0, 0, 0);
+    --c-BRND-CNTRST: #d52a2a;
+    --c-GOLD: radial-gradient(90deg. #ffbb00 0%, #a95b17 100%);
 
-  --f-TITLE: 4em 'Kode Mono', monospace;
-  --f-HEADER: 3rem "Orbitron", sans-serif;
-  --f-H3: 1.5rem "Orbitron", sans-serif;
-  --f-PARAGRAPH: 1rem 'Alata', sans-serif;
-  --f-FUNCTIONAL: 1rem 'Kode Mono', monospace;
-  --f-FUNCTIONAL_SMALL: .75rem 'Kode Mono', monospace;
-  --f-FUNCTIONAL_TINY: .5rem 'Kode Mono', monospace;
-  --f-DECORATIONAL: 2rem 'Kode Mono', monospace;
-  --f-DECORATIONAL_SMALL: 1rem 'Kode Mono', monospace;
-  --f-DECORATIONAL_TINY: .75rem 'Kode Mono', monospace;
+    --f-TITLE: 4em 'Kode Mono', monospace;
+    --f-HEADER: 3rem 'Orbitron', sans-serif;
+    --f-H3: 1.5rem 'Orbitron', sans-serif;
+    --f-PARAGRAPH: 1rem 'Alata', sans-serif;
+    --f-FUNCTIONAL: 1rem 'Kode Mono', monospace;
+    --f-FUNCTIONAL_SMALL: 0.75rem 'Kode Mono', monospace;
+    --f-FUNCTIONAL_TINY: 0.5rem 'Kode Mono', monospace;
+    --f-DECORATIONAL: 2rem 'Kode Mono', monospace;
+    --f-DECORATIONAL_SMALL: 1rem 'Kode Mono', monospace;
+    --f-DECORATIONAL_TINY: 0.75rem 'Kode Mono', monospace;
 
-  --s-SHDW: 0px 0px 20px var(--c-DRK_TRNS);
+    --s-SHDW: 0px 0px 20px var(--c-DRK_TRNS);
+
+    --sp-PAGE: 64px;
 }
 
 html {
-  scrollbar-width: none;
+    scrollbar-width: none;
 }
 
 body {
-  margin: 0;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background-color: var(--c-DRK);
-  color: var(--c-LGHT);
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: var(--c-DRK);
+    color: var(--c-LGHT);
 }
 
 button {
-  font: inherit;
-  color: inherit;
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
+    font: inherit;
+    color: inherit;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
 }
 
 h1,
@@ -56,98 +58,98 @@ span,
 li,
 ul,
 ol {
-  margin: 0;
+    margin: 0;
 }
 
 h1 {
-  font: var(--f-TITLE);
-  text-transform: uppercase;
-  text-shadow: 0 0 20px var(--c-LGHT_TRNS);
+    font: var(--f-TITLE);
+    text-transform: uppercase;
+    text-shadow: 0 0 20px var(--c-LGHT_TRNS);
 }
 
 h2 {
-  font: var(--f-HEADER);
-  text-transform: uppercase;
+    font: var(--f-HEADER);
+    text-transform: uppercase;
 }
 
 h3 {
-  font: var(--f-H3);
-  text-transform: uppercase;
+    font: var(--f-H3);
+    text-transform: uppercase;
 }
 
 p {
-  font: var(--f-PARAGRAPH);
+    font: var(--f-PARAGRAPH);
 }
 
 .functional {
-  font: var(--f-FUNCTIONAL);
+    font: var(--f-FUNCTIONAL);
 }
 
 .functional-small {
-  font: var(--f-FUNCTIONAL_SMALL);
+    font: var(--f-FUNCTIONAL_SMALL);
 }
 
 .functional-tiny {
-  font: var(--f-FUNCTIONAL_TINY);
+    font: var(--f-FUNCTIONAL_TINY);
 }
 
 .deco {
-  font: var(--f-DECORATIONAL);
+    font: var(--f-DECORATIONAL);
 }
 
 .deco-small {
-  font: var(--f-DECORATIONAL_SMALL);
+    font: var(--f-DECORATIONAL_SMALL);
 }
 
 .deco-tiny {
-  font: var(--f-DECORATIONAL_TINY);
+    font: var(--f-DECORATIONAL_TINY);
 }
 
 .r90 {
-  rotate: 90deg;
+    rotate: 90deg;
 }
 
 .r-90 {
-  rotate: -90deg;
+    rotate: -90deg;
 }
 
 .tr90 {
-  writing-mode: sideways-rl;
+    writing-mode: sideways-rl;
 }
 
 .logo-home-link {
-  display: flex;
-  width: 64px;
-  height: 64px;
-  align-items: center;
-  justify-content: center;
+    display: flex;
+    width: 64px;
+    height: 64px;
+    align-items: center;
+    justify-content: center;
 }
 
 .logo-header {
-  width: fit-content;
-  height: fit-content;
+    width: fit-content;
+    height: fit-content;
 }
 
-body[data-phase="ready"] main {
-  opacity: 1;
-  transition: opacity 0.4s ease;
+body[data-phase='ready'] main {
+    opacity: 1;
+    transition: opacity 0.4s ease;
 }
 
-body[data-phase="transitioning"] main {
-  opacity: 0;
+body[data-phase='transitioning'] main {
+    opacity: 0;
 }
 
-body[data-phase="entering"] main {
-  opacity: 0;
-  animation: fadeIn 0.5s ease forwards;
+body[data-phase='entering'] main {
+    opacity: 0;
+    animation: fadeIn 0.5s ease forwards;
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
+    from {
+        opacity: 0;
+    }
 
-  to {
-    opacity: 1;
-  }
+    to {
+        opacity: 1;
+    }
 }
