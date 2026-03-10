@@ -1,8 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import CurtainTransition from '@components/effects/CurtainTransition/CurtainTransition';
 import ErrorBoundary from '@components/ErrorBoundary';
-import NavigationMenu from '@components/layout/NavigationMenu/NavigationMenu';
 import GridOverlay from '@components/decoration/GridOverlay';
 import { ANIMATION_TIMING, ANIMATION_EASING } from '@config/animation.config';
 import './About.css';
@@ -169,25 +167,10 @@ function renderSection(key) {
 
 export default function About() {
     const [currentPage, setCurrentPage] = useState('EXP');
-    const [curtainOpen, setCurtainOpen] = useState(false);
-    const [targetPageName, setTargetPageName] = useState(null);
-    const hasEntryAnimated = useRef(false);
-
-    useEffect(() => {
-        if (hasEntryAnimated.current) return;
-        hasEntryAnimated.current = true;
-
-        setCurtainOpen(true);
-        setTimeout(() => {
-            setCurtainOpen(false);
-        }, ANIMATION_TIMING.CURTAIN_REVEAL_DELAY);
-    }, []);
 
     return (
         <ErrorBoundary>
             <div className="about-page">
-                <CurtainTransition isOpen={curtainOpen} direction="right" pageName={targetPageName} />
-                <NavigationMenu />
                 <GridOverlay
                     className="about-grid-overlay"
                     cellMinSize={100}

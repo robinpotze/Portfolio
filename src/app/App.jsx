@@ -1,4 +1,6 @@
 import ErrorBoundary from '@components/ErrorBoundary';
+import NavigationMenu from '@components/layout/NavigationMenu/NavigationMenu';
+import { PageTransitionProvider } from '@hooks/usePageTransition';
 import { pages as autogenPages } from '@routes/Entry/pages/autogen';
 import { sortItems } from '@utils/workUtils';
 import { createContext, useContext, useEffect, useState } from 'react';
@@ -21,9 +23,12 @@ export default function App() {
 
     return (
         <WorkContext.Provider value={items}>
-            <ErrorBoundary>
-                <Outlet />
-            </ErrorBoundary>
+            <PageTransitionProvider>
+                <NavigationMenu />
+                <ErrorBoundary>
+                    <Outlet />
+                </ErrorBoundary>
+            </PageTransitionProvider>
         </WorkContext.Provider>
     );
 }

@@ -1,5 +1,4 @@
 import { motion } from 'framer-motion';
-import { useNavigationCurtain } from './NavigationMenu';
 
 const MENU_ITEMS = [
     { label: 'Home', link: '/' },
@@ -8,9 +7,8 @@ const MENU_ITEMS = [
     { label: 'Contact', link: '/contact' }
 ];
 
-export default function MenuLinks({ open, onItemClick }) {
+export default function MenuLinks({ open, onItemClick, navigateWithCurtain }) {
     const ease = [0.22, 1, 0.36, 1];
-    const { navigateWithCurtain } = useNavigationCurtain();
 
     const handleClick = (link, label) => {
         navigateWithCurtain(link, label);

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import MenuLinks from './MenuLinks';
 import MenuSocials from './MenuSocials';
 
-export default function MenuPanel({ open, onClose }) {
+export default function MenuPanel({ open, onClose, navigateWithCurtain }) {
     const navigate = useNavigate();
     const ease = [0.22, 1, 0.36, 1];
 
@@ -21,7 +21,7 @@ export default function MenuPanel({ open, onClose }) {
                 }}
             >
                 <div className="sm-panel-inner">
-                    <MenuLinks open={open} onItemClick={onClose} />
+                    <MenuLinks open={open} onItemClick={onClose} navigateWithCurtain={navigateWithCurtain} />
                     <MenuSocials open={open} />
                 </div>
             </motion.aside>

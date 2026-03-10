@@ -1,43 +1,24 @@
 import { useWorkItems } from '@/app/App';
 import WorkCanvas from '@canvas/work/WorkCanvas';
-import CurtainTransition from '@components/effects/CurtainTransition';
 import ErrorBoundary from '@components/ErrorBoundary';
-import NavigationMenu from '@components/layout/NavigationMenu/NavigationMenu';
-import { ANIMATION_TIMING } from '@config/animation.config';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { usePageTransition } from '@hooks/usePageTransition';
+import { useCallback, useEffect, useRef } from 'react';
 import './Work.css';
 
 export default function Work() {
-    const navigate = useNavigate();
+    const { navigateWithTransition } = usePageTransition();
     const items = useWorkItems();
-    const [curtainOpen, setCurtainOpen] = useState(false);
-    const [targetPageName, setTargetPageName] = useState(null);
     const hasNavigated = useRef(false);
-    const hasEntryAnimated = useRef(false);
 
-    // Entry animation: start with curtain covering, then reveal
-    useEffect(() => {
-        if (hasEntryAnimated.current) return;
-        hasEntryAnimated.current = true;
-
-        setCurtainOpen(true);
-        setTimeout(() => {
-            setCurtainOpen(false);
-        }, ANIMATION_TIMING.CURTAIN_REVEAL_DELAY);
-    }, []);
-
-    const handleCardNavigate = useCallback((pageKey) => {
-        if (hasNavigated.current) return;
-        hasNavigated.current = true;
-        const item = items.find(i => i.key === pageKey);
-        setTargetPageName(item?.data?.title || pageKey);
-        setCurtainOpen(true);
-        
-        setTimeout(() => {
-            navigate(`/work/${pageKey}`);
-        }, ANIMATION_TIMING.CURTAIN_DURATION + ANIMATION_TIMING.LAYER_STAGGER_DELAY * 3);
-    }, [navigate]);
+    const handleCardNavigate = useCallback(
+        (pageKey) => {
+            if (hasNavigated.current) return;
+            hasNavigated.current = true;
+            const item = items.find((i) => i.key === pageKey);
+            navigateWithTransition(`/work/${pageKey}`, item?.data?.title || pageKey, 'up');
+        },
+        [items, navigateWithTransition]
+    );
 
     // Handle scroll-to-exit only when at very top and scrolling up persistently
     const scrollAccumulator = useRef(0);
@@ -46,7 +27,7 @@ export default function Work() {
 
     const handleCanvasScrollChange = useCallback((offset) => {
         isAtTop.current = offset < 0.02; // Consider "at top" if within 2% of start
-        
+
         // Reset accumulator if not at top
         if (!isAtTop.current) {
             scrollAccumulator.current = 0;
@@ -71,11 +52,7 @@ export default function Work() {
                 // Trigger exit after persistent upward scrolling (600px equivalent)
                 if (scrollAccumulator.current > 600 && !hasNavigated.current) {
                     hasNavigated.current = true;
-                    setTargetPageName('Home');
-                    setCurtainOpen(true);
-                    setTimeout(() => {
-                        navigate('/', { state: { fromNavigation: true } });
-                    }, ANIMATION_TIMING.CURTAIN_DURATION + ANIMATION_TIMING.LAYER_STAGGER_DELAY * 3);
+                    navigateWithTransition('/', 'Home', 'down');
                 }
             } else {
                 // Any downward scroll resets the accumulator
@@ -85,23 +62,13 @@ export default function Work() {
 
         window.addEventListener('wheel', handleWheel, { passive: true });
         return () => window.removeEventListener('wheel', handleWheel);
-    }, [navigate]);
+    }, [navigateWithTransition]);
 
     return (
         <ErrorBoundary>
-            <div className='work-page-container'>
-                <CurtainTransition
-                    isOpen={curtainOpen}
-                    direction="up"
-                    pageName={targetPageName}
-                />
-                <NavigationMenu />
+            <div className="work-page-container">
                 <ErrorBoundary>
-                    <WorkCanvas
-                        items={items}
-                        onCardNavigate={handleCardNavigate}
-                        onScrollChange={handleCanvasScrollChange}
-                    />
+                    <WorkCanvas items={items} onCardNavigate={handleCardNavigate} onScrollChange={handleCanvasScrollChange} />
                 </ErrorBoundary>
             </div>
         </ErrorBoundary>
