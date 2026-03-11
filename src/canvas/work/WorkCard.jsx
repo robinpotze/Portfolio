@@ -17,7 +17,7 @@ export default function WorkCard({ item, index, onNavigate, centerednessRef }) {
     const rotation = useMemo(() => calculateCardRotation(index), [index]);
 
     useFrame(() => {
-        if (!groupRef.current) return;
+        if (!groupRef.current) { return; }
         const centeredness = centerednessRef.current[index] ?? 1;
         groupRef.current.scale.setScalar(calculateCardScale(centeredness));
     });

@@ -4,7 +4,7 @@ import WorkHeader from '@components/ui/WorkHeader/WorkHeader';
 const assetPath = '/img/work/ssgnl/';
 
 export const Data = {
-    id: 2,
+    id: 3,
     title: "SSGNL",
     synopsis: "The world is how we shape it.",
     description: "Sopra Steria is a European leader in digital transformation, providing one of the most comprehensive portfolios of end-to-end service offerings in the market: consulting, systems integration, software development, infrastructure management and business process services. I personally was a UX Designer, Full-Stack developer, and contributed to multiple games developed for Sopra Steria's internal innovation program. It explores themes of cyber security and corporate responsibility through strategic gameplay and immersive design.",
@@ -33,9 +33,9 @@ export default function SsgNL() {
                 description="The Sopra Steria Cybersecurity boardgame is, in its very essence, a reskin of the Agile Maturity board game. I got to add some twists to it."
             />
             <div className='work-double'>
-                <img src={`${assetPath}CasetteWire.png`} alt='The wireframe of the CassetteRoom scene' />
+                <img src={`${assetPath}CasetteWire.png`} alt='Wireframe render for Sopra Steria project' />
                 <DashLine direction="Vertical" />
-                <img src={`${assetPath}CassetteRoom.png`} alt='A retro-futurist room with a VR setup in the middle.' />
+                <img src={`${assetPath}CassetteRoom.png`} alt='Final render for Sopra Steria project' />
             </div>
         </div>
     );

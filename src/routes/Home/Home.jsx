@@ -37,7 +37,7 @@ export default function Home() {
 
     useEffect(() => {
         const container = containerRef.current;
-        if (!container) return;
+        if (!container) { return; }
 
         const handleScroll = () => {
             const scrollTop = Math.max(0, container.scrollTop);

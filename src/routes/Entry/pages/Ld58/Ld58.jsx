@@ -1,4 +1,3 @@
-import ScrollReveal from '@components/effects/ScrollReveal';
 import DashLine from '@components/decoration/DashLine';
 import WorkHeader from '@components/ui/WorkHeader/WorkHeader';
 
@@ -33,7 +32,7 @@ export default function Ld58() {
             <div className='work-double'>
                 <img src={`${assetPath}LOGO.png`} alt='The wireframe of the CassetteRoom scene' />
                 <DashLine direction="Vertical" />
-                <img src={`${assetPath}Thumbnail.png`} alt='A retro-futurist room with a VR setup in the middle.' />
+                <img src={`${assetPath}Thumbnail.png`} alt='Thumbnail for the LD58 game jam entry' />
             </div>
         </div>
     );

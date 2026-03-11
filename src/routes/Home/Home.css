@@ -31,13 +31,6 @@
     align-items: start;
 }
 
-.home-logo-link {
-    display: block;
-    width: fit-content;
-    height: fit-content;
-    grid-area: rp-logo;
-}
-
 .home-name {
     grid-area: rp-name;
     align-self: start;

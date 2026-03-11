@@ -7,7 +7,7 @@ const MENU_ITEMS = [
     { label: 'Contact', link: '/contact' }
 ];
 
-export default function MenuLinks({ open, onItemClick, navigateWithCurtain }) {
+export default function MenuLinks({ open, navigateWithCurtain }) {
     const ease = [0.22, 1, 0.36, 1];
 
     const handleClick = (link, label) => {

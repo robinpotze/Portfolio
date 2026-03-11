@@ -17,14 +17,14 @@ export function useAdaptiveQuality(options = {}) {
     } = options;
 
     const [quality, setQuality] = useState('high');
-    const [currentFps, setCurrentFps] = useState(60);
+    const currentFpsRef = useRef(60);
 
     const frameTimesRef = useRef([]);
     const lastCheckRef = useRef(0);
     const lastQualityChangeRef = useRef(0);
 
     useFrame((_, delta) => {
-        if (!enabled) return;
+        if (!enabled) { return; }
 
         const now = performance.now();
         const fps = 1 / delta;
@@ -33,14 +33,14 @@ export function useAdaptiveQuality(options = {}) {
         frameTimesRef.current.push(fps);
 
         // Check quality every checkInterval ms
-        if (now - lastCheckRef.current < checkInterval) return;
+        if (now - lastCheckRef.current < checkInterval) { return; }
 
         const samples = frameTimesRef.current;
-        if (samples.length === 0) return;
+        if (samples.length === 0) { return; }
 
         // Calculate average FPS
         const avgFps = samples.reduce((a, b) => a + b, 0) / samples.length;
-        setCurrentFps(Math.round(avgFps));
+        currentFpsRef.current = Math.round(avgFps);
 
         // Prevent rapid quality changes (minimum 2 seconds between changes)
         if (now - lastQualityChangeRef.current < 2000) {
@@ -73,5 +73,5 @@ export function useAdaptiveQuality(options = {}) {
         lastCheckRef.current = now;
     });
 
-    return { quality, fps: currentFps };
+    return { quality, fps: currentFpsRef.current };
 }

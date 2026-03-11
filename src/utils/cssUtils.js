@@ -4,11 +4,6 @@ export function getCSSVariable(variableName) {
         .trim();
 }
 
-export function getCSSColor(variableName) {
-    const color = getCSSVariable(variableName);
-    return color || '#ffffff';
-}
-
 export function getCSSColorRGBA(variableName) {
     const str = getCSSVariable(variableName);
     if (str.startsWith('#')) {

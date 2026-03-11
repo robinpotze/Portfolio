@@ -1,7 +1,7 @@
 import { ANIMATION_TIMING } from '@config/animation.config';
 import { usePageTransition } from '@hooks/usePageTransition';
 import { animate } from 'framer-motion';
-import { useCallback, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import MenuBackgroundLayers from './MenuBackgroundLayers';
 import MenuButton from './MenuButton';
 import MenuPanel from './MenuPanel';
@@ -89,7 +89,7 @@ export default function NavigationMenu() {
     }, []);
 
     const toggle = useCallback(() => {
-        if (busy.current) return;
+        if (busy.current) { return; }
         busy.current = true;
 
         const willOpen = !open;
@@ -110,6 +110,16 @@ export default function NavigationMenu() {
     const handleClose = useCallback(() => {
         setOpen(false);
     }, []);
+
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape' && open) {
+                toggle();
+            }
+        };
+        document.addEventListener('keydown', handleKeyDown);
+        return () => { document.removeEventListener('keydown', handleKeyDown); };
+    }, [open, toggle]);
 
     const navigateWithCurtain = useCallback(
         (path, name) => {

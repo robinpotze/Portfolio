@@ -1,13 +1,14 @@
 import { animate, motion, useMotionValue, useTransform } from "framer-motion";
 import { useEffect } from "react";
 
+const texts = [
+    "| VOID OF AMBITION |",
+    "| VOID OF CREATION |",
+    "| VOID OF PROGRESS |"
+];
+
 export default function RedoAnimText({ delay }) {
     const textIndex = useMotionValue(0);
-    const texts = [
-        "| VOID OF AMBITION |",
-        "| VOID OF CREATION |",
-        "| VOID OF PROGRESS |"
-    ];
 
     const baseText = useTransform(textIndex, (latest) => texts[latest] || "");
     const count = useMotionValue(0);
@@ -18,7 +19,7 @@ export default function RedoAnimText({ delay }) {
     const updatedThisRound = useMotionValue(true);
 
     useEffect(() => {
-        animate(count, 60, {
+        const controls = animate(count, 60, {
             type: "tween",
             delay: delay,
             duration: 1,
@@ -39,6 +40,8 @@ export default function RedoAnimText({ delay }) {
                 }
             }
         });
+
+        return () => { controls.stop(); };
     }, []);
 
     return <motion.span>{displayText}</motion.span>;

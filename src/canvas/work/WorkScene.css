@@ -1,11 +1,5 @@
-.work-cylinder-canvas {
-    width: 100vw;
-    height: 100vh;
-    background: linear-gradient(180deg, var(--c-DRK) 70%, var(--c-BRND_TRNS) 100%);
-    overflow: hidden;
-}
-
-/* Mobile view - scale cards based on height */
+/* Mobile view — scale cards based on height
+   !important overrides drei <Html> inline width style */
 @media (max-width: 768px) {
     .work-card-html {
         width: 55vh !important;

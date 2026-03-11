@@ -44,7 +44,7 @@ function BlockLogo({ logoSrc, cycleIndex }) {
 
     // Load SVG and extract block positions
     useEffect(() => {
-        if (!logoSrc) return;
+        if (!logoSrc) { return; }
         const img = new Image();
         img.onload = () => {
             const scale = 4;
@@ -99,7 +99,7 @@ function BlockLogo({ logoSrc, cycleIndex }) {
         let running = true;
 
         const render = () => {
-            if (!running) return;
+            if (!running) { return; }
 
             const canvas = canvasRef.current;
             const data = blockDataRef.current;
@@ -178,6 +178,11 @@ export default function LoadingScreen({
     const [displayText, setDisplayText] = useState(CRYPTIC_MESSAGES[0]);
     const startTimeRef = useRef(Date.now());
     const hasCompletedRef = useRef(false);
+    const timerRefs = useRef([]);
+
+    useEffect(() => {
+        return () => { timerRefs.current.forEach(clearTimeout); };
+    }, []);
 
     useEffect(() => {
         setProgress(threeProgress);
@@ -190,12 +195,14 @@ export default function LoadingScreen({
             const elapsed = Date.now() - startTimeRef.current;
             const remainingTime = Math.max(0, minDisplayTime - elapsed);
 
-            setTimeout(() => {
+            const outerTimer = setTimeout(() => {
                 setIsHidden(true);
-                setTimeout(() => {
-                    if (onComplete) onComplete();
+                const innerTimer = setTimeout(() => {
+                    if (onComplete) { onComplete(); }
                 }, ANIMATION_TIMING.LOADING_FADE_OUT);
+                timerRefs.current.push(innerTimer);
             }, remainingTime);
+            timerRefs.current.push(outerTimer);
         }
     }, [progress, minDisplayTime, onComplete]);
 

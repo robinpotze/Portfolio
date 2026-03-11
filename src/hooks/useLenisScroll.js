@@ -37,7 +37,7 @@ export default function useLenisScroll({
         let mounted = true;
 
         function raf(time) {
-            if (!mounted) return;
+            if (!mounted) { return; }
             lenis.raf(time);
             requestAnimationFrame(raf);
         }

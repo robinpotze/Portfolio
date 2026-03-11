@@ -1,5 +1,4 @@
 import CurtainTransition from '@components/effects/CurtainTransition';
-import { ANIMATION_TIMING } from '@config/animation.config';
 import { createContext, useCallback, useContext, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -21,7 +20,7 @@ export function PageTransitionProvider({ children }) {
     const transitionKey = useRef(0);
 
     const navigateWithTransition = useCallback((path, name, dir = 'right', state) => {
-        if (pendingNavigation.current) return;
+        if (pendingNavigation.current) { return; }
         pendingNavigation.current = path;
         pendingState.current = state || null;
         setPageName(name || null);

@@ -1,6 +1,7 @@
 import { useWorkItems } from '@/app/App';
 import WorkCanvas from '@canvas/work/WorkCanvas';
 import ErrorBoundary from '@components/ErrorBoundary';
+import { SCROLL_THRESHOLDS } from '@config/animation.config';
 import { usePageTransition } from '@hooks/usePageTransition';
 import { useCallback, useEffect, useRef } from 'react';
 import './Work.css';
@@ -12,7 +13,7 @@ export default function Work() {
 
     const handleCardNavigate = useCallback(
         (pageKey) => {
-            if (hasNavigated.current) return;
+            if (hasNavigated.current) { return; }
             hasNavigated.current = true;
             const item = items.find((i) => i.key === pageKey);
             navigateWithTransition(`/work/${pageKey}`, item?.data?.title || pageKey, 'up');
@@ -26,7 +27,7 @@ export default function Work() {
     const isAtTop = useRef(true);
 
     const handleCanvasScrollChange = useCallback((offset) => {
-        isAtTop.current = offset < 0.02; // Consider "at top" if within 2% of start
+        isAtTop.current = offset < SCROLL_THRESHOLDS.WORK_TOP_THRESHOLD;
 
         // Reset accumulator if not at top
         if (!isAtTop.current) {
@@ -41,7 +42,7 @@ export default function Work() {
             lastScrollTime.current = now;
 
             // Reset accumulator if too much time has passed
-            if (timeSinceLastScroll > 500) {
+            if (timeSinceLastScroll > SCROLL_THRESHOLDS.WORK_SCROLL_TIMEOUT) {
                 scrollAccumulator.current = 0;
             }
 
@@ -49,8 +50,8 @@ export default function Work() {
             if (isAtTop.current && e.deltaY < 0) {
                 scrollAccumulator.current += Math.abs(e.deltaY);
 
-                // Trigger exit after persistent upward scrolling (600px equivalent)
-                if (scrollAccumulator.current > 600 && !hasNavigated.current) {
+                // Trigger exit after persistent upward scrolling
+                if (scrollAccumulator.current > SCROLL_THRESHOLDS.WORK_MAX_SCROLL && !hasNavigated.current) {
                     hasNavigated.current = true;
                     navigateWithTransition('/', 'Home', 'down');
                 }

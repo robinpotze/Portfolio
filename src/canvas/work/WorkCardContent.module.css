@@ -1,7 +1,3 @@
-.workCardWrap {
-    perspective: 900px;
-}
-
 .workCard {
     display: block;
     width: 100%;
@@ -52,8 +48,14 @@
     pointer-events: auto;
 }
 
-.pixelCardInner .pixel-canvas {
+.pixelCardInner :global(.pixel-canvas) {
     position: absolute;
     inset: 0;
     z-index: 1;
+}
+
+.pixelCardFallback {
+    width: 100%;
+    height: 100%;
+    background: var(--c-DRK_TRNS);
 }

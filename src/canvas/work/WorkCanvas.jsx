@@ -24,10 +24,10 @@ export default function WorkCanvas({ items, onCardNavigate, onScrollChange }) {
 
     const handleCenterednessChange = useCallback((centeredness, bestIndex) => {
         const cardEl = document.querySelector(`.work-card-${bestIndex}`);
-        if (!cardEl) return;
+        if (!cardEl) { return; }
 
         const rect = cardEl.getBoundingClientRect();
-        if (rect.width === 0 || rect.height === 0) return;
+        if (rect.width === 0 || rect.height === 0) { return; }
 
         const t = centeredness;
         const vw = window.innerWidth;
@@ -56,7 +56,7 @@ export default function WorkCanvas({ items, onCardNavigate, onScrollChange }) {
     // Capture wheel velocity — damping is handled in WorkScene's useFrame
     useEffect(() => {
         const container = containerRef.current;
-        if (!container) return;
+        if (!container) { return; }
 
         const handleWheel = (e) => {
             e.preventDefault();

@@ -1,0 +1,30 @@
+import { ANIMATION_EASING, ANIMATION_TIMING } from '@config/animation.config';
+import { motion } from 'framer-motion';
+
+const headerVariants = {
+    hidden: { opacity: 0, y: -12 },
+    visible: {
+        opacity: 1,
+        y: 0,
+        transition: {
+            duration: ANIMATION_TIMING.ABOUT_HEADER_DURATION,
+            ease: ANIMATION_EASING.ABOUT,
+        },
+    },
+};
+
+export default function EduSection({ data }) {
+    return (
+        <>
+            {data.map((entry) => (
+                <div className="about-subsection" key={entry.school + entry.date}>
+                    <motion.div className="about-subsection-header" variants={headerVariants}>
+                        <span className="about-subsection-name">{entry.school}</span>
+                        <span className="about-subsection-course">{entry.course}</span>
+                        <span className="about-subsection-date">{entry.date}</span>
+                    </motion.div>
+                </div>
+            ))}
+        </>
+    );
+}

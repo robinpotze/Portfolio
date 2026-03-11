@@ -160,7 +160,7 @@ export default function LaserFlow({
 
         const updateMouse = (clientX, clientY) => {
             const rect = rectRef.current;
-            if (!rect) return;
+            if (!rect) { return; }
             const x = clientX - rect.left;
             const y = clientY - rect.top;
             const ratio = currentDpr;
@@ -194,7 +194,7 @@ export default function LaserFlow({
 
         const adjustDprIfNeeded = now => {
             const elapsed = now - lastFpsCheck;
-            if (elapsed < 750 || fpsSamples.length === 0) return;
+            if (elapsed < 750 || fpsSamples.length === 0) { return; }
 
             const avgFps = fpsSamples.reduce((a, b) => a + b, 0) / fpsSamples.length;
             let next = currentDpr;
@@ -218,7 +218,7 @@ export default function LaserFlow({
         let raf = 0;
         const animate = () => {
             raf = requestAnimationFrame(animate);
-            if (paused || !inView) return;
+            if (paused || !inView) { return; }
 
             const t = clock.getElapsedTime();
             const dt = Math.max(0, t - prevTime);
@@ -273,7 +273,7 @@ export default function LaserFlow({
 
     useEffect(() => {
         const uniforms = uniformsRef.current;
-        if (!uniforms) return;
+        if (!uniforms) { return; }
 
         uniforms.uWispDensity.value = wispDensity;
         uniforms.uTiltScale.value = mouseTiltStrength;

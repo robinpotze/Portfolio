@@ -1,10 +1,8 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
 import MenuLinks from './MenuLinks';
 import MenuSocials from './MenuSocials';
 
 export default function MenuPanel({ open, onClose, navigateWithCurtain }) {
-    const navigate = useNavigate();
     const ease = [0.22, 1, 0.36, 1];
 
     return (
@@ -12,6 +10,7 @@ export default function MenuPanel({ open, onClose, navigateWithCurtain }) {
             <motion.aside
                 className="staggered-menu-panel"
                 aria-hidden={!open}
+                inert={!open ? '' : undefined}
                 initial={{ x: '-100%' }}
                 animate={{ x: open ? '0%' : '-100%' }}
                 transition={{
@@ -21,7 +20,7 @@ export default function MenuPanel({ open, onClose, navigateWithCurtain }) {
                 }}
             >
                 <div className="sm-panel-inner">
-                    <MenuLinks open={open} onItemClick={onClose} navigateWithCurtain={navigateWithCurtain} />
+                    <MenuLinks open={open} navigateWithCurtain={navigateWithCurtain} />
                     <MenuSocials open={open} />
                 </div>
             </motion.aside>

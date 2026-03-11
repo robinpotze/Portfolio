@@ -12,7 +12,7 @@ export default function WorkScene({ items = [], scrollVelocityRef, onCardNavigat
     const { camera } = useThree();
 
     useFrame(() => {
-        if (!rigRef.current || items.length === 0) return;
+        if (!rigRef.current || items.length === 0) { return; }
 
         // Apply scroll velocity with damping (owns the scroll state)
         if (Math.abs(scrollVelocityRef.current) > CAROUSEL_CONFIG.SCROLL_DEADZONE) {

@@ -1,4 +1,5 @@
 import ErrorBoundary from '@components/ErrorBoundary';
+import './Contact.css';
 
 export default function Contact () {
     return (

@@ -5,8 +5,6 @@
 
 export const ANIMATION_TIMING = {
     // Curtain transition
-    CURTAIN_REVEAL_DELAY: 100,
-    CURTAIN_COVER_DELAY: 300,
     CURTAIN_DURATION: 500,
     LAYER_STAGGER_DELAY: 70,
 
@@ -15,11 +13,8 @@ export const ANIMATION_TIMING = {
     LOADING_FADE_OUT: 600,
     LOADING_COMPLETE_DELAY: 50,
     LOADING_EXIT_DURATION: 0.6,
-    LOADING_PROGRESS_DURATION: 0.4,
-    LOADING_TEXT_DURATION: 0.3,
 
     // Navigation & Menu
-    NAVIGATION_DELAY: 200,
     MENU_CLOSE_DELAY: 300,
     MENU_ITEM_DURATION: 0.9,
     MENU_ITEM_STAGGER: 0.1,
@@ -58,12 +53,6 @@ export const ANIMATION_TIMING = {
     // Scroll reveal
     SCROLL_REVEAL_DURATION: 0.6,
 
-    // Route transitions
-    ROUTE_TRANSITION_DURATION: 1500,
-
-    // Scroll
-    SCROLL_DEBOUNCE: 16,
-
     // Lenis smooth scroll
     LENIS_LERP: 0.1,
     LENIS_DURATION: 1.2,
@@ -80,7 +69,8 @@ export const ANIMATION_EASING = {
 
 export const SCROLL_THRESHOLDS = {
     HOME_TRANSITION: 0.95,
-    WORK_RETURN: 0.5,
+    WORK_TOP_THRESHOLD: 0.02,
+    WORK_SCROLL_TIMEOUT: 500,
     WORK_MAX_SCROLL: 600,
 };
 

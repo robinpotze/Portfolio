@@ -6,8 +6,7 @@
     --c-DRK_TRNS: rgba(17, 17, 17, 0.6);
     --c-LGHT_TRNS: rgba(238, 238, 238, 0.6);
     --c-TRNS: rgba(0, 0, 0, 0);
-    --c-BRND-CNTRST: #d52a2a;
-    --c-GOLD: radial-gradient(90deg. #ffbb00 0%, #a95b17 100%);
+    --c-GOLD: linear-gradient(90deg, #ffbb00 0%, #a95b17 100%);
 
     --f-TITLE: 4em 'Kode Mono', monospace;
     --f-HEADER: 3rem 'Orbitron', sans-serif;
@@ -117,39 +116,4 @@ p {
     writing-mode: sideways-rl;
 }
 
-.logo-home-link {
-    display: flex;
-    width: 64px;
-    height: 64px;
-    align-items: center;
-    justify-content: center;
-}
 
-.logo-header {
-    width: fit-content;
-    height: fit-content;
-}
-
-body[data-phase='ready'] main {
-    opacity: 1;
-    transition: opacity 0.4s ease;
-}
-
-body[data-phase='transitioning'] main {
-    opacity: 0;
-}
-
-body[data-phase='entering'] main {
-    opacity: 0;
-    animation: fadeIn 0.5s ease forwards;
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
-}

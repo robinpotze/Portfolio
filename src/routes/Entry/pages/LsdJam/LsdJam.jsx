@@ -1,4 +1,3 @@
-import ScrollReveal from '@components/effects/ScrollReveal';
 import DashLine from '@components/decoration/DashLine';
 import WorkHeader from '@components/ui/WorkHeader/WorkHeader';
 

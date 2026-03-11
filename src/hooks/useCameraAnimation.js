@@ -1,8 +1,8 @@
 import { ANIMATION_TIMING } from '@config/animation.config';
 import { useFrame } from '@react-three/fiber';
+import { easeCurve, entryEase } from '@utils/easingFunctions.js';
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
-import { easeCurve, entryEase } from './easingFunctions.js';
 
 /**
  * Animates camera position and FOV with entry and scroll phases
@@ -46,10 +46,10 @@ export function useCameraAnimation(cameraRef, routeName, options = {}) {
     }, [routeName, startFov]);
 
     useFrame(({ clock, camera }) => {
-        if (!enabled) return;
+        if (!enabled) { return; }
 
         const targetCamera = cameraRef?.current || camera;
-        if (!targetCamera) return;
+        if (!targetCamera) { return; }
 
         if (!hasCompletedEntry.current) {
             if (startTime.current === null) {

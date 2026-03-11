@@ -1,8 +1,8 @@
 import { ANIMATION_TIMING } from '@config/animation.config';
 import { useFrame } from '@react-three/fiber';
+import { easeCurve, entryEase } from '@utils/easingFunctions.js';
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
-import { easeCurve, entryEase } from './easingFunctions.js';
 
 export function useObjectAnimation(ref, routeName, options = {}) {
     const {
@@ -60,7 +60,7 @@ export function useObjectAnimation(ref, routeName, options = {}) {
     }, [routeName]);
 
     useFrame(({ clock }) => {
-        if (!ref.current || !enabled) return;
+        if (!ref.current || !enabled) { return; }
 
         const opts = optionsRef.current;
 
@@ -71,7 +71,7 @@ export function useObjectAnimation(ref, routeName, options = {}) {
 
             const elapsed = clock.getElapsedTime() - startTime.current - opts.delay;
 
-            if (elapsed < 0) return;
+            if (elapsed < 0) { return; }
 
             const entryProgress = Math.min(elapsed / opts.duration, 1);
             const eased = entryEase(entryProgress);

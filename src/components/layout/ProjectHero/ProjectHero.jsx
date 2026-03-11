@@ -45,9 +45,9 @@ export default function ProjectHero({ content }) {
             <div className="hero-banner-wrapper">
                 <motion.img
                     className="hero-banner"
-                    id={content.title.replace(/\s+/g, '-') + '-hero-banner'}
+                    id={content.title.replaceAll(/\s+/g, '-') + '-hero-banner'}
                     src={content.banner}
-                    alt={content.title.replace(/\s+/g, '-') + 'hero banner'}
+                    alt={content.title.replaceAll(/\s+/g, '-') + ' hero banner'}
                     variants={bannerVars}
                     initial="hidden"
                     animate={'visible'}
@@ -67,9 +67,9 @@ export default function ProjectHero({ content }) {
 
             <motion.div className="hero-content" id="work-hero-content" variants={sideVars} custom={1} initial="hidden" animate={'visible'}>
                 <motion.div className="hero-title-wrapper" id="work-hero-title-wrapper" variants={titleVars} initial="hidden" animate={'visible'}>
-                    <img className="hero-title-decal" id="work-hero-decal" src="/img/icon/PLS.svg" alt="Plus Sign" />
-                    <h2 id="work-hero-title">{content.title.replace(/\s+/g, '_')}</h2>
-                    <img className="hero-title-decal" id="work-hero-decal" src="/img/icon/PLS.svg" alt="Plus Sign" />
+                    <img className="hero-title-decal" id="work-hero-decal-start" src="/img/icon/PLS.svg" alt="Plus Sign" />
+                    <h2 id="work-hero-title">{content.title.replaceAll(/\s+/g, '_')}</h2>
+                    <img className="hero-title-decal" id="work-hero-decal-end" src="/img/icon/PLS.svg" alt="Plus Sign" />
                 </motion.div>
             </motion.div>
 
@@ -82,8 +82,8 @@ export default function ProjectHero({ content }) {
                     </div>
                     <div className="text-array" id="work-hero-side-skills">
                         {content.skills.map((skill) => (
-                            <p className="tr90" key={skill} id={`hero-side-skill-${skill.toLowerCase().replace(/\s+/g, '-')}`}>
-                                {skill.toLowerCase().replace(/\s+/g, '_') + '_/'}
+                            <p className="tr90" key={skill} id={`hero-side-skill-${skill.toLowerCase().replaceAll(/\s+/g, '-')}`}>
+                                {skill.toLowerCase().replaceAll(/\s+/g, '_') + '_/'}
                             </p>
                         ))}
                     </div>

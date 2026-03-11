@@ -1,5 +1,5 @@
 export function parseDate(val) {
-    if (val == null && val !== 0) {
+    if (val == null) {
         return -Infinity;
     }
     const n = Number(val);

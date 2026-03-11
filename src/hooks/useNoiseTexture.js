@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import * as THREE from 'three'
 
 export default function useNoiseTexture({
@@ -9,7 +9,7 @@ export default function useNoiseTexture({
     wrapS = THREE.RepeatWrapping,
     wrapT = THREE.RepeatWrapping
 } = {}) {
-    return useMemo(() => {
+    const texture = useMemo(() => {
         const data = new Uint8Array(size * size * 4)
 
         // Simple hash-based noise
@@ -76,4 +76,10 @@ export default function useNoiseTexture({
 
         return texture
     }, [size, scale, octaves, persistence, wrapS, wrapT])
+
+    useEffect(() => {
+        return () => { texture.dispose() }
+    }, [texture])
+
+    return texture
 }

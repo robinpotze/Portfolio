@@ -18,7 +18,7 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
     const [entryComplete, setEntryComplete] = useState(false);
 
     // Adaptive quality monitoring
-    const { quality, fps } = useAdaptiveQuality({
+    const { quality } = useAdaptiveQuality({
         targetFps: 55,
         enabled: startAnimations && entryComplete,
     });

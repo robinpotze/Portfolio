@@ -35,9 +35,9 @@ export default function WorkCardContent({ item, index, onNavigate }) {
                 <Suspense fallback={<div className={styles.pixelCardFallback} />}>
                     <PixelCard variant="default" className={styles.pixelCardInner}>
                         <div className={styles.workCardContent}>
-                            <span className="deco-small" id='project-year'>{data?.year || ''}</span>
-                            <h2 id='project-name'>{data?.title || pageKey}</h2>
-                            <span className="deco-small" id='project-client'>{data?.client || ''}</span>
+                            <span className="deco-small">{data?.year || ''}</span>
+                            <h2>{data?.title || pageKey}</h2>
+                            <span className="deco-small">{data?.client || ''}</span>
                         </div>
                     </PixelCard>
                 </Suspense>

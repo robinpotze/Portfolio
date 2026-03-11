@@ -99,8 +99,6 @@ export default function PixelCard({ gap = 6, speed = 200, noFocus = true, classN
     const timePreviousRef = useRef(performance.now());
     const reducedMotion = useRef(window.matchMedia('(prefers-reduced-motion: reduce)').matches).current;
 
-    const finalNoFocus = noFocus
-
     const initPixels = () => {
         if (!containerRef.current || !canvasRef.current) return;
 
@@ -185,7 +183,7 @@ export default function PixelCard({ gap = 6, speed = 200, noFocus = true, classN
             observer.disconnect();
             cancelAnimationFrame(animationRef.current);
         };
-    }, [finalNoFocus, gap, speed]);
+    }, [noFocus, gap, speed]);
 
     return (
         <div
@@ -193,11 +191,11 @@ export default function PixelCard({ gap = 6, speed = 200, noFocus = true, classN
             className={`pixel-card ${className}`}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
-            onFocus={finalNoFocus ? undefined : onFocus}
-            onBlur={finalNoFocus ? undefined : onBlur}
-            tabIndex={finalNoFocus ? -1 : 0}
+            onFocus={noFocus ? undefined : onFocus}
+            onBlur={noFocus ? undefined : onBlur}
+            tabIndex={noFocus ? -1 : 0}
         >
-            <canvas className="pixel-canvas" ref={canvasRef} />
+            <canvas className="pixel-canvas" ref={canvasRef} aria-hidden="true" />
             {children}
         </div>
     );
