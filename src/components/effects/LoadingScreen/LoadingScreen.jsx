@@ -33,7 +33,7 @@ function BlockLogo({ logoSrc, cycleIndex }) {
     // Resolve CSS variables once on mount
     useEffect(() => {
         colorsRef.current = {
-            base: getCSSColorRGBA('--c-LGHT_TRNS'),
+            base: getCSSColorRGBA('--c-DRK_TRNS'),
             pulse: getCSSColorRGBA('--c-BRND'),
         };
     }, []);
