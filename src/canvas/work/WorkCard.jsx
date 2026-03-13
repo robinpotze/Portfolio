@@ -1,11 +1,11 @@
 import { useQuality } from '@app/QualityContext';
+import '@canvas/shared/materials/PixelOverlayMaterial';
 import { FLOAT_CONFIG } from '@config/animation.config';
 import { CAROUSEL_CONFIG } from '@config/carousel.config';
 import { Float, Text, useTexture } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { calculateCardPosition, calculateCardRotation, calculateCardScale } from '@utils/carousel';
 import { useMemo, useRef, useState } from 'react';
-import '@canvas/shared/materials/PixelOverlayMaterial';
 
 // Derive card size from carousel geometry: slightly less than one polygon side
 const chord = 2 * CAROUSEL_CONFIG.RADIUS * Math.sin(CAROUSEL_CONFIG.ANGLE_STEP / 2);
