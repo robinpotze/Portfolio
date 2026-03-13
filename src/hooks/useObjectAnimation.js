@@ -46,6 +46,7 @@ export function useObjectAnimation(ref, routeName, options = {}) {
     const hasCompletedEntry = useRef(false);
     const initializedRoute = useRef(routeName);
     const scrollProgressRef = useRef(scrollProgress);
+    const lastAppliedScroll = useRef(-1);
 
     useEffect(() => {
         scrollProgressRef.current = scrollProgress;
@@ -88,7 +89,12 @@ export function useObjectAnimation(ref, routeName, options = {}) {
             ref.current.scale.y = THREE.MathUtils.lerp(opts.startScale[1], opts.endScale[1], eased);
             ref.current.scale.z = THREE.MathUtils.lerp(opts.startScale[2], opts.endScale[2], eased);
         } else {
-            const scrollEased = easeCurve(scrollProgressRef.current);
+            // Skip if scroll hasn't changed since last application
+            const sp = scrollProgressRef.current;
+            if (Math.abs(sp - lastAppliedScroll.current) < 0.0001) { return; }
+            lastAppliedScroll.current = sp;
+
+            const scrollEased = easeCurve(sp);
 
             ref.current.position.x = THREE.MathUtils.lerp(opts.endPosition[0], opts.finalEndPosition[0], scrollEased);
             ref.current.position.y = THREE.MathUtils.lerp(opts.endPosition[1], opts.finalEndPosition[1], scrollEased);

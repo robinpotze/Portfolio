@@ -54,6 +54,7 @@ uniform float uFalloffStart;
 uniform float uFogFallSpeed;
 uniform vec3 uColor;
 uniform float uFade;
+uniform float uFogQuality;
 
 // Volumetric fog controls
 #define FOG_ON 1
@@ -105,10 +106,18 @@ float vnoise(vec2 p){
     vec2 u=f*f*(3.-2.*f);
     return mix(mix(a,b,u.x),mix(c,d,u.x),u.y);
 }
-float fbm2(vec2 p){
+float fbm2_low(vec2 p){
     float v=0.,amp=.6;mat2 m=mat2(.86,.5,-.5,.86);
-    for(int i=0;i<FOG_OCTAVES;++i){v+=amp*vnoise(p);p=m*p*2.03+17.1;amp*=.52;}
+    for(int i=0;i<2;++i){v+=amp*vnoise(p);p=m*p*2.03+17.1;amp*=.52;}
     return v;
+}
+float fbm2_high(vec2 p){
+    float v=0.,amp=.6;mat2 m=mat2(.86,.5,-.5,.86);
+    for(int i=0;i<5;++i){v+=amp*vnoise(p);p=m*p*2.03+17.1;amp*=.52;}
+    return v;
+}
+float fbm2(vec2 p){
+    return uFogQuality > 0.5 ? fbm2_high(p) : fbm2_low(p);
 }
 float rGate(float x,float l){float a=smoothstep(0.,W_AA,x),b=1.-smoothstep(l,l+W_AA,x);return max(0.,a*b);}
 float flareY(float y){float t=clamp(1.-(clamp(y,0.,FLARE_HEIGHT)/max(FLARE_HEIGHT,EPS)),0.,1.);return pow(t,FLARE_EXP);}
@@ -172,6 +181,7 @@ void mainImage(out vec4 fc,in vec2 frag){
     float w=vWisps(vec2(uvc.x,yPix),topA);
     float fog=0.;
     #if FOG_ON
+    if(uFogQuality > 0.01){
     vec2 fuv=uvc*uFogScale;
     float mAct=step(1.,length(iMouse.xy)),nx=((iMouse.x-C.x)*invW)*mAct;
     float ax=abs(nx);
@@ -201,6 +211,7 @@ void mainImage(out vec4 fc,in vec2 frag){
     float radialFade=1.-smoothstep(0.,.7,length(uvc)/120.);
     float safariFog=n*browserFogIntensity*bBias*bm*hW*radialFade;
     fog=safariFog;
+    }
     #endif
     float LF=L+fog;
     float dith=(h21(frag)-.5)*(DITHER_STRENGTH/255.);

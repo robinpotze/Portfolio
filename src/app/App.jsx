@@ -5,6 +5,7 @@ import { pages as autogenPages } from '@routes/Entry/pages/autogen';
 import { sortItems } from '@utils/workUtils';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
+import { QualityProvider } from './QualityContext';
 
 const WorkContext = createContext(null);
 
@@ -22,13 +23,15 @@ export default function App() {
     }, []);
 
     return (
-        <WorkContext.Provider value={items}>
-            <PageTransitionProvider>
-                <NavigationMenu />
-                <ErrorBoundary>
-                    <Outlet />
-                </ErrorBoundary>
-            </PageTransitionProvider>
-        </WorkContext.Provider>
+        <QualityProvider>
+            <WorkContext.Provider value={items}>
+                <PageTransitionProvider>
+                    <NavigationMenu />
+                    <ErrorBoundary>
+                        <Outlet />
+                    </ErrorBoundary>
+                </PageTransitionProvider>
+            </WorkContext.Provider>
+        </QualityProvider>
     );
 }

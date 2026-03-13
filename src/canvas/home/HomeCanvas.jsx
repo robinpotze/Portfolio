@@ -5,8 +5,7 @@ export default function HomeCanvas({ scrollProgress, startAnimations }) {
     return (
         <div className="home-canvas-container">
             <Canvas
-                shadows
-                dpr={[1, 2]}
+                dpr={[1, 1.5]}
                 performance={{ min: 0.5 }}
                 eventSource={document.getElementById('root')}
                 eventPrefix="client"

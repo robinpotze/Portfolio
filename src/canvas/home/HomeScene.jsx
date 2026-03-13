@@ -28,25 +28,25 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
         switch (quality) {
             case 'low':
                 return {
-                    aoSamples: 4,
-                    denoiseSamples: 2,
-                    aoIntensity: 1.2,
-                    bloomIntensity: 0.4,
-                    bloomLevels: 4,
+                    enableAO: false,
+                    bloomIntensity: 0.3,
+                    bloomLevels: 2,
                     multisampling: 0,
                 };
             case 'medium':
                 return {
-                    aoSamples: 6,
-                    denoiseSamples: 3,
-                    aoIntensity: 1.35,
-                    bloomIntensity: 0.5,
-                    bloomLevels: 5,
+                    enableAO: true,
+                    aoSamples: 4,
+                    denoiseSamples: 2,
+                    aoIntensity: 1.2,
+                    bloomIntensity: 0.45,
+                    bloomLevels: 4,
                     multisampling: 0,
                 };
             case 'high':
             default:
                 return {
+                    enableAO: true,
                     aoSamples: 8,
                     denoiseSamples: 4,
                     aoIntensity: 1.5,
@@ -162,8 +162,8 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
             </group>
 
             <Float
-                floatIntensity={entryComplete ? FLOAT_CONFIG.INTENSITY : 0}
-                rotationIntensity={entryComplete ? FLOAT_CONFIG.ROTATION_INTENSITY : 0}
+                floatIntensity={entryComplete && quality !== 'low' ? FLOAT_CONFIG.INTENSITY : 0}
+                rotationIntensity={entryComplete && quality !== 'low' ? FLOAT_CONFIG.ROTATION_INTENSITY : 0}
                 speed={FLOAT_CONFIG.SPEED}
             >
                 <group ref={logoRef} scale={0.5}>
@@ -172,12 +172,14 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
             </Float>
 
             <EffectComposer multisampling={postProcessingSettings.multisampling}>
-                <N8AO
-                    aoRadius={1}
-                    intensity={postProcessingSettings.aoIntensity}
-                    aoSamples={postProcessingSettings.aoSamples}
-                    denoiseSamples={postProcessingSettings.denoiseSamples}
-                />
+                {postProcessingSettings.enableAO && (
+                    <N8AO
+                        aoRadius={1}
+                        intensity={postProcessingSettings.aoIntensity}
+                        aoSamples={postProcessingSettings.aoSamples}
+                        denoiseSamples={postProcessingSettings.denoiseSamples}
+                    />
+                )}
                 <Bloom
                     mipmapBlur
                     luminanceThreshold={0.92}

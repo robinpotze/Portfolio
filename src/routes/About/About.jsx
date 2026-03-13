@@ -1,5 +1,6 @@
 import ErrorBoundary from '@components/ErrorBoundary';
 import GridOverlay from '@components/decoration/GridOverlay';
+import PixelCard from '@components/effects/PixelCard/PixelCard';
 import { ANIMATION_EASING, ANIMATION_TIMING } from '@config/animation.config';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
@@ -90,6 +91,7 @@ export default function About() {
                             onClick={() => setCurrentPage(key)}
                             variants={buttonVariants}
                         >
+                            <PixelCard gap={5} speed={80} className="about-selector-pixel" />
                             <h2 className='tr90'>{key}</h2>
                             {currentPage === key && (
                                 <motion.div

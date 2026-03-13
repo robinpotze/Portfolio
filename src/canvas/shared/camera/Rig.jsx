@@ -5,8 +5,12 @@ export default function Rig({ intensity = 0.5 }) {
     const offsetRef = useRef({ x: 0, y: 0, z: 0 })
     const basePosRef = useRef({ x: 0, y: 0, z: 0 })
     const previousOffsetRef = useRef({ x: 0, y: 0, z: 0 })
+    const frameCount = useRef(0)
 
     useFrame((state, delta) => {
+        // Update every other frame to reduce CPU cost
+        frameCount.current++
+        if (frameCount.current % 2 !== 0) return
         const targetOffsetX = Math.sin(-state.pointer.x) * 5 * intensity
         const targetOffsetY = state.pointer.y * 5 * intensity
         const targetOffsetZ = Math.cos(state.pointer.x) * 5 * intensity

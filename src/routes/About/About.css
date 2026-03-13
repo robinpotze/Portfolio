@@ -51,6 +51,11 @@
         background 0.3s ease;
 }
 
+.about-selector-pixel {
+    position: absolute;
+    inset: 0;
+}
+
 .about-selector-button:hover {
     color: var(--c-LGHT);
     border-color: var(--c-BRND);

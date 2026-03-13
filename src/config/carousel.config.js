@@ -11,6 +11,9 @@ export const CAROUSEL_CONFIG = {
 
     SCALE_RANGE: 0.3,
 
+    CARD_GAP_FACTOR: 0.99,
+    CARD_ASPECT: 16 / 9,
+
     CAMERA: {
         POSITION: [0, 0, 8],
         FOV: 50,

@@ -34,7 +34,8 @@ export function useCameraAnimation(cameraRef, routeName, options = {}) {
     const startTime = useRef(null);
     const hasCompletedEntry = useRef(false);
     const initializedRoute = useRef(routeName);
-    const lastFov = useRef(startFov); // Track last FOV to avoid redundant updates
+    const lastFov = useRef(startFov);
+    const lastAppliedScroll = useRef(-1);
 
     useEffect(() => {
         if (initializedRoute.current !== routeName) {
@@ -77,6 +78,10 @@ export function useCameraAnimation(cameraRef, routeName, options = {}) {
                 }
             }
         } else {
+            // Skip if scroll hasn't changed since last application
+            if (Math.abs(scrollProgress - lastAppliedScroll.current) < 0.0001) { return; }
+            lastAppliedScroll.current = scrollProgress;
+
             const scrollEased = easeCurve(scrollProgress);
 
             targetCamera.position.x = THREE.MathUtils.lerp(endPosition[0], finalEndPosition[0], scrollEased);

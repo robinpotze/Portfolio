@@ -1,8 +1,12 @@
+import { useQuality } from '@app/QualityContext';
 import laserFragmentShader from '@canvas/shared/shaders/laser/laser.frag?raw';
 import laserVertexShader from '@canvas/shared/shaders/laser/laser.vert?raw';
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import styles from './LaserFlow.module.css';
+
+const DPR_BY_QUALITY = { low: 0.5, medium: 0.75, high: 2 };
+const FOG_QUALITY_BY_QUALITY = { low: 0, medium: 0.3, high: 1 };
 
 const hexToRGB = hex => {
     let c = hex.trim();
@@ -34,17 +38,20 @@ export default function LaserFlow({
     fogFallSpeed = 0.6,
     color = '#FF79C6'
 }) {
+    const { quality } = useQuality();
     const mountRef = useRef(null);
     const rendererRef = useRef(null);
     const uniformsRef = useRef(null);
     const hasFadedRef = useRef(false);
     const rectRef = useRef(null);
+    const qualityRef = useRef(quality);
 
     useEffect(() => {
         const mount = mountRef.current;
         window.scrollTo(0, 0);
 
-        const baseDpr = Math.min(dpr ?? (window.devicePixelRatio || 1), 2);
+        const maxDpr = DPR_BY_QUALITY[quality] || 2;
+        const baseDpr = Math.min(dpr ?? (window.devicePixelRatio || 1), maxDpr);
         let currentDpr = baseDpr;
         const lastSize = { width: 0, height: 0, dpr: 0 };
         const fpsSamples = [];
@@ -105,7 +112,8 @@ export default function LaserFlow({
             uFalloffStart: { value: falloffStart },
             uFogFallSpeed: { value: fogFallSpeed },
             uColor: { value: new THREE.Vector3(1, 1, 1) },
-            uFade: { value: hasFadedRef.current ? 1 : 0 }
+            uFade: { value: hasFadedRef.current ? 1 : 0 },
+            uFogQuality: { value: FOG_QUALITY_BY_QUALITY[quality] ?? 1 }
         };
         uniformsRef.current = uniforms;
 
@@ -216,9 +224,15 @@ export default function LaserFlow({
         };
 
         let raf = 0;
+        let frameCount = 0;
         const animate = () => {
             raf = requestAnimationFrame(animate);
             if (paused || !inView) { return; }
+
+            // Throttle to 30fps on low quality, or when idle on medium
+            frameCount++;
+            const q = qualityRef.current;
+            if (q === 'low' && frameCount % 2 !== 0) { return; }
 
             const t = clock.getElapsedTime();
             const dt = Math.max(0, t - prevTime);
@@ -269,7 +283,19 @@ export default function LaserFlow({
             if (mount.contains(canvas)) mount.removeChild(canvas);
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [dpr]);
+    }, [dpr, quality]);
+
+    // Sync quality ref and update fog quality uniform
+    useEffect(() => {
+        qualityRef.current = quality;
+        const uniforms = uniformsRef.current;
+        if (!uniforms) return;
+        uniforms.uFogQuality.value = FOG_QUALITY_BY_QUALITY[quality] ?? 1;
+        // Override wisp density on low quality
+        if (quality === 'low') {
+            uniforms.uWispDensity.value = Math.min(wispDensity, 0.3);
+        }
+    }, [quality, wispDensity]);
 
     useEffect(() => {
         const uniforms = uniformsRef.current;
