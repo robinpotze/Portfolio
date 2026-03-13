@@ -5,12 +5,15 @@ import { CAROUSEL_CONFIG } from '@config/carousel.config';
 import { Float, Text, useTexture } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { calculateCardPosition, calculateCardRotation, calculateCardScale } from '@utils/carousel';
+import { getCSSVariable } from '@utils/cssUtils';
 import { useMemo, useRef, useState } from 'react';
 
 // Derive card size from carousel geometry: slightly less than one polygon side
 const chord = 2 * CAROUSEL_CONFIG.RADIUS * Math.sin(CAROUSEL_CONFIG.ANGLE_STEP / 2);
 export const CARD_WIDTH = chord * CAROUSEL_CONFIG.CARD_GAP_FACTOR;
 export const CARD_HEIGHT = CARD_WIDTH / CAROUSEL_CONFIG.CARD_ASPECT;
+
+const LGHT_COLOR = getCSSVariable('--c-LGHT') || '#eee';
 
 export default function WorkCard({ item, index, onNavigate, centerednessRef }) {
     const groupRef = useRef();
@@ -97,30 +100,30 @@ export default function WorkCard({ item, index, onNavigate, centerednessRef }) {
                     <Text
                         fontSize={CARD_HEIGHT * 0.045}
                         font="/assets/fonts/Kode_Mono/static/KodeMono-Regular.ttf"
-                        color="#eeeeee"
+                        color={LGHT_COLOR}
                         anchorX="center"
                         anchorY="middle"
-                        position={[0, CARD_HEIGHT * 0.17, 0]}
+                        position={[0, CARD_HEIGHT * 0.1, 0.1]}
                     >
                         {data?.year?.toString() || ''}
                     </Text>
                     <Text
                         fontSize={CARD_HEIGHT * 0.11}
                         font="/assets/fonts/Orbitron/static/Orbitron-Medium.ttf"
-                        color="#eeeeee"
+                        color={LGHT_COLOR}
                         anchorX="center"
                         anchorY="middle"
-                        position={[0, 0, 0]}
+                        position={[0, 0, 0.12]}
                     >
                         {data?.title || pageKey}
                     </Text>
                     <Text
                         fontSize={CARD_HEIGHT * 0.045}
                         font="/assets/fonts/Kode_Mono/static/KodeMono-Regular.ttf"
-                        color="#eeeeee"
+                        color={LGHT_COLOR}
                         anchorX="center"
                         anchorY="middle"
-                        position={[0, -CARD_HEIGHT * 0.17, 0]}
+                        position={[0, -CARD_HEIGHT * 0.1, 0.1]}
                     >
                         {data?.client || ''}
                     </Text>
