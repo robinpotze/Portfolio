@@ -130,14 +130,20 @@
     color: var(--c-BRND);
 }
 
+.about-subsection-details {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+}
+
 .about-subsection-function {
     font: var(--f-FUNCTIONAL_SMALL);
     color: var(--c-LGHT_TRNS);
 }
 
 .about-subsection-course {
-    font: var(--f-FUNCTIONAL_SMALL);
-    color: var(--c-LGHT_TRNS);
+    font: var(--f-FUNCTIONAL);
+    color: var(--c-LGHT);
 }
 
 .about-subsection-date {
@@ -187,7 +193,7 @@
 }
 
 .about-item-text {
-    font: var(--f-PARAGRAPH);
+    font: var(--f-FUNCTIONAL);
     color: var(--c-LGHT);
 }
 

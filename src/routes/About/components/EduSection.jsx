@@ -20,6 +20,8 @@ export default function EduSection({ data }) {
                 <div className="about-subsection" key={entry.school + entry.date}>
                     <motion.div className="about-subsection-header" variants={headerVariants}>
                         <span className="about-subsection-name">{entry.school}</span>
+                    </motion.div>
+                    <motion.div className="about-subsection-details" variants={headerVariants}>
                         <span className="about-subsection-course">{entry.course}</span>
                         <span className="about-subsection-date">{entry.date}</span>
                     </motion.div>
