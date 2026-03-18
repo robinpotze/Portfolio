@@ -1,7 +1,7 @@
 import ErrorBoundary from '@components/ErrorBoundary';
 import GridOverlay from '@components/decoration/GridOverlay';
 import PixelCard from '@components/effects/PixelCard/PixelCard';
-import { ANIMATION_EASING, ANIMATION_TIMING } from '@config/animation.config';
+import { EASING, REVEAL, SPRING_CONFIG, STAGGER } from '@config/animation.config';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
 import './About.css';
@@ -24,14 +24,14 @@ const containerVariants = {
     visible: {
         opacity: 1,
         transition: {
-            staggerChildren: ANIMATION_TIMING.ABOUT_ITEM_STAGGER,
-            delayChildren: ANIMATION_TIMING.ABOUT_SECTION_DELAY,
+            staggerChildren: STAGGER.DEFAULT,
+            delayChildren: REVEAL.DELAY,
         },
     },
     exit: {
         opacity: 0,
         y: 12,
-        transition: { duration: ANIMATION_TIMING.ABOUT_EXIT_DURATION },
+        transition: { duration: REVEAL.EXIT_DURATION },
     },
 };
 
@@ -40,8 +40,8 @@ const buttonContainerVariants = {
     visible: {
         opacity: 1,
         transition: {
-            staggerChildren: ANIMATION_TIMING.ABOUT_ITEM_STAGGER,
-            delayChildren: ANIMATION_TIMING.ABOUT_SECTION_DELAY,
+            staggerChildren: STAGGER.DEFAULT,
+            delayChildren: REVEAL.DELAY,
         },
     },
 };
@@ -52,8 +52,8 @@ const buttonVariants = {
         opacity: 1,
         y: 0,
         transition: {
-            duration: ANIMATION_TIMING.ABOUT_ITEM_DURATION,
-            ease: ANIMATION_EASING.ABOUT,
+            duration: REVEAL.DURATION,
+            ease: EASING.EMPHASIZED,
         },
     },
 };
@@ -99,8 +99,7 @@ export default function About() {
                                     layoutId="about-indicator"
                                     transition={{
                                         type: 'spring',
-                                        stiffness: 500,
-                                        damping: 35,
+                                        ...SPRING_CONFIG.SNAPPY_LAYOUT,
                                     }}
                                 />
                             )}

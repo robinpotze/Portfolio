@@ -1,3 +1,6 @@
+/* eslint-disable react/prop-types */
+
+import { MENU_TIMING, REVEAL } from '@config/animation.config';
 import { motion } from 'framer-motion';
 
 const SOCIALS = [
@@ -16,12 +19,12 @@ export default function MenuSocials({ open }) {
                 Socials
             </motion.h3>
             <ul>
-                {SOCIALS.map((social, i) => (
+                {SOCIALS.map((social) => (
                     <motion.li
-                        key={i}
-                        initial={{ y: 25, opacity: 0 }}
-                        animate={open ? { y: 0, opacity: 1 } : { y: 25, opacity: 0 }}
-                        transition={{ duration: 0.3 }}
+                        key={social.link}
+                        initial={{ y: REVEAL.Y_OFFSET, opacity: 0 }}
+                        animate={open ? { y: 0, opacity: 1 } : { y: REVEAL.Y_OFFSET, opacity: 0 }}
+                        transition={{ duration: MENU_TIMING.SOCIAL_ITEM_DURATION }}
                     >
                         <a href={social.link} target="_blank" rel="noopener noreferrer">
                             {social.label}

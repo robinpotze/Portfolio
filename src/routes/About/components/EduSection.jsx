@@ -1,4 +1,6 @@
-import { ANIMATION_EASING, ANIMATION_TIMING } from '@config/animation.config';
+/* eslint-disable react/prop-types */
+
+import { EASING, REVEAL } from '@config/animation.config';
 import { motion } from 'framer-motion';
 
 const headerVariants = {
@@ -7,8 +9,8 @@ const headerVariants = {
         opacity: 1,
         y: 0,
         transition: {
-            duration: ANIMATION_TIMING.ABOUT_HEADER_DURATION,
-            ease: ANIMATION_EASING.ABOUT,
+            duration: REVEAL.DURATION,
+            ease: EASING.EMPHASIZED,
         },
     },
 };

@@ -1,3 +1,6 @@
+/* eslint-disable react/prop-types */
+
+import { SPRING_CONFIG } from '@config/animation.config';
 import { motion } from 'framer-motion';
 
 export default function RAD_CRCL({ value = 0 }) {
@@ -24,7 +27,7 @@ export default function RAD_CRCL({ value = 0 }) {
             />
             <motion.circle
                 animate={{ strokeDashoffset: circumference - progress }}
-                transition={{ type: "spring", stiffness: 100, damping: 20 }}
+                transition={{ type: 'spring', ...SPRING_CONFIG.SMOOTH_PROGRESS }}
                 cx="6"
                 cy="6"
                 r={radius}

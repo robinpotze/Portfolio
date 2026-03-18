@@ -1,4 +1,6 @@
-import { ANIMATION_EASING, ANIMATION_TIMING } from '@config/animation.config';
+/* eslint-disable react/prop-types */
+
+import { EASING, REVEAL } from '@config/animation.config';
 import { motion } from 'framer-motion';
 
 const itemVariants = {
@@ -7,8 +9,8 @@ const itemVariants = {
         opacity: 1,
         x: 0,
         transition: {
-            duration: ANIMATION_TIMING.ABOUT_ITEM_DURATION,
-            ease: ANIMATION_EASING.ABOUT,
+            duration: REVEAL.DURATION,
+            ease: EASING.EMPHASIZED,
         },
     },
 };

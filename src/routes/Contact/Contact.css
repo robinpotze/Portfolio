@@ -7,12 +7,21 @@
     grid-template-areas: 
         '. .         errortitle errortitle errortitle   errorlog'
         '. formtitle .          .          formcornertr errorlog'
-        '. form      form       form       form         .       '
-        '. bottomlog statusgrid statusgrid formcornerbr .       '
-        '. .         .          .          .            .       ';
+        '. form      form       form       form         errorlog'
+        '. bottomlog statusgrid statusgrid formcornerbr errorlog'
+        '. .         .          .          .            errorlog';
     column-gap: 8px;
     padding: 64px;
     box-sizing: border-box;
+}
+
+.contact-errorlog {
+    grid-area: errorlog;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font: var(--f-deco-tiny);
+    color: var(--c-brnd_-100);
 }
 
 .contact-corner-tl {
@@ -53,11 +62,21 @@
     grid-area: form;
     padding: var(--s-xl);
     display: flex;
-    gap: var(--s-l);
     justify-content: center;
     align-items: center;
     background-color: var(--c-brnd_-100);
     color: var(--c-drk_100);
+    overflow: hidden;
+    transform-origin: center center;
+    will-change: transform;
+}
+
+.contact-formContent {
+    width: 100%;
+    display: flex;
+    gap: var(--s-l);
+    justify-content: center;
+    align-items: center;
 }
 
 .contact-name-input {
@@ -90,6 +109,13 @@
 .contact-statusgrid {
     grid-area: statusgrid;
     align-self: flex-end;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
     font: var(--f-deco-tiny);
-    color: var(--c-brnd_-100)
+    color: var(--c-brnd_-100);
+}
+
+.contact-log-row {
+    margin: 0;
 }

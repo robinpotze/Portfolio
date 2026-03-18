@@ -1,4 +1,6 @@
-import { ANIMATION_EASING, ANIMATION_TIMING } from '@config/animation.config';
+/* eslint-disable react/prop-types */
+
+import { EASING, REVEAL, SPRING_CONFIG, STAGGER } from '@config/animation.config';
 import { motion, useMotionValue, useSpring } from 'framer-motion';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styles from './GridOverlay.module.css';
@@ -46,8 +48,8 @@ export default function GridOverlay({
     // Mouse-driven parallax spring values
     const rawX = useMotionValue(0);
     const rawY = useMotionValue(0);
-    const px = useSpring(rawX, { stiffness: 120, damping: 20 });
-    const py = useSpring(rawY, { stiffness: 120, damping: 20 });
+    const px = useSpring(rawX, SPRING_CONFIG.CURSOR_TRACKING);
+    const py = useSpring(rawY, SPRING_CONFIG.CURSOR_TRACKING);
 
     const handleMouseMove = useCallback(
         (e) => {
@@ -60,8 +62,8 @@ export default function GridOverlay({
     );
 
     useEffect(() => {
-        window.addEventListener('mousemove', handleMouseMove);
-        return () => window.removeEventListener('mousemove', handleMouseMove);
+        globalThis.addEventListener('mousemove', handleMouseMove);
+        return () => globalThis.removeEventListener('mousemove', handleMouseMove);
     }, [handleMouseMove]);
 
     // Derive rows/cols from container dimensions
@@ -115,7 +117,7 @@ export default function GridOverlay({
             opacity: 1,
             transition: {
                 staggerChildren: 0.015,
-                delayChildren: ANIMATION_TIMING.PROJECT_HERO_SIDE_DELAY,
+                delayChildren: STAGGER.DEFAULT,
             },
         },
     };
@@ -125,8 +127,8 @@ export default function GridOverlay({
         visible: {
             opacity: 1,
             transition: {
-                duration: ANIMATION_TIMING.PROJECT_HERO_DURATION,
-                ease: ANIMATION_EASING.PROJECT_HERO,
+                duration: REVEAL.DURATION,
+                ease: EASING.HERO,
             },
         },
     };
@@ -137,8 +139,8 @@ export default function GridOverlay({
             opacity: crosshairOpacity,
             scale: 1,
             transition: {
-                duration: ANIMATION_TIMING.PROJECT_HERO_DURATION,
-                ease: ANIMATION_EASING.PROJECT_HERO,
+                duration: REVEAL.DURATION,
+                ease: EASING.HERO,
             },
         },
     };

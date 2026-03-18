@@ -1,4 +1,4 @@
-import { ANIMATION_TIMING } from '@config/animation.config';
+import { GLITCH, MENU_TIMING } from '@config/animation.config';
 import { usePageTransition } from '@hooks/usePageTransition';
 import { animate } from 'framer-motion';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
@@ -34,7 +34,7 @@ export default function NavigationMenu() {
                     opacity: [1, 0.3, 0.8, 0.2, 0],
                     x: [0, -2, 1, -3, 0],
                 },
-                { duration: ANIMATION_TIMING.GLITCH_DURATION }
+                { duration: GLITCH.DURATION }
             ),
             animate(
                 red,
@@ -43,7 +43,7 @@ export default function NavigationMenu() {
                     x: [0, 3, -2, 4, 2],
                     y: [0, -1, 1, -2, 0],
                 },
-                { duration: ANIMATION_TIMING.GLITCH_DURATION }
+                { duration: GLITCH.DURATION }
             ),
             animate(
                 blue,
@@ -52,7 +52,7 @@ export default function NavigationMenu() {
                     x: [0, -3, 2, -4, -2],
                     y: [0, 1, -1, 2, 1],
                 },
-                { duration: ANIMATION_TIMING.GLITCH_DURATION }
+                { duration: GLITCH.DURATION }
             ),
         ]);
 
@@ -65,7 +65,7 @@ export default function NavigationMenu() {
                     opacity: [0, 0.2, 0.7, 0.4, 1],
                     x: [0, 2, -1, 3, 0],
                 },
-                { duration: ANIMATION_TIMING.GLITCH_DURATION }
+                { duration: GLITCH.DURATION }
             ),
             animate(
                 red,
@@ -74,7 +74,7 @@ export default function NavigationMenu() {
                     x: [2, -3, 4, -2, 0],
                     y: [0, 1, -2, 1, 0],
                 },
-                { duration: ANIMATION_TIMING.GLITCH_DURATION }
+                { duration: GLITCH.DURATION }
             ),
             animate(
                 blue,
@@ -83,7 +83,7 @@ export default function NavigationMenu() {
                     x: [-2, 3, -4, 2, 0],
                     y: [1, -1, 2, -1, 0],
                 },
-                { duration: ANIMATION_TIMING.GLITCH_DURATION }
+                { duration: GLITCH.DURATION }
             ),
         ]);
     }, []);
@@ -100,11 +100,11 @@ export default function NavigationMenu() {
             if (buttonRef.current) {
                 buttonRef.current.style.color = willOpen ? BTN_COLOR_OPEN : BTN_COLOR;
             }
-        }, ANIMATION_TIMING.GLITCH_COLOR_DELAY);
+        }, GLITCH.COLOR_DELAY_MS);
 
         setTimeout(() => {
             busy.current = false;
-        }, ANIMATION_TIMING.GLITCH_BUSY_TIMEOUT);
+        }, GLITCH.BUSY_TIMEOUT_MS);
     }, [open, runGlitch]);
 
     const handleClose = useCallback(() => {
@@ -130,20 +130,18 @@ export default function NavigationMenu() {
             }
             setTimeout(() => {
                 navigateWithTransition(path, name);
-            }, ANIMATION_TIMING.MENU_CLOSE_DELAY);
+            }, MENU_TIMING.CLOSE_NAV_DELAY_MS);
         },
         [navigateWithTransition, runGlitch]
     );
 
     return (
-        <>
-            <div className="staggered-menu-wrapper fixed-wrapper" data-open={open || undefined} data-position="left">
-                <MenuBackgroundLayers open={open} />
+        <div className="staggered-menu-wrapper fixed-wrapper" data-open={open || undefined} data-position="left">
+            <MenuBackgroundLayers open={open} />
 
-                <MenuButton ref={buttonRef} open={open} label={label} toggle={toggle} glitchRefs={glitchRefs} />
+            <MenuButton ref={buttonRef} open={open} label={label} toggle={toggle} glitchRefs={glitchRefs} />
 
-                <MenuPanel open={open} onClose={handleClose} navigateWithCurtain={navigateWithCurtain} />
-            </div>
-        </>
+            <MenuPanel open={open} onClose={handleClose} navigateWithCurtain={navigateWithCurtain} />
+        </div>
     );
 }

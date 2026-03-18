@@ -1,7 +1,9 @@
+/* eslint-disable react/prop-types, react/no-unknown-property */
+
 import Rig from '@canvas/shared/camera/Rig';
 import BackgroundMesh from '@canvas/shared/meshes/BackgroundMesh';
 import LogoMesh from '@canvas/shared/meshes/LogoMesh';
-import { ANIMATION_TIMING, FLOAT_CONFIG } from '@config/animation.config';
+import { ENTRY, FLOAT_CONFIG } from '@config/animation.config';
 import { useAdaptiveQuality } from '@hooks/useAdaptiveQuality';
 import { useCameraAnimation } from '@hooks/useCameraAnimation';
 import { useObjectAnimation } from '@hooks/useObjectAnimation';
@@ -61,7 +63,7 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
         if (!startAnimations) return;
         const timer = setTimeout(() => {
             setEntryComplete(true);
-        }, ANIMATION_TIMING.ENTRY_COMPLETE_TIMEOUT);
+        }, ENTRY.COMPLETE_TIMEOUT_MS);
         return () => clearTimeout(timer);
     }, [startAnimations]);
 
@@ -71,7 +73,7 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
         const scaleFactor = isMobile ? 0.5 : 1;
 
         return {
-            duration: ANIMATION_TIMING.ENTRY_DURATION,
+            duration: ENTRY.DURATION,
             startPosition: [0, 0, 20],
             endPosition: [0, 0, -5],
             scrollEndPosition: [0, 0, -15],
@@ -85,7 +87,7 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
 
     const backgroundAnimConfig = useMemo(
         () => ({
-            duration: ANIMATION_TIMING.ENTRY_DURATION,
+            duration: ENTRY.DURATION,
             startPosition: [0, 0, -15],
             endPosition: [0, 0, -30],
             scrollEndPosition: [0, 0, -10],
@@ -100,8 +102,8 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
 
     const subtitleAnimConfig = useMemo(
         () => ({
-            duration: ANIMATION_TIMING.ENTRY_DURATION,
-            delay: ANIMATION_TIMING.ENTRY_DELAY,
+            duration: ENTRY.DURATION,
+            delay: ENTRY.DELAY,
             startPosition: [0, -10, 20],
             endPosition: [0, -9, -5],
             scrollEndPosition: [0, -7, -5],
@@ -116,7 +118,7 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
 
     const cameraAnimConfig = useMemo(
         () => ({
-            duration: ANIMATION_TIMING.CAMERA_DURATION,
+            duration: ENTRY.CAMERA_DURATION,
             startPosition: [0, 0, 30],
             endPosition: [0, 0, 20],
             scrollEndPosition: [0, 0, 10],
@@ -139,7 +141,7 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
         lightRef.current.intensity = 0;
         const timer = setTimeout(() => {
             if (lightRef.current) lightRef.current.intensity = 1;
-        }, ANIMATION_TIMING.FADE_DURATION * 1000);
+        }, ENTRY.FADE_DURATION * 1000);
         return () => clearTimeout(timer);
     }, [startAnimations]);
 

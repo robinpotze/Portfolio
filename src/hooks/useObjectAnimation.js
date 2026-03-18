@@ -1,4 +1,4 @@
-import { ANIMATION_TIMING } from '@config/animation.config';
+import { ENTRY } from '@config/animation.config';
 import { useFrame } from '@react-three/fiber';
 import { easeCurve, entryEase } from '@utils/easingFunctions.js';
 import { useEffect, useRef } from 'react';
@@ -6,7 +6,7 @@ import * as THREE from 'three';
 
 export function useObjectAnimation(ref, routeName, options = {}) {
     const {
-        duration = ANIMATION_TIMING.ENTRY_DURATION,
+        duration = ENTRY.DURATION,
         delay = 0,
         startPosition = [0, 0, 0],
         endPosition = [0, 0, 0],

@@ -1,0 +1,56 @@
+.container {
+    position: fixed;
+    top: var(--s-m);
+    right: var(--s-m);
+    padding: var(--s-s);
+    display: flex;
+    align-items: center;
+    gap: calc(var(--s-xl) + var(--s-s));
+    z-index: 9999;
+    pointer-events: none;
+    background-color: var(--c-brnd_-100);
+}
+
+.iconWrapper {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+}
+
+.decoIcon {
+    position: absolute;
+    rotate: 90deg;
+    left: var(--s-xl);
+    filter: brightness(0)
+}
+
+.statusIcon {
+    width: 48px;
+    height: 48px;
+    filter: brightness(0)
+}
+
+.message {
+    font: var(--f-func);
+    color: var(--c-drk_100);
+    text-align: right;
+}
+
+.cornerIconTR {
+    position: absolute;
+    top: -32px;
+    right: -32px;
+    width: 48px;
+    height: 48px;
+    filter: brightness(0) saturate(100%) invert(22%) sepia(95%) saturate(6000%) hue-rotate(350deg) brightness(115%) contrast(80%);
+}
+
+.cornerIconBL {
+    position: absolute;
+    bottom: -32px;
+    left: -32px;
+    width: 48px;
+    height: 48px;
+    filter: brightness(0) saturate(100%) invert(22%) sepia(95%) saturate(6000%) hue-rotate(350deg) brightness(115%) contrast(80%);
+}

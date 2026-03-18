@@ -1,20 +1,25 @@
+/* eslint-disable react/prop-types */
+
+import { EASING, MENU_TIMING } from '@config/animation.config';
 import { motion } from 'framer-motion';
 
 const BG_COLORS = ['var(--c-lght_100)', 'var(--c-brnd_100)'];
 
 export default function MenuBackgroundLayers({ open }) {
-    const ease = [0.22, 1, 0.36, 1];
-
     return (
         <div className="sm-prelayers" aria-hidden="true">
             {BG_COLORS.map((color, i) => (
                 <motion.div
-                    key={i}
+                    key={color}
                     className="sm-prelayer"
                     style={{ background: color }}
                     initial={{ x: '-100%' }}
                     animate={{ x: open ? '0%' : '-100%' }}
-                    transition={{ duration: 0.2, ease, delay: i * 0.07 }}
+                    transition={{
+                        duration: MENU_TIMING.LAYER_DURATION,
+                        ease: EASING.EMPHASIZED,
+                        delay: i * MENU_TIMING.LAYER_STAGGER,
+                    }}
                 />
             ))}
         </div>

@@ -5,7 +5,7 @@ import ScrollDown from '@components/decoration/ScrollDown';
 import LaserFlow from '@components/effects/LaserFlow';
 import LoadingScreen from '@components/effects/LoadingScreen';
 import ErrorBoundary from '@components/ErrorBoundary';
-import { ANIMATION_TIMING, SCROLL_THRESHOLDS } from '@config/animation.config';
+import { LOADING, SCROLL_THRESHOLDS } from '@config/animation.config';
 import { usePageTransition } from '@hooks/usePageTransition';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -31,7 +31,7 @@ export default function Home() {
 
         // Clear navigation state after reading it
         if (location.state?.fromNavigation) {
-            window.history.replaceState({}, document.title);
+            globalThis.history.replaceState({}, document.title);
         }
     }, [location.state?.fromNavigation]);
 
@@ -61,7 +61,7 @@ export default function Home() {
         setTimeout(() => {
             setIsLoading(false);
             setShowContent(true);
-        }, ANIMATION_TIMING.LOADING_COMPLETE_DELAY);
+        }, LOADING.COMPLETE_DELAY_MS);
     };
 
     const laserProgress = showContent ? scrollProgress : 0;
@@ -69,8 +69,8 @@ export default function Home() {
     const verticalSizing = 0 + laserProgress * 3;
     const verticalBeamOffset = -0.6 + laserProgress * 0.1;
     const fogIntensity = 0.2 + laserProgress * 0.2;
-    const wispSpeed = 50.0 - laserProgress * 40.0;
-    const wispIntensity = 5.0 + laserProgress * 5.0;
+    const wispSpeed = 50 - laserProgress * 40;
+    const wispIntensity = 5 + laserProgress * 5;
     const decay = 1.5 - laserProgress * 0.5;
 
     return (
@@ -78,7 +78,7 @@ export default function Home() {
             {isLoading && (
                 <LoadingScreen
                     onComplete={handleLoadingComplete}
-                    minDisplayTime={ANIMATION_TIMING.LOADING_MIN_DISPLAY}
+                    minDisplayTime={LOADING.MIN_DISPLAY_MS}
                     logoSrc="/img/logo/logo.svg"
                 />
             )}
@@ -90,7 +90,7 @@ export default function Home() {
                 <LaserFlow
                     horizontalSizing={horizontalSizing}
                     verticalSizing={verticalSizing}
-                    horizontalBeamOffset={0.0}
+                    horizontalBeamOffset={0}
                     verticalBeamOffset={verticalBeamOffset}
                     color="#29D8FF"
                     fogIntensity={fogIntensity}

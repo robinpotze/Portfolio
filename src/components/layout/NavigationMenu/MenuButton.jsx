@@ -2,12 +2,11 @@
  * Navigation Header - Menu toggle button with glitch effect
  */
 
+import { EASING, MENU_TIMING } from '@config/animation.config';
 import { motion } from 'framer-motion';
 import { forwardRef } from 'react';
 
 const MenuButton = forwardRef(({ open, label, toggle, glitchRefs }, ref) => {
-    const ease = [0.22, 1, 0.36, 1];
-
     return (
         <header className="staggered-menu-header">
             <button
@@ -21,21 +20,24 @@ const MenuButton = forwardRef(({ open, label, toggle, glitchRefs }, ref) => {
                     className="sm-icon"
                     aria-hidden="true"
                     animate={{ rotate: open ? 90 : 0 }}
-                    transition={{ duration: open ? 0.6 : 0.35, ease }}
+                    transition={{
+                        duration: open ? MENU_TIMING.TOGGLE_OPEN_DURATION : MENU_TIMING.TOGGLE_CLOSE_DURATION,
+                        ease: EASING.EMPHASIZED,
+                    }}
                 >
                     <motion.img
                         src="/img/icon/PLS.svg"
                         alt=""
                         className="sm-icon-img"
                         animate={{ opacity: open ? 0 : 1, scale: open ? 0.6 : 1 }}
-                        transition={{ duration: 0.28 }}
+                        transition={{ duration: MENU_TIMING.ICON_SWAP_OUT_DURATION }}
                     />
                     <motion.img
                         src="/img/icon/CRS.svg"
                         alt=""
                         className="sm-icon-img"
                         animate={{ opacity: open ? 1 : 0, scale: open ? 1 : 0.6 }}
-                        transition={{ duration: 0.32 }}
+                        transition={{ duration: MENU_TIMING.ICON_SWAP_IN_DURATION }}
                     />
                 </motion.span>
 

@@ -1,12 +1,14 @@
-import { ANIMATION_EASING, ANIMATION_TIMING } from '@config/animation.config';
+/* eslint-disable react/prop-types */
+
+import { CURTAIN, EASING } from '@config/animation.config';
 import { motion } from 'framer-motion';
 import { useEffect, useRef } from 'react';
 import styles from './CurtainTransition.module.css';
 
 const LAYER_COLORS = ['var(--c-lght_100)', 'var(--c-brnd_100)', 'var(--c-drk_100)'];
-const EASE = ANIMATION_EASING.CURTAIN;
-const DURATION = ANIMATION_TIMING.CURTAIN_DURATION / 1000;
-const STAGGER_DELAY = ANIMATION_TIMING.LAYER_STAGGER_DELAY / 1000;
+const EASE = EASING.EMPHASIZED;
+const DURATION = CURTAIN.DURATION_MS / 1000;
+const STAGGER_DELAY = CURTAIN.LAYER_STAGGER_MS / 1000;
 
 const DIRECTION_CONFIG = {
     up: {
@@ -47,17 +49,17 @@ export default function CurtainTransition({ isOpen = false, direction = 'up', pa
     const handleAnimationComplete = () => {
         if (isOpen && onCoverComplete) {
             onCoverComplete();
-        } else if (!isOpen && onRevealComplete) {
+            return;
+        }
+        if (onRevealComplete) {
             onRevealComplete();
         }
     };
 
     const getAnimateValue = () => {
-        if (isOpen) {
-            return config.covered;
-        } else {
-            return prevIsOpenRef.current ? config.revealed : config.initial;
-        }
+        if (isOpen) return config.covered;
+        if (prevIsOpenRef.current) return config.revealed;
+        return config.initial;
     };
 
     return (
@@ -67,7 +69,7 @@ export default function CurtainTransition({ isOpen = false, direction = 'up', pa
 
                 return (
                     <motion.div
-                        key={i}
+                        key={color}
                         ref={isLastLayer ? lastLayerRef : null}
                         className={styles.curtainLayer}
                         style={{

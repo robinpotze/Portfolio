@@ -1,4 +1,6 @@
-import { ANIMATION_TIMING } from '@config/animation.config';
+/* eslint-disable react/prop-types */
+
+import { REVEAL } from '@config/animation.config';
 import { motion, useInView } from 'framer-motion';
 import { useMemo, useRef } from 'react';
 
@@ -21,7 +23,7 @@ const ScrollReveal = ({ children }) => {
             className={styles.scrollReveal}
             initial={{ opacity: 0.1, y: 8 }}
             animate={inView ? { opacity: 1, y: 0 } : { opacity: 0.1, y: 8 }}
-            transition={{ duration: ANIMATION_TIMING.SCROLL_REVEAL_DURATION, ease: 'easeOut' }}
+            transition={{ duration: REVEAL.DURATION, ease: 'easeOut' }}
         >
             <p className={styles.scrollRevealText}>
                 {children}

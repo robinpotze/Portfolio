@@ -2,7 +2,7 @@ import DashLine from '@components/decoration/DashLine';
 import GradualBlur from '@components/effects/GradualBlur';
 import ScrollReveal from '@components/effects/ScrollReveal';
 import ProjectHero from '@components/layout/ProjectHero/ProjectHero';
-import { ANIMATION_TIMING } from '@config/animation.config';
+import { LENIS } from '@config/animation.config';
 import useLenisScroll from '@hooks/useLenisScroll';
 import { normalizeKey } from '@utils/stringUtils';
 import { useParams } from 'react-router-dom';
@@ -11,8 +11,8 @@ import { pages } from './pages/autogen';
 
 export default function Entry() {
     useLenisScroll({
-        lerp: ANIMATION_TIMING.LENIS_LERP,
-        duration: ANIMATION_TIMING.LENIS_DURATION,
+        lerp: LENIS.LERP,
+        duration: LENIS.DURATION,
         smoothWheel: true,
         wheelMultiplier: 1,
         touchMultiplier: 2,

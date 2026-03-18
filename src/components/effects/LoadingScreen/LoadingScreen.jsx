@@ -1,4 +1,6 @@
-import { ANIMATION_TIMING } from '@config/animation.config';
+/* eslint-disable react/prop-types */
+
+import { LOADING } from '@config/animation.config';
 import { useProgress } from '@react-three/drei';
 import { getCSSColorRGBA } from '@utils/cssUtils';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -199,7 +201,7 @@ export default function LoadingScreen({
                 setIsHidden(true);
                 const innerTimer = setTimeout(() => {
                     if (onComplete) { onComplete(); }
-                }, ANIMATION_TIMING.LOADING_FADE_OUT);
+                }, LOADING.FADE_OUT_MS);
                 timerRefs.current.push(innerTimer);
             }, remainingTime);
             timerRefs.current.push(outerTimer);
@@ -250,7 +252,7 @@ export default function LoadingScreen({
                     className={styles.loadingScreen}
                     initial={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: ANIMATION_TIMING.LOADING_EXIT_DURATION, ease: 'easeOut' }}
+                    transition={{ duration: LOADING.EXIT_DURATION, ease: 'easeOut' }}
                 >
                     {logoSrc && <BlockLogo logoSrc={logoSrc} cycleIndex={messageIndex} />}
                     <div className={`${styles.loadingText} deco-small`}>

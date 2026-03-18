@@ -1,6 +1,8 @@
+/* eslint-disable react/prop-types */
+
 import GridOverlay from '@components/decoration/GridOverlay';
 import ScrollDown from '@components/decoration/ScrollDown';
-import { ANIMATION_EASING, ANIMATION_TIMING } from '@config/animation.config';
+import { EASING, REVEAL, STAGGER } from '@config/animation.config';
 import { motion } from 'framer-motion';
 import './ProjectHero.css';
 
@@ -10,7 +12,7 @@ export default function ProjectHero({ content }) {
         visible: {
             opacity: 1,
             scale: 1,
-            transition: { duration: ANIMATION_TIMING.PROJECT_HERO_BANNER_DURATION, ease: ANIMATION_EASING.PROJECT_HERO },
+            transition: { duration: REVEAL.DURATION, ease: EASING.HERO },
         },
     };
 
@@ -20,9 +22,9 @@ export default function ProjectHero({ content }) {
             opacity: 1,
             x: 0,
             transition: {
-                duration: ANIMATION_TIMING.PROJECT_HERO_DURATION,
-                delay: ANIMATION_TIMING.PROJECT_HERO_SIDE_DELAY + i * ANIMATION_TIMING.PROJECT_HERO_SIDE_STAGGER,
-                ease: ANIMATION_EASING.PROJECT_HERO,
+                duration: REVEAL.DURATION,
+                delay: STAGGER.DEFAULT + i * STAGGER.MICRO,
+                ease: EASING.HERO,
             },
         }),
     };
@@ -33,9 +35,9 @@ export default function ProjectHero({ content }) {
             opacity: 1,
             y: 0,
             transition: {
-                duration: ANIMATION_TIMING.PROJECT_HERO_DURATION,
-                delay: ANIMATION_TIMING.PROJECT_HERO_TITLE_DELAY,
-                ease: ANIMATION_EASING.PROJECT_HERO,
+                duration: REVEAL.DURATION,
+                delay: STAGGER.DEFAULT + STAGGER.SLOW,
+                ease: EASING.HERO,
             },
         },
     };
