@@ -1,7 +1,7 @@
 .loadingScreen {
     position: fixed;
     inset: 0;
-    background: var(--c-DRK);
+    background: var(--c-drk_100);
     z-index: 9999;
     display: flex;
     flex-direction: column;
@@ -20,6 +20,6 @@
 .loadingText {
     margin-top: 1rem;
     font: var(--f-CAPTION);
-    color: var(--c-LGHT);
+    color: var(--c-lght_100);
     letter-spacing: 0.1em;
 }

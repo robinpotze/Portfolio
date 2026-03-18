@@ -11,7 +11,7 @@
     height: 100vh;
     width: 100vw;
     padding: 3rem;
-    color: var(--c-LGHT);
+    color: var(--c-lght_100);
     box-sizing: border-box;
     background-image: url('/img/about/face.jpg');
     background-size: cover;
@@ -42,9 +42,9 @@
     padding: 1rem;
     align-items: start;
     text-transform: uppercase;
-    color: var(--c-LGHT_TRNS);
-    background: var(--c-DRK_TRNS);
-    border: 1px solid var(--c-BRND_TRNS);
+    color: var(--c-lght_40);
+    background: var(--c-drk_40);
+    border: 1px solid var(--c-brnd_20);
     backdrop-filter: blur(8px);
     transition:
         color 0.3s ease,
@@ -57,13 +57,13 @@
 }
 
 .about-selector-button:hover {
-    color: var(--c-LGHT);
-    border-color: var(--c-BRND);
+    color: var(--c-lght_100);
+    border-color: var(--c-brnd_100);
 }
 
 .about-selector-button.active {
-    color: var(--c-LGHT);
-    background: var(--c-BRND);
+    color: var(--c-lght_100);
+    background: var(--c-brnd_100);
 }
 
 .about-selector-indicator {
@@ -86,7 +86,7 @@
     flex-direction: column;
     margin-bottom: 20%;
     overflow: hidden;
-    background-color: var(--c-DRK);
+    background-color: var(--c-drk_100);
     padding: 1.5rem;
     backdrop-filter: blur(8px);
     position: relative;
@@ -96,8 +96,8 @@
 .about-name {
     font: var(--f-TITLE);
     text-transform: uppercase;
-    color: var(--c-LGHT);
-    text-shadow: 0 0 20px var(--c-LGHT_TRNS);
+    color: var(--c-lght_100);
+    text-shadow: 0 0 20px var(--c-lght_40);
     margin-bottom: 1.5rem;
     flex-shrink: 0;
 }
@@ -126,13 +126,13 @@
     gap: 1rem;
     margin-bottom: 1rem;
     padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--c-BRND_TRNS);
+    border-bottom: 1px solid var(--c-brnd_20);
 }
 
 .about-subsection-name {
     font: var(--f-H3);
     text-transform: uppercase;
-    color: var(--c-BRND);
+    color: var(--c-brnd_100);
 }
 
 .about-subsection-details {
@@ -143,17 +143,17 @@
 
 .about-subsection-function {
     font: var(--f-FUNCTIONAL_SMALL);
-    color: var(--c-LGHT_TRNS);
+    color: var(--c-lght_40);
 }
 
 .about-subsection-course {
     font: var(--f-FUNCTIONAL);
-    color: var(--c-LGHT);
+    color: var(--c-lght_100);
 }
 
 .about-subsection-date {
     font: var(--f-FUNCTIONAL_SMALL);
-    color: var(--c-LGHT_TRNS);
+    color: var(--c-lght_40);
     margin-left: auto;
 }
 
@@ -186,8 +186,8 @@
     height: 36px;
     min-width: 36px;
     border-radius: 4px;
-    background: var(--c-BRND_TRNS);
-    border: 1px solid var(--c-BRND_TRNS);
+    background: var(--c-brnd_20);
+    border: 1px solid var(--c-brnd_20);
 }
 
 .about-item-icon img {
@@ -199,12 +199,12 @@
 
 .about-item-text {
     font: var(--f-FUNCTIONAL);
-    color: var(--c-LGHT);
+    color: var(--c-lght_100);
 }
 
 .about-item-meta {
     font: var(--f-FUNCTIONAL_SMALL);
-    color: var(--c-LGHT_TRNS);
+    color: var(--c-lght_40);
     margin-left: auto;
     white-space: nowrap;
 }

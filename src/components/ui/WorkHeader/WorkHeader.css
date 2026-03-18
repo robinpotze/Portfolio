@@ -3,8 +3,8 @@
     align-items: center;
     gap: 4px;
     padding: 0 4px;
-    background-color: var(--c-LGHT);
-    color: var(--c-DRK)
+    background-color: var(--c-lght_100);
+    color: var(--c-drk_100);
 }
 
 .work-header-chapter img {

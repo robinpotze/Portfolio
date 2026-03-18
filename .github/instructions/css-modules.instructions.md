@@ -20,35 +20,39 @@ All design tokens are defined in `src/index.css` on `:root`. Always use these va
 
 ### Colors
 
-| Variable | Value | Use |
-|----------|-------|-----|
-| `--c-BRND` | `#2ad0d5` | Brand cyan — accents, highlights |
-| `--c-DRK` | `#0a0a0a` | Dark background |
-| `--c-LGHT` | `#eee` | Light text |
-| `--c-BRND_TRNS` | `rgba(42,208,213,0.15)` | Translucent brand |
-| `--c-DRK_TRNS` | `rgba(17,17,17,0.6)` | Translucent dark |
-| `--c-LGHT_TRNS` | `rgba(238,238,238,0.6)` | Translucent light |
-| `--c-TRNS` | `rgba(0,0,0,0)` | Transparent |
-| `--c-GOLD` | gradient | Gold gradient accent |
+| Variable       | Value                    | Use                  |
+|----------------|--------------------------|----------------------|
+| `--c-brnd_100` | `#2ad0d5`                | Brand cyan           |
+| `--c-brnd_20`  | `rgba(42,208,213,0.2)` | Translucent brand    |
+| `--c-brnd_-100`| `#D40322`                | Contrasted brand     |
+| `--c-brnd_-20` | `rgba(212,3,34,0.2)`   | Translucent contrast |
+| `--c-drk_100`  | `#0a0a0a`                | Dark background      |
+| `--c-drk_40`   | `rgba(17,17,17,0.4)`   | Translucent dark     |
+| `--c-lght_100` | `#eee`                   | Light text           |
+| `--c-lght_40`  | `rgba(238,238,238,0.4)`| Translucent light    |
+| `--c-0`        | `rgba(0,0,0,0)`        | Transparent          |
 
 ### Fonts
 
-| Variable | Stack | Use |
-|----------|-------|-----|
-| `--f-TITLE` | `4em 'Kode Mono', monospace` | Page titles |
-| `--f-HEADER` | `3rem 'Orbitron', sans-serif` | Section headers |
-| `--f-H3` | `1.5rem 'Orbitron', sans-serif` | Subheaders |
-| `--f-PARAGRAPH` | `1rem 'Alata', sans-serif` | Body text |
-| `--f-FUNCTIONAL` | `1rem 'Kode Mono', monospace` | UI labels, navigation |
-| `--f-FUNCTIONAL_SMALL` | `0.75rem 'Kode Mono', monospace` | Small UI text |
-| `--f-DECORATIONAL` | `2rem 'Kode Mono', monospace` | Decorative text |
+| Variable               | Stack                           | Use                   |
+|------------------------|---------------------------------|-----------------------|
+| `--f-TITLE`            | `4em 'Kode Mono', monospace`    | Page titles           |
+| `--f-HEADER`           | `3rem 'Orbitron', sans-serif`   | Section headers       |
+| `--f-H3`               | `1.5rem 'Orbitron', sans-serif` | Subheaders            |
+| `--f-PARAGRAPH`        | `1rem 'Alata', sans-serif`      | Body text             |
+| `--f-FUNCTIONAL`       | `1rem 'Kode Mono', monospace`   | UI labels, navigation |
+| `--f-FUNCTIONAL_SMALL` | `0.75rem 'Kode Mono', monospace`| Small UI text         |
+| `--f-DECORATIONAL`     | `2rem 'Kode Mono', monospace`   | Decorative text       |
 
-### Spacing & Shadows
+### Spacing
 
-| Variable | Value | Use |
-|----------|-------|-----|
-| `--sp-PAGE` | `64px` | Page-level horizontal padding |
-| `--s-SHDW` | `0px 0px 20px var(--c-DRK_TRNS)` | Standard drop shadow |
+| Variable     | Value         | Use                           |
+|--------------|---------------|-------------------------------|
+| `--sp-PAGE`  | `64px`        | Page-level horizontal padding |
+
+### Decoration
+
+
 
 ## Style Guidelines
 

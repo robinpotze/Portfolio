@@ -7,8 +7,8 @@ import MenuButton from './MenuButton';
 import MenuPanel from './MenuPanel';
 import './NavigationMenu.css';
 
-const BTN_COLOR = 'var(--c-LGHT)';
-const BTN_COLOR_OPEN = 'var(--c-BRND)';
+const BTN_COLOR = 'var(--c-lght_100)';
+const BTN_COLOR_OPEN = 'var(--c-brnd_100)';
 
 export default function NavigationMenu() {
     const { navigateWithTransition } = usePageTransition();

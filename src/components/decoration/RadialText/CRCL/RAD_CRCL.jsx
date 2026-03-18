@@ -19,7 +19,7 @@ export default function RAD_CRCL({ value = 0 }) {
                 cy="6"
                 r={radius}
                 fill="none"
-                stroke="var(--c-TRNS)"
+                stroke="var(--c_0)"
                 strokeWidth={width}
             />
             <motion.circle
@@ -29,7 +29,7 @@ export default function RAD_CRCL({ value = 0 }) {
                 cy="6"
                 r={radius}
                 fill="none"
-                stroke="var(--c-LGHT)"
+                stroke="var(--c-lght_100)"
                 strokeWidth={width}
                 strokeDasharray={circumference}
                 strokeDashoffset={circumference}

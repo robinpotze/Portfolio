@@ -5,8 +5,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: var(--c-DRK);
-    color: var(--c-LGHT);
+    background: var(--c-drk_100);
+    color: var(--c-lght_100);
     padding: 2rem;
     text-align: center;
     font-family: var(--f-FUNCTIONAL);
@@ -15,7 +15,7 @@
 
 .title {
     margin-bottom: 1rem;
-    color: var(--c-BRND);
+    color: var(--c-brnd_100);
 }
 
 .message {
@@ -30,8 +30,8 @@
 
 .retryButton {
     padding: 0.75rem 1.5rem;
-    background: var(--c-BRND);
-    color: var(--c-DRK);
+    background: var(--c-brnd_100);
+    color: var(--c-drk_100);
     border: none;
     cursor: pointer;
     font-family: inherit;
@@ -41,8 +41,8 @@
 .homeLink {
     padding: 0.75rem 1.5rem;
     background: transparent;
-    color: var(--c-LGHT);
-    border: 1px solid var(--c-LGHT);
+    color: var(--c-lght_100);
+    border: 1px solid var(--c-lght_100);
     text-decoration: none;
     font-family: inherit;
     font-weight: 600;

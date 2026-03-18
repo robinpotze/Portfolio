@@ -24,7 +24,7 @@ export default function DashLine({ direction }) {
             {isHorizontal ? (
                 <path
                     d={`M0 1 H${lineLength}`}
-                    stroke="var(--c-LGHT)"
+                    stroke="var(--c-lght_100)"
                     strokeWidth="2"
                     strokeDasharray="32 128 128 32 128 32 128 128"
                     fill="none"
@@ -32,7 +32,7 @@ export default function DashLine({ direction }) {
             ) : (
                 <path
                     d={`M0 1 V${lineLength}`}
-                    stroke="var(--c-LGHT)"
+                    stroke="var(--c-lght_100)"
                     strokeWidth="2"
                     strokeDasharray="32, 128, 128, 128"
                     fill="none"

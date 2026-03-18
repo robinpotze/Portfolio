@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 
-export default function ScrollDown({ color = "var(--c-LGHT)", width = 32, height = 64, speed = 1.2 }) {
+export default function ScrollDown({ color = "var(--c-lght_100)", width = 32, height = 64, speed = 1.2 }) {
 
     const lineVariants = {
         initial: { opacity: 0.2 },

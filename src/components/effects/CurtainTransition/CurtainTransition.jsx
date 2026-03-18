@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { useEffect, useRef } from 'react';
 import styles from './CurtainTransition.module.css';
 
-const LAYER_COLORS = ['var(--c-LGHT)', 'var(--c-BRND)', 'var(--c-DRK)'];
+const LAYER_COLORS = ['var(--c-lght_100)', 'var(--c-brnd_100)', 'var(--c-drk_100)'];
 const EASE = ANIMATION_EASING.CURTAIN;
 const DURATION = ANIMATION_TIMING.CURTAIN_DURATION / 1000;
 const STAGGER_DELAY = ANIMATION_TIMING.LAYER_STAGGER_DELAY / 1000;

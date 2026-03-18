@@ -1,4 +1,23 @@
 .contact-page {
-    min-height: 100vh;
-    padding: var(--sp-PAGE);
+    height: 100vh;
+    width: 100vw;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-areas: 
+        '. .         errortitle errortitle errortitle   errorlog'
+        '. formtitle .          .          formcornertr errorlog'
+        '. form      form       form       form         .       '
+        '. bottomlog statusgrid statusgrid formcornerbr .       '
+        '. .         .          .          .            .       ';
+    gap: 8px;
+    padding: 64px;
+}
+
+.contact-form {
+    grid-area: form;
+    padding: 64px;
+    display: flex;
+    gap: 48px;
+    background-color: var(--c-brnd_-100);
 }

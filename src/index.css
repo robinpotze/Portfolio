@@ -1,12 +1,13 @@
 :root {
-    --c-BRND: #2ad0d5;
-    --c-LGHT: #eee;
-    --c-DRK: #0a0a0a;
-    --c-BRND_TRNS: rgba(42, 208, 213, 0.15);
-    --c-DRK_TRNS: rgba(17, 17, 17, 0.6);
-    --c-LGHT_TRNS: rgba(238, 238, 238, 0.6);
-    --c-TRNS: rgba(0, 0, 0, 0);
-    --c-GOLD: linear-gradient(90deg, #ffbb00 0%, #a95b17 100%);
+    --c-brnd_100: #2ad0d5;
+    --c-brnd_20: rgba(42, 208, 213, 0.2);
+    --c-brnd_-100: #D40322;
+    --c-brnd_-20: rgba(212, 3, 34, 0.2);
+    --c-lght_100: #eee;
+    --c-lght_40: rgba(238, 238, 238, 0.4);
+    --c-drk_100: #0a0a0a;
+    --c-drk_40: rgba(17, 17, 17, 0.4);
+    --c_0: rgba(0, 0, 0, 0);
 
     --f-TITLE: 4em 'Kode Mono', monospace;
     --f-HEADER: 3rem 'Orbitron', sans-serif;
@@ -19,7 +20,7 @@
     --f-DECORATIONAL_SMALL: 1rem 'Kode Mono', monospace;
     --f-DECORATIONAL_TINY: 0.75rem 'Kode Mono', monospace;
 
-    --s-SHDW: 0px 0px 20px var(--c-DRK_TRNS);
+    --s-SHDW: 0px 0px 20px var(--c-drk_40);
 
     --sp-PAGE: 64px;
 }
@@ -32,8 +33,8 @@ body {
     margin: 0;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: var(--c-DRK);
-    color: var(--c-LGHT);
+    background-color: var(--c-drk_100);
+    color: var(--c-lght_100);
 }
 
 button {
@@ -63,7 +64,7 @@ ol {
 h1 {
     font: var(--f-TITLE);
     text-transform: uppercase;
-    text-shadow: 0 0 20px var(--c-LGHT_TRNS);
+    text-shadow: 0 0 20px var(--c-lght_40);
 }
 
 h2 {

@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 
-const BG_COLORS = ['var(--c-LGHT)', 'var(--c-BRND)'];
+const BG_COLORS = ['var(--c-lght_100)', 'var(--c-brnd_100)'];
 
 export default function MenuBackgroundLayers({ open }) {
     const ease = [0.22, 1, 0.36, 1];

@@ -52,7 +52,7 @@
     background: transparent;
     border: none;
     cursor: pointer;
-    color: var(--c-LGHT);
+    color: var(--c-lght_100);
     font: var(--f-FUNCTIONAL);
     font-size: 1.25rem;
     transition: color 0.25s;
@@ -154,7 +154,7 @@
     right: 0;
     width: clamp(260px, 38vw, 420px);
     height: calc(100% - 11em);
-    background: linear-gradient(var(--c-DRK) 80%, var(--c-DRK_TRNS));
+    background: linear-gradient(var(--c-drk_100) 80%, var(--c-drk_40));
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     display: flex;
@@ -186,7 +186,7 @@
 
 .sm-panel-item {
     position: relative;
-    color: var(--c-LGHT);
+    color: var(--c-lght_100);
     font: var(--f-FUNCTIONAL);
     font-weight: 600;
     font-size: var(--menu-item-size-desktop);
@@ -199,7 +199,7 @@
 }
 
 .sm-panel-item:hover {
-    color: var(--c-BRND);
+    color: var(--c-brnd_100);
 }
 
 .sm-panel-item-bg {
@@ -218,7 +218,7 @@
     position: absolute;
     font-size: 1rem;
     font-weight: 400;
-    color: var(--c-BRND);
+    color: var(--c-brnd_100);
     letter-spacing: 0;
     pointer-events: none;
     user-select: none;
@@ -234,7 +234,7 @@
 
 .sm-socials h3 {
     font: var(--f-FUNCTIONAL);
-    color: var(--c-BRND);
+    color: var(--c-brnd_100);
 }
 
 .sm-socials ul {
@@ -248,16 +248,16 @@
 
 .sm-socials a {
     font: var(--f-FUNCTIONAL);
-    color: var(--c-LGHT);
+    color: var(--c-lght_100);
     transition: color 0.2s ease, opacity 0.2s ease;
 }
 
 .sm-socials a:hover {
-    color: var(--c-BRND);
+    color: var(--c-brnd_100);
 }
 
 .sm-socials a:focus-visible {
-    outline: 2px solid var(--c-BRND);
+    outline: 2px solid var(--c-brnd_100);
     outline-offset: .25rem;
 }
 
