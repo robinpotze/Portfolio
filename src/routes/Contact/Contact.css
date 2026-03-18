@@ -71,7 +71,7 @@
     will-change: transform;
 }
 
-.contact-formContent {
+.contact-form-content {
     width: 100%;
     display: flex;
     gap: var(--s-l);
@@ -117,5 +117,9 @@
 }
 
 .contact-log-row {
-    margin: 0;
+    margin: 0;  
+}
+
+.contact-name-input::placeholder {
+    color: var(--c-brnd_-20);
 }

@@ -147,7 +147,7 @@ export default function Contact () {
                     animate='visible'
                 >
                     <motion.div
-                        className='contact-formContent'
+                        className='contact-form-content'
                         variants={formContentVariants}
                         initial='hidden'
                         animate='visible'
