@@ -9,20 +9,23 @@
     --c-drk_40: rgba(17, 17, 17, 0.4);
     --c_0: rgba(0, 0, 0, 0);
 
-    --f-TITLE: 4em 'Kode Mono', monospace;
-    --f-HEADER: 3rem 'Orbitron', sans-serif;
-    --f-H3: 1.5rem 'Orbitron', sans-serif;
-    --f-PARAGRAPH: 1rem 'Alata', sans-serif;
-    --f-FUNCTIONAL: 1rem 'Kode Mono', monospace;
-    --f-FUNCTIONAL_SMALL: 0.75rem 'Kode Mono', monospace;
-    --f-FUNCTIONAL_TINY: 0.5rem 'Kode Mono', monospace;
-    --f-DECORATIONAL: 2rem 'Kode Mono', monospace;
-    --f-DECORATIONAL_SMALL: 1rem 'Kode Mono', monospace;
-    --f-DECORATIONAL_TINY: 0.75rem 'Kode Mono', monospace;
+    --f-title: 4em 'Kode Mono', monospace;
+    --f-hdr_1: 3rem 'Orbitron', sans-serif;
+    --f-hdr_2: 2.25rem 'Orbitron', sans-serif;
+    --f-hdr_3: 1.5rem 'Orbitron', sans-serif;
+    --f-paragraph: 1rem 'Alata', sans-serif;
+    --f-func: 1rem 'Kode Mono', monospace;
+    --f-func-small: 0.75rem 'Kode Mono', monospace;
+    --f-func-tiny: 0.5rem 'Kode Mono', monospace;
+    --f-deco: 2rem 'Kode Mono', monospace;
+    --f-deco-small: 1rem 'Kode Mono', monospace;
+    --f-deco-tiny: 0.75rem 'Kode Mono', monospace;
 
-    --s-SHDW: 0px 0px 20px var(--c-drk_40);
-
-    --sp-PAGE: 64px;
+    --s-xs: 8px;
+    --s-s: 16px;
+    --s-m: 32px;
+    --s-l: 48px;
+    --s-xl: 64px;
 }
 
 html {
@@ -62,47 +65,43 @@ ol {
 }
 
 h1 {
-    font: var(--f-TITLE);
+    font: var(--f-hdr_1);
     text-transform: uppercase;
     text-shadow: 0 0 20px var(--c-lght_40);
 }
 
 h2 {
-    font: var(--f-HEADER);
+    font: var(--f-hdr_2);
     text-transform: uppercase;
 }
 
 h3 {
-    font: var(--f-H3);
+    font: var(--f-hdr_3);
     text-transform: uppercase;
 }
 
-p {
-    font: var(--f-PARAGRAPH);
-}
-
 .functional {
-    font: var(--f-FUNCTIONAL);
+    font: var(--f-func);
 }
 
 .functional-small {
-    font: var(--f-FUNCTIONAL_SMALL);
+    font: var(--f-func-small);
 }
 
 .functional-tiny {
-    font: var(--f-FUNCTIONAL_TINY);
+    font: var(--f-func-tiny);
 }
 
 .deco {
-    font: var(--f-DECORATIONAL);
+    font: var(--f-deco);
 }
 
 .deco-small {
-    font: var(--f-DECORATIONAL_SMALL);
+    font: var(--f-deco-small);
 }
 
 .deco-tiny {
-    font: var(--f-DECORATIONAL_TINY);
+    font: var(--f-deco-tiny);
 }
 
 .r90 {

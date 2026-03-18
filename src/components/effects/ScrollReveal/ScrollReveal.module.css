@@ -3,7 +3,7 @@
 }
 
 .scrollRevealText {
-    font: var(--f-PARAGRAPH);
+    font: var(--f-paragraph);
     text-transform: none;
     margin: 0;
 }

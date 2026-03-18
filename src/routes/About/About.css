@@ -94,7 +94,7 @@
 }
 
 .about-name {
-    font: var(--f-TITLE);
+    font: var(--f-title);
     text-transform: uppercase;
     color: var(--c-lght_100);
     text-shadow: 0 0 20px var(--c-lght_40);
@@ -130,7 +130,7 @@
 }
 
 .about-subsection-name {
-    font: var(--f-H3);
+    font: var(--f-hdr_3);
     text-transform: uppercase;
     color: var(--c-brnd_100);
 }
@@ -142,17 +142,17 @@
 }
 
 .about-subsection-function {
-    font: var(--f-FUNCTIONAL_SMALL);
+    font: var(--f-func-small);
     color: var(--c-lght_40);
 }
 
 .about-subsection-course {
-    font: var(--f-FUNCTIONAL);
+    font: var(--f-func);
     color: var(--c-lght_100);
 }
 
 .about-subsection-date {
-    font: var(--f-FUNCTIONAL_SMALL);
+    font: var(--f-func-small);
     color: var(--c-lght_40);
     margin-left: auto;
 }
@@ -198,12 +198,12 @@
 }
 
 .about-item-text {
-    font: var(--f-FUNCTIONAL);
+    font: var(--f-func);
     color: var(--c-lght_100);
 }
 
 .about-item-meta {
-    font: var(--f-FUNCTIONAL_SMALL);
+    font: var(--f-func-small);
     color: var(--c-lght_40);
     margin-left: auto;
     white-space: nowrap;
@@ -218,7 +218,7 @@
         grid-template-areas:
             'selector'
             'details';
-        padding: calc(var(--sp-PAGE) / 2);
+        padding: calc(var(--s-xl) / 2);
         gap: 1rem;
     }
 
@@ -228,7 +228,7 @@
     }
 
     .about-selector-button {
-        font: var(--f-FUNCTIONAL);
+        font: var(--f-func);
         flex: 0 1 auto;
         aspect-ratio: auto;
         padding: 0.5rem 1rem;

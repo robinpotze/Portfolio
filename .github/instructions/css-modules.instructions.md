@@ -48,7 +48,11 @@ All design tokens are defined in `src/index.css` on `:root`. Always use these va
 
 | Variable     | Value         | Use                           |
 |--------------|---------------|-------------------------------|
-| `--sp-PAGE`  | `64px`        | Page-level horizontal padding |
+| `--s-xs`     | `8px`         | Extra small spacing           |
+| `--s-s`      | `16px`        | Small spacing                 |
+| `--s-m`      | `32px`        | Medium spacing                |
+| `--s-l`      | `48px`        | Large spacing                 |
+| `--s-xl`     | `64px`        | Extra large spacing           |
 
 ### Decoration
 

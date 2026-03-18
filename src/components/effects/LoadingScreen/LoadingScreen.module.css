@@ -19,7 +19,7 @@
 
 .loadingText {
     margin-top: 1rem;
-    font: var(--f-CAPTION);
+    font: var(--f-func-small);
     color: var(--c-lght_100);
     letter-spacing: 0.1em;
 }

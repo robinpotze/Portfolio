@@ -9,7 +9,7 @@
     color: var(--c-lght_100);
     padding: 2rem;
     text-align: center;
-    font-family: var(--f-FUNCTIONAL);
+    font-family: var(--f-func);
     z-index: 9999;
 }
 

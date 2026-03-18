@@ -2,22 +2,94 @@
     height: 100vh;
     width: 100vw;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: repeat(5, 1fr);
     grid-template-areas: 
         '. .         errortitle errortitle errortitle   errorlog'
         '. formtitle .          .          formcornertr errorlog'
         '. form      form       form       form         .       '
         '. bottomlog statusgrid statusgrid formcornerbr .       '
         '. .         .          .          .            .       ';
-    gap: 8px;
+    column-gap: 8px;
     padding: 64px;
+    box-sizing: border-box;
+}
+
+.contact-corner-tl {
+    grid-area: formtitle;
+    display: flex;
+    align-self: flex-end;
+    align-items: center;
+    gap: var(--s-s);
+    font: var(--f-hdr_3);
+    text-transform: uppercase;
+    color: var(--c-brnd_-100);
+}
+
+.contact-corner-tr {
+    grid-area: formcornertr;
+    display: flex;
+    align-self: flex-end;
+    justify-content: flex-end;
+}
+
+.contact-corner-bl {
+    grid-area: bottomlog;
+    display: flex;
+    align-self: flex-start;
+    align-items: center;
+    gap: var(--s-s);
+    font: var(--f-deco-tiny);
+    color: var(--c-brnd_-100);
+}
+
+.contact-corner-br {
+    grid-area: formcornerbr;
+    display: flex;
+    justify-content: flex-end;  
 }
 
 .contact-form {
     grid-area: form;
-    padding: 64px;
+    padding: var(--s-xl);
     display: flex;
-    gap: 48px;
+    gap: var(--s-l);
+    justify-content: center;
+    align-items: center;
     background-color: var(--c-brnd_-100);
+    color: var(--c-drk_100);
+}
+
+.contact-name-input {
+    font: var(--f-hdr_1);
+    text-align: center;
+    padding: var(--s-s);
+    background-color: var(--c-drk_100);
+    color: var(--c-brnd_-100);
+    border: none;
+}
+
+.contact-mail-icon {
+    width: 74px;
+    height: 74px;
+    filter: brightness(0);
+}
+
+.contact-deco {
+    width: 64px;
+    height: 64px;
+    filter: brightness(0);
+}
+
+.contact-corner {
+    width: 64px;
+    height: 64px;
+    background-color: var(--c-brnd_-100);
+}
+
+.contact-statusgrid {
+    grid-area: statusgrid;
+    align-self: flex-end;
+    font: var(--f-deco-tiny);
+    color: var(--c-brnd_-100)
 }

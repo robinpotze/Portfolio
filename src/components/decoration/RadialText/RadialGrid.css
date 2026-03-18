@@ -1,12 +1,13 @@
 .rad-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
 }
 
 #rad-grid-txt {
     height: 53px;
     width: 74px;
+    font: var(--f-deco-tiny);
 }
 
 #rad-grid-crcl {

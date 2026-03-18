@@ -26,7 +26,7 @@
 }
 
 .curtainLabel {
-    font: var(--f-HEADER);
+    font: var(--f-hdr_1);
     text-transform: uppercase;
     color: var(--c-lght_100);
     pointer-events: none;

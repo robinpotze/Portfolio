@@ -53,7 +53,7 @@
     border: none;
     cursor: pointer;
     color: var(--c-lght_100);
-    font: var(--f-FUNCTIONAL);
+    font: var(--f-func);
     font-size: 1.25rem;
     transition: color 0.25s;
 }
@@ -187,7 +187,7 @@
 .sm-panel-item {
     position: relative;
     color: var(--c-lght_100);
-    font: var(--f-FUNCTIONAL);
+    font: var(--f-func);
     font-weight: 600;
     font-size: var(--menu-item-size-desktop);
     line-height: 1;
@@ -233,7 +233,7 @@
 }
 
 .sm-socials h3 {
-    font: var(--f-FUNCTIONAL);
+    font: var(--f-func);
     color: var(--c-brnd_100);
 }
 
@@ -247,7 +247,7 @@
 }
 
 .sm-socials a {
-    font: var(--f-FUNCTIONAL);
+    font: var(--f-func);
     color: var(--c-lght_100);
     transition: color 0.2s ease, opacity 0.2s ease;
 }
