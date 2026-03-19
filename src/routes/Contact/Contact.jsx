@@ -111,12 +111,14 @@ export default function Contact () {
     return (
         <ErrorBoundary>
             <div className='contact-page'>
-                <StatusMessage status='error' message={<>CONNECTION<br />INTERRUPTED</>} />
-                <TypewriterText
-                    lines={ERROR_LOG_LINES}
-                    className='contact-errorlog'
-                    rowClassName='contact-log-row'
-                />
+                <div className='contact-error-section'>
+                    <StatusMessage status='error' message={<>CONNECTION<br />INTERRUPTED</>} />
+                    <TypewriterText
+                        lines={ERROR_LOG_LINES}
+                        className='contact-errorlog'
+                        rowClassName='contact-log-row'
+                    />
+                </div>
                 <motion.div
                     className='contact-corner-tl'
                     custom={{ y: STAGGER.DEFAULT * 200 }}

@@ -9,7 +9,7 @@ export default function StatusMessage({ status = 'success', message }) {
     const { icon, decal } = STATUS_CONFIG[status] ?? STATUS_CONFIG.success;
 
     return (
-        <div className={`${styles.container} ${styles[status] ?? ''}`}>
+        <div className={`${styles.statusMessage} ${styles[status] ?? ''}`}>
             <img className={styles.cornerIconTR} src='/img/icon/PLS.svg' alt='status message corner icon' />
             <div className={styles.iconWrapper}>
                 <img className={styles.decoIcon} src={decal} alt="" />

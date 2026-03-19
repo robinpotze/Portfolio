@@ -1,4 +1,4 @@
-.container {
+.statusMessage {
     position: fixed;
     top: var(--s-m);
     right: var(--s-m);
