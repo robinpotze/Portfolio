@@ -12,7 +12,7 @@ export const Data = {
     year: 2024,
     software: ["Illustrator","AfterEffects", "Blender", "Figma"],
     skills: ["Graphic Design", "Game Design", "3D Graphics", "Motion Graphics"],
-    banner: `${assetPath}CyberSec_Render.png`
+    banner: `${assetPath}cybersec/CyberSec_Render.png`
 }
 
 export default function SsgNL() {
