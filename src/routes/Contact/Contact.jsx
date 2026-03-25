@@ -1,9 +1,9 @@
-import TypewriterText from '@components/effects/TypewriterText/TypewriterText';
+import TypewriterText from '@components/effects/TypewriterText';
 import ErrorBoundary from '@components/ErrorBoundary';
 import { CONTACT_TIMING, EASING, REVEAL, STAGGER } from '@config/animation.config';
 import { motion } from 'framer-motion';
-import RadGridTxt from '../../components/decoration/RadialText/TXT/RAD_GRID_TXT';
-import StatusMessage from '../../components/ui/StatusMessage/StatusMessage';
+import RadGridTxt from '@components/decoration/RadialText/TXT/RAD_GRID_TXT';
+import StatusMessage from '@components/ui/StatusMessage/StatusMessage';
 import './Contact.css';
 
 const ERROR_LOG_LINES = [
@@ -127,7 +127,7 @@ export default function Contact () {
                     animate='visible'
                 >
                     <div className='contact-corner'>
-                        <img className='contact-deco' src='img/icon/PLS.svg' alt='contact form corner plus icon'/>
+                        <img className='contact-deco' src='img/icon/PLS_DRK.svg' alt='contact form corner plus icon'/>
                     </div>
                     <h3 className='contact-title-txt'>CNTCT-FRM</h3>
                 </motion.div>
@@ -139,7 +139,7 @@ export default function Contact () {
                     animate='visible'
                 >
                     <div className='contact-corner'>
-                        <img className='contact-deco' src='img/icon/PLS.svg' alt='contact form corner plus icon'/>
+                        <img className='contact-deco' src='img/icon/PLS_DRK.svg' alt='contact form corner plus icon'/>
                     </div>
                 </motion.div>
                 <motion.div
@@ -154,10 +154,10 @@ export default function Contact () {
                         initial='hidden'
                         animate='visible'
                     >
-                        <img className='contact-mail-icon' src='img/icon/MSG.svg' alt='contact form mail icon' />
-                        <img className='contact-deco' src='img/icon/PLS.svg' alt='contact form decoration icon' />
+                        <img className='contact-mail-icon' src='img/icon/MSG_DRK.svg' alt='contact form mail icon' />
+                        <img className='contact-deco' src='img/icon/PLS_DRK.svg' alt='contact form decoration icon' />
                         <input className='contact-name-input' placeholder='IDENTIFY' />
-                        <img className='contact-deco' src='img/icon/PLS.svg' alt='contact form decoration icon' />
+                        <img className='contact-deco' src='img/icon/PLS_DRK.svg' alt='contact form decoration icon' />
                         <RadGridTxt />
                     </motion.div>
                 </motion.div>
@@ -169,7 +169,7 @@ export default function Contact () {
                     animate='visible'
                 >
                     <div className='contact-corner'>
-                        <img className='contact-deco' src='img/icon/PLS.svg' alt='contact form corner plus icon'/>
+                        <img className='contact-deco' src='img/icon/PLS_DRK.svg' alt='contact form corner plus icon'/>
                     </div>
                     <TypewriterText
                         lines={['SNR: 32dB | BER: 1e-9 | FRAME_LOCK: TRUE \nSIG_INT: ACTIVE | BUFFER: 0%']}
@@ -185,7 +185,7 @@ export default function Contact () {
                     animate='visible'
                 >
                     <div className='contact-corner'>
-                        <img className='contact-deco' src='img/icon/PLS.svg' alt='contact form corner plus icon'/>
+                        <img className='contact-deco' src='img/icon/PLS_DRK.svg' alt='contact form corner plus icon'/>
                     </div>
                 </motion.div>
                 <TypewriterText

@@ -5,11 +5,40 @@ import ScrollDown from '@components/decoration/ScrollDown';
 import LaserFlow from '@components/effects/LaserFlow';
 import LoadingScreen from '@components/effects/LoadingScreen';
 import ErrorBoundary from '@components/ErrorBoundary';
-import { LOADING, SCROLL_THRESHOLDS } from '@config/animation.config';
+import { EASING, LOADING, REVEAL, SCROLL_THRESHOLDS, STAGGER } from '@config/animation.config';
 import { usePageTransition } from '@hooks/usePageTransition';
+import { motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import './Home.css';
+
+const sideContainerVariants = {
+    hidden: {
+        opacity: 0,
+    },
+    visible: {
+        opacity: 1,
+        transition: {
+            staggerChildren: STAGGER.DEFAULT,
+            delayChildren: REVEAL.DELAY,
+        },
+    },
+};
+
+const sideItemVariants = {
+    hidden: {
+        opacity: 0,
+        x: REVEAL.X_OFFSET * 4,
+    },
+    visible: {
+        opacity: 1,
+        x: 0,
+        transition: {
+            duration: REVEAL.DURATION,
+            ease: EASING.EMPHASIZED,
+        },
+    },
+};
 
 export default function Home() {
     const { navigateWithTransition } = usePageTransition();
@@ -119,21 +148,26 @@ export default function Home() {
                             <ScrollDown />
                         </div>
                     </div>
-                    <div className="home-side">
-                        <div className="home-side-rotation-wrapper">
+                    <motion.div
+                        className="home-side"
+                        variants={sideContainerVariants}
+                        initial="hidden"
+                        animate={showContent ? 'visible' : 'hidden'}
+                    >
+                        <motion.div className="home-side-rotation-wrapper" variants={sideItemVariants}>
                             <div className="home-side-flavour-text r90">
                                 <p className="deco-tiny home-side-text">assertThat(AMBIGUOUS.AMBIVALENCE)</p>
                                 <p className="deco-tiny home-side-text-brand">willReturn("ESCAPE WILL MAKE ME GOD")</p>
                             </div>
-                        </div>
-                        <div className="home-side-divider r90">
+                        </motion.div>
+                        <motion.div className="home-side-divider r90" variants={sideItemVariants}>
                             <img className="home-side-decal" src="img/icon/CRS.svg" alt="divider" />
                             <p className="deco-tiny home-side-deco-text">SDD.01</p>
-                        </div>
-                        <img className="home-side-decal" src="img/decal/MORSE.svg" alt="robin potze in barcode" />
-                        <img className="home-side-decal" src="img/decal/PILL.svg" alt="pill with four arrows point downwards" />
-                        <img className="home-side-decal" id="decal-sound" src="img/decal/SND.svg" alt="ROBIN in sound waves" />
-                    </div>
+                        </motion.div>
+                        <motion.img className="home-side-decal" src="img/decal/MORSE.svg" alt="robin potze in barcode" variants={sideItemVariants} />
+                        <motion.img className="home-side-decal" src="img/decal/PILL.svg" alt="pill with four arrows point downwards" variants={sideItemVariants} />
+                        <motion.img className="home-side-decal" id="decal-sound" src="img/decal/SND.svg" alt="ROBIN in sound waves" variants={sideItemVariants} />
+                    </motion.div>
                 </div>
                 <div className="home-transition-section" />
                 <ErrorBoundary>
