@@ -41,12 +41,16 @@ jobs:
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
 
-          cat >> ~/.ssh/config << EOF
-          Host ssh.robinpotze.com
-            User living_ipod
-            IdentityFile ~/.ssh/deploy_key
-            ProxyCommand cloudflared access ssh --hostname %h --id ${CF_ACCESS_CLIENT_ID} --secret ${CF_ACCESS_CLIENT_SECRET}
-            StrictHostKeyChecking no
-          EOF
+          # Start cloudflared TCP proxy in background on port 2222
+          cloudflared access tcp \
+            --hostname ssh.robinpotze.com \
+            --url localhost:2222 \
+            --service-token-id "$CF_ACCESS_CLIENT_ID" \
+            --service-token-secret "$CF_ACCESS_CLIENT_SECRET" &
 
-          rsync -avz --delete -e ssh dist/ living_ipod@ssh.robinpotze.com:~/home-server/portfolio/dist/
+          # Wait for the tunnel to be ready
+          sleep 5
+
+          rsync -avz --delete \
+            -e "ssh -i ~/.ssh/deploy_key -p 2222 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" \
+            dist/ living_ipod@127.0.0.1:~/home-server/portfolio/dist/
