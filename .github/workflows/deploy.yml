@@ -43,7 +43,7 @@ jobs:
           Host ssh.robinpotze.com
             User living_ipod
             IdentityFile ~/.ssh/deploy_key
-            ProxyCommand cloudflared access tcp --hostname %h --url localhost:22
+            ProxyCommand cloudflared access ssh --hostname %h
             StrictHostKeyChecking no
           EOF
 
