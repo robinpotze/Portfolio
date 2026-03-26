@@ -31,6 +31,9 @@ jobs:
                   curl -fsSL https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb -o cloudflared.deb
                   sudo dpkg -i cloudflared.deb
 
+            - name: Debug cloudflared
+              run: cloudflared access tcp --help
+
             - name: Deploy via rsync
               env:
                   SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
