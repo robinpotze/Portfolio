@@ -47,4 +47,4 @@ jobs:
             StrictHostKeyChecking no
           EOF
 
-          rsync -avz --delete -e ssh dist/ living_ipod@ssh.yourdomain.com:~/home-server/portfolio/dist/
+          rsync -avz --delete -e ssh dist/ living_ipod@ssh.robinpotze.com:~/home-server/portfolio/dist/
