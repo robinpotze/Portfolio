@@ -31,8 +31,15 @@ jobs:
                   curl -fsSL https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb -o cloudflared.deb
                   sudo dpkg -i cloudflared.deb
 
-            - name: Debug cloudflared
-              run: cloudflared access tcp --help
+            - name: Test Access token
+              env:
+                  CF_ACCESS_CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
+                  CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
+              run: |
+                  curl -sv \
+                    -H "CF-Access-Client-Id: $CF_ACCESS_CLIENT_ID" \
+                    -H "CF-Access-Client-Secret: $CF_ACCESS_CLIENT_SECRET" \
+                    https://ssh.robinpotze.com 2>&1 | head -80
 
             - name: Deploy via rsync
               env:
