@@ -31,34 +31,18 @@ jobs:
                   curl -fsSL https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb -o cloudflared.deb
                   sudo dpkg -i cloudflared.deb
 
-            - name: Test Access token
-              env:
-                  CF_ACCESS_CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
-                  CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
-              run: |
-                  curl -sv \
-                    -H "CF-Access-Client-Id: $CF_ACCESS_CLIENT_ID" \
-                    -H "CF-Access-Client-Secret: $CF_ACCESS_CLIENT_SECRET" \
-                    https://ssh.robinpotze.com 2>&1 | head -80
-
             - name: Deploy via rsync
               env:
                   SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-                  CF_ACCESS_CLIENT_ID: ${{ secrets.CF_ACCESS_CLIENT_ID }}
-                  CF_ACCESS_CLIENT_SECRET: ${{ secrets.CF_ACCESS_CLIENT_SECRET }}
               run: |
                   mkdir -p ~/.ssh
                   echo "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
                   chmod 600 ~/.ssh/deploy_key
 
-                  # Start cloudflared TCP proxy in background on port 2222
                   cloudflared access tcp \
                     --hostname ssh.robinpotze.com \
-                    --url localhost:2222 \
-                    --id "$CF_ACCESS_CLIENT_ID" \
-                    --secret "$CF_ACCESS_CLIENT_SECRET" &
+                    --url localhost:2222 &
 
-                  # Wait for the tunnel to be ready
                   sleep 5
 
                   rsync -avz --delete \
