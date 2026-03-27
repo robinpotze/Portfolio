@@ -1,14 +1,14 @@
 .statusMessage {
-    position: fixed;
-    top: var(--s-m);
-    right: var(--s-m);
     padding: var(--s-s);
     display: flex;
     align-items: center;
-    gap: calc(var(--s-xl) + var(--s-s));
+    justify-content: space-between;
     z-index: 9999;
     pointer-events: none;
+    overflow: hidden;
     background-color: var(--c-brnd_-100);
+    transform-origin: right center;
+    will-change: clip-path, opacity;
 }
 
 .iconWrapper {
@@ -20,15 +20,12 @@
 
 .decoIcon {
     position: absolute;
-    rotate: 90deg;
-    left: var(--s-xl);
-    filter: brightness(0)
+    height: 64px;
 }
 
 .statusIcon {
     width: 48px;
     height: 48px;
-    filter: brightness(0)
 }
 
 .message {
@@ -43,7 +40,6 @@
     right: -32px;
     width: 48px;
     height: 48px;
-    filter: brightness(0) saturate(100%) invert(22%) sepia(95%) saturate(6000%) hue-rotate(350deg) brightness(115%) contrast(80%);
 }
 
 .cornerIconBL {
@@ -52,5 +48,4 @@
     left: -32px;
     width: 48px;
     height: 48px;
-    filter: brightness(0) saturate(100%) invert(22%) sepia(95%) saturate(6000%) hue-rotate(350deg) brightness(115%) contrast(80%);
 }

@@ -1,35 +1,50 @@
 name: Deploy to Server
 
 on:
-  push:
-    branches:
-      - master
-  workflow_dispatch:
+    push:
+        branches:
+            - master
+    workflow_dispatch:
 
 jobs:
-  build-and-deploy:
-    runs-on: self-hosted
-    
+    build-and-deploy:
+        runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
-        with:
-          clean: true
-        
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-          
-      - name: Clean previous build
-        run: rm -rf /portfolio/dist/*
-        
-      - name: Install dependencies
-        run: npm ci
-        
-      - name: Build
-        run: npm run build
-        
-      - name: Deploy to Caddy
-        run: cp -r dist/* /portfolio/dist/
+
+            - name: Setup Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: '24'
+                  cache: 'npm'
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Build
+              run: npm run build
+
+            - name: Install cloudflared
+              run: |
+                  curl -fsSL https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb -o cloudflared.deb
+                  sudo dpkg -i cloudflared.deb
+
+            - name: Deploy via rsync
+              env:
+                  SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+              run: |
+                  mkdir -p ~/.ssh
+                  echo "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
+                  chmod 600 ~/.ssh/deploy_key
+
+                  cloudflared access tcp \
+                    --hostname ssh.robinpotze.com \
+                    --url localhost:2222 &
+
+                  sleep 5
+
+                  rsync -avz --delete \
+                    -e "ssh -i ~/.ssh/deploy_key -p 2222 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" \
+                    dist/ living_ipod@127.0.0.1:~/home-server/portfolio/dist/

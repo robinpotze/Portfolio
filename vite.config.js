@@ -9,14 +9,28 @@ export default defineConfig({
         chunkSizeWarningLimit: 600,
         rollupOptions: {
             output: {
-                manualChunks: {
-                    react: ['react', 'react-dom'],
-                    'react-router': ['react-router-dom'],
-                    'framer-motion': ['framer-motion'],
-                    three: ['three'],
-                    'r3f-fiber': ['@react-three/fiber'],
-                    'r3f-drei': ['@react-three/drei'],
-                    'r3f-postprocessing': ['@react-three/postprocessing']
+                manualChunks(id) {
+                    if (id.includes('/node_modules/react/') || id.includes('/node_modules/react-dom/')) {
+                        return 'react';
+                    }
+                    if (id.includes('/node_modules/react-router-dom/')) {
+                        return 'react-router';
+                    }
+                    if (id.includes('/node_modules/framer-motion/')) {
+                        return 'framer-motion';
+                    }
+                    if (id.includes('/node_modules/@react-three/fiber/')) {
+                        return 'r3f-fiber';
+                    }
+                    if (id.includes('/node_modules/@react-three/drei/')) {
+                        return 'r3f-drei';
+                    }
+                    if (id.includes('/node_modules/@react-three/postprocessing/') || id.includes('/node_modules/postprocessing/')) {
+                        return 'r3f-postprocessing';
+                    }
+                    if (id.includes('/node_modules/three/')) {
+                        return 'three';
+                    }
                 }
             }
         }

@@ -2,7 +2,7 @@
     height: 100vh;
     width: 100vw;
     display: grid;
-    grid-template-columns: repeat(6, 1fr);
+    grid-template-columns: repeat(6, minmax(0, 1fr));
     grid-template-rows: repeat(5, 1fr);
     grid-template-areas: 
         '. .         errortitle errortitle errortitle   errorlog'
@@ -10,8 +10,8 @@
         '. form      form       form       form         errorlog'
         '. bottomlog statusgrid statusgrid formcornerbr errorlog'
         '. .         .          .          .            errorlog';
-    column-gap: 8px;
-    padding: 64px;
+    column-gap: var(--s-s);
+    padding: var(--s-xl);
     box-sizing: border-box;
 }
 
@@ -20,11 +20,7 @@
     display: flex;
     flex-direction: column;
     gap: var(--s-s);
-}
-
-.contact-error-section .statusMessage {
-    position: relative;
-    width: 100%;
+    min-width: 0;
 }
 
 .contact-errorlog {
@@ -77,9 +73,22 @@
     align-items: center;
     background-color: var(--c-brnd_-100);
     color: var(--c-drk_100);
-    overflow: hidden;
+    position: relative;
     transform-origin: center center;
     will-change: transform;
+}
+
+.contact-form::after {
+    content: '';
+    position: absolute;
+    inset: -42px;
+    pointer-events: none;
+    border: 42px solid transparent;
+    border-image-source: url('/img/decal/MRKR_BRND_-100.svg');
+    border-image-slice: 42 42 42 42;
+    border-image-width: 42px;
+    border-image-repeat: stretch;
+    box-sizing: border-box;
 }
 
 .contact-form-content {
@@ -102,13 +111,11 @@
 .contact-mail-icon {
     width: 74px;
     height: 74px;
-    filter: brightness(0);
 }
 
 .contact-deco {
     width: 64px;
     height: 64px;
-    filter: brightness(0);
 }
 
 .contact-corner {
