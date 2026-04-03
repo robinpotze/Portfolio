@@ -1,5 +1,3 @@
-/* eslint-disable react/prop-types */
-
 import { EASING, MENU_TIMING } from '@config/animation.config';
 import { motion } from 'framer-motion';
 
@@ -7,7 +5,7 @@ const MENU_ITEMS = [
     { label: 'Home', link: '/' },
     { label: 'Work', link: '/work' },
     { label: 'About', link: '/about' },
-    { label: 'Contact', link: '/contact' }
+    { label: 'Contact', link: '/contact' },
 ];
 
 export default function MenuLinks({ open, navigateWithCurtain }) {
@@ -27,7 +25,7 @@ export default function MenuLinks({ open, navigateWithCurtain }) {
                         staggerChildren: MENU_TIMING.ITEM_STAGGER,
                         delayChildren: MENU_TIMING.ITEM_DELAY_BASE,
                     },
-                }
+                },
             }}
         >
             {MENU_ITEMS.map((item, i) => (
@@ -42,14 +40,10 @@ export default function MenuLinks({ open, navigateWithCurtain }) {
                                     duration: MENU_TIMING.ITEM_DURATION,
                                     ease: EASING.EMPHASIZED,
                                 },
-                            }
+                            },
                         }}
                     >
-                        <button
-                            className="sm-panel-item"
-                            data-index={i + 1}
-                            onClick={() => handleClick(item.link, item.label)}
-                        >
+                        <button className="sm-panel-item" data-index={i + 1} onClick={() => handleClick(item.link, item.label)}>
                             {item.label}
                         </button>
                     </motion.li>

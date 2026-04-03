@@ -17,5 +17,5 @@ export const CAROUSEL_CONFIG = {
     CAMERA: {
         POSITION: [0, 0, 8],
         FOV: 50,
-    }
+    },
 };

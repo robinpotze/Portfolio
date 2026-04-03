@@ -1,7 +1,6 @@
-import { motion } from "framer-motion";
+import { motion } from 'framer-motion';
 
-export default function ScrollDown({ color = "var(--c-lght_100)", width = 32, height = 64, speed = 1.2 }) {
-
+export default function ScrollDown({ color = 'var(--c-lght_100)', width = 32, height = 64, speed = 1.2 }) {
     const lineVariants = {
         initial: { opacity: 0.2 },
         animate: {
@@ -9,9 +8,9 @@ export default function ScrollDown({ color = "var(--c-lght_100)", width = 32, he
             transition: {
                 duration: speed,
                 repeat: Infinity,
-                ease: "easeInOut",
-            }
-        }
+                ease: 'easeInOut',
+            },
+        },
     };
 
     const containerVariants = {
@@ -19,8 +18,8 @@ export default function ScrollDown({ color = "var(--c-lght_100)", width = 32, he
             transition: {
                 staggerChildren: 0.3,
                 repeat: Infinity,
-            }
-        }
+            },
+        },
     };
 
     return (
@@ -35,24 +34,9 @@ export default function ScrollDown({ color = "var(--c-lght_100)", width = 32, he
             animate="animate"
         >
             {/* Pulsing lines */}
-            <motion.path
-                d="M5 .5h6"
-                stroke={color}
-                strokeWidth={1}
-                variants={lineVariants}
-            />
-            <motion.path
-                d="M3.5 8.5h9"
-                stroke={color}
-                strokeWidth={1}
-                variants={lineVariants}
-            />
-            <motion.path
-                d="M2 16.5h12"
-                stroke={color}
-                strokeWidth={1}
-                variants={lineVariants}
-            />
+            <motion.path d="M5 .5h6" stroke={color} strokeWidth={1} variants={lineVariants} />
+            <motion.path d="M3.5 8.5h9" stroke={color} strokeWidth={1} variants={lineVariants} />
+            <motion.path d="M2 16.5h12" stroke={color} strokeWidth={1} variants={lineVariants} />
 
             <motion.path
                 d="M8 36 0 25h16z"
@@ -61,11 +45,11 @@ export default function ScrollDown({ color = "var(--c-lght_100)", width = 32, he
                 animate={{ y: [0, -2, 0] }}
                 transition={{
                     duration: speed,
-                    ease: "easeInOut",
+                    ease: 'easeInOut',
                     repeat: Infinity,
                     delay: speed / 2,
                 }}
             />
         </motion.svg>
     );
-};
+}

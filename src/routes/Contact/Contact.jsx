@@ -107,92 +107,83 @@ const cornerVariants = {
     },
 };
 
-export default function Contact () {
+export default function Contact() {
     return (
         <ErrorBoundary>
-            <div className='contact-page'>
-                <div className='contact-error-section'>
-                    <StatusMessage status='error' message={<>CONNECTION<br />INTERRUPTED</>} />
-                    <TypewriterText
-                        lines={ERROR_LOG_LINES}
-                        className='contact-errorlog'
-                        rowClassName='contact-log-row'
+            <div className="contact-page">
+                <div className="contact-error-section">
+                    <StatusMessage
+                        status="error"
+                        message={
+                            <>
+                                CONNECTION
+                                <br />
+                                INTERRUPTED
+                            </>
+                        }
                     />
+                    <TypewriterText lines={ERROR_LOG_LINES} className="contact-errorlog" rowClassName="contact-log-row" />
                 </div>
                 <motion.div
-                    className='contact-corner-tl'
+                    className="contact-corner-tl"
                     custom={{ y: STAGGER.DEFAULT * 200 }}
                     variants={cornerVariants}
-                    initial='hidden'
-                    animate='visible'
+                    initial="hidden"
+                    animate="visible"
                 >
-                    <div className='contact-corner'>
-                        <img className='contact-deco' src='img/icon/PLS_DRK.svg' alt='contact form corner plus icon'/>
+                    <div className="contact-corner">
+                        <img className="contact-deco" src="img/icon/PLS_DRK.svg" alt="contact form corner plus icon" />
                     </div>
-                    <h3 className='contact-title-txt'>CNTCT-FRM</h3>
+                    <h3 className="contact-title-txt">CNTCT-FRM</h3>
                 </motion.div>
                 <motion.div
-                    className='contact-corner-tr'
+                    className="contact-corner-tr"
                     custom={{ y: STAGGER.DEFAULT * 200 }}
                     variants={cornerVariants}
-                    initial='hidden'
-                    animate='visible'
+                    initial="hidden"
+                    animate="visible"
                 >
-                    <div className='contact-corner'>
-                        <img className='contact-deco' src='img/icon/PLS_DRK.svg' alt='contact form corner plus icon'/>
+                    <div className="contact-corner">
+                        <img className="contact-deco" src="img/icon/PLS_DRK.svg" alt="contact form corner plus icon" />
                     </div>
                 </motion.div>
-                <motion.div
-                    className='contact-form'
-                    variants={formVariants}
-                    initial='hidden'
-                    animate='visible'
-                >
-                    <motion.div
-                        className='contact-form-content'
-                        variants={formContentVariants}
-                        initial='hidden'
-                        animate='visible'
-                    >
-                        <img className='contact-mail-icon' src='img/icon/MSG_DRK.svg' alt='contact form mail icon' />
-                        <img className='contact-deco' src='img/icon/PLS_DRK.svg' alt='contact form decoration icon' />
-                        <input className='contact-name-input' placeholder='IDENTIFY' />
-                        <img className='contact-deco' src='img/icon/PLS_DRK.svg' alt='contact form decoration icon' />
+                <motion.div className="contact-form" variants={formVariants} initial="hidden" animate="visible">
+                    <motion.div className="contact-form-content" variants={formContentVariants} initial="hidden" animate="visible">
+                        <img className="contact-mail-icon" src="img/icon/MSG_DRK.svg" alt="contact form mail icon" />
+                        <img className="contact-deco" src="img/icon/PLS_DRK.svg" alt="contact form decoration icon" />
+                        <input className="contact-name-input" placeholder="IDENTIFY" />
+                        <img className="contact-deco" src="img/icon/PLS_DRK.svg" alt="contact form decoration icon" />
                         <RadGridTxt />
                     </motion.div>
                 </motion.div>
                 <motion.div
-                    className='contact-corner-bl'
+                    className="contact-corner-bl"
                     custom={{ y: -STAGGER.DEFAULT * 200 }}
                     variants={cornerVariants}
-                    initial='hidden'
-                    animate='visible'
+                    initial="hidden"
+                    animate="visible"
                 >
-                    <div className='contact-corner'>
-                        <img className='contact-deco' src='img/icon/PLS_DRK.svg' alt='contact form corner plus icon'/>
+                    <div className="contact-corner">
+                        <img className="contact-deco" src="img/icon/PLS_DRK.svg" alt="contact form corner plus icon" />
                     </div>
                     <TypewriterText
                         lines={['SNR: 32dB | BER: 1e-9 | FRAME_LOCK: TRUE \nSIG_INT: ACTIVE | BUFFER: 0%']}
-                        className='contact-bottomlog'
-                        rowClassName='contact-log-row'
+                        className="contact-bottomlog"
+                        rowClassName="contact-log-row"
                     />
                 </motion.div>
                 <motion.div
-                    className='contact-corner-br'
+                    className="contact-corner-br"
                     custom={{ y: -STAGGER.DEFAULT * 200 }}
                     variants={cornerVariants}
-                    initial='hidden'
-                    animate='visible'
+                    initial="hidden"
+                    animate="visible"
                 >
-                    <div className='contact-corner'>
-                        <img className='contact-deco' src='img/icon/PLS_DRK.svg' alt='contact form corner plus icon'/>
+                    <div className="contact-corner">
+                        <img className="contact-deco" src="img/icon/PLS_DRK.svg" alt="contact form corner plus icon" />
                     </div>
                 </motion.div>
-                <TypewriterText
-                    lines={STATUS_GRID_LINES}
-                    className='contact-statusgrid'
-                    rowClassName='contact-log-row'
-                />
+                <TypewriterText lines={STATUS_GRID_LINES} className="contact-statusgrid" rowClassName="contact-log-row" />
             </div>
         </ErrorBoundary>
     );

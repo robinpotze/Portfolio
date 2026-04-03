@@ -100,7 +100,9 @@ export default function PixelCard({ gap = 6, speed = 200, noFocus = true, classN
     const reducedMotion = useRef(window.matchMedia('(prefers-reduced-motion: reduce)').matches).current;
 
     const initPixels = () => {
-        if (!containerRef.current || !canvasRef.current) return;
+        if (!containerRef.current || !canvasRef.current) {
+            return;
+        }
 
         const width = Math.floor(containerRef.current.offsetWidth);
         const height = Math.floor(containerRef.current.offsetHeight);
@@ -128,17 +130,21 @@ export default function PixelCard({ gap = 6, speed = 200, noFocus = true, classN
         pixelsRef.current = pxs;
     };
 
-    const doAnimate = fnName => {
+    const doAnimate = (fnName) => {
         animationRef.current = requestAnimationFrame(() => doAnimate(fnName));
         const timeNow = performance.now();
         const timePassed = timeNow - timePreviousRef.current;
         const timeInterval = 1000 / 60;
 
-        if (timePassed < timeInterval) return;
+        if (timePassed < timeInterval) {
+            return;
+        }
         timePreviousRef.current = timeNow - (timePassed % timeInterval);
 
         const ctx = canvasRef.current?.getContext('2d');
-        if (!ctx || !canvasRef.current) return;
+        if (!ctx || !canvasRef.current) {
+            return;
+        }
 
         ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
 
@@ -155,19 +161,23 @@ export default function PixelCard({ gap = 6, speed = 200, noFocus = true, classN
         }
     };
 
-    const handleAnimation = name => {
+    const handleAnimation = (name) => {
         cancelAnimationFrame(animationRef.current);
         animationRef.current = requestAnimationFrame(() => doAnimate(name));
     };
 
     const onMouseEnter = () => handleAnimation('appear');
     const onMouseLeave = () => handleAnimation('disappear');
-    const onFocus = e => {
-        if (e.currentTarget.contains(e.relatedTarget)) return;
+    const onFocus = (e) => {
+        if (e.currentTarget.contains(e.relatedTarget)) {
+            return;
+        }
         handleAnimation('appear');
     };
-    const onBlur = e => {
-        if (e.currentTarget.contains(e.relatedTarget)) return;
+    const onBlur = (e) => {
+        if (e.currentTarget.contains(e.relatedTarget)) {
+            return;
+        }
         handleAnimation('disappear');
     };
 

@@ -1,8 +1,8 @@
 .laserFlowContainer {
-  width: 100vw;
-  height: 100vh;
-  position: fixed;
-  pointer-events: none;
-  z-index: 10;
-  mix-blend-mode: exclusion;
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    pointer-events: none;
+    z-index: 10;
+    mix-blend-mode: exclusion;
 }

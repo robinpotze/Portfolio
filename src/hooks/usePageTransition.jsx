@@ -6,7 +6,9 @@ const PageTransitionContext = createContext(null);
 
 export const usePageTransition = () => {
     const context = useContext(PageTransitionContext);
-    if (!context) throw new Error('usePageTransition must be used within PageTransitionProvider');
+    if (!context) {
+        throw new Error('usePageTransition must be used within PageTransitionProvider');
+    }
     return context;
 };
 
@@ -20,7 +22,9 @@ export function PageTransitionProvider({ children }) {
     const transitionKey = useRef(0);
 
     const navigateWithTransition = useCallback((path, name, dir = 'right', state) => {
-        if (pendingNavigation.current) { return; }
+        if (pendingNavigation.current) {
+            return;
+        }
         pendingNavigation.current = path;
         pendingState.current = state || null;
         setPageName(name || null);

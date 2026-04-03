@@ -4,7 +4,6 @@ import RadialGridText from './TXT/RAD_GRID_TXT';
 import './RadialGrid.css';
 
 export default function RadialGrid({ type }) {
-
     switch (type) {
         case 'CRCL':
             return <RadialGridCircle />;
@@ -13,4 +12,4 @@ export default function RadialGrid({ type }) {
         default:
             return null;
     }
-};
+}

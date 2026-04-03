@@ -1,7 +1,7 @@
 /**
  * Custom easing curve with multiple segments for smooth scroll-based animations
  * Segments: 0-0.45 (fast start), 0.45-0.65 (slow mid), 0.65-0.85 (acceleration), 0.85-1 (final ease)
- * 
+ *
  * @param {number} t - Progress value between 0 and 1
  * @returns {number} Eased value between 0 and 1
  */
@@ -24,10 +24,8 @@ export const easeCurve = (t) => {
 /**
  * Simple cubic ease-out function for entry animations
  * Creates smooth deceleration effect
- * 
+ *
  * @param {number} t - Progress value between 0 and 1
  * @returns {number} Eased value between 0 and 1
  */
-export const entryEase = (t) => {
-    return 1 - Math.pow(1 - t, 3); // cubic ease out
-};
+export const entryEase = (t) => 1 - Math.pow(1 - t, 3); // cubic ease out

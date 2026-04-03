@@ -1,15 +1,11 @@
 export function getCSSVariable(variableName) {
-    return getComputedStyle(document.documentElement)
-        .getPropertyValue(variableName)
-        .trim();
+    return getComputedStyle(document.documentElement).getPropertyValue(variableName).trim();
 }
 
 export function getCSSColorRGBA(variableName) {
     const str = getCSSVariable(variableName);
     if (str.startsWith('#')) {
-        const hex = str.length === 4
-            ? str[1] + str[1] + str[2] + str[2] + str[3] + str[3]
-            : str.slice(1);
+        const hex = str.length === 4 ? str[1] + str[1] + str[2] + str[2] + str[3] + str[3] : str.slice(1);
         return {
             r: Number.parseInt(hex.slice(0, 2), 16),
             g: Number.parseInt(hex.slice(2, 4), 16),
@@ -18,7 +14,9 @@ export function getCSSColorRGBA(variableName) {
         };
     }
     const parts = str.match(/[\d.]+/g);
-    if (!parts) return { r: 255, g: 255, b: 255, a: 1 };
+    if (!parts) {
+        return { r: 255, g: 255, b: 255, a: 1 };
+    }
     return {
         r: Number(parts[0]),
         g: Number(parts[1]),

@@ -1,5 +1,3 @@
-/* eslint-disable react/prop-types */
-
 import { SPRING_CONFIG } from '@config/animation.config';
 import { motion } from 'framer-motion';
 
@@ -10,21 +8,8 @@ export default function RAD_CRCL({ value = 0 }) {
     const progress = (value / 360) * circumference;
 
     return (
-        <svg
-            width="12"
-            height="12"
-            viewBox="0 0 12 12"
-            className="rad-circle"
-            id={`rad-circle-${value}`}
-        >
-            <circle
-                cx="6"
-                cy="6"
-                r={radius}
-                fill="none"
-                stroke="var(--c_0)"
-                strokeWidth={width}
-            />
+        <svg width="12" height="12" viewBox="0 0 12 12" className="rad-circle" id={`rad-circle-${value}`}>
+            <circle cx="6" cy="6" r={radius} fill="none" stroke="var(--c_0)" strokeWidth={width} />
             <motion.circle
                 animate={{ strokeDashoffset: circumference - progress }}
                 transition={{ type: 'spring', ...SPRING_CONFIG.SMOOTH_PROGRESS }}

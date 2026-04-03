@@ -1,5 +1,3 @@
-/* eslint-disable react/prop-types */
-
 import { EASING, MENU_TIMING } from '@config/animation.config';
 import { AnimatePresence, motion } from 'framer-motion';
 import MenuLinks from './MenuLinks';

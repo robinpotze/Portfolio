@@ -15,7 +15,7 @@ export function useObjectAnimation(ref, routeName, options = {}) {
         scrollEndPosition = null,
         scrollEndScale = null,
         enabled = true,
-        scrollProgress = 0
+        scrollProgress = 0,
     } = options;
 
     const optionsRef = useRef({
@@ -26,7 +26,7 @@ export function useObjectAnimation(ref, routeName, options = {}) {
         startPosition,
         endPosition,
         startScale,
-        endScale
+        endScale,
     });
 
     useEffect(() => {
@@ -38,7 +38,7 @@ export function useObjectAnimation(ref, routeName, options = {}) {
             startPosition,
             endPosition,
             startScale,
-            endScale
+            endScale,
         };
     }, [duration, delay, startPosition, endPosition, startScale, endScale, scrollEndPosition, scrollEndScale]);
 
@@ -61,7 +61,9 @@ export function useObjectAnimation(ref, routeName, options = {}) {
     }, [routeName]);
 
     useFrame(({ clock }) => {
-        if (!ref.current || !enabled) { return; }
+        if (!ref.current || !enabled) {
+            return;
+        }
 
         const opts = optionsRef.current;
 
@@ -72,7 +74,9 @@ export function useObjectAnimation(ref, routeName, options = {}) {
 
             const elapsed = clock.getElapsedTime() - startTime.current - opts.delay;
 
-            if (elapsed < 0) { return; }
+            if (elapsed < 0) {
+                return;
+            }
 
             const entryProgress = Math.min(elapsed / opts.duration, 1);
             const eased = entryEase(entryProgress);
@@ -91,7 +95,9 @@ export function useObjectAnimation(ref, routeName, options = {}) {
         } else {
             // Skip if scroll hasn't changed since last application
             const sp = scrollProgressRef.current;
-            if (Math.abs(sp - lastAppliedScroll.current) < 0.0001) { return; }
+            if (Math.abs(sp - lastAppliedScroll.current) < 0.0001) {
+                return;
+            }
             lastAppliedScroll.current = sp;
 
             const scrollEased = easeCurve(sp);

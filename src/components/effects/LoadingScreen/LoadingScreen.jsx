@@ -1,5 +1,3 @@
-/* eslint-disable react/prop-types */
-
 import { LOADING } from '@config/animation.config';
 import { useProgress } from '@react-three/drei';
 import { getCSSColorRGBA } from '@utils/cssUtils';
@@ -46,7 +44,9 @@ function BlockLogo({ logoSrc, cycleIndex }) {
 
     // Load SVG and extract block positions
     useEffect(() => {
-        if (!logoSrc) { return; }
+        if (!logoSrc) {
+            return;
+        }
         const img = new Image();
         img.onload = () => {
             const scale = 4;
@@ -74,13 +74,15 @@ function BlockLogo({ logoSrc, cycleIndex }) {
             const cx = w / 2;
             const cy = h / 2;
             let maxDist = 0;
-            blocks.forEach(b => {
+            blocks.forEach((b) => {
                 const d = Math.hypot(b.x - cx, b.y - cy);
-                if (d > maxDist) maxDist = d;
+                if (d > maxDist) {
+                    maxDist = d;
+                }
             });
 
             blockDataRef.current = {
-                blocks: blocks.map(b => ({
+                blocks: blocks.map((b) => ({
                     ...b,
                     dist: Math.hypot(b.x - cx, b.y - cy) / (maxDist || 1),
                 })),
@@ -101,7 +103,9 @@ function BlockLogo({ logoSrc, cycleIndex }) {
         let running = true;
 
         const render = () => {
-            if (!running) { return; }
+            if (!running) {
+                return;
+            }
 
             const canvas = canvasRef.current;
             const data = blockDataRef.current;
@@ -118,7 +122,7 @@ function BlockLogo({ logoSrc, cycleIndex }) {
             const elapsed = Date.now() - cycleStartRef.current;
             const t = Math.min(elapsed / CYCLE_INTERVAL, 1);
 
-            blocks.forEach(block => {
+            blocks.forEach((block) => {
                 // Scattered radial pulse from center
                 const waveFront = t * 1.6;
                 const distFromWave = block.dist - waveFront;
@@ -133,7 +137,8 @@ function BlockLogo({ logoSrc, cycleIndex }) {
                 const a = colors.base.a + (colors.pulse.a - colors.base.a) * intensity;
 
                 // Glitch: random block displacement
-                let ox = 0, oy = 0;
+                let ox = 0,
+                    oy = 0;
                 if (Math.random() < 0.015) {
                     ox = Math.round((Math.random() - 0.5) * 14);
                     oy = Math.round((Math.random() - 0.5) * 6);
@@ -161,18 +166,16 @@ function BlockLogo({ logoSrc, cycleIndex }) {
 
         return () => {
             running = false;
-            if (animRef.current) cancelAnimationFrame(animRef.current);
+            if (animRef.current) {
+                cancelAnimationFrame(animRef.current);
+            }
         };
     }, []);
 
     return <canvas ref={canvasRef} className={styles.blockLogo} />;
 }
 
-export default function LoadingScreen({
-    onComplete,
-    minDisplayTime = 1500,
-    logoSrc = null
-}) {
+export default function LoadingScreen({ onComplete, minDisplayTime = 1500, logoSrc = null }) {
     const { progress: threeProgress } = useProgress();
     const [progress, setProgress] = useState(0);
     const [isHidden, setIsHidden] = useState(false);
@@ -182,9 +185,12 @@ export default function LoadingScreen({
     const hasCompletedRef = useRef(false);
     const timerRefs = useRef([]);
 
-    useEffect(() => {
-        return () => { timerRefs.current.forEach(clearTimeout); };
-    }, []);
+    useEffect(
+        () => () => {
+            timerRefs.current.forEach(clearTimeout);
+        },
+        []
+    );
 
     useEffect(() => {
         setProgress(threeProgress);
@@ -200,7 +206,9 @@ export default function LoadingScreen({
             const outerTimer = setTimeout(() => {
                 setIsHidden(true);
                 const innerTimer = setTimeout(() => {
-                    if (onComplete) { onComplete(); }
+                    if (onComplete) {
+                        onComplete();
+                    }
                 }, LOADING.FADE_OUT_MS);
                 timerRefs.current.push(innerTimer);
             }, remainingTime);
@@ -211,7 +219,7 @@ export default function LoadingScreen({
     // Cycle messages
     useEffect(() => {
         const interval = setInterval(() => {
-            setMessageIndex(prev => (prev + 1) % CRYPTIC_MESSAGES.length);
+            setMessageIndex((prev) => (prev + 1) % CRYPTIC_MESSAGES.length);
         }, CYCLE_INTERVAL);
         return () => clearInterval(interval);
     }, []);
@@ -229,8 +237,12 @@ export default function LoadingScreen({
             const decoded = target
                 .split('')
                 .map((char, i) => {
-                    if (char === ' ') return ' ';
-                    if (ratio > i / target.length) return char;
+                    if (char === ' ') {
+                        return ' ';
+                    }
+                    if (ratio > i / target.length) {
+                        return char;
+                    }
                     return GLITCH_CHARS[Math.floor(Math.random() * GLITCH_CHARS.length)];
                 })
                 .join('');
@@ -242,7 +254,11 @@ export default function LoadingScreen({
         };
 
         decode();
-        return () => { if (rafId) cancelAnimationFrame(rafId); };
+        return () => {
+            if (rafId) {
+                cancelAnimationFrame(rafId);
+            }
+        };
     }, [messageIndex]);
 
     return (

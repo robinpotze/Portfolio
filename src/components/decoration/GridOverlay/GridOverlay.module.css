@@ -34,17 +34,12 @@
     );
     background-size: var(--stripe-w) 100%;
 
-    -webkit-mask-image: conic-gradient(
-        black 25%, transparent 25% 50%, black 50% 75%, transparent 75%
-    );
+    -webkit-mask-image: conic-gradient(black 25%, transparent 25% 50%, black 50% 75%, transparent 75%);
     -webkit-mask-size: var(--stripe-w) 100%;
 
-    mask-image: conic-gradient(
-        black 25%, transparent 25% 50%, black 50% 75%, transparent 75%
-    );
+    mask-image: conic-gradient(black 25%, transparent 25% 50%, black 50% 75%, transparent 75%);
     mask-size: var(--stripe-w) 100%;
 }
-
 
 .crosshairLayer {
     position: absolute;

@@ -1,21 +1,16 @@
-/* eslint-disable react/prop-types */
-
 import { MENU_TIMING, REVEAL } from '@config/animation.config';
 import { motion } from 'framer-motion';
 
 const SOCIALS = [
     { label: 'Artstation', link: 'https://artstation.com/living_ipod' },
     { label: 'GitHub', link: 'https://github.com/robinpotze' },
-    { label: 'LinkedIn', link: 'https://linkedin.com/in/robinpotze' }
+    { label: 'LinkedIn', link: 'https://linkedin.com/in/robinpotze' },
 ];
 
 export default function MenuSocials({ open }) {
     return (
         <div className="sm-socials">
-            <motion.h3
-                initial={{ opacity: 0 }}
-                animate={{ opacity: open ? 1 : 0 }}
-            >
+            <motion.h3 initial={{ opacity: 0 }} animate={{ opacity: open ? 1 : 0 }}>
                 Socials
             </motion.h3>
             <ul>

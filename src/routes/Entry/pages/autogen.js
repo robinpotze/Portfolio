@@ -10,8 +10,11 @@ const pages = Object.entries(modules).reduce((acc, [path, mod]) => {
         return acc;
     }
 
-    const filename = String(path).split('/').pop().replace(/\.[^/.]+$/, '');
-    const sourceName = data && data.title ? data.title : (Component.name || filename);
+    const filename = String(path)
+        .split('/')
+        .pop()
+        .replace(/\.[^/.]+$/, '');
+    const sourceName = data && data.title ? data.title : Component.name || filename;
     const key = normalizeKey(sourceName);
 
     acc[key] = { Component, data };

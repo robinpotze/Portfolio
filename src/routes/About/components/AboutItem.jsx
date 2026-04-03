@@ -1,5 +1,3 @@
-/* eslint-disable react/prop-types */
-
 import { EASING, REVEAL } from '@config/animation.config';
 import { motion } from 'framer-motion';
 

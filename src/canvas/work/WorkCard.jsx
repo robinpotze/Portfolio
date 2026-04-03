@@ -26,10 +26,7 @@ export default function WorkCard({ item, index, onNavigate, centerednessRef }) {
 
     const texture = useTexture(data.banner || '/img/work/ld58/Wallpaper.png');
 
-    const floatSpeed = useMemo(
-        () => ((index * 0.1234567) % 1) * (FLOAT_CONFIG.SPEED_MAX - FLOAT_CONFIG.SPEED_MIN) + FLOAT_CONFIG.SPEED_MIN,
-        [index]
-    );
+    const floatSpeed = useMemo(() => ((index * 0.1234567) % 1) * (FLOAT_CONFIG.SPEED_MAX - FLOAT_CONFIG.SPEED_MIN) + FLOAT_CONFIG.SPEED_MIN, [index]);
 
     const position = useMemo(() => calculateCardPosition(index), [index]);
     const rotation = useMemo(() => calculateCardRotation(index), [index]);
@@ -37,7 +34,9 @@ export default function WorkCard({ item, index, onNavigate, centerednessRef }) {
     const isLowQuality = quality === 'low';
 
     useFrame((state, delta) => {
-        if (!groupRef.current) return;
+        if (!groupRef.current) {
+            return;
+        }
 
         const centeredness = centerednessRef.current[index] ?? 1;
         groupRef.current.scale.setScalar(calculateCardScale(centeredness));
@@ -54,22 +53,27 @@ export default function WorkCard({ item, index, onNavigate, centerednessRef }) {
 
     const handleClick = (e) => {
         e.stopPropagation();
-        if (onNavigate) onNavigate(pageKey);
+        if (onNavigate) {
+            onNavigate(pageKey);
+        }
     };
 
     return (
-        <Float
-            speed={floatSpeed}
-            rotationIntensity={isLowQuality ? 0 : 0.1}
-            floatIntensity={isLowQuality ? 0 : 0.2}
-        >
+        <Float speed={floatSpeed} rotationIntensity={isLowQuality ? 0 : 0.1} floatIntensity={isLowQuality ? 0 : 0.2}>
             <group
                 ref={groupRef}
                 position={position}
                 rotation={rotation}
                 onClick={handleClick}
-                onPointerEnter={(e) => { e.stopPropagation(); setHovered(true); document.body.style.cursor = 'pointer'; }}
-                onPointerLeave={() => { setHovered(false); document.body.style.cursor = 'auto'; }}
+                onPointerEnter={(e) => {
+                    e.stopPropagation();
+                    setHovered(true);
+                    document.body.style.cursor = 'pointer';
+                }}
+                onPointerLeave={() => {
+                    setHovered(false);
+                    document.body.style.cursor = 'auto';
+                }}
             >
                 {/* Banner background */}
                 <mesh>
@@ -87,11 +91,7 @@ export default function WorkCard({ item, index, onNavigate, centerednessRef }) {
                 {!isLowQuality && (
                     <mesh position={[0, 0, 0.002]}>
                         <planeGeometry args={[CARD_WIDTH, CARD_HEIGHT]} />
-                        <pixelOverlayMaterial
-                            ref={materialRef}
-                            transparent
-                            depthWrite={false}
-                        />
+                        <pixelOverlayMaterial ref={materialRef} transparent depthWrite={false} />
                     </mesh>
                 )}
 

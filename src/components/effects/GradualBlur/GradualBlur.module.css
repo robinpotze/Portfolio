@@ -5,7 +5,7 @@
     pointer-events: none;
 }
 
-.gradualBlurInner>div {
+.gradualBlurInner > div {
     -webkit-backdrop-filter: inherit;
     backdrop-filter: inherit;
 }
@@ -17,7 +17,7 @@
 }
 
 @supports not (backdrop-filter: blur(1px)) {
-    .gradualBlurInner>div {
+    .gradualBlurInner > div {
         background: rgba(0, 0, 0, 0.3);
         opacity: 0.5;
     }

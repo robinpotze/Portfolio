@@ -1,9 +1,8 @@
-import useRandomNumber from "@hooks/useRandomNumber";
+import useRandomNumber from '@hooks/useRandomNumber';
 
-import RAD_CRCL from "./RAD_CRCL";
+import RAD_CRCL from './RAD_CRCL';
 
 import '../RadialGrid.css';
-
 
 export default function RAD_GRID_CRCL() {
     return (
@@ -19,4 +18,4 @@ export default function RAD_GRID_CRCL() {
             <RAD_CRCL value={useRandomNumber(45, 360)} />
         </div>
     );
-};
+}

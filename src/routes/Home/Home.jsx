@@ -66,7 +66,9 @@ export default function Home() {
 
     useEffect(() => {
         const container = containerRef.current;
-        if (!container) { return; }
+        if (!container) {
+            return;
+        }
 
         const handleScroll = () => {
             const scrollTop = Math.max(0, container.scrollTop);
@@ -104,13 +106,7 @@ export default function Home() {
 
     return (
         <>
-            {isLoading && (
-                <LoadingScreen
-                    onComplete={handleLoadingComplete}
-                    minDisplayTime={LOADING.MIN_DISPLAY_MS}
-                    logoSrc="/img/logo/logo.svg"
-                />
-            )}
+            {isLoading && <LoadingScreen onComplete={handleLoadingComplete} minDisplayTime={LOADING.MIN_DISPLAY_MS} logoSrc="/img/logo/logo.svg" />}
             <div
                 className="home-page"
                 ref={containerRef}
@@ -148,12 +144,7 @@ export default function Home() {
                             <ScrollDown />
                         </div>
                     </div>
-                    <motion.div
-                        className="home-side"
-                        variants={sideContainerVariants}
-                        initial="hidden"
-                        animate={showContent ? 'visible' : 'hidden'}
-                    >
+                    <motion.div className="home-side" variants={sideContainerVariants} initial="hidden" animate={showContent ? 'visible' : 'hidden'}>
                         <motion.div className="home-side-rotation-wrapper" variants={sideItemVariants}>
                             <div className="home-side-flavour-text r90">
                                 <p className="deco-tiny home-side-text">assertThat(AMBIGUOUS.AMBIVALENCE)</p>
@@ -165,8 +156,19 @@ export default function Home() {
                             <p className="deco-tiny home-side-deco-text">SDD.01</p>
                         </motion.div>
                         <motion.img className="home-side-decal" src="img/decal/MORSE.svg" alt="robin potze in barcode" variants={sideItemVariants} />
-                        <motion.img className="home-side-decal" src="img/decal/PILL.svg" alt="pill with four arrows point downwards" variants={sideItemVariants} />
-                        <motion.img className="home-side-decal" id="decal-sound" src="img/decal/SND.svg" alt="ROBIN in sound waves" variants={sideItemVariants} />
+                        <motion.img
+                            className="home-side-decal"
+                            src="img/decal/PILL.svg"
+                            alt="pill with four arrows point downwards"
+                            variants={sideItemVariants}
+                        />
+                        <motion.img
+                            className="home-side-decal"
+                            id="decal-sound"
+                            src="img/decal/SND.svg"
+                            alt="ROBIN in sound waves"
+                            variants={sideItemVariants}
+                        />
                     </motion.div>
                 </div>
                 <div className="home-transition-section" />

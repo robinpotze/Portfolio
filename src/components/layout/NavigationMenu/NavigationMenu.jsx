@@ -20,12 +20,16 @@ export default function NavigationMenu() {
     const glitchRefs = useRef({ main: null, red: null, blue: null });
 
     useLayoutEffect(() => {
-        if (buttonRef.current) buttonRef.current.style.color = BTN_COLOR;
+        if (buttonRef.current) {
+            buttonRef.current.style.color = BTN_COLOR;
+        }
     }, []);
 
     const runGlitch = useCallback(async (newLabel) => {
         const { main, red, blue } = glitchRefs.current;
-        if (!main || !red || !blue) return;
+        if (!main || !red || !blue) {
+            return;
+        }
 
         await Promise.all([
             animate(
@@ -89,7 +93,9 @@ export default function NavigationMenu() {
     }, []);
 
     const toggle = useCallback(() => {
-        if (busy.current) { return; }
+        if (busy.current) {
+            return;
+        }
         busy.current = true;
 
         const willOpen = !open;
@@ -118,7 +124,9 @@ export default function NavigationMenu() {
             }
         };
         document.addEventListener('keydown', handleKeyDown);
-        return () => { document.removeEventListener('keydown', handleKeyDown); };
+        return () => {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
     }, [open, toggle]);
 
     const navigateWithCurtain = useCallback(
