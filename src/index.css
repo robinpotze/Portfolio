@@ -1,7 +1,7 @@
 :root {
     --c-brnd_100: #2ad0d5;
     --c-brnd_20: rgba(42, 208, 213, 0.2);
-    --c-brnd_-100: #D40322;
+    --c-brnd_-100: #d40322;
     --c-brnd_-20: rgba(212, 3, 34, 0.2);
     --c-lght_100: #eee;
     --c-lght_40: rgba(238, 238, 238, 0.4);
@@ -115,5 +115,3 @@ h3 {
 .tr90 {
     writing-mode: sideways-rl;
 }
-
-

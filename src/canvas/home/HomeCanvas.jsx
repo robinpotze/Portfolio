@@ -14,7 +14,7 @@ export default function HomeCanvas({ scrollProgress, startAnimations }) {
                     powerPreference: 'high-performance',
                     preserveDrawingBuffer: false,
                     alpha: false,
-                    stencil: false 
+                    stencil: false,
                 }}
             >
                 <HomeScene scrollProgress={scrollProgress} startAnimations={startAnimations} />

@@ -11,7 +11,9 @@ const WorkContext = createContext(null);
 
 export const useWorkItems = () => {
     const context = useContext(WorkContext);
-    if (!context) throw new Error('useWorkItems must be used within App');
+    if (!context) {
+        throw new Error('useWorkItems must be used within App');
+    }
     return context;
 };
 

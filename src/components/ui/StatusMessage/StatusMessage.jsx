@@ -85,25 +85,27 @@ export default function StatusMessage({ status = 'success', message, isVisible =
                 <motion.div
                     className={`${styles.statusMessage} ${styles[status] ?? ''}`}
                     variants={panelVariants}
-                    initial='hidden'
-                    animate='visible'
-                    exit='exit'
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
                 >
                     <motion.img
                         className={styles.cornerIconTR}
-                        src='/img/icon/PLS_BRND_-100.svg'
-                        alt='status message corner icon'
+                        src="/img/icon/PLS_BRND_-100.svg"
+                        alt="status message corner icon"
                         variants={fromRightVariants}
                     />
                     <motion.div className={styles.iconWrapper} variants={fromLeftVariants}>
                         <img className={styles.decoIcon} src={decal} alt="" />
                         <img className={styles.statusIcon} src={icon} alt={`${status} icon`} />
                     </motion.div>
-                    <motion.span className={styles.message} variants={fromRightVariants}>{message}</motion.span>
+                    <motion.span className={styles.message} variants={fromRightVariants}>
+                        {message}
+                    </motion.span>
                     <motion.img
                         className={styles.cornerIconBL}
-                        src='/img/icon/PLS_BRND_-100.svg'
-                        alt='status message corner icon'
+                        src="/img/icon/PLS_BRND_-100.svg"
+                        alt="status message corner icon"
                         variants={fromLeftVariants}
                     />
                 </motion.div>

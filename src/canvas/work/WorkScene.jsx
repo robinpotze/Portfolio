@@ -15,11 +15,15 @@ export default function WorkScene({ items = [], scrollVelocityRef, onCardNavigat
     // Sync external ref for border projection
     const setRigRef = (node) => {
         rigRef.current = node;
-        if (externalRigRef) externalRigRef.current = node;
+        if (externalRigRef) {
+            externalRigRef.current = node;
+        }
     };
 
     useFrame(() => {
-        if (!rigRef.current || items.length === 0) { return; }
+        if (!rigRef.current || items.length === 0) {
+            return;
+        }
 
         // Apply scroll velocity with damping (owns the scroll state)
         if (Math.abs(scrollVelocityRef.current) > CAROUSEL_CONFIG.SCROLL_DEADZONE) {
@@ -55,11 +59,17 @@ export default function WorkScene({ items = [], scrollVelocityRef, onCardNavigat
         }
 
         // Notify parent (border tracking + scroll-to-exit)
-        if (onCenterednessChange) onCenterednessChange(minCenteredness, bestIndex);
-        if (onScrollChange) onScrollChange(offset);
+        if (onCenterednessChange) {
+            onCenterednessChange(minCenteredness, bestIndex);
+        }
+        if (onScrollChange) {
+            onScrollChange(offset);
+        }
     });
 
-    if (!items?.length) return null;
+    if (!items?.length) {
+        return null;
+    }
 
     return (
         <>
@@ -67,10 +77,10 @@ export default function WorkScene({ items = [], scrollVelocityRef, onCardNavigat
                 <group ref={setRigRef}>
                     {items.map((item, i) => {
                         const distance = Math.abs(i - visibleCenter);
-                        if (distance > 1) return null;
-                        return (
-                            <WorkCard key={item.key} item={item} index={i} onNavigate={onCardNavigate} centerednessRef={centerednessRef} />
-                        );
+                        if (distance > 1) {
+                            return null;
+                        }
+                        return <WorkCard key={item.key} item={item} index={i} onNavigate={onCardNavigate} centerednessRef={centerednessRef} />;
                     })}
                 </group>
             </group>

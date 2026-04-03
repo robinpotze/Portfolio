@@ -8,10 +8,17 @@ import styles from './LaserFlow.module.css';
 const DPR_BY_QUALITY = { low: 0.5, medium: 0.75, high: 2 };
 const FOG_QUALITY_BY_QUALITY = { low: 0, medium: 0.3, high: 1 };
 
-const hexToRGB = hex => {
+const hexToRGB = (hex) => {
     let c = hex.trim();
-    if (c[0] === '#') c = c.slice(1);
-    if (c.length === 3) c = c.split('').map(x => x + x).join('');
+    if (c[0] === '#') {
+        c = c.slice(1);
+    }
+    if (c.length === 3) {
+        c = c
+            .split('')
+            .map((x) => x + x)
+            .join('');
+    }
     const n = parseInt(c, 16) || 0xffffff;
     return { r: ((n >> 16) & 255) / 255, g: ((n >> 8) & 255) / 255, b: (n & 255) / 255 };
 };
@@ -36,7 +43,7 @@ export default function LaserFlow({
     decay = 1.5,
     falloffStart = 1.2,
     fogFallSpeed = 0.6,
-    color = '#FF79C6'
+    color = '#FF79C6',
 }) {
     const { quality } = useQuality();
     const mountRef = useRef(null);
@@ -70,7 +77,7 @@ export default function LaserFlow({
             premultipliedAlpha: true,
             preserveDrawingBuffer: false,
             failIfMajorPerformanceCaveat: false,
-            logarithmicDepthBuffer: false
+            logarithmicDepthBuffer: false,
         });
         rendererRef.current = renderer;
 
@@ -113,7 +120,7 @@ export default function LaserFlow({
             uFogFallSpeed: { value: fogFallSpeed },
             uColor: { value: new THREE.Vector3(1, 1, 1) },
             uFade: { value: hasFadedRef.current ? 1 : 0 },
-            uFogQuality: { value: FOG_QUALITY_BY_QUALITY[quality] ?? 1 }
+            uFogQuality: { value: FOG_QUALITY_BY_QUALITY[quality] ?? 1 },
         };
         uniformsRef.current = uniforms;
 
@@ -124,7 +131,7 @@ export default function LaserFlow({
             transparent: false,
             depthTest: false,
             depthWrite: false,
-            blending: THREE.NormalBlending
+            blending: THREE.NormalBlending,
         });
 
         const mesh = new THREE.Mesh(geometry, material);
@@ -139,8 +146,8 @@ export default function LaserFlow({
         const mouseSmooth = new THREE.Vector2(0, 0);
 
         const setSizeNow = () => {
-            let w = mount.clientWidth || window.innerWidth;
-            let h = mount.clientHeight || window.innerHeight;
+            const w = mount.clientWidth || window.innerWidth;
+            const h = mount.clientHeight || window.innerHeight;
             const pr = currentDpr;
 
             if (Math.abs(w - lastSize.width) < 0.5 && Math.abs(h - lastSize.height) < 0.5 && Math.abs(pr - lastSize.dpr) < 0.01) {
@@ -155,12 +162,16 @@ export default function LaserFlow({
             uniforms.iResolution.value.set(w * pr, h * pr, pr);
             rectRef.current = canvas.getBoundingClientRect();
 
-            if (!paused) renderer.render(scene, camera);
+            if (!paused) {
+                renderer.render(scene, camera);
+            }
         };
 
         let resizeRaf = 0;
         const scheduleResize = () => {
-            if (resizeRaf) cancelAnimationFrame(resizeRaf);
+            if (resizeRaf) {
+                cancelAnimationFrame(resizeRaf);
+            }
             resizeRaf = requestAnimationFrame(setSizeNow);
         };
 
@@ -168,7 +179,9 @@ export default function LaserFlow({
 
         const updateMouse = (clientX, clientY) => {
             const rect = rectRef.current;
-            if (!rect) { return; }
+            if (!rect) {
+                return;
+            }
             const x = clientX - rect.left;
             const y = clientY - rect.top;
             const ratio = currentDpr;
@@ -176,11 +189,19 @@ export default function LaserFlow({
             mouseTarget.set(x * ratio, hb - y * ratio);
         };
 
-        const onMove = ev => updateMouse(ev.clientX, ev.clientY);
+        const onMove = (ev) => updateMouse(ev.clientX, ev.clientY);
         const onLeave = () => mouseTarget.set(0, 0);
-        const onVis = () => { paused = document.hidden; };
-        const onCtxLost = e => { e.preventDefault(); paused = true; };
-        const onCtxRestored = () => { paused = false; scheduleResize(); };
+        const onVis = () => {
+            paused = document.hidden;
+        };
+        const onCtxLost = (e) => {
+            e.preventDefault();
+            paused = true;
+        };
+        const onCtxRestored = () => {
+            paused = false;
+            scheduleResize();
+        };
 
         canvas.addEventListener('pointermove', onMove, { passive: true });
         canvas.addEventListener('pointerdown', onMove, { passive: true });
@@ -193,16 +214,21 @@ export default function LaserFlow({
         const ro = new ResizeObserver(scheduleResize);
         ro.observe(mount);
 
-        const io = new IntersectionObserver(entries => {
-            inView = entries[0]?.isIntersecting ?? true;
-        }, { root: null, threshold: 0 });
+        const io = new IntersectionObserver(
+            (entries) => {
+                inView = entries[0]?.isIntersecting ?? true;
+            },
+            { root: null, threshold: 0 }
+        );
         io.observe(mount);
 
         const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
 
-        const adjustDprIfNeeded = now => {
+        const adjustDprIfNeeded = (now) => {
             const elapsed = now - lastFpsCheck;
-            if (elapsed < 750 || fpsSamples.length === 0) { return; }
+            if (elapsed < 750 || fpsSamples.length === 0) {
+                return;
+            }
 
             const avgFps = fpsSamples.reduce((a, b) => a + b, 0) / fpsSamples.length;
             let next = currentDpr;
@@ -227,12 +253,16 @@ export default function LaserFlow({
         let frameCount = 0;
         const animate = () => {
             raf = requestAnimationFrame(animate);
-            if (paused || !inView) { return; }
+            if (paused || !inView) {
+                return;
+            }
 
             // Throttle to 30fps on low quality, or when idle on medium
             frameCount++;
             const q = qualityRef.current;
-            if (q === 'low' && frameCount % 2 !== 0) { return; }
+            if (q === 'low' && frameCount % 2 !== 0) {
+                return;
+            }
 
             const t = clock.getElapsedTime();
             const dt = Math.max(0, t - prevTime);
@@ -252,7 +282,9 @@ export default function LaserFlow({
             if (!hasFadedRef.current) {
                 fade = Math.min(1, fade + cdt);
                 uniforms.uFade.value = fade;
-                if (fade >= 1) hasFadedRef.current = true;
+                if (fade >= 1) {
+                    hasFadedRef.current = true;
+                }
             }
 
             const tau = Math.max(1e-3, mouseSmoothTime);
@@ -280,7 +312,9 @@ export default function LaserFlow({
             geometry.dispose();
             material.dispose();
             renderer.dispose();
-            if (mount.contains(canvas)) mount.removeChild(canvas);
+            if (mount.contains(canvas)) {
+                mount.removeChild(canvas);
+            }
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dpr, quality]);
@@ -289,7 +323,9 @@ export default function LaserFlow({
     useEffect(() => {
         qualityRef.current = quality;
         const uniforms = uniformsRef.current;
-        if (!uniforms) return;
+        if (!uniforms) {
+            return;
+        }
         uniforms.uFogQuality.value = FOG_QUALITY_BY_QUALITY[quality] ?? 1;
         // Override wisp density on low quality
         if (quality === 'low') {
@@ -299,7 +335,9 @@ export default function LaserFlow({
 
     useEffect(() => {
         const uniforms = uniformsRef.current;
-        if (!uniforms) { return; }
+        if (!uniforms) {
+            return;
+        }
 
         uniforms.uWispDensity.value = wispDensity;
         uniforms.uTiltScale.value = mouseTiltStrength;
@@ -335,9 +373,8 @@ export default function LaserFlow({
         decay,
         falloffStart,
         fogFallSpeed,
-        color
+        color,
     ]);
 
     return <div ref={mountRef} className={`${styles.laserFlowContainer} ${className || ''}`} style={style} />;
 }
-

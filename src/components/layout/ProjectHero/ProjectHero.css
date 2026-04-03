@@ -101,10 +101,10 @@
     mix-blend-mode: difference;
 }
 
-#work-hero-side-id, #work-hero-side-client, #work-hero-side-year {
+#work-hero-side-id,
+#work-hero-side-client,
+#work-hero-side-year {
     color: var(--c-drk_100);
     background-color: var(--c-brnd_100);
     padding: 0.25rem 0;
 }
-
-

@@ -1,5 +1,3 @@
-/* eslint-disable react/prop-types */
-
 import { REVEAL } from '@config/animation.config';
 import { motion, useInView } from 'framer-motion';
 import { useMemo, useRef } from 'react';
@@ -9,11 +7,14 @@ import styles from './ScrollReveal.module.css';
 const ScrollReveal = ({ children }) => {
     const ref = useRef(null);
 
-    const observerOptions = useMemo(() => ({
-        rootMargin: '0px 0px -20% 0px',
-        threshold: 0.1,
-        root: typeof globalThis !== 'undefined' && globalThis.lenis ? null : undefined
-    }), []);
+    const observerOptions = useMemo(
+        () => ({
+            rootMargin: '0px 0px -20% 0px',
+            threshold: 0.1,
+            root: typeof globalThis !== 'undefined' && globalThis.lenis ? null : undefined,
+        }),
+        []
+    );
 
     const inView = useInView(ref, observerOptions);
 
@@ -25,9 +26,7 @@ const ScrollReveal = ({ children }) => {
             animate={inView ? { opacity: 1, y: 0 } : { opacity: 0.1, y: 8 }}
             transition={{ duration: REVEAL.DURATION, ease: 'easeOut' }}
         >
-            <p className={styles.scrollRevealText}>
-                {children}
-            </p>
+            <p className={styles.scrollRevealText}>{children}</p>
         </motion.div>
     );
 };

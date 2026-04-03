@@ -12,15 +12,15 @@ function GradualBlur({
     curve = 'linear',
     target = 'parent',
     className = '',
-    style = {}
+    style = {},
 }) {
     const curveFunc = useMemo(() => {
         const curves = {
-            linear: p => p,
-            bezier: p => p * p * (3 - 2 * p),
-            'ease-in': p => p * p,
-            'ease-out': p => 1 - Math.pow(1 - p, 2),
-            'ease-in-out': p => (p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2)
+            linear: (p) => p,
+            bezier: (p) => p * p * (3 - 2 * p),
+            'ease-in': (p) => p * p,
+            'ease-out': (p) => 1 - Math.pow(1 - p, 2),
+            'ease-in-out': (p) => (p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2),
         };
         return curves[curve] || curves.linear;
     }, [curve]);
@@ -31,9 +31,7 @@ function GradualBlur({
 
         for (let i = 1; i <= divCount; i++) {
             const progress = curveFunc(i / divCount);
-            const blurValue = exponential
-                ? Math.pow(2, progress * 4) * 0.0625 * strength
-                : 0.0625 * (progress * divCount + 1) * strength;
+            const blurValue = exponential ? Math.pow(2, progress * 4) * 0.0625 * strength : 0.0625 * (progress * divCount + 1) * strength;
 
             const round1 = (v) => Math.round(v * 10) / 10;
             const p1 = round1(increment * i - increment);
@@ -42,8 +40,12 @@ function GradualBlur({
             const p4 = round1(increment * i + increment * 2);
 
             let gradient = `transparent ${p1}%, black ${p2}%`;
-            if (p3 <= 100) gradient += `, black ${p3}%`;
-            if (p4 <= 100) gradient += `, transparent ${p4}%`;
+            if (p3 <= 100) {
+                gradient += `, black ${p3}%`;
+            }
+            if (p4 <= 100) {
+                gradient += `, transparent ${p4}%`;
+            }
 
             const directions = { top: 'to top', bottom: 'to bottom', left: 'to left', right: 'to right' };
             const direction = directions[position] || 'to bottom';
@@ -58,7 +60,7 @@ function GradualBlur({
                         WebkitMaskImage: `linear-gradient(${direction}, ${gradient})`,
                         backdropFilter: `blur(${blurValue.toFixed(3)}rem)`,
                         WebkitBackdropFilter: `blur(${blurValue.toFixed(3)}rem)`,
-                        opacity
+                        opacity,
                     }}
                 />
             );
@@ -78,7 +80,7 @@ function GradualBlur({
             ...(isVertical ? { left: 0, right: 0 } : { top: 0, bottom: 0 }),
             height: isVertical ? height : '100%',
             width: isVertical ? '100%' : height,
-            ...style
+            ...style,
         };
     }, [position, target, zIndex, height, style]);
 

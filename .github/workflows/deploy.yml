@@ -9,10 +9,9 @@ on:
 jobs:
     build-and-deploy:
         runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v6
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v6
 
             - name: Setup Node.js
               uses: actions/setup-node@v4
@@ -40,11 +39,11 @@ jobs:
                   chmod 600 ~/.ssh/deploy_key
 
                   cloudflared access tcp \
-                    --hostname ssh.robinpotze.com \
-                    --url localhost:2222 &
+                  --hostname ssh.robinpotze.com \
+                  --url localhost:2222 &
 
                   sleep 5
 
                   rsync -avz --delete \
-                    -e "ssh -i ~/.ssh/deploy_key -p 2222 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" \
-                    dist/ living_ipod@127.0.0.1:~/home-server/portfolio/dist/
+                  -e "ssh -i ~/.ssh/deploy_key -p 2222 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" \
+                  dist/ living_ipod@127.0.0.1:~/home-server/portfolio/dist/

@@ -1,5 +1,3 @@
-/* eslint-disable react/prop-types, react/no-unknown-property */
-
 import Rig from '@canvas/shared/camera/Rig';
 import BackgroundMesh from '@canvas/shared/meshes/BackgroundMesh';
 import LogoMesh from '@canvas/shared/meshes/LogoMesh';
@@ -60,7 +58,9 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
     }, [quality]);
 
     useEffect(() => {
-        if (!startAnimations) return;
+        if (!startAnimations) {
+            return;
+        }
         const timer = setTimeout(() => {
             setEntryComplete(true);
         }, ENTRY.COMPLETE_TIMEOUT_MS);
@@ -137,10 +137,14 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
     useCameraAnimation(cameraRef, 'home', cameraAnimConfig);
 
     useEffect(() => {
-        if (!startAnimations || !lightRef.current) return;
+        if (!startAnimations || !lightRef.current) {
+            return;
+        }
         lightRef.current.intensity = 0;
         const timer = setTimeout(() => {
-            if (lightRef.current) lightRef.current.intensity = 1;
+            if (lightRef.current) {
+                lightRef.current.intensity = 1;
+            }
         }, ENTRY.FADE_DURATION * 1000);
         return () => clearTimeout(timer);
     }, [startAnimations]);

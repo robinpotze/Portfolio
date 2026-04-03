@@ -249,7 +249,9 @@
 .sm-socials a {
     font: var(--f-func);
     color: var(--c-lght_100);
-    transition: color 0.2s ease, opacity 0.2s ease;
+    transition:
+        color 0.2s ease,
+        opacity 0.2s ease;
 }
 
 .sm-socials a:hover {
@@ -258,7 +260,7 @@
 
 .sm-socials a:focus-visible {
     outline: 2px solid var(--c-brnd_100);
-    outline-offset: .25rem;
+    outline-offset: 0.25rem;
 }
 
 .sm-socials ul:hover a {

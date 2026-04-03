@@ -1,5 +1,3 @@
-/* eslint-disable react/prop-types */
-
 import { EASING, REVEAL, SPRING_CONFIG, STAGGER } from '@config/animation.config';
 import { motion, useMotionValue, useSpring } from 'framer-motion';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -69,11 +67,15 @@ export default function GridOverlay({
     // Derive rows/cols from container dimensions
     useEffect(() => {
         const el = containerRef.current;
-        if (!el) return;
+        if (!el) {
+            return;
+        }
 
         const calculate = () => {
             const { width, height } = el.getBoundingClientRect();
-            if (width === 0 || height === 0) return;
+            if (width === 0 || height === 0) {
+                return;
+            }
 
             const avgSize = (cellMinSize + cellMaxSize) / 2;
             const cellW = avgSize * cellAspectRatio;
@@ -103,7 +105,6 @@ export default function GridOverlay({
             }
         }
         return set;
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [rows, cols, stripeChance]);
 
     if (rows === 0 || cols === 0) {
@@ -186,7 +187,9 @@ export default function GridOverlay({
                     }
                 }
             }
-            if (!touches) continue;
+            if (!touches) {
+                continue;
+            }
 
             crosshairs.push(
                 <motion.img

@@ -5,7 +5,9 @@ let cachedTier = null;
  * Returns 'low' for integrated Intel/software renderers, 'high' for dedicated GPUs.
  */
 export function getDeviceTier() {
-    if (cachedTier) return cachedTier;
+    if (cachedTier) {
+        return cachedTier;
+    }
 
     try {
         const canvas = document.createElement('canvas');

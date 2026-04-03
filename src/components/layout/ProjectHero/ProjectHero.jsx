@@ -1,5 +1,3 @@
-/* eslint-disable react/prop-types */
-
 import GridOverlay from '@components/decoration/GridOverlay';
 import ScrollDown from '@components/decoration/ScrollDown';
 import { EASING, REVEAL, STAGGER } from '@config/animation.config';

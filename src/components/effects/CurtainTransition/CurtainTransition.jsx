@@ -1,5 +1,3 @@
-/* eslint-disable react/prop-types */
-
 import { CURTAIN, EASING } from '@config/animation.config';
 import { motion } from 'framer-motion';
 import { useEffect, useRef } from 'react';
@@ -57,8 +55,12 @@ export default function CurtainTransition({ isOpen = false, direction = 'up', pa
     };
 
     const getAnimateValue = () => {
-        if (isOpen) return config.covered;
-        if (prevIsOpenRef.current) return config.revealed;
+        if (isOpen) {
+            return config.covered;
+        }
+        if (prevIsOpenRef.current) {
+            return config.revealed;
+        }
         return config.initial;
     };
 

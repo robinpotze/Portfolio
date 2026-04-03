@@ -17,8 +17,14 @@ export const ABOUT_DATA = {
             function: 'Brand & UX Designer',
             date: '2021-2022',
             details: [
-                { text: 'Designed a new webstore and introduced a mascot. Redesigned the logo, revamped brand colouring and adhered to industry standard UX practices', icon: '/img/icon/ART.svg' },
-                { text: 'Introduced a learning platform in the same branding with a larger focus on industry standard designs in learning tools.', icon: '/img/icon/GAT.svg' },
+                {
+                    text: 'Designed a new webstore and introduced a mascot. Redesigned the logo, revamped brand colouring and adhered to industry standard UX practices',
+                    icon: '/img/icon/ART.svg',
+                },
+                {
+                    text: 'Introduced a learning platform in the same branding with a larger focus on industry standard designs in learning tools.',
+                    icon: '/img/icon/GAT.svg',
+                },
                 { text: 'Created a link between the products and the learning materials to create a USP', icon: '/img/icon/ARW.svg' },
             ],
         },
@@ -29,7 +35,10 @@ export const ABOUT_DATA = {
             details: [
                 { text: 'Concepted and developed new User Avatars to fit gender, size and VR engineering environments.', icon: '/img/icon/MRK.svg' },
                 { text: 'Concepted and developed 3D assets for tools to be used in the ArchViz VR software.', icon: '/img/icon/CRS.svg' },
-                { text: 'Ran end-user usability tests with the created assets and iterated on the feedback throughout the process.', icon: '/img/icon/CHK.svg' },
+                {
+                    text: 'Ran end-user usability tests with the created assets and iterated on the feedback throughout the process.',
+                    icon: '/img/icon/CHK.svg',
+                },
             ],
         },
     ],

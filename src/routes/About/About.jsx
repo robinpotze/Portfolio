@@ -78,12 +78,7 @@ export default function About() {
                     crosshairOpacity={0.3}
                     parallaxStrength={10}
                 />
-                <motion.div
-                    className="about-selector"
-                    variants={buttonContainerVariants}
-                    initial="hidden"
-                    animate="visible"
-                >
+                <motion.div className="about-selector" variants={buttonContainerVariants} initial="hidden" animate="visible">
                     {ABOUT_SECTIONS.map((key) => (
                         <motion.button
                             key={key}
@@ -92,7 +87,7 @@ export default function About() {
                             variants={buttonVariants}
                         >
                             <PixelCard gap={5} speed={80} className="about-selector-pixel" />
-                            <h2 className='tr90'>{key}</h2>
+                            <h2 className="tr90">{key}</h2>
                             {currentPage === key && (
                                 <motion.div
                                     className="about-selector-indicator"

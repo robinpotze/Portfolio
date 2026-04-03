@@ -7,7 +7,7 @@ class ErrorBoundary extends Component {
         this.state = {
             hasError: false,
             error: null,
-            errorInfo: null
+            errorInfo: null,
         };
     }
 
@@ -19,7 +19,7 @@ class ErrorBoundary extends Component {
         console.error('ErrorBoundary caught an error:', error, errorInfo);
         this.setState({
             error,
-            errorInfo
+            errorInfo,
         });
     }
 
@@ -27,20 +27,16 @@ class ErrorBoundary extends Component {
         this.setState({
             hasError: false,
             error: null,
-            errorInfo: null
+            errorInfo: null,
         });
-    }
+    };
 
     render() {
         if (this.state.hasError) {
             return (
                 <div className={styles.container}>
-                    <h1 className={styles.title}>
-                        Something went wrong
-                    </h1>
-                    <p className={styles.message}>
-                        An unexpected error occurred while rendering this component.
-                    </p>
+                    <h1 className={styles.title}>Something went wrong</h1>
+                    <p className={styles.message}>An unexpected error occurred while rendering this component.</p>
                     <div className={styles.actions}>
                         <button onClick={this.handleReset} className={styles.retryButton}>
                             Try Again

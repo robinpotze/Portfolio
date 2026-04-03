@@ -1,6 +1,6 @@
-import useRandomNumber from "@hooks/useRandomNumber";
+import useRandomNumber from '@hooks/useRandomNumber';
 
-import RAD_TXT from "./RAD_TXT";
+import RAD_TXT from './RAD_TXT';
 
 import '../RadialGrid.css';
 
@@ -18,4 +18,4 @@ export default function RAD_GRID_TXT() {
             <RAD_TXT value={useRandomNumber(45, 360)} />
         </div>
     );
-};
+}

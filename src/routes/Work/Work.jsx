@@ -13,7 +13,9 @@ export default function Work() {
 
     const handleCardNavigate = useCallback(
         (pageKey) => {
-            if (hasNavigated.current) { return; }
+            if (hasNavigated.current) {
+                return;
+            }
             hasNavigated.current = true;
             const item = items.find((i) => i.key === pageKey);
             navigateWithTransition(`/work/${pageKey}`, item?.data?.title || pageKey, 'up');

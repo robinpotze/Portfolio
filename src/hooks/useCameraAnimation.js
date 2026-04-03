@@ -9,7 +9,7 @@ import * as THREE from 'three';
  * Entry phase: Animates from start to end position/FOV
  * Scroll phase: Animates from end to scrollEnd position/FOV based on scroll progress
  * Handles perspective camera projection matrix updates
- * 
+ *
  * @param {object} cameraRef - React ref to camera (optional, uses default if null)
  * @param {string} routeName - Current route name for animation reset
  * @param {object} options - Animation configuration
@@ -25,7 +25,7 @@ export function useCameraAnimation(cameraRef, routeName, options = {}) {
         endFov = 50,
         scrollEndFov = null,
         enabled = true,
-        scrollProgress = 0
+        scrollProgress = 0,
     } = options;
 
     const finalEndPosition = scrollEndPosition || endPosition;
@@ -47,10 +47,14 @@ export function useCameraAnimation(cameraRef, routeName, options = {}) {
     }, [routeName, startFov]);
 
     useFrame(({ clock, camera }) => {
-        if (!enabled) { return; }
+        if (!enabled) {
+            return;
+        }
 
         const targetCamera = cameraRef?.current || camera;
-        if (!targetCamera) { return; }
+        if (!targetCamera) {
+            return;
+        }
 
         if (!hasCompletedEntry.current) {
             if (startTime.current === null) {
@@ -79,7 +83,9 @@ export function useCameraAnimation(cameraRef, routeName, options = {}) {
             }
         } else {
             // Skip if scroll hasn't changed since last application
-            if (Math.abs(scrollProgress - lastAppliedScroll.current) < 0.0001) { return; }
+            if (Math.abs(scrollProgress - lastAppliedScroll.current) < 0.0001) {
+                return;
+            }
             lastAppliedScroll.current = scrollProgress;
 
             const scrollEased = easeCurve(scrollProgress);

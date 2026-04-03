@@ -7,11 +7,7 @@ import { useRef } from 'react';
  * Must be used inside both a QualityProvider and an R3F Canvas.
  */
 export function useAdaptiveQuality(options = {}) {
-    const {
-        targetFps = 55,
-        checkInterval = 1000,
-        enabled = true
-    } = options;
+    const { targetFps = 55, checkInterval = 1000, enabled = true } = options;
 
     const { quality, setQuality } = useQuality();
     const currentFpsRef = useRef(60);
@@ -20,17 +16,23 @@ export function useAdaptiveQuality(options = {}) {
     const lastCheckRef = useRef(0);
 
     useFrame((_, delta) => {
-        if (!enabled) { return; }
+        if (!enabled) {
+            return;
+        }
 
         const now = performance.now();
         const fps = 1 / delta;
 
         frameTimesRef.current.push(fps);
 
-        if (now - lastCheckRef.current < checkInterval) { return; }
+        if (now - lastCheckRef.current < checkInterval) {
+            return;
+        }
 
         const samples = frameTimesRef.current;
-        if (samples.length === 0) { return; }
+        if (samples.length === 0) {
+            return;
+        }
 
         const avgFps = samples.reduce((a, b) => a + b, 0) / samples.length;
         currentFpsRef.current = Math.round(avgFps);
@@ -40,7 +42,9 @@ export function useAdaptiveQuality(options = {}) {
         if (avgFps < targetFps - 10) {
             newQuality = quality === 'high' ? 'medium' : 'low';
         } else if (avgFps < targetFps - 5) {
-            if (quality === 'high') newQuality = 'medium';
+            if (quality === 'high') {
+                newQuality = 'medium';
+            }
         } else if (avgFps > targetFps + 5 && quality !== 'high') {
             newQuality = quality === 'low' ? 'medium' : 'high';
         }
