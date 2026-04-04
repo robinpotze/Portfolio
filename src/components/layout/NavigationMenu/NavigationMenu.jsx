@@ -5,7 +5,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import MenuBackgroundLayers from './MenuBackgroundLayers';
 import MenuButton from './MenuButton';
 import MenuPanel from './MenuPanel';
-import './NavigationMenu.css';
+import styles from './NavigationMenu.module.css';
 
 const BTN_COLOR = 'var(--c-lght_100)';
 const BTN_COLOR_OPEN = 'var(--c-brnd_100)';
@@ -144,7 +144,7 @@ export default function NavigationMenu() {
     );
 
     return (
-        <div className="staggered-menu-wrapper fixed-wrapper" data-open={open || undefined} data-position="left">
+        <div className={styles.wrapper} data-open={open || undefined} data-position="left">
             <MenuBackgroundLayers open={open} />
 
             <MenuButton ref={buttonRef} open={open} label={label} toggle={toggle} glitchRefs={glitchRefs} />

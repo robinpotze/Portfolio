@@ -1,10 +1,10 @@
+import RadGridTxt from '@components/decoration/RadialText/TXT/RAD_GRID_TXT';
 import TypewriterText from '@components/effects/TypewriterText';
 import ErrorBoundary from '@components/ErrorBoundary';
+import StatusMessage from '@components/ui/StatusMessage/StatusMessage';
 import { CONTACT_TIMING, EASING, REVEAL, STAGGER } from '@config/animation.config';
 import { motion } from 'framer-motion';
-import RadGridTxt from '@components/decoration/RadialText/TXT/RAD_GRID_TXT';
-import StatusMessage from '@components/ui/StatusMessage/StatusMessage';
-import './Contact.css';
+import styles from './Contact.module.css';
 
 const ERROR_LOG_LINES = [
     '[SYSTEM] CARRIER_INTERCEPT_DAEMON v9.4.0',
@@ -110,8 +110,8 @@ const cornerVariants = {
 export default function Contact() {
     return (
         <ErrorBoundary>
-            <div className="contact-page">
-                <div className="contact-error-section">
+            <div className={styles.page}>
+                <div className={styles.errorSection}>
                     <StatusMessage
                         status="error"
                         message={
@@ -122,68 +122,67 @@ export default function Contact() {
                             </>
                         }
                     />
-                    <TypewriterText lines={ERROR_LOG_LINES} className="contact-errorlog" rowClassName="contact-log-row" />
+                    <TypewriterText lines={ERROR_LOG_LINES} className={styles.errorlog} rowClassName={styles.logRow} />
                 </div>
                 <motion.div
-                    className="contact-corner-tl"
+                    className={styles.cornerTl}
                     custom={{ y: STAGGER.DEFAULT * 200 }}
                     variants={cornerVariants}
                     initial="hidden"
                     animate="visible"
                 >
-                    <div className="contact-corner">
-                        <img className="contact-deco" src="img/icon/PLS_DRK.svg" alt="contact form corner plus icon" />
+                    <div className={styles.corner}>
+                        <img className={styles.deco} src="img/icon/PLS_DRK.svg" alt="contact form corner plus icon" />
                     </div>
-                    <h3 className="contact-title-txt">CNTCT-FRM</h3>
+                    <h3>CNTCT-FRM</h3>
                 </motion.div>
                 <motion.div
-                    className="contact-corner-tr"
+                    className={styles.cornerTr}
                     custom={{ y: STAGGER.DEFAULT * 200 }}
                     variants={cornerVariants}
                     initial="hidden"
                     animate="visible"
                 >
-                    <div className="contact-corner">
-                        <img className="contact-deco" src="img/icon/PLS_DRK.svg" alt="contact form corner plus icon" />
+                    <div className={styles.corner}>
+                        <img className={styles.deco} src="img/icon/PLS_DRK.svg" alt="contact form corner plus icon" />
                     </div>
                 </motion.div>
-                <motion.div className="contact-form" variants={formVariants} initial="hidden" animate="visible">
-                    <motion.div className="contact-form-content" variants={formContentVariants} initial="hidden" animate="visible">
-                        <img className="contact-mail-icon" src="img/icon/MSG_DRK.svg" alt="contact form mail icon" />
-                        <img className="contact-deco" src="img/icon/PLS_DRK.svg" alt="contact form decoration icon" />
-                        <input className="contact-name-input" placeholder="IDENTIFY" />
-                        <img className="contact-deco" src="img/icon/PLS_DRK.svg" alt="contact form decoration icon" />
+                <motion.div className={styles.form} variants={formVariants} initial="hidden" animate="visible">
+                    <motion.div className={styles.formContent} variants={formContentVariants} initial="hidden" animate="visible">
+                        <img className={styles.mailIcon} src="img/icon/MSG_DRK.svg" alt="contact form mail icon" />
+                        <img className={styles.deco} src="img/icon/PLS_DRK.svg" alt="contact form decoration icon" />
+                        <input className={styles.nameInput} placeholder="IDENTIFY" />
+                        <img className={styles.deco} src="img/icon/PLS_DRK.svg" alt="contact form decoration icon" />
                         <RadGridTxt />
                     </motion.div>
                 </motion.div>
                 <motion.div
-                    className="contact-corner-bl"
+                    className={styles.cornerBl}
                     custom={{ y: -STAGGER.DEFAULT * 200 }}
                     variants={cornerVariants}
                     initial="hidden"
                     animate="visible"
                 >
-                    <div className="contact-corner">
-                        <img className="contact-deco" src="img/icon/PLS_DRK.svg" alt="contact form corner plus icon" />
+                    <div className={styles.corner}>
+                        <img className={styles.deco} src="img/icon/PLS_DRK.svg" alt="contact form corner plus icon" />
                     </div>
                     <TypewriterText
                         lines={['SNR: 32dB | BER: 1e-9 | FRAME_LOCK: TRUE \nSIG_INT: ACTIVE | BUFFER: 0%']}
-                        className="contact-bottomlog"
-                        rowClassName="contact-log-row"
+                        rowClassName={styles.logRow}
                     />
                 </motion.div>
                 <motion.div
-                    className="contact-corner-br"
+                    className={styles.cornerBr}
                     custom={{ y: -STAGGER.DEFAULT * 200 }}
                     variants={cornerVariants}
                     initial="hidden"
                     animate="visible"
                 >
-                    <div className="contact-corner">
-                        <img className="contact-deco" src="img/icon/PLS_DRK.svg" alt="contact form corner plus icon" />
+                    <div className={styles.corner}>
+                        <img className={styles.deco} src="img/icon/PLS_DRK.svg" alt="contact form corner plus icon" />
                     </div>
                 </motion.div>
-                <TypewriterText lines={STATUS_GRID_LINES} className="contact-statusgrid" rowClassName="contact-log-row" />
+                <TypewriterText lines={STATUS_GRID_LINES} className={styles.statusgrid} rowClassName={styles.logRow} />
             </div>
         </ErrorBoundary>
     );

@@ -1,5 +1,6 @@
 import DashLine from '@components/decoration/DashLine';
 import WorkHeader from '@components/ui/WorkHeader/WorkHeader';
+import styles from '@routes/Entry/Entry.module.css';
 
 const assetPath = '/img/work/lsdjam/';
 
@@ -19,10 +20,10 @@ export const Data = {
 export default function LsdJam() {
     return (
         <div>
-            <div className="work-full">
-                <img src={`${assetPath}hibernation.png`} className="img-full-width" alt="A retro-futurist room with a VR setup in the middle." />
+            <div className={styles.full}>
+                <img src={`${assetPath}hibernation.png`} className={styles.imgFullWidth} alt="A retro-futurist room with a VR setup in the middle." />
             </div>
-            <div className="work-full-thin">
+            <div className={styles.fullThin}>
                 <img src={`${assetPath}SpaceShip.png`} alt="Low fidelity render of a spaceship bridge." />
             </div>
             <WorkHeader
@@ -30,7 +31,7 @@ export default function LsdJam() {
                 subtitle="LVL_001:::HIBERNATION"
                 description="The first actual level of the game has you, the player, wake up from cryosleep in an unknown spaceship. As you navigate the narrow hallways, large storage rooms, and eventually end up on the bridge, you realize you have awakened due to a system error, the sun is burning away the ship's system as you've steered off-course."
             />
-            <div className="work-double">
+            <div className={styles.double}>
                 <img src={`${assetPath}CasetteWire.png`} alt="The wireframe of the CassetteRoom scene" />
                 <DashLine direction="Vertical" />
                 <img src={`${assetPath}CassetteRoom.png`} alt="A retro-futurist room with a VR setup in the middle." />

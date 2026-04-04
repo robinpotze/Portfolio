@@ -1,4 +1,4 @@
-.pixel-canvas {
+.canvas {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -7,7 +7,7 @@
     pointer-events: none;
 }
 
-.pixel-card {
+.card {
     position: relative;
     overflow: hidden;
     isolation: isolate;

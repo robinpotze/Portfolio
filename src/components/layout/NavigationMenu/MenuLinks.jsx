@@ -1,5 +1,6 @@
 import { EASING, MENU_TIMING } from '@config/animation.config';
 import { motion } from 'framer-motion';
+import styles from './NavigationMenu.module.css';
 
 const MENU_ITEMS = [
     { label: 'Home', link: '/' },
@@ -15,7 +16,7 @@ export default function MenuLinks({ open, navigateWithCurtain }) {
 
     return (
         <motion.ul
-            className="sm-panel-list"
+            className={styles.panelList}
             data-numbering={true}
             initial="closed"
             animate={open ? 'open' : 'closed'}
@@ -29,7 +30,7 @@ export default function MenuLinks({ open, navigateWithCurtain }) {
             }}
         >
             {MENU_ITEMS.map((item, i) => (
-                <div className="sm-panel-item-bg" key={item.link}>
+                <div className={styles.panelItemBg} key={item.link}>
                     <motion.li
                         variants={{
                             closed: { y: '140%', rotate: 5 },
@@ -43,7 +44,7 @@ export default function MenuLinks({ open, navigateWithCurtain }) {
                             },
                         }}
                     >
-                        <button className="sm-panel-item" data-index={i + 1} onClick={() => handleClick(item.link, item.label)}>
+                        <button className={styles.panelItem} data-index={i + 1} onClick={() => handleClick(item.link, item.label)}>
                             {item.label}
                         </button>
                     </motion.li>

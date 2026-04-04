@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import './PixelCard.css';
+import styles from './PixelCard.module.css';
 
 class Pixel {
     constructor(canvas, context, x, y, color, speed, delay) {
@@ -198,14 +198,14 @@ export default function PixelCard({ gap = 6, speed = 200, noFocus = true, classN
     return (
         <div
             ref={containerRef}
-            className={`pixel-card ${className}`}
+            className={`${styles.card} ${className}`}
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
             onFocus={noFocus ? undefined : onFocus}
             onBlur={noFocus ? undefined : onBlur}
             tabIndex={noFocus ? -1 : 0}
         >
-            <canvas className="pixel-canvas" ref={canvasRef} aria-hidden="true" />
+            <canvas className={styles.canvas} ref={canvasRef} aria-hidden="true" />
             {children}
         </div>
     );

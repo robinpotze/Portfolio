@@ -1,4 +1,4 @@
-.about-page {
+.page {
     position: relative;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -20,13 +20,13 @@
 
 /* ── Grid Overlay ───────────────────────────────── */
 
-.about-grid-overlay {
+.gridOverlay {
     z-index: 0;
 }
 
 /* ── Selector Row ───────────────────────────────── */
 
-.about-selector {
+.selector {
     grid-area: selector;
     display: flex;
     gap: 1rem;
@@ -35,7 +35,7 @@
     z-index: 1;
 }
 
-.about-selector-button {
+.selectorButton {
     position: relative;
     aspect-ratio: 9 / 16;
     display: flex;
@@ -51,22 +51,22 @@
         background 0.3s ease;
 }
 
-.about-selector-pixel {
+.selectorPixel {
     position: absolute;
     inset: 0;
 }
 
-.about-selector-button:hover {
+.selectorButton:hover {
     color: var(--c-lght_100);
     border-color: var(--c-brnd_100);
 }
 
-.about-selector-button.active {
+.selectorButton.active {
     color: var(--c-lght_100);
     background: var(--c-brnd_100);
 }
 
-.about-selector-indicator {
+.selectorIndicator {
     position: absolute;
     inset: -50px;
     pointer-events: none;
@@ -80,7 +80,7 @@
 
 /* ── Details Container ──────────────────────────── */
 
-.about-details {
+.details {
     grid-area: details;
     display: flex;
     flex-direction: column;
@@ -93,7 +93,7 @@
     z-index: 1;
 }
 
-.about-name {
+.name {
     font: var(--f-title);
     text-transform: uppercase;
     color: var(--c-lght_100);
@@ -104,23 +104,23 @@
 
 /* ── Dynamic Content Area ───────────────────────── */
 
-.about-content-scroll {
+.contentScroll {
     flex: 1;
     overflow-y: auto;
     scrollbar-width: none;
 }
 
-.about-content {
+.content {
     width: 100%;
 }
 
 /* ── EXP Subsection Header ──────────────────────── */
 
-.about-subsection {
+.subsection {
     margin-bottom: 2rem;
 }
 
-.about-subsection-header {
+.subsectionHeader {
     display: flex;
     align-items: baseline;
     gap: 1rem;
@@ -129,29 +129,29 @@
     border-bottom: 1px solid var(--c-brnd_20);
 }
 
-.about-subsection-name {
+.subsectionName {
     font: var(--f-hdr_3);
     text-transform: uppercase;
     color: var(--c-brnd_100);
 }
 
-.about-subsection-details {
+.subsectionDetails {
     display: flex;
     align-items: baseline;
     gap: 1rem;
 }
 
-.about-subsection-function {
+.subsectionFunction {
     font: var(--f-func-small);
     color: var(--c-lght_40);
 }
 
-.about-subsection-course {
+.subsectionCourse {
     font: var(--f-func);
     color: var(--c-lght_100);
 }
 
-.about-subsection-date {
+.subsectionDate {
     font: var(--f-func-small);
     color: var(--c-lght_40);
     margin-left: auto;
@@ -159,7 +159,7 @@
 
 /* ── List ───────────────────────────────────────── */
 
-.about-list {
+.list {
     list-style: none;
     padding: 0;
     width: 100%;
@@ -170,7 +170,7 @@
 
 /* ── List Item ──────────────────────────────────── */
 
-.about-item {
+.item {
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -178,7 +178,7 @@
     border-radius: 4px;
 }
 
-.about-item-icon {
+.itemIcon {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -190,19 +190,19 @@
     border: 1px solid var(--c-brnd_20);
 }
 
-.about-item-icon img {
+.itemIcon img {
     width: 20px;
     height: 20px;
     object-fit: contain;
     filter: brightness(0) invert(1);
 }
 
-.about-item-text {
+.itemText {
     font: var(--f-func);
     color: var(--c-lght_100);
 }
 
-.about-item-meta {
+.itemMeta {
     font: var(--f-func-small);
     color: var(--c-lght_40);
     margin-left: auto;
@@ -212,7 +212,7 @@
 /* ── Responsive ─────────────────────────────────── */
 
 @media (max-width: 768px) {
-    .about-page {
+    .page {
         grid-template-columns: 1fr;
         grid-template-rows: auto 1fr;
         grid-template-areas:
@@ -222,40 +222,40 @@
         gap: 1rem;
     }
 
-    .about-selector {
+    .selector {
         flex-wrap: wrap;
         justify-content: center;
     }
 
-    .about-selector-button {
+    .selectorButton {
         font: var(--f-func);
         flex: 0 1 auto;
         aspect-ratio: auto;
         padding: 0.5rem 1rem;
     }
 
-    .about-subsection-header {
+    .subsectionHeader {
         flex-direction: column;
         gap: 0.25rem;
         align-items: flex-start;
     }
 
-    .about-subsection-date {
+    .subsectionDate {
         margin-left: 0;
     }
 
-    .about-item {
+    .item {
         gap: 0.75rem;
         padding: 0.5rem 0.6rem;
     }
 
-    .about-item-icon {
+    .itemIcon {
         width: 28px;
         height: 28px;
         min-width: 28px;
     }
 
-    .about-item-icon img {
+    .itemIcon img {
         width: 16px;
         height: 16px;
     }

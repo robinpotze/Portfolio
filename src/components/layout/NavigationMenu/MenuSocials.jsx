@@ -1,5 +1,6 @@
 import { MENU_TIMING, REVEAL } from '@config/animation.config';
 import { motion } from 'framer-motion';
+import styles from './NavigationMenu.module.css';
 
 const SOCIALS = [
     { label: 'Artstation', link: 'https://artstation.com/living_ipod' },
@@ -9,7 +10,7 @@ const SOCIALS = [
 
 export default function MenuSocials({ open }) {
     return (
-        <div className="sm-socials">
+        <div className={styles.socials}>
             <motion.h3 initial={{ opacity: 0 }} animate={{ opacity: open ? 1 : 0 }}>
                 Socials
             </motion.h3>

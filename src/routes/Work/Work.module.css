@@ -1,6 +1,6 @@
 /* Work page styles - transparent background for canvas visibility */
 
-.work-page-container {
+.pageContainer {
     position: fixed;
     top: 0;
     left: 0;
@@ -9,7 +9,7 @@
     overflow: hidden;
 }
 
-.work-canvas-container {
+.canvasContainer {
     position: fixed;
     top: 0;
     left: 0;

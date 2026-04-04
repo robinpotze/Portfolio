@@ -5,12 +5,13 @@
 import { EASING, MENU_TIMING } from '@config/animation.config';
 import { motion } from 'framer-motion';
 import { forwardRef } from 'react';
+import styles from './NavigationMenu.module.css';
 
 const MenuButton = forwardRef(({ open, label, toggle, glitchRefs }, ref) => (
-    <header className="staggered-menu-header">
-        <button ref={ref} className="sm-toggle" onClick={toggle} aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open}>
+    <header className={styles.header}>
+        <button ref={ref} className={styles.toggle} onClick={toggle} aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open}>
             <motion.span
-                className="sm-icon"
+                className={styles.icon}
                 aria-hidden="true"
                 animate={{ rotate: open ? 90 : 0 }}
                 transition={{
@@ -21,26 +22,26 @@ const MenuButton = forwardRef(({ open, label, toggle, glitchRefs }, ref) => (
                 <motion.img
                     src="/img/icon/PLS.svg"
                     alt=""
-                    className="sm-icon-img"
+                    className={styles.iconImg}
                     animate={{ opacity: open ? 0 : 1, scale: open ? 0.6 : 1 }}
                     transition={{ duration: MENU_TIMING.ICON_SWAP_OUT_DURATION }}
                 />
                 <motion.img
                     src="/img/icon/CRS.svg"
                     alt=""
-                    className="sm-icon-img"
+                    className={styles.iconImg}
                     animate={{ opacity: open ? 1 : 0, scale: open ? 1 : 0.6 }}
                     transition={{ duration: MENU_TIMING.ICON_SWAP_IN_DURATION }}
                 />
             </motion.span>
 
-            <span className="sm-toggle-textWrap">
-                <span className="sm-glitch-stack">
+            <span className={styles.toggleTextWrap}>
+                <span className={styles.glitchStack}>
                     <span
                         ref={(el) => {
                             glitchRefs.current.main = el;
                         }}
-                        className="sm-glitch-layer main"
+                        className={styles.glitchLayerMain}
                     >
                         {label}
                     </span>
@@ -48,7 +49,7 @@ const MenuButton = forwardRef(({ open, label, toggle, glitchRefs }, ref) => (
                         ref={(el) => {
                             glitchRefs.current.red = el;
                         }}
-                        className="sm-glitch-layer red"
+                        className={styles.glitchLayerRed}
                         aria-hidden="true"
                     >
                         {label}
@@ -57,7 +58,7 @@ const MenuButton = forwardRef(({ open, label, toggle, glitchRefs }, ref) => (
                         ref={(el) => {
                             glitchRefs.current.blue = el;
                         }}
-                        className="sm-glitch-layer blue"
+                        className={styles.glitchLayerBlue}
                         aria-hidden="true"
                     >
                         {label}

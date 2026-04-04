@@ -1,4 +1,4 @@
-.contact-page {
+.page {
     height: 100vh;
     width: 100vw;
     display: grid;
@@ -15,7 +15,7 @@
     box-sizing: border-box;
 }
 
-.contact-error-section {
+.errorSection {
     grid-area: errorlog;
     display: flex;
     flex-direction: column;
@@ -23,7 +23,7 @@
     min-width: 0;
 }
 
-.contact-errorlog {
+.errorlog {
     display: flex;
     flex-direction: column;
     gap: 4px;
@@ -31,7 +31,7 @@
     color: var(--c-brnd_-100);
 }
 
-.contact-corner-tl {
+.cornerTl {
     grid-area: formtitle;
     display: flex;
     align-self: flex-end;
@@ -42,14 +42,14 @@
     color: var(--c-brnd_-100);
 }
 
-.contact-corner-tr {
+.cornerTr {
     grid-area: formcornertr;
     display: flex;
     align-self: flex-end;
     justify-content: flex-end;
 }
 
-.contact-corner-bl {
+.cornerBl {
     grid-area: bottomlog;
     display: flex;
     align-self: flex-start;
@@ -59,13 +59,13 @@
     color: var(--c-brnd_-100);
 }
 
-.contact-corner-br {
+.cornerBr {
     grid-area: formcornerbr;
     display: flex;
     justify-content: flex-end;
 }
 
-.contact-form {
+.form {
     grid-area: form;
     padding: var(--s-xl);
     display: flex;
@@ -78,7 +78,7 @@
     will-change: transform;
 }
 
-.contact-form::after {
+.form::after {
     content: '';
     position: absolute;
     inset: -42px;
@@ -91,7 +91,7 @@
     box-sizing: border-box;
 }
 
-.contact-form-content {
+.formContent {
     width: 100%;
     display: flex;
     gap: var(--s-l);
@@ -99,7 +99,7 @@
     align-items: center;
 }
 
-.contact-name-input {
+.nameInput {
     font: var(--f-hdr_1);
     text-align: center;
     padding: var(--s-s);
@@ -108,23 +108,23 @@
     border: none;
 }
 
-.contact-mail-icon {
+.mailIcon {
     width: 74px;
     height: 74px;
 }
 
-.contact-deco {
+.deco {
     width: 64px;
     height: 64px;
 }
 
-.contact-corner {
+.corner {
     width: 64px;
     height: 64px;
     background-color: var(--c-brnd_-100);
 }
 
-.contact-statusgrid {
+.statusgrid {
     grid-area: statusgrid;
     align-self: flex-end;
     display: flex;
@@ -134,10 +134,10 @@
     color: var(--c-brnd_-100);
 }
 
-.contact-log-row {
+.logRow {
     margin: 0;
 }
 
-.contact-name-input::placeholder {
+.nameInput::placeholder {
     color: var(--c-brnd_-20);
 }

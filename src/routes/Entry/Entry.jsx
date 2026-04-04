@@ -6,7 +6,7 @@ import { LENIS } from '@config/animation.config';
 import useLenisScroll from '@hooks/useLenisScroll';
 import { normalizeKey } from '@utils/stringUtils';
 import { useParams } from 'react-router-dom';
-import './Entry.css';
+import styles from './Entry.module.css';
 import { pages } from './pages/autogen';
 
 export default function Entry() {
@@ -24,21 +24,21 @@ export default function Entry() {
 
     if (!PageComponent || !data) {
         return (
-            <div className="work-page" id="work-overview">
+            <div className={styles.page} id="work-overview">
                 404 - Project Not Found
             </div>
         );
     }
 
     return (
-        <div className="work-page" id={data.title.replaceAll(/\s+/g, '-') + '-page'}>
+        <div className={styles.page} id={data.title.replaceAll(/\s+/g, '-') + '-page'}>
             <ProjectHero content={data} />
-            <section className="work-section">
-                <div className="work-header">
-                    <div className="work-synopsis">
+            <section className={styles.section}>
+                <div className={styles.header}>
+                    <div className={styles.synopsis}>
                         <h2>Synopsis</h2>
                         <DashLine direction="Horizontal" />
-                        <div className="work-synopsis-subtitle">
+                        <div className={styles.synopsisSubtitle}>
                             <img src="/img/icon/CRS.svg" alt="Cross symbol divider" />
                             <p className="deco-small">{data.synopsis}</p>
                         </div>

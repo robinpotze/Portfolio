@@ -1,9 +1,10 @@
 import { Canvas } from '@react-three/fiber';
+import styles from '@routes/Home/Home.module.css';
 import HomeScene from './HomeScene';
 
 export default function HomeCanvas({ scrollProgress, startAnimations }) {
     return (
-        <div className="home-canvas-container">
+        <div className={styles.canvasContainer}>
             <Canvas
                 dpr={[1, 1.5]}
                 performance={{ min: 0.5 }}

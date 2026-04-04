@@ -6,11 +6,12 @@ import LaserFlow from '@components/effects/LaserFlow';
 import LoadingScreen from '@components/effects/LoadingScreen';
 import ErrorBoundary from '@components/ErrorBoundary';
 import { EASING, LOADING, REVEAL, SCROLL_THRESHOLDS, STAGGER } from '@config/animation.config';
-import { usePageTransition } from '@hooks/usePageTransition';
+import { LASER_PARAMS } from '@config/laser.config';
+import useScrollNavigation from '@hooks/useScrollNavigation';
 import { motion } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import './Home.css';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import styles from './Home.module.css';
 
 const sideContainerVariants = {
     hidden: {
@@ -41,52 +42,33 @@ const sideItemVariants = {
 };
 
 export default function Home() {
-    const { navigateWithTransition } = usePageTransition();
+    const navigate = useNavigate();
     const location = useLocation();
     const containerRef = useRef(null);
-    const hasNavigated = useRef(false);
 
     const skipLoading = !!location.state?.fromNavigation;
     const [isLoading, setIsLoading] = useState(!skipLoading);
     const [showContent, setShowContent] = useState(skipLoading);
-    const [scrollProgress, setScrollProgress] = useState(0);
+
+    const { scrollProgress, resetNavigation } = useScrollNavigation(containerRef, {
+        threshold: SCROLL_THRESHOLDS.HOME_TRANSITION,
+        targetPath: '/work',
+        targetName: 'Work',
+        direction: 'up',
+    });
 
     useEffect(() => {
         window.scrollTo(0, 0);
         if (containerRef.current) {
             containerRef.current.scrollTop = 0;
         }
-        hasNavigated.current = false;
+        resetNavigation();
 
         // Clear navigation state after reading it
         if (location.state?.fromNavigation) {
-            globalThis.history.replaceState({}, document.title);
+            navigate('.', { replace: true, state: {} });
         }
-    }, [location.state?.fromNavigation]);
-
-    useEffect(() => {
-        const container = containerRef.current;
-        if (!container) {
-            return;
-        }
-
-        const handleScroll = () => {
-            const scrollTop = Math.max(0, container.scrollTop);
-            const scrollHeight = Math.max(1, container.scrollHeight - container.clientHeight);
-            const progress = Math.max(0, Math.min(1, scrollTop / scrollHeight));
-
-            setScrollProgress(progress);
-
-            // Trigger curtain at threshold
-            if (progress >= SCROLL_THRESHOLDS.HOME_TRANSITION && !hasNavigated.current) {
-                hasNavigated.current = true;
-                navigateWithTransition('/work', 'Work', 'up');
-            }
-        };
-
-        container.addEventListener('scroll', handleScroll);
-        return () => container.removeEventListener('scroll', handleScroll);
-    }, [navigateWithTransition]);
+    }, [location.state?.fromNavigation, resetNavigation, navigate]);
 
     const handleLoadingComplete = () => {
         setTimeout(() => {
@@ -96,39 +78,39 @@ export default function Home() {
     };
 
     const laserProgress = showContent ? scrollProgress : 0;
-    const horizontalSizing = 0 + laserProgress * 2;
-    const verticalSizing = 0 + laserProgress * 3;
-    const verticalBeamOffset = -0.6 + laserProgress * 0.1;
-    const fogIntensity = 0.2 + laserProgress * 0.2;
-    const wispSpeed = 50 - laserProgress * 40;
-    const wispIntensity = 5 + laserProgress * 5;
-    const decay = 1.5 - laserProgress * 0.5;
+    const laserParams = useMemo(() => {
+        const params = {};
+        for (const [key, { base, scale }] of Object.entries(LASER_PARAMS)) {
+            params[key] = base + laserProgress * scale;
+        }
+        return params;
+    }, [laserProgress]);
 
     return (
         <>
             {isLoading && <LoadingScreen onComplete={handleLoadingComplete} minDisplayTime={LOADING.MIN_DISPLAY_MS} logoSrc="/img/logo/logo.svg" />}
             <div
-                className="home-page"
+                className={styles.page}
                 ref={containerRef}
                 style={{ opacity: showContent ? 1 : 0, transition: 'opacity 0.6s ease-out', pointerEvents: showContent ? 'auto' : 'none' }}
             >
                 <LaserFlow
-                    horizontalSizing={horizontalSizing}
-                    verticalSizing={verticalSizing}
+                    horizontalSizing={laserParams.horizontalSizing}
+                    verticalSizing={laserParams.verticalSizing}
                     horizontalBeamOffset={0}
-                    verticalBeamOffset={verticalBeamOffset}
+                    verticalBeamOffset={laserParams.verticalBeamOffset}
                     color="#29D8FF"
-                    fogIntensity={fogIntensity}
-                    wispSpeed={wispSpeed}
-                    wispIntensity={wispIntensity}
-                    decay={decay}
+                    fogIntensity={laserParams.fogIntensity}
+                    wispSpeed={laserParams.wispSpeed}
+                    wispIntensity={laserParams.wispIntensity}
+                    decay={laserParams.decay}
                 />
-                <div className="home-section">
-                    <div className="home-content">
-                        <p className="deco-small home-name">
+                <div className={styles.section}>
+                    <div className={styles.content}>
+                        <p className={`deco-small ${styles.name}`}>
                             ROBIN <br /> POTZE
                         </p>
-                        <p className="deco-tiny home-quote">
+                        <p className={`deco-tiny ${styles.quote}`}>
                             | THOSE WHO DOUBT |<br />
                             | CAST THEMSELVES|
                             <br />
@@ -136,42 +118,46 @@ export default function Home() {
                             <RedoAnimText delay={0.5} />
                             <br />| AMBIGUOUS AMBIVALENCE |
                         </p>{' '}
-                        <div className="home-accents-bottom">
+                        <div className={styles.accentsBottom}>
                             <RadialGrid type="CRCL" />
-                            <img className="home-accent-decal" src="img/decal/OFS.svg" alt="Offset cyberpunk dorito decal" />
+                            <img className={styles.accentDecal} src="img/decal/OFS.svg" alt="Offset cyberpunk dorito decal" />
                         </div>
-                        <div className="home-scroll-bottom">
+                        <div className={styles.scrollBottom}>
                             <ScrollDown />
                         </div>
                     </div>
-                    <motion.div className="home-side" variants={sideContainerVariants} initial="hidden" animate={showContent ? 'visible' : 'hidden'}>
-                        <motion.div className="home-side-rotation-wrapper" variants={sideItemVariants}>
-                            <div className="home-side-flavour-text r90">
-                                <p className="deco-tiny home-side-text">assertThat(AMBIGUOUS.AMBIVALENCE)</p>
-                                <p className="deco-tiny home-side-text-brand">willReturn("ESCAPE WILL MAKE ME GOD")</p>
+                    <motion.div
+                        className={styles.side}
+                        variants={sideContainerVariants}
+                        initial="hidden"
+                        animate={showContent ? 'visible' : 'hidden'}
+                    >
+                        <motion.div className={styles.sideRotationWrapper} variants={sideItemVariants}>
+                            <div className={`${styles.sideFlavourText} r90`}>
+                                <p className="deco-tiny">assertThat(AMBIGUOUS.AMBIVALENCE)</p>
+                                <p className={`deco-tiny ${styles.sideTextBrand}`}>willReturn("ESCAPE WILL MAKE ME GOD")</p>
                             </div>
                         </motion.div>
-                        <motion.div className="home-side-divider r90" variants={sideItemVariants}>
-                            <img className="home-side-decal" src="img/icon/CRS.svg" alt="divider" />
-                            <p className="deco-tiny home-side-deco-text">SDD.01</p>
+                        <motion.div className={`${styles.sideDivider} r90`} variants={sideItemVariants}>
+                            <img className={styles.sideDecal} src="img/icon/CRS.svg" alt="divider" />
+                            <p className={`deco-tiny ${styles.sideDecoText}`}>SDD.01</p>
                         </motion.div>
-                        <motion.img className="home-side-decal" src="img/decal/MORSE.svg" alt="robin potze in barcode" variants={sideItemVariants} />
+                        <motion.img className={styles.sideDecal} src="img/decal/MORSE.svg" alt="robin potze in barcode" variants={sideItemVariants} />
                         <motion.img
-                            className="home-side-decal"
+                            className={styles.sideDecal}
                             src="img/decal/PILL.svg"
                             alt="pill with four arrows point downwards"
                             variants={sideItemVariants}
                         />
                         <motion.img
-                            className="home-side-decal"
-                            id="decal-sound"
+                            className={`${styles.sideDecal} ${styles.decalSound}`}
                             src="img/decal/SND.svg"
                             alt="ROBIN in sound waves"
                             variants={sideItemVariants}
                         />
                     </motion.div>
                 </div>
-                <div className="home-transition-section" />
+                <div className={styles.transitionSection} />
                 <ErrorBoundary>
                     <HomeCanvas scrollProgress={scrollProgress} startAnimations={showContent} />
                 </ErrorBoundary>

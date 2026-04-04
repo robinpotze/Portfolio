@@ -2,7 +2,7 @@ import GridOverlay from '@components/decoration/GridOverlay';
 import ScrollDown from '@components/decoration/ScrollDown';
 import { EASING, REVEAL, STAGGER } from '@config/animation.config';
 import { motion } from 'framer-motion';
-import './ProjectHero.css';
+import styles from './ProjectHero.module.css';
 
 export default function ProjectHero({ content }) {
     const bannerVars = {
@@ -74,10 +74,10 @@ export default function ProjectHero({ content }) {
     };
 
     return (
-        <div className="hero-section" id="work-hero-section">
-            <div className="hero-banner-wrapper">
+        <div className={styles.section} id="work-hero-section">
+            <div className={styles.bannerWrapper}>
                 <motion.img
-                    className="hero-banner"
+                    className={styles.banner}
                     id={content.title.replaceAll(/\s+/g, '-') + '-hero-banner'}
                     src={content.banner}
                     alt={content.title.replaceAll(/\s+/g, '-') + ' hero banner'}
@@ -86,7 +86,7 @@ export default function ProjectHero({ content }) {
                     animate={'visible'}
                 />
                 <GridOverlay
-                    className="hero-grid-overlay"
+                    className={styles.gridOverlay}
                     cellMinSize={100}
                     cellMaxSize={200}
                     stripeChance={0.35}
@@ -98,21 +98,21 @@ export default function ProjectHero({ content }) {
                 />
             </div>
 
-            <motion.div className="hero-content" id="work-hero-content" variants={sideVars} custom={1} initial="hidden" animate={'visible'}>
-                <motion.div className="hero-title-wrapper" id="work-hero-title-wrapper" variants={titleVars} initial="hidden" animate={'visible'}>
-                    <img className="hero-title-decal" id="work-hero-decal-start" src="/img/icon/PLS.svg" alt="Plus Sign" />
+            <motion.div className={styles.content} id="work-hero-content" variants={sideVars} custom={1} initial="hidden" animate={'visible'}>
+                <motion.div className={styles.titleWrapper} id="work-hero-title-wrapper" variants={titleVars} initial="hidden" animate={'visible'}>
+                    <img className={styles.titleDecal} id="work-hero-decal-start" src="/img/icon/PLS.svg" alt="Plus Sign" />
                     <h2 id="work-hero-title">{content.title.replaceAll(/\s+/g, '_')}</h2>
-                    <img className="hero-title-decal" id="work-hero-decal-end" src="/img/icon/PLS.svg" alt="Plus Sign" />
+                    <img className={styles.titleDecal} id="work-hero-decal-end" src="/img/icon/PLS.svg" alt="Plus Sign" />
                 </motion.div>
             </motion.div>
 
-            <motion.div className="hero-side" id="work-hero-side" variants={sideVars} custom={0} initial="hidden" animate={'visible'}>
-                <motion.div className="hero-side-top" variants={sideGroupVars} initial="hidden" animate="visible">
+            <motion.div className={styles.side} id="work-hero-side" variants={sideVars} custom={0} initial="hidden" animate={'visible'}>
+                <motion.div className={styles.sideTop} variants={sideGroupVars} initial="hidden" animate="visible">
                     <motion.div variants={sideItemVars}>
-                        <motion.div className="icon-array" id="work-hero-icons" variants={sideSubGroupVars}>
+                        <motion.div className={styles.iconArray} id="work-hero-icons" variants={sideSubGroupVars}>
                             {content.software.map((software) => (
                                 <motion.img
-                                    className="hero-side-decal"
+                                    className={styles.sideDecal}
                                     key={software}
                                     src={`/img/software/${software}.svg`}
                                     alt={`${software}-logo`}
@@ -122,7 +122,7 @@ export default function ProjectHero({ content }) {
                         </motion.div>
                     </motion.div>
                     <motion.div variants={sideItemVars}>
-                        <motion.div className="text-array" id="work-hero-side-skills" variants={sideSubGroupVars}>
+                        <motion.div className={styles.textArray} id="work-hero-side-skills" variants={sideSubGroupVars}>
                             {content.skills.map((skill) => (
                                 <motion.p
                                     className="tr90"
@@ -135,20 +135,20 @@ export default function ProjectHero({ content }) {
                             ))}
                         </motion.div>
                     </motion.div>
-                    <motion.img className="hero-side-decal" src="/img/icon/CRS.svg" alt="A Cross Divider" variants={sideItemVars} />
+                    <motion.img className={styles.sideDecal} src="/img/icon/CRS.svg" alt="A Cross Divider" variants={sideItemVars} />
                     <motion.div variants={sideItemVars}>
-                        <motion.div className="hero-side-text" id="work-hero-side-details" variants={sideSubGroupVars}>
-                            <motion.p className="functional tr90" id="work-hero-side-id" variants={sideItemVars}>
+                        <motion.div className={styles.sideText} id="work-hero-side-details" variants={sideSubGroupVars}>
+                            <motion.p className={`functional tr90 ${styles.sideTag}`} variants={sideItemVars}>
                                 {'PRJ_' + content.id.toString().padStart(3, '0') + ':::'}
                             </motion.p>
-                            <motion.p className="functional tr90" id="work-hero-side-client" variants={sideItemVars}>
+                            <motion.p className={`functional tr90 ${styles.sideTag}`} variants={sideItemVars}>
                                 {content.client}
                             </motion.p>
                         </motion.div>
                     </motion.div>
                 </motion.div>
-                <motion.div className="hero-side-bottom" id="work-hero-bottom" variants={sideGroupVars} initial="hidden" animate="visible">
-                    <motion.p className="functional tr90" id="work-hero-side-year" variants={sideItemVars}>
+                <motion.div className={styles.sideBottom} id="work-hero-bottom" variants={sideGroupVars} initial="hidden" animate="visible">
+                    <motion.p className={`functional tr90 ${styles.sideTag}`} variants={sideItemVars}>
                         {content.year}
                     </motion.p>
                     <motion.div variants={sideItemVars}>

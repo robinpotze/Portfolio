@@ -4,7 +4,7 @@ import PixelCard from '@components/effects/PixelCard/PixelCard';
 import { EASING, REVEAL, SPRING_CONFIG, STAGGER } from '@config/animation.config';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
-import './About.css';
+import styles from './About.module.css';
 import { ABOUT_DATA, ABOUT_SECTIONS } from './about.data';
 import EduSection from './components/EduSection';
 import ExpSection from './components/ExpSection';
@@ -66,9 +66,9 @@ export default function About() {
 
     return (
         <ErrorBoundary>
-            <div className="about-page">
+            <div className={styles.page}>
                 <GridOverlay
-                    className="about-grid-overlay"
+                    className={styles.gridOverlay}
                     cellMinSize={100}
                     cellMaxSize={200}
                     stripeChance={0.35}
@@ -78,19 +78,19 @@ export default function About() {
                     crosshairOpacity={0.3}
                     parallaxStrength={10}
                 />
-                <motion.div className="about-selector" variants={buttonContainerVariants} initial="hidden" animate="visible">
+                <motion.div className={styles.selector} variants={buttonContainerVariants} initial="hidden" animate="visible">
                     {ABOUT_SECTIONS.map((key) => (
                         <motion.button
                             key={key}
-                            className={`about-selector-button${currentPage === key ? ' active' : ''}`}
+                            className={`${styles.selectorButton}${currentPage === key ? ' active' : ''}`}
                             onClick={() => setCurrentPage(key)}
                             variants={buttonVariants}
                         >
-                            <PixelCard gap={5} speed={80} className="about-selector-pixel" />
+                            <PixelCard gap={5} speed={80} className={styles.selectorPixel} />
                             <h2 className="tr90">{key}</h2>
                             {currentPage === key && (
                                 <motion.div
-                                    className="about-selector-indicator"
+                                    className={styles.selectorIndicator}
                                     layoutId="about-indicator"
                                     transition={{
                                         type: 'spring',
@@ -102,14 +102,14 @@ export default function About() {
                     ))}
                 </motion.div>
 
-                <div className="about-details">
-                    <h1 className="about-name">Robin Potze</h1>
+                <div className={styles.details}>
+                    <h1 className={styles.name}>Robin Potze</h1>
 
-                    <div className="about-content-scroll">
+                    <div className={styles.contentScroll}>
                         <AnimatePresence mode="wait">
                             <motion.div
                                 key={currentPage}
-                                className="about-content"
+                                className={styles.content}
                                 variants={containerVariants}
                                 initial="hidden"
                                 animate="visible"

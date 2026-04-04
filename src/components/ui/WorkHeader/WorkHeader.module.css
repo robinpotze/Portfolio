@@ -1,4 +1,4 @@
-.work-header-chapter {
+.chapter {
     display: flex;
     align-items: center;
     gap: 4px;
@@ -7,7 +7,7 @@
     color: var(--c-drk_100);
 }
 
-.work-header-chapter img {
+.chapter img {
     height: 24px;
     mix-blend-mode: difference;
 }

@@ -1,5 +1,6 @@
 import DashLine from '@components/decoration/DashLine';
 import WorkHeader from '@components/ui/WorkHeader/WorkHeader';
+import styles from '@routes/Entry/Entry.module.css';
 
 const assetPath = '/img/work/ld58/';
 
@@ -20,14 +21,14 @@ export const Data = {
 export default function Ld58() {
     return (
         <div>
-            <div className="work-full">
+            <div className={styles.full}>
                 <img
                     src={`${assetPath}Styleframe.png`}
-                    className="img-full-width"
+                    className={styles.imgFullWidth}
                     alt="An 80s inspired interior of a bachelor with one goal in mind: collecting."
                 />
             </div>
-            <div className="work-full-thin">
+            <div className={styles.fullThin}>
                 <img src={`${assetPath}Styleframe2.png`} alt="Another 80s inspired interior of a bachelor with one goal in mind: collecting." />
             </div>
             <WorkHeader
@@ -35,7 +36,7 @@ export default function Ld58() {
                 subtitle="SALVATION:::CONSUMPTION"
                 description="The TV was the centerpiece of the bachelor pad, a glowing rectangle that promised escape and entertainment. It was a relic from a bygone era, yet it still held a certain charm. The flickering images on the screen provided a backdrop to the endless cycle of day drinking and cap collecting, a reminder of the outside world that was both tantalizing and distant. Filled with content to distract the modern man from the crushing weight of his own existence, the television was both a blessing and a curse."
             />
-            <div className="work-double">
+            <div className={styles.double}>
                 <img src={`${assetPath}LOGO.png`} alt="The wireframe of the CassetteRoom scene" />
                 <DashLine direction="Vertical" />
                 <img src={`${assetPath}Thumbnail.png`} alt="Thumbnail for the LD58 game jam entry" />

@@ -4,7 +4,7 @@ import ErrorBoundary from '@components/ErrorBoundary';
 import { SCROLL_THRESHOLDS } from '@config/animation.config';
 import { usePageTransition } from '@hooks/usePageTransition';
 import { useCallback, useEffect, useRef } from 'react';
-import './Work.css';
+import styles from './Work.module.css';
 
 export default function Work() {
     const { navigateWithTransition } = usePageTransition();
@@ -69,7 +69,7 @@ export default function Work() {
 
     return (
         <ErrorBoundary>
-            <div className="work-page-container">
+            <div className={styles.pageContainer}>
                 <ErrorBoundary>
                     <WorkCanvas items={items} onCardNavigate={handleCardNavigate} onScrollChange={handleCanvasScrollChange} />
                 </ErrorBoundary>
