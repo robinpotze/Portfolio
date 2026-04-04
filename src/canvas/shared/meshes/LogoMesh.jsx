@@ -8,8 +8,6 @@ import * as THREE from 'three';
 // Register the custom material with R3F
 extend({ GlassLogoMaterial });
 
-useGLTF.preload('/assets/3d/Logo.glb');
-
 function LogoMesh({ enableFBO = true, ...props }) {
     const meshRef = useRef();
     const materialRef = useRef();

@@ -107,10 +107,80 @@ const cornerVariants = {
     },
 };
 
+const messageFormVariants = {
+    hidden: {
+        opacity: 0,
+        scaleX: 0,
+    },
+    visible: {
+        opacity: 1,
+        scaleX: 1,
+        transition: {
+            duration: CONTACT_TIMING.FORM_DURATION,
+            ease: EASING.EMPHASIZED,
+            staggerChildren: CONTACT_TIMING.FORM_STAGGER,
+        },
+    },
+};
+
+const nameFieldVariants = {
+    hidden: {
+        opacity: 0,
+    },
+    visible: {
+        opacity: 1,
+        transition: {
+            duration: CONTACT_TIMING.FIELD_DURATION,
+            ease: EASING.EMPHASIZED,
+        },
+    },
+};
+
+const messageFieldVariants = {
+    hidden: {
+        opacity: 0,
+    },
+    visible: {
+        opacity: 1,
+        transition: {
+            duration: CONTACT_TIMING.FIELD_DURATION,
+            ease: EASING.EMPHASIZED,
+        },
+    },
+};
+
 export default function Contact() {
     return (
         <ErrorBoundary>
             <div className={styles.page}>
+                <motion.h2 className={styles.messageTitle}>CNTCT-FRM</motion.h2>
+                <motion.div className={styles.messageForm} variants={messageFormVariants} initial="hidden" animate="visible">
+                    <motion.div className={styles.nameField} variants={nameFieldVariants} initial="hidden" animate="visible">
+                        <motion.img className={styles.fieldCornerTL} src="img/icon/PLS.svg" alt="contact form corner icon" />
+                        <motion.img className={styles.fieldCornerTR} src="img/icon/PLS.svg" alt="contact form corner icon" />
+                        <motion.img className={styles.fieldMarker} src="img/icon/CRS.svg" alt="contact form marker icon" />
+                        <motion.img className={styles.nameIcon} src="img/icon/SHELL.svg" alt="contact form user icon" />
+                        <motion.input className={styles.nameInput} placeholder="USR.NAME" />
+                        <motion.img className={styles.fieldCornerBL} src="img/icon/PLS.svg" alt="contact form corner icon" />
+                        <motion.img className={styles.fieldCornerBR} src="img/icon/PLS.svg" alt="contact form corner icon" />
+                    </motion.div>
+                    <motion.div className={styles.messageField} variants={messageFieldVariants} initial="hidden" animate="visible">
+                        <motion.img className={styles.fieldCornerTL} src="img/icon/PLS.svg" alt="contact form corner icon" />
+                        <motion.img className={styles.fieldCornerTR} src="img/icon/PLS.svg" alt="contact form corner icon" />
+                        <motion.img className={styles.fieldMarker} src="img/icon/CRS.svg" alt="contact form marker icon" />
+                        <motion.div>
+                            <motion.img className={styles.messageIcon} src="img/icon/MSG_BRND.svg" alt="contact form message icon" />
+                            <motion.img className={styles.deco} src="img/deco/SINE.svg" alt="contact form decoration icon" />
+                        </motion.div>
+                        <motion.textarea className={styles.messageInput} placeholder="MSG.PAYLOAD" />
+                        <motion.img className={styles.fieldCornerBL} src="img/icon/PLS.svg" alt="contact form corner icon" />
+                        <motion.img className={styles.fieldCornerBR} src="img/icon/PLS.svg" alt="contact form corner icon" />
+                    </motion.div>
+                    <motion.button className={styles.sendButton}>
+                        MSG.SEND <span className="material-symbols-sharp">format_text_overflow</span>
+                    </motion.button>
+                </motion.div>
+
                 <div className={styles.errorSection}>
                     <StatusMessage
                         status="error"
@@ -147,11 +217,11 @@ export default function Contact() {
                         <img className={styles.deco} src="img/icon/PLS_DRK.svg" alt="contact form corner plus icon" />
                     </div>
                 </motion.div>
-                <motion.div className={styles.form} variants={formVariants} initial="hidden" animate="visible">
-                    <motion.div className={styles.formContent} variants={formContentVariants} initial="hidden" animate="visible">
+                <motion.div className={styles.statusForm} variants={formVariants} initial="hidden" animate="visible">
+                    <motion.div className={styles.statusFormContent} variants={formContentVariants} initial="hidden" animate="visible">
                         <img className={styles.mailIcon} src="img/icon/MSG_DRK.svg" alt="contact form mail icon" />
                         <img className={styles.deco} src="img/icon/PLS_DRK.svg" alt="contact form decoration icon" />
-                        <input className={styles.nameInput} placeholder="IDENTIFY" />
+                        <input className={styles.mailInput} placeholder="IDENTIFY" />
                         <img className={styles.deco} src="img/icon/PLS_DRK.svg" alt="contact form decoration icon" />
                         <RadGridTxt />
                     </motion.div>

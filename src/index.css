@@ -7,6 +7,12 @@
     --c-lght_40: rgba(238, 238, 238, 0.4);
     --c-drk_100: #0a0a0a;
     --c-drk_40: rgba(17, 17, 17, 0.4);
+    --c-ok_100: #69d52a;
+    --c-ok_40: rgba(105, 213, 42, 0.4);
+    --c-warn_100: #d5b32a;
+    --c-warn_40: rgba(213, 179, 42, 0.4);
+    --c-error_100: #d40322;
+    --c-error_40: rgba(212, 3, 34, 0.4);
     --c_0: rgba(0, 0, 0, 0);
 
     --f-title: 4em 'Kode Mono', monospace;
@@ -21,6 +27,7 @@
     --f-deco-small: 1rem 'Kode Mono', monospace;
     --f-deco-tiny: 0.75rem 'Kode Mono', monospace;
 
+    --s-xxs: 4px;
     --s-xs: 8px;
     --s-s: 16px;
     --s-m: 32px;

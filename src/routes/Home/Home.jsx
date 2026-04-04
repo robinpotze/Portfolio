@@ -8,6 +8,7 @@ import ErrorBoundary from '@components/ErrorBoundary';
 import { EASING, LOADING, REVEAL, SCROLL_THRESHOLDS, STAGGER } from '@config/animation.config';
 import { LASER_PARAMS } from '@config/laser.config';
 import useScrollNavigation from '@hooks/useScrollNavigation';
+import { useGLTF } from '@react-three/drei';
 import { motion } from 'framer-motion';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -56,6 +57,11 @@ export default function Home() {
         targetName: 'Work',
         direction: 'up',
     });
+
+    useEffect(() => {
+        useGLTF.preload('/assets/3d/Logo.glb');
+        useGLTF.preload('/assets/3d/Wall.glb');
+    }, []);
 
     useEffect(() => {
         window.scrollTo(0, 0);

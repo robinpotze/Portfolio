@@ -4,13 +4,13 @@ import MenuLinks from './MenuLinks';
 import MenuSocials from './MenuSocials';
 import styles from './NavigationMenu.module.css';
 
-export default function MenuPanel({ open, onClose, navigateWithCurtain }) {
+export default function MenuPanel({ open, onClose: _onClose, navigateWithCurtain }) {
     return (
         <AnimatePresence>
             <motion.aside
                 className={styles.panel}
                 aria-hidden={!open}
-                inert={open ? undefined : ''}
+                inert={!open}
                 initial={{ x: '-100%' }}
                 animate={{ x: open ? '0%' : '-100%' }}
                 transition={{

@@ -5,14 +5,160 @@
     grid-template-columns: repeat(6, minmax(0, 1fr));
     grid-template-rows: repeat(5, 1fr);
     grid-template-areas:
-        '. .         errortitle errortitle errortitle   errorlog'
-        '. formtitle .          .          formcornertr errorlog'
-        '. form      form       form       form         errorlog'
-        '. bottomlog statusgrid statusgrid formcornerbr errorlog'
-        '. .         .          .          .            errorlog';
+        '. formtitle    statustitle statustitle statustitle  errorlog'
+        '. formcornertl messageform messageform formcornertr errorlog'
+        '. form         form        form        form         errorlog'
+        '. formcornerbl statusgrid  statusgrid  formcornerbr errorlog'
+        '. .            .           .           .            errorlog';
     column-gap: var(--s-s);
     padding: var(--s-xl);
     box-sizing: border-box;
+}
+
+.messageTitle {
+    grid-area: formtitle;
+    display: flex;
+    align-items: center;
+    align-self: flex-end;
+    font: var(--f-hdr_2);
+    text-transform: uppercase;
+    color: var(--c-brnd_100);
+}
+
+.messageForm {
+    grid-area: formcornertl / formcornertl / formcornerbr / formcornerbr;
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-s);
+    padding: var(--s-m);
+}
+
+.messageForm:disabled {
+    grid-area: messageform / messageform / formcornerbr / formcornerbr;
+}
+
+.nameField {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    padding: var(--s-xs);
+    gap: var(--s-s);
+    background-color: var(--c-lght_100);
+    color: var(--c-drk_100);
+    border: 1px solid var(--c-lght_100);
+}
+
+.nameInput {
+    width: 100%;
+    padding-left: var(--s-s);
+    background: none;
+    border: none;
+    color: var(--c-drk_100);
+    font: var(--f-func);
+}
+
+.nameInput::placeholder {
+    color: var(--c-drk_40);
+}
+
+.nameInput:focus {
+    outline: none;
+    border-left: 1px solid var(--c-drk_100);
+}
+
+.messageField {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    gap: var(--s-xs);
+    padding: var(--s-s);
+    border: 1px solid var(--c-lght_100);
+    color: var(--c-lght_100);
+}
+
+.messageInput {
+    width: 100%;
+    padding: var(--s-s);
+    background: none;
+    border: none;
+    border-left: 1px solid var(--c-lght_40);
+    font: var(--f-func);
+    color: var(--c-lght_100);
+}
+
+.messageInput::placeholder {
+    color: var(--c-lght_40);
+}
+
+.messageInput:focus {
+    outline: none;
+    border-left: 1px solid var(--c-lght_100);
+}
+
+.sendButton {
+    font: var(--f-func);
+    background-color: var(--c-lght_100);
+    color: var(--c-drk_100);
+    padding: var(--s-xs) var(--s-s);
+    align-self: flex-end;
+    width: max-content;
+    display: flex;
+    gap: var(--s-xxs);
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.sendButton:hover {
+    background-color: var(--c-brnd_100);
+    color: var(--c-lght_100);
+}
+
+.sendButton:disabled {
+    background-color: var(--c-brnd_-20);
+    color: var(--c-brnd_-100);
+    cursor: not-allowed;
+}
+
+.fieldCornerTL {
+    width: 48px;
+    height: 48px;
+    position: absolute;
+    top: -24px;
+    left: -24px;
+}
+
+.fieldCornerTR {
+    width: 48px;
+    height: 48px;
+    position: absolute;
+    top: -24px;
+    right: -24px;
+}
+
+.fieldCornerBL {
+    width: 48px;
+    height: 48px;
+    position: absolute;
+    bottom: -24px;
+    left: -24px;
+}
+
+.fieldCornerBR {
+    width: 48px;
+    height: 48px;
+    position: absolute;
+    bottom: -24px;
+    right: -24px;
+}
+
+.fieldMarker {
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    top: 20px;
+    left: -24px;
 }
 
 .errorSection {
@@ -32,7 +178,7 @@
 }
 
 .cornerTl {
-    grid-area: formtitle;
+    grid-area: formcornertl;
     display: flex;
     align-self: flex-end;
     align-items: center;
@@ -50,7 +196,7 @@
 }
 
 .cornerBl {
-    grid-area: bottomlog;
+    grid-area: formcornerbl;
     display: flex;
     align-self: flex-start;
     align-items: center;
@@ -65,7 +211,7 @@
     justify-content: flex-end;
 }
 
-.form {
+.statusForm {
     grid-area: form;
     padding: var(--s-xl);
     display: flex;
@@ -78,7 +224,7 @@
     will-change: transform;
 }
 
-.form::after {
+.statusForm::after {
     content: '';
     position: absolute;
     inset: -42px;
@@ -91,7 +237,7 @@
     box-sizing: border-box;
 }
 
-.formContent {
+.statusFormContent {
     width: 100%;
     display: flex;
     gap: var(--s-l);
@@ -99,13 +245,17 @@
     align-items: center;
 }
 
-.nameInput {
+.mailInput {
     font: var(--f-hdr_1);
     text-align: center;
     padding: var(--s-s);
     background-color: var(--c-drk_100);
     color: var(--c-brnd_-100);
     border: none;
+}
+
+.nameInput::placeholder {
+    color: var(--c-brnd_-20);
 }
 
 .mailIcon {
@@ -136,8 +286,4 @@
 
 .logRow {
     margin: 0;
-}
-
-.nameInput::placeholder {
-    color: var(--c-brnd_-20);
 }
