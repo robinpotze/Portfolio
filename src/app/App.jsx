@@ -9,13 +9,13 @@ import { QualityProvider } from './QualityContext';
 
 const WorkContext = createContext(null);
 
-export const useWorkItems = () => {
+export function useWorkItems() {
     const context = useContext(WorkContext);
     if (!context) {
         throw new Error('useWorkItems must be used within App');
     }
     return context;
-};
+}
 
 export default function App() {
     const [items, setItems] = useState([]);

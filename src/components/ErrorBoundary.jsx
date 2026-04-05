@@ -11,11 +11,12 @@ class ErrorBoundary extends Component {
         };
     }
 
-    static getDerivedStateFromError(error) {
+    static getDerivedStateFromError(_error) {
         return { hasError: true };
     }
 
     componentDidCatch(error, errorInfo) {
+        // eslint-disable-next-line no-console
         console.error('ErrorBoundary caught an error:', error, errorInfo);
         this.setState({
             error,
@@ -23,7 +24,7 @@ class ErrorBoundary extends Component {
         });
     }
 
-    handleReset = () => {
+    onReset = () => {
         this.setState({
             hasError: false,
             error: null,
@@ -38,7 +39,7 @@ class ErrorBoundary extends Component {
                     <h1 className={styles.title}>Something went wrong</h1>
                     <p className={styles.message}>An unexpected error occurred while rendering this component.</p>
                     <div className={styles.actions}>
-                        <button onClick={this.handleReset} className={styles.retryButton}>
+                        <button onClick={this.onReset} className={styles.retryButton}>
                             Try Again
                         </button>
                         <a href="/" className={styles.homeLink}>

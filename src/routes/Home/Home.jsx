@@ -76,7 +76,7 @@ export default function Home() {
         }
     }, [location.state?.fromNavigation, resetNavigation, navigate]);
 
-    const handleLoadingComplete = () => {
+    const onLoadingComplete = () => {
         setTimeout(() => {
             setIsLoading(false);
             setShowContent(true);
@@ -94,7 +94,7 @@ export default function Home() {
 
     return (
         <>
-            {isLoading && <LoadingScreen onComplete={handleLoadingComplete} minDisplayTime={LOADING.MIN_DISPLAY_MS} logoSrc="/img/logo/logo.svg" />}
+            {isLoading && <LoadingScreen onComplete={onLoadingComplete} minDisplayTime={LOADING.MIN_DISPLAY_MS} logoSrc="/img/logo/logo.svg" />}
             <div
                 className={styles.page}
                 ref={containerRef}
@@ -105,7 +105,7 @@ export default function Home() {
                     verticalSizing={laserParams.verticalSizing}
                     horizontalBeamOffset={0}
                     verticalBeamOffset={laserParams.verticalBeamOffset}
-                    color="#29D8FF"
+                    color="--c-brnd_100"
                     fogIntensity={laserParams.fogIntensity}
                     wispSpeed={laserParams.wispSpeed}
                     wispIntensity={laserParams.wispIntensity}

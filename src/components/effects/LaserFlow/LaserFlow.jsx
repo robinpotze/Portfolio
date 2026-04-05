@@ -1,27 +1,30 @@
 import { useQuality } from '@app/QualityContext';
 import laserFragmentShader from '@canvas/shared/shaders/laser/laser.frag?raw';
 import laserVertexShader from '@canvas/shared/shaders/laser/laser.vert?raw';
+import { getCSSColorRGBA } from '@utils/cssUtils';
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
+
 import styles from './LaserFlow.module.css';
 
 const DPR_BY_QUALITY = { low: 0.5, medium: 0.75, high: 2 };
 const FOG_QUALITY_BY_QUALITY = { low: 0, medium: 0.3, high: 1 };
 
-const hexToRGB = (hex) => {
-    let c = hex.trim();
-    if (c[0] === '#') {
-        c = c.slice(1);
-    }
-    if (c.length === 3) {
-        c = c
-            .split('')
-            .map((x) => x + x)
-            .join('');
-    }
-    const n = parseInt(c, 16) || 0xffffff;
-    return { r: ((n >> 16) & 255) / 255, g: ((n >> 8) & 255) / 255, b: (n & 255) / 255 };
-};
+const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+
+function createRenderer() {
+    return new THREE.WebGLRenderer({
+        antialias: false,
+        alpha: true,
+        depth: false,
+        stencil: false,
+        powerPreference: 'high-performance',
+        premultipliedAlpha: true,
+        preserveDrawingBuffer: false,
+        failIfMajorPerformanceCaveat: false,
+        logarithmicDepthBuffer: false,
+    });
+}
 
 export default function LaserFlow({
     className,
@@ -43,7 +46,7 @@ export default function LaserFlow({
     decay = 1.5,
     falloffStart = 1.2,
     fogFallSpeed = 0.6,
-    color = '#FF79C6',
+    color = '--c-brnd_100',
 }) {
     const { quality } = useQuality();
     const mountRef = useRef(null);
@@ -68,17 +71,7 @@ export default function LaserFlow({
         let inView = true;
         let lastDprChange = 0;
 
-        const renderer = new THREE.WebGLRenderer({
-            antialias: false,
-            alpha: true,
-            depth: false,
-            stencil: false,
-            powerPreference: 'high-performance',
-            premultipliedAlpha: true,
-            preserveDrawingBuffer: false,
-            failIfMajorPerformanceCaveat: false,
-            logarithmicDepthBuffer: false,
-        });
+        const renderer = createRenderer();
         rendererRef.current = renderer;
 
         renderer.setPixelRatio(currentDpr);
@@ -222,8 +215,6 @@ export default function LaserFlow({
         );
         io.observe(mount);
 
-        const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
-
         const adjustDprIfNeeded = (now) => {
             const elapsed = now - lastFpsCheck;
             if (elapsed < 750 || fpsSamples.length === 0) {
@@ -355,8 +346,8 @@ export default function LaserFlow({
         uniforms.uFalloffStart.value = falloffStart;
         uniforms.uFogFallSpeed.value = fogFallSpeed;
 
-        const { r, g, b } = hexToRGB(color || '#FFFFFF');
-        uniforms.uColor.value.set(r, g, b);
+        const { r, g, b } = getCSSColorRGBA(color || '--c-brnd_100');
+        uniforms.uColor.value.set(r / 255, g / 255, b / 255);
     }, [
         wispDensity,
         mouseTiltStrength,

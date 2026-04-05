@@ -113,19 +113,19 @@ export default function NavigationMenu() {
         }, GLITCH.BUSY_TIMEOUT_MS);
     }, [open, runGlitch]);
 
-    const handleClose = useCallback(() => {
+    const onClose = useCallback(() => {
         setOpen(false);
     }, []);
 
     useEffect(() => {
-        const handleKeyDown = (e) => {
+        const onKeyDown = (e) => {
             if (e.key === 'Escape' && open) {
                 toggle();
             }
         };
-        document.addEventListener('keydown', handleKeyDown);
+        document.addEventListener('keydown', onKeyDown);
         return () => {
-            document.removeEventListener('keydown', handleKeyDown);
+            document.removeEventListener('keydown', onKeyDown);
         };
     }, [open, toggle]);
 
@@ -149,7 +149,7 @@ export default function NavigationMenu() {
 
             <MenuButton ref={buttonRef} open={open} label={label} toggle={toggle} glitchRefs={glitchRefs} />
 
-            <MenuPanel open={open} onClose={handleClose} navigateWithCurtain={navigateWithCurtain} />
+            <MenuPanel open={open} onClose={onClose} navigateWithCurtain={navigateWithCurtain} />
         </div>
     );
 }

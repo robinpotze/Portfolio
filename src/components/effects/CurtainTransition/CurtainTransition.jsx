@@ -44,7 +44,7 @@ export default function CurtainTransition({ isOpen = false, direction = 'up', pa
         prevIsOpenRef.current = isOpen;
     }, [isOpen]);
 
-    const handleAnimationComplete = () => {
+    const onAnimationComplete = () => {
         if (isOpen && onCoverComplete) {
             onCoverComplete();
             return;
@@ -85,7 +85,7 @@ export default function CurtainTransition({ isOpen = false, direction = 'up', pa
                             ease: EASE,
                             delay: i * STAGGER_DELAY,
                         }}
-                        onAnimationComplete={isLastLayer ? handleAnimationComplete : undefined}
+                        onAnimationComplete={isLastLayer ? onAnimationComplete : undefined}
                     >
                         {isLastLayer && pageName && <span className={styles.curtainLabel}>{pageName}</span>}
                     </motion.div>

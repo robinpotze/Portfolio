@@ -4,13 +4,13 @@ import { useNavigate } from 'react-router-dom';
 
 const PageTransitionContext = createContext(null);
 
-export const usePageTransition = () => {
+export function usePageTransition() {
     const context = useContext(PageTransitionContext);
     if (!context) {
         throw new Error('usePageTransition must be used within PageTransitionProvider');
     }
     return context;
-};
+}
 
 export function PageTransitionProvider({ children }) {
     const navigate = useNavigate();
@@ -33,7 +33,7 @@ export function PageTransitionProvider({ children }) {
         setCurtainOpen(true);
     }, []);
 
-    const handleCoverComplete = useCallback(() => {
+    const onCoverComplete = useCallback(() => {
         if (pendingNavigation.current) {
             const navState = { fromNavigation: true, ...pendingState.current };
             navigate(pendingNavigation.current, { state: navState });
@@ -43,7 +43,7 @@ export function PageTransitionProvider({ children }) {
         setCurtainOpen(false);
     }, [navigate]);
 
-    const handleRevealComplete = useCallback(() => {
+    const onRevealComplete = useCallback(() => {
         setCurtainOpen(false);
         setPageName(null);
     }, []);
@@ -55,8 +55,8 @@ export function PageTransitionProvider({ children }) {
                 isOpen={curtainOpen}
                 direction={direction}
                 pageName={pageName}
-                onCoverComplete={handleCoverComplete}
-                onRevealComplete={handleRevealComplete}
+                onCoverComplete={onCoverComplete}
+                onRevealComplete={onRevealComplete}
             />
             {children}
         </PageTransitionContext.Provider>

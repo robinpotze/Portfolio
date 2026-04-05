@@ -51,7 +51,7 @@ export default function WorkCard({ item, index, onNavigate, centerednessRef }) {
         }
     });
 
-    const handleClick = (e) => {
+    const onClick = (e) => {
         e.stopPropagation();
         if (onNavigate) {
             onNavigate(pageKey);
@@ -64,7 +64,7 @@ export default function WorkCard({ item, index, onNavigate, centerednessRef }) {
                 ref={groupRef}
                 position={position}
                 rotation={rotation}
-                onClick={handleClick}
+                onClick={onClick}
                 onPointerEnter={(e) => {
                     e.stopPropagation();
                     setHovered(true);

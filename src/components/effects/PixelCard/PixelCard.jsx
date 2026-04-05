@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import styles from './PixelCard.module.css';
 
 class Pixel {
@@ -99,7 +99,7 @@ export default function PixelCard({ gap = 6, speed = 200, noFocus = true, classN
     const timePreviousRef = useRef(performance.now());
     const reducedMotion = useRef(window.matchMedia('(prefers-reduced-motion: reduce)').matches).current;
 
-    const initPixels = () => {
+    const initPixels = useCallback(() => {
         if (!containerRef.current || !canvasRef.current) {
             return;
         }
@@ -128,7 +128,7 @@ export default function PixelCard({ gap = 6, speed = 200, noFocus = true, classN
             }
         }
         pixelsRef.current = pxs;
-    };
+    }, [gap, speed, reducedMotion]);
 
     const doAnimate = (fnName) => {
         animationRef.current = requestAnimationFrame(() => doAnimate(fnName));
@@ -161,24 +161,24 @@ export default function PixelCard({ gap = 6, speed = 200, noFocus = true, classN
         }
     };
 
-    const handleAnimation = (name) => {
+    const onAnimate = (name) => {
         cancelAnimationFrame(animationRef.current);
         animationRef.current = requestAnimationFrame(() => doAnimate(name));
     };
 
-    const onMouseEnter = () => handleAnimation('appear');
-    const onMouseLeave = () => handleAnimation('disappear');
+    const onMouseEnter = () => onAnimate('appear');
+    const onMouseLeave = () => onAnimate('disappear');
     const onFocus = (e) => {
         if (e.currentTarget.contains(e.relatedTarget)) {
             return;
         }
-        handleAnimation('appear');
+        onAnimate('appear');
     };
     const onBlur = (e) => {
         if (e.currentTarget.contains(e.relatedTarget)) {
             return;
         }
-        handleAnimation('disappear');
+        onAnimate('disappear');
     };
 
     useEffect(() => {
@@ -193,7 +193,7 @@ export default function PixelCard({ gap = 6, speed = 200, noFocus = true, classN
             observer.disconnect();
             cancelAnimationFrame(animationRef.current);
         };
-    }, [noFocus, gap, speed]);
+    }, [initPixels, noFocus]);
 
     return (
         <div

@@ -6,7 +6,7 @@ import { useRef } from 'react';
  * R3F FPS monitor that writes to the unified QualityContext.
  * Must be used inside both a QualityProvider and an R3F Canvas.
  */
-export function useAdaptiveQuality(options = {}) {
+export default function useAdaptiveQuality(options = {}) {
     const { targetFps = 55, checkInterval = 1000, enabled = true } = options;
 
     const { quality, setQuality } = useQuality();

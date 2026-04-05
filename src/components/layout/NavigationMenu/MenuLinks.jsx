@@ -10,7 +10,7 @@ const MENU_ITEMS = [
 ];
 
 export default function MenuLinks({ open, navigateWithCurtain }) {
-    const handleClick = (link, label) => {
+    const onClick = (link, label) => {
         navigateWithCurtain(link, label);
     };
 
@@ -44,7 +44,7 @@ export default function MenuLinks({ open, navigateWithCurtain }) {
                             },
                         }}
                     >
-                        <button className={styles.panelItem} data-index={i + 1} onClick={() => handleClick(item.link, item.label)}>
+                        <button className={styles.panelItem} data-index={i + 1} onClick={() => onClick(item.link, item.label)}>
                             {item.label}
                         </button>
                     </motion.li>

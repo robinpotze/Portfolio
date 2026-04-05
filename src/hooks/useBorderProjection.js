@@ -13,7 +13,7 @@ const _cornerB = new THREE.Vector3();
 export default function useBorderProjection(containerRef, cameraRef, rigRef, { rawX, rawY, rawW, rawH }) {
     const initializedRef = useRef(false);
 
-    const handleCenterednessChange = useCallback(
+    const onCenterednessChange = useCallback(
         (centeredness, bestIndex) => {
             const container = containerRef.current;
             const camera = cameraRef.current;
@@ -83,5 +83,5 @@ export default function useBorderProjection(containerRef, cameraRef, rigRef, { r
         [containerRef, cameraRef, rigRef, rawX, rawY, rawW, rawH]
     );
 
-    return handleCenterednessChange;
+    return onCenterednessChange;
 }

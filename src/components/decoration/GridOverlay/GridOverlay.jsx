@@ -49,7 +49,7 @@ export default function GridOverlay({
     const px = useSpring(rawX, SPRING_CONFIG.CURSOR_TRACKING);
     const py = useSpring(rawY, SPRING_CONFIG.CURSOR_TRACKING);
 
-    const handleMouseMove = useCallback(
+    const onMouseMove = useCallback(
         (e) => {
             const cx = window.innerWidth / 2;
             const cy = window.innerHeight / 2;
@@ -60,9 +60,9 @@ export default function GridOverlay({
     );
 
     useEffect(() => {
-        globalThis.addEventListener('mousemove', handleMouseMove);
-        return () => globalThis.removeEventListener('mousemove', handleMouseMove);
-    }, [handleMouseMove]);
+        globalThis.addEventListener('mousemove', onMouseMove);
+        return () => globalThis.removeEventListener('mousemove', onMouseMove);
+    }, [onMouseMove]);
 
     // Derive rows/cols from container dimensions
     useEffect(() => {

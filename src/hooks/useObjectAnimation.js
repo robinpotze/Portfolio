@@ -4,7 +4,7 @@ import { easeCurve, entryEase } from '@utils/easingFunctions.js';
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
-export function useObjectAnimation(ref, routeName, options = {}) {
+export default function useObjectAnimation(ref, routeName, options = {}) {
     const {
         duration = ENTRY.DURATION,
         delay = 0,

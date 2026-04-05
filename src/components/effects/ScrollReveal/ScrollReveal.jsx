@@ -4,7 +4,7 @@ import { useMemo, useRef } from 'react';
 
 import styles from './ScrollReveal.module.css';
 
-const ScrollReveal = ({ children }) => {
+export default function ScrollReveal({ children }) {
     const ref = useRef(null);
 
     const observerOptions = useMemo(
@@ -29,6 +29,4 @@ const ScrollReveal = ({ children }) => {
             <p className={styles.scrollRevealText}>{children}</p>
         </motion.div>
     );
-};
-
-export default ScrollReveal;
+}

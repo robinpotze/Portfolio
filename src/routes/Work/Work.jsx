@@ -11,7 +11,7 @@ export default function Work() {
     const items = useWorkItems();
     const hasNavigated = useRef(false);
 
-    const handleCardNavigate = useCallback(
+    const onCardNavigate = useCallback(
         (pageKey) => {
             if (hasNavigated.current) {
                 return;
@@ -28,7 +28,7 @@ export default function Work() {
     const lastScrollTime = useRef(Date.now());
     const isAtTop = useRef(true);
 
-    const handleCanvasScrollChange = useCallback((offset) => {
+    const onCanvasScrollChange = useCallback((offset) => {
         isAtTop.current = offset < SCROLL_THRESHOLDS.WORK_TOP_THRESHOLD;
 
         // Reset accumulator if not at top
@@ -38,7 +38,7 @@ export default function Work() {
     }, []);
 
     useEffect(() => {
-        const handleWheel = (e) => {
+        const onWheel = (e) => {
             const now = Date.now();
             const timeSinceLastScroll = now - lastScrollTime.current;
             lastScrollTime.current = now;
@@ -63,15 +63,15 @@ export default function Work() {
             }
         };
 
-        window.addEventListener('wheel', handleWheel, { passive: true });
-        return () => window.removeEventListener('wheel', handleWheel);
+        window.addEventListener('wheel', onWheel, { passive: true });
+        return () => window.removeEventListener('wheel', onWheel);
     }, [navigateWithTransition]);
 
     return (
         <ErrorBoundary>
             <div className={styles.pageContainer}>
                 <ErrorBoundary>
-                    <WorkCanvas items={items} onCardNavigate={handleCardNavigate} onScrollChange={handleCanvasScrollChange} />
+                    <WorkCanvas items={items} onCardNavigate={onCardNavigate} onScrollChange={onCanvasScrollChange} />
                 </ErrorBoundary>
             </div>
         </ErrorBoundary>

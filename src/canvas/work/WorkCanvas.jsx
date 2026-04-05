@@ -25,7 +25,7 @@ export default function WorkCanvas({ items, onCardNavigate, onScrollChange }) {
     const w = useSpring(rawW, SPRING_CONFIG.BORDER_ANIMATION);
     const h = useSpring(rawH, SPRING_CONFIG.BORDER_ANIMATION);
 
-    const handleCenterednessChange = useBorderProjection(containerRef, cameraRef, rigRef, {
+    const onCenterednessChange = useBorderProjection(containerRef, cameraRef, rigRef, {
         rawX,
         rawY,
         rawW,
@@ -39,13 +39,13 @@ export default function WorkCanvas({ items, onCardNavigate, onScrollChange }) {
             return;
         }
 
-        const handleWheel = (e) => {
+        const onWheel = (e) => {
             e.preventDefault();
             scrollVelocityRef.current += e.deltaY * CAROUSEL_CONFIG.SCROLL_SENSITIVITY;
         };
 
-        container.addEventListener('wheel', handleWheel, { passive: false });
-        return () => container.removeEventListener('wheel', handleWheel);
+        container.addEventListener('wheel', onWheel, { passive: false });
+        return () => container.removeEventListener('wheel', onWheel);
     }, []);
 
     return (
@@ -64,7 +64,7 @@ export default function WorkCanvas({ items, onCardNavigate, onScrollChange }) {
                     scrollVelocityRef={scrollVelocityRef}
                     onCardNavigate={onCardNavigate}
                     onScrollChange={onScrollChange}
-                    onCenterednessChange={handleCenterednessChange}
+                    onCenterednessChange={onCenterednessChange}
                     rigRef={rigRef}
                 />
             </Canvas>

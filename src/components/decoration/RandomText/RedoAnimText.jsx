@@ -38,7 +38,7 @@ export default function RedoAnimText({ delay }) {
         return () => {
             controls.stop();
         };
-    }, []);
+    }, [count, delay, textIndex, updatedThisRound]);
 
     return <motion.span>{displayText}</motion.span>;
 }

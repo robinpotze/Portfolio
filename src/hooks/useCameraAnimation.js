@@ -15,7 +15,7 @@ import * as THREE from 'three';
  * @param {object} options - Animation configuration
  * @returns {void}
  */
-export function useCameraAnimation(cameraRef, routeName, options = {}) {
+export default function useCameraAnimation(cameraRef, routeName, options = {}) {
     const {
         duration = ENTRY.CAMERA_DURATION,
         startPosition = [0, 0, 30],

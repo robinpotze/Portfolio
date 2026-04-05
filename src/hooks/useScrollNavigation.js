@@ -16,7 +16,7 @@ export default function useScrollNavigation(containerRef, { threshold, targetPat
             return;
         }
 
-        const handleScroll = () => {
+        const onScroll = () => {
             const scrollTop = Math.max(0, container.scrollTop);
             const scrollHeight = Math.max(1, container.scrollHeight - container.clientHeight);
             const progress = Math.max(0, Math.min(1, scrollTop / scrollHeight));
@@ -29,8 +29,8 @@ export default function useScrollNavigation(containerRef, { threshold, targetPat
             }
         };
 
-        container.addEventListener('scroll', handleScroll);
-        return () => container.removeEventListener('scroll', handleScroll);
+        container.addEventListener('scroll', onScroll);
+        return () => container.removeEventListener('scroll', onScroll);
     }, [containerRef, threshold, targetPath, targetName, direction, navigateWithTransition]);
 
     return { scrollProgress, resetNavigation };
