@@ -3,65 +3,57 @@ import TypewriterText from '@components/effects/TypewriterText';
 import ErrorBoundary from '@components/ErrorBoundary';
 import StatusMessage from '@components/ui/StatusMessage/StatusMessage';
 import { CONTACT_TIMING, EASING, REVEAL, STAGGER } from '@config/animation.config';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useCallback, useRef, useState } from 'react';
+import { CORNER_BL_LINES, DEFAULT_ICONS, ERROR_LOG_LINES, INTERCEPT_ICONS, STATUS_GRID_LINES } from './contact.data';
 import styles from './Contact.module.css';
 
-const ERROR_LOG_LINES = [
-    '[SYSTEM] CARRIER_INTERCEPT_DAEMON v9.4.0',
-    '[BOOT] WIDEBAND_FRONTEND: ACTIVE [RX_01..RX_08]',
-    '[SCAN] SPECTRUM_SWEEP: 5725MHz - 5875MHz',
-    '[SYNC] CARRIER_LOCKED: 5.821GHz [UPLINK_SIG]',
-    '[LINK] RSSI: -38dBm | SNR: 34.2dB | BER: <1e-12',
-    '\n',
-    '[LAYER_1] BITSTREAM_EXTRACTION...',
-    '0x001: [████████████████] 100% PHASE_LOCK',
-    '0x002: [████████████████] 100% CLOCK_REC',
-    '0x003: [████████████████] 100% FRAME_SYNC',
-    '\n',
-    '[LAYER_2] DE-ENCAPSULATION_ROUTINE',
-    '[PROC] REMOVING_ETHERNET_PREAMBLE... [DONE]',
-    '[PROC] STRIPPING_VLAN_TAGS (ID: 402)... [DONE]',
-    '[PROC] MAC_SPOOF_VALIDATION: BYPASSED',
-    '\n',
-    '[LAYER_3] PACKET_RECONSTRUCTION',
-    '[RECV] IPV4_DATAGRAM_TOTAL: 4096 BYTES',
-    '[RECV] SOURCE: 172.16.254.1',
-    '[RECV] DESTINATION: [PROTECTED_INTERNAL_SRV]',
-    '[FRAG] REASSEMBLING_FRAGMENTED_PAYLOAD...',
-    '[FRAG] SEGMENT_01..08 [LOCKED]',
-    '\n',
-    '[LAYER_4] TLS_INTERCEPT_ACTIVE',
-    '[AUTH] SESSION_ID: 0xFD291A_XFS',
-    '[AUTH] HANDSHAKE_STRATEGY: MAN_IN_THE_MIDDLE',
-    '[AUTH] RSA_KEY_INJECTION: SUCCESS',
-    '[AUTH] MASTER_SECRET_EXTRACTED: [0x...FF2E]',
-    '\n',
-    '[L7_DATA] DECRYPTED_STREAM_OUTPUT:',
-    '{',
-    '  "protocol": "TCP/JSON",',
-    '  "endpoint": "/api/v1/secure_contact",',
-    '  "payload_size": "2.4kb",',
-    '  "intercept": "COMMIT_SUCCESS"',
-    '}',
-    '\n',
-    '[STATUS] SIGNAL_BARRIER: PERMEATED',
-    '[STATUS] DATA_FLOW: UNRESTRICTED',
-    '[SYSTEM] STANDBY for NEXT_FRAME...',
-];
+const PHASE_CONFIG = {
+    message: {
+        titleClass: styles.messageTitle,
+        formClass: styles.messageForm,
+        statusFormClass: styles.statusForm,
+        statusType: null,
+        statusMessage: null,
+    },
+    intercept: {
+        titleClass: styles.messageTitleIntercept,
+        formClass: styles.messageFormIntercept,
+        statusFormClass: styles.statusForm,
+        statusType: 'error',
+        statusMessage: (
+            <>
+                INTERCEPT
+                <br />
+                DETECTED
+            </>
+        ),
+    },
+    complete: {
+        titleClass: styles.messageTitleComplete,
+        formClass: null,
+        statusFormClass: styles.statusFormComplete,
+        statusType: 'success',
+        statusMessage: (
+            <>
+                MESSAGE
+                <br />
+                RELAYED
+            </>
+        ),
+    },
+};
 
-const STATUS_GRID_LINES = [
-    '[UPLINK_MONITOR] FREQ: 5.825GHz | MODE: WIDEBAND_DIVERSITY',
-    '\n',
-    'SIGNAL_CH A1 . . . . . [LOCKED]     SIGNAL_CH B1 . . . . . [LOCKED]',
-    'SIGNAL_CH A2 . . . . . [ACQUIRED]   SIGNAL_CH B2 . . . . . [STABLE]',
-    'SIGNAL_CH A3 . . . . . [PHASE_OK]   SIGNAL_CH B3 . . . . . [BIT_SYNC]',
-    'SIGNAL_CH A4 . . . . . [PARITY_OK]  SIGNAL_CH B4 . . . . . [STREAMING]',
-    'SIGNAL_CH A5 . . . . . [BUFFER]     SIGNAL_CH B5 . . . . . [ACTIVE]',
-    '\n',
-    '[PARITY: VALID] [FRAME_ALIGN: TRUE] [UPLINK: ACTIVE]',
-];
+const scaleExit = {
+    opacity: 0,
+    scaleY: 0,
+    transition: {
+        duration: CONTACT_TIMING.PHASE_TRANSITION_DURATION,
+        ease: EASING.EXIT,
+    },
+};
 
-const formVariants = {
+const statusFormVariants = {
     hidden: {
         scaleX: 0,
         opacity: 1,
@@ -74,9 +66,10 @@ const formVariants = {
             ease: EASING.EMPHASIZED,
         },
     },
+    exit: scaleExit,
 };
 
-const formContentVariants = {
+const statusFormContentVariants = {
     hidden: {
         opacity: 0,
     },
@@ -105,6 +98,13 @@ const cornerVariants = {
             ease: EASING.EMPHASIZED,
         },
     },
+    exit: {
+        opacity: 0,
+        transition: {
+            duration: REVEAL.EXIT_DURATION,
+            ease: EASING.EXIT,
+        },
+    },
 };
 
 const messageFormVariants = {
@@ -121,22 +121,10 @@ const messageFormVariants = {
             staggerChildren: CONTACT_TIMING.FORM_STAGGER,
         },
     },
+    exit: scaleExit,
 };
 
-const nameFieldVariants = {
-    hidden: {
-        opacity: 0,
-    },
-    visible: {
-        opacity: 1,
-        transition: {
-            duration: CONTACT_TIMING.FIELD_DURATION,
-            ease: EASING.EMPHASIZED,
-        },
-    },
-};
-
-const messageFieldVariants = {
+const fieldVariants = {
     hidden: {
         opacity: 0,
     },
@@ -150,109 +138,245 @@ const messageFieldVariants = {
 };
 
 export default function Contact() {
+    const filterAnimRef = useRef(null);
+
+    const [phase, setPhase] = useState('message');
+    const [formData, setFormData] = useState({ name: '', message: '', email: '' });
+    const [glitching, setGlitching] = useState(false);
+
+    const isIntercept = phase === 'intercept';
+    const showIntercept = isIntercept || glitching;
+    const activeConfig = glitching ? PHASE_CONFIG.intercept : PHASE_CONFIG[phase];
+    const { titleClass, formClass, statusFormClass, statusType, statusMessage } = activeConfig;
+
+    const canSend = formData.name.trim() !== '' && formData.message.trim() !== '';
+    const canIdentify = formData.email.trim() !== '';
+
+    const icons = isIntercept ? INTERCEPT_ICONS : DEFAULT_ICONS;
+
+    const handleInputChange = useCallback(
+        (field) => (e) => {
+            setFormData((prev) => ({ ...prev, [field]: e.target.value }));
+        },
+        []
+    );
+
+    const handleSend = useCallback(() => {
+        if (canSend && !glitching) {
+            setGlitching(true);
+            filterAnimRef.current?.beginElement();
+            setTimeout(() => {
+                setPhase('intercept');
+                setGlitching(false);
+            }, CONTACT_TIMING.GLITCH_DURATION_MS);
+        }
+    }, [canSend, glitching]);
+
+    const handleIdentify = useCallback(() => {
+        if (canIdentify) {
+            setPhase('complete');
+        }
+    }, [canIdentify]);
+
+    const handleEmailKeyDown = useCallback(
+        (e) => {
+            if (e.key === 'Enter') {
+                handleIdentify();
+            }
+        },
+        [handleIdentify]
+    );
+
     return (
         <ErrorBoundary>
-            <div className={styles.page}>
-                <motion.h2 className={styles.messageTitle}>CNTCT-FRM</motion.h2>
-                <motion.div className={styles.messageForm} variants={messageFormVariants} initial="hidden" animate="visible">
-                    <motion.div className={styles.nameField} variants={nameFieldVariants} initial="hidden" animate="visible">
-                        <motion.img className={styles.fieldCornerTL} src="img/icon/PLS.svg" alt="contact form corner icon" />
-                        <motion.img className={styles.fieldCornerTR} src="img/icon/PLS.svg" alt="contact form corner icon" />
-                        <motion.img className={styles.fieldMarker} src="img/icon/CRS.svg" alt="contact form marker icon" />
-                        <motion.img className={styles.nameIcon} src="img/icon/SHELL.svg" alt="contact form user icon" />
-                        <motion.input className={styles.nameInput} placeholder="USR.NAME" />
-                        <motion.img className={styles.fieldCornerBL} src="img/icon/PLS.svg" alt="contact form corner icon" />
-                        <motion.img className={styles.fieldCornerBR} src="img/icon/PLS.svg" alt="contact form corner icon" />
-                    </motion.div>
-                    <motion.div className={styles.messageField} variants={messageFieldVariants} initial="hidden" animate="visible">
-                        <motion.img className={styles.fieldCornerTL} src="img/icon/PLS.svg" alt="contact form corner icon" />
-                        <motion.img className={styles.fieldCornerTR} src="img/icon/PLS.svg" alt="contact form corner icon" />
-                        <motion.img className={styles.fieldMarker} src="img/icon/CRS.svg" alt="contact form marker icon" />
-                        <motion.div>
-                            <motion.img className={styles.messageIcon} src="img/icon/MSG_BRND.svg" alt="contact form message icon" />
-                            <motion.img className={styles.deco} src="img/deco/SINE.svg" alt="contact form decoration icon" />
-                        </motion.div>
-                        <motion.textarea className={styles.messageInput} placeholder="MSG.PAYLOAD" />
-                        <motion.img className={styles.fieldCornerBL} src="img/icon/PLS.svg" alt="contact form corner icon" />
-                        <motion.img className={styles.fieldCornerBR} src="img/icon/PLS.svg" alt="contact form corner icon" />
-                    </motion.div>
-                    <motion.button className={styles.sendButton}>
-                        MSG.SEND <span className="material-symbols-sharp">format_text_overflow</span>
-                    </motion.button>
-                </motion.div>
+            <div className={`${styles.page} ${glitching ? styles.pageGlitch : ''}`}>
+                <svg className={styles.svgFilters} aria-hidden="true">
+                    <defs>
+                        <filter id="glitchDisplace">
+                            <feTurbulence type="fractalNoise" baseFrequency="0.01 0.15" numOctaves="1" seed="3" result="noise" />
+                            <feDisplacementMap in="SourceGraphic" in2="noise" scale="0" xChannelSelector="R" yChannelSelector="G">
+                                <animate
+                                    ref={filterAnimRef}
+                                    attributeName="scale"
+                                    values="0;60;0;45;0;30;0;55;0;20;0"
+                                    keyTimes="0;0.08;0.16;0.28;0.38;0.50;0.60;0.72;0.82;0.92;1"
+                                    dur="0.8s"
+                                    begin="indefinite"
+                                    fill="freeze"
+                                />
+                            </feDisplacementMap>
+                        </filter>
+                    </defs>
+                </svg>
+                <motion.h2 className={titleClass}>CNTCT-FRM</motion.h2>
 
-                <div className={styles.errorSection}>
-                    <StatusMessage
-                        status="error"
-                        message={
-                            <>
-                                CONNECTION
-                                <br />
-                                INTERRUPTED
-                            </>
-                        }
-                    />
-                    <TypewriterText lines={ERROR_LOG_LINES} className={styles.errorlog} rowClassName={styles.logRow} />
-                </div>
-                <motion.div
-                    className={styles.cornerTl}
-                    custom={{ y: STAGGER.DEFAULT * 200 }}
-                    variants={cornerVariants}
-                    initial="hidden"
-                    animate="visible"
-                >
-                    <div className={styles.corner}>
-                        <img className={styles.deco} src="img/icon/PLS_DRK.svg" alt="contact form corner plus icon" />
-                    </div>
-                    <h3>CNTCT-FRM</h3>
-                </motion.div>
-                <motion.div
-                    className={styles.cornerTr}
-                    custom={{ y: STAGGER.DEFAULT * 200 }}
-                    variants={cornerVariants}
-                    initial="hidden"
-                    animate="visible"
-                >
-                    <div className={styles.corner}>
-                        <img className={styles.deco} src="img/icon/PLS_DRK.svg" alt="contact form corner plus icon" />
-                    </div>
-                </motion.div>
-                <motion.div className={styles.statusForm} variants={formVariants} initial="hidden" animate="visible">
-                    <motion.div className={styles.statusFormContent} variants={formContentVariants} initial="hidden" animate="visible">
-                        <img className={styles.mailIcon} src="img/icon/MSG_DRK.svg" alt="contact form mail icon" />
-                        <img className={styles.deco} src="img/icon/PLS_DRK.svg" alt="contact form decoration icon" />
-                        <input className={styles.mailInput} placeholder="IDENTIFY" />
-                        <img className={styles.deco} src="img/icon/PLS_DRK.svg" alt="contact form decoration icon" />
-                        <RadGridTxt />
-                    </motion.div>
-                </motion.div>
-                <motion.div
-                    className={styles.cornerBl}
-                    custom={{ y: -STAGGER.DEFAULT * 200 }}
-                    variants={cornerVariants}
-                    initial="hidden"
-                    animate="visible"
-                >
-                    <div className={styles.corner}>
-                        <img className={styles.deco} src="img/icon/PLS_DRK.svg" alt="contact form corner plus icon" />
-                    </div>
-                    <TypewriterText
-                        lines={['SNR: 32dB | BER: 1e-9 | FRAME_LOCK: TRUE \nSIG_INT: ACTIVE | BUFFER: 0%']}
-                        rowClassName={styles.logRow}
-                    />
-                </motion.div>
-                <motion.div
-                    className={styles.cornerBr}
-                    custom={{ y: -STAGGER.DEFAULT * 200 }}
-                    variants={cornerVariants}
-                    initial="hidden"
-                    animate="visible"
-                >
-                    <div className={styles.corner}>
-                        <img className={styles.deco} src="img/icon/PLS_DRK.svg" alt="contact form corner plus icon" />
-                    </div>
-                </motion.div>
-                <TypewriterText lines={STATUS_GRID_LINES} className={styles.statusgrid} rowClassName={styles.logRow} />
+                <AnimatePresence>
+                    {phase !== 'complete' && (
+                        <motion.div
+                            className={glitching ? styles.messageFormGlitch : formClass}
+                            variants={messageFormVariants}
+                            initial="hidden"
+                            animate="visible"
+                            exit="exit"
+                        >
+                            <motion.div className={styles.nameField} variants={fieldVariants}>
+                                <img className={styles.fieldCornerTL} src={icons.pls} alt="" />
+                                <img className={styles.fieldCornerTR} src={icons.pls} alt="" />
+                                <img className={styles.fieldMarker} src={icons.crs} alt="" />
+                                <img className={styles.nameIcon} src={icons.msg} alt="" />
+                                <input
+                                    className={styles.nameInput}
+                                    placeholder="USR.NAME"
+                                    value={formData.name}
+                                    onChange={handleInputChange('name')}
+                                    disabled={showIntercept}
+                                />
+                                <img className={styles.fieldCornerBL} src={icons.pls} alt="" />
+                                <img className={styles.fieldCornerBR} src={icons.pls} alt="" />
+                            </motion.div>
+                            <motion.div className={styles.messageField} variants={fieldVariants}>
+                                <img className={styles.fieldCornerTL} src={icons.pls} alt="" />
+                                <img className={styles.fieldCornerTR} src={icons.pls} alt="" />
+                                <img className={styles.fieldMarker} src={icons.crs} alt="" />
+                                <div className={styles.messageSideBar}>
+                                    <img className={styles.messageIcon} src={icons.msg} alt="" />
+                                    <img className={styles.decal} src={icons.decal} alt="" />
+                                </div>
+                                <textarea
+                                    className={styles.messageInput}
+                                    placeholder="MSG.PAYLOAD"
+                                    value={formData.message}
+                                    onChange={handleInputChange('message')}
+                                    disabled={showIntercept}
+                                />
+                                <img className={styles.fieldCornerBL} src={icons.pls} alt="" />
+                                <img className={styles.fieldCornerBR} src={icons.pls} alt="" />
+                            </motion.div>
+                            <motion.button
+                                className={styles.sendButton}
+                                onClick={handleSend}
+                                disabled={!canSend || isIntercept || glitching}
+                                variants={fieldVariants}
+                            >
+                                MSG.SEND <span className="material-symbols-sharp">format_text_overflow</span>
+                            </motion.button>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
+                <AnimatePresence>
+                    {(phase !== 'message' || glitching) && (
+                        <motion.div
+                            className={styles.errorSection}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0, transition: { duration: REVEAL.EXIT_DURATION, ease: EASING.EXIT } }}
+                        >
+                            <StatusMessage status={statusType} message={statusMessage} />
+                            {showIntercept && (
+                                <TypewriterText lines={ERROR_LOG_LINES} className={styles.errorlog} rowClassName={styles.logRow} />
+                            )}
+                        </motion.div>
+                    )}
+                </AnimatePresence>
+
+                <AnimatePresence>
+                    {showIntercept && (
+                        <>
+                            <motion.div
+                                className={styles.cornerTl}
+                                custom={{ y: STAGGER.DEFAULT * 200 }}
+                                variants={cornerVariants}
+                                initial="hidden"
+                                animate="visible"
+                                exit="exit"
+                            >
+                                <div className={styles.corner}>
+                                    <img className={styles.deco} src="img/icon/PLS_DRK.svg" alt="" />
+                                </div>
+                                <h3>CNTCT-FRM</h3>
+                            </motion.div>
+                            <motion.div
+                                className={styles.cornerTr}
+                                custom={{ y: STAGGER.DEFAULT * 200 }}
+                                variants={cornerVariants}
+                                initial="hidden"
+                                animate="visible"
+                                exit="exit"
+                            >
+                                <div className={styles.corner}>
+                                    <img className={styles.deco} src="img/icon/PLS_DRK.svg" alt="" />
+                                </div>
+                            </motion.div>
+                            <motion.div
+                                className={styles.cornerBl}
+                                custom={{ y: -STAGGER.DEFAULT * 200 }}
+                                variants={cornerVariants}
+                                initial="hidden"
+                                animate="visible"
+                                exit="exit"
+                            >
+                                <div className={styles.corner}>
+                                    <img className={styles.deco} src="img/icon/PLS_DRK.svg" alt="" />
+                                </div>
+                                <TypewriterText
+                                    lines={CORNER_BL_LINES}
+                                    rowClassName={styles.logRow}
+                                />
+                            </motion.div>
+                            <motion.div
+                                className={styles.cornerBr}
+                                custom={{ y: -STAGGER.DEFAULT * 200 }}
+                                variants={cornerVariants}
+                                initial="hidden"
+                                animate="visible"
+                                exit="exit"
+                            >
+                                <div className={styles.corner}>
+                                    <img className={styles.deco} src="img/icon/PLS_DRK.svg" alt="" />
+                                </div>
+                            </motion.div>
+                            <TypewriterText lines={STATUS_GRID_LINES} className={styles.statusGrid} rowClassName={styles.logRow} />
+                        </>
+                    )}
+                </AnimatePresence>
+
+                <AnimatePresence>
+                    {(phase !== 'message' || glitching) && (
+                        <motion.div
+                            className={glitching ? styles.statusFormGlitch : statusFormClass}
+                            variants={statusFormVariants}
+                            initial="hidden"
+                            animate="visible"
+                            exit="exit"
+                        >
+                            <motion.div className={styles.statusFormContent} variants={statusFormContentVariants}>
+                                {showIntercept && (
+                                    <>
+                                        <img className={styles.mailIcon} src="img/icon/MSG_DRK.svg" alt="" />
+                                        <img className={styles.deco} src="img/icon/PLS_DRK.svg" alt="" />
+                                        <input
+                                            className={styles.mailInput}
+                                            placeholder="IDENTIFY"
+                                            value={formData.email}
+                                            onChange={handleInputChange('email')}
+                                            onKeyDown={handleEmailKeyDown}
+                                            disabled={glitching}
+                                        />
+                                        <img className={styles.deco} src="img/icon/PLS_DRK.svg" alt="" />
+                                        <RadGridTxt />
+                                    </>
+                                )}
+                                {phase === 'complete' && (
+                                    <>
+                                        <img className={styles.mailIcon} src="img/icon/CHK_DRK.svg" alt="" />
+                                        <span className={styles.completeMessage}>MSG.RELAYED</span>
+                                    </>
+                                )}
+                            </motion.div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </div>
         </ErrorBoundary>
     );

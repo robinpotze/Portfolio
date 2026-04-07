@@ -6,7 +6,7 @@
     z-index: 9999;
     pointer-events: none;
     overflow: hidden;
-    background-color: var(--c-brnd_-100);
+    background-color: var(--c-brnd_100);
     transform-origin: right center;
     will-change: clip-path, opacity;
 }
@@ -48,4 +48,16 @@
     left: -32px;
     width: 48px;
     height: 48px;
+}
+
+.success {
+    background-color: var(--c-ok_100);
+}
+
+.warning {
+    background-color: var(--c-warn_100);
+}
+
+.error {
+    background-color: var(--c-error_100);
 }

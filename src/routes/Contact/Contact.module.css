@@ -1,3 +1,7 @@
+/* ----------------------------------------------------------------
+   Page Layout
+   ---------------------------------------------------------------- */
+
 .page {
     height: 100vh;
     width: 100vw;
@@ -15,6 +19,10 @@
     box-sizing: border-box;
 }
 
+/* ----------------------------------------------------------------
+   Title
+   ---------------------------------------------------------------- */
+
 .messageTitle {
     grid-area: formtitle;
     display: flex;
@@ -25,23 +33,63 @@
     color: var(--c-brnd_100);
 }
 
+.messageTitleIntercept {
+    composes: messageTitle;
+    grid-area: statustitle;
+    font: var(--f-hdr_3);
+    color: var(--c-error_100);
+}
+
+/* ----------------------------------------------------------------
+   Message Form
+   ---------------------------------------------------------------- */
+
 .messageForm {
     grid-area: formcornertl / formcornertl / formcornerbr / formcornerbr;
     display: flex;
     flex-direction: column;
     gap: var(--s-s);
     padding: var(--s-m);
+    transform-origin: center center;
+    will-change: transform, opacity;
 }
 
-.messageForm:disabled {
+.messageFormIntercept {
+    composes: messageForm;
     grid-area: messageform / messageform / formcornerbr / formcornerbr;
+    background-color: var(--c-blue);
+    opacity: 0.4;
+    pointer-events: none;
+    margin-right: var(--s-l);
+    margin-bottom: calc(var(--s-xl) * 2);
 }
+
+.messageFormIntercept .nameField {
+    background-color: var(--c-error_100);
+    border-color: var(--c-error_100);
+}
+
+.messageFormIntercept .nameInput {
+    color: var(--c-blue);
+}
+
+.messageFormIntercept .messageField {
+    border-color: var(--c-error_100);
+    background-color: var(--c-error_100);
+}
+
+.messageFormIntercept .messageInput {
+    color: var(--c-blue);
+    border-left-color: var(--c-error_40);
+}
+
+/* Name field */
 
 .nameField {
     position: relative;
     display: flex;
     flex-direction: row;
-    padding: var(--s-xs);
+    padding: var(--s-xs) var(--s-s);
     gap: var(--s-s);
     background-color: var(--c-lght_100);
     color: var(--c-drk_100);
@@ -66,15 +114,24 @@
     border-left: 1px solid var(--c-drk_100);
 }
 
+/* Message field */
+
 .messageField {
     position: relative;
     display: flex;
     flex-direction: row;
     height: 100%;
-    gap: var(--s-xs);
+    gap: var(--s-s);
     padding: var(--s-s);
     border: 1px solid var(--c-lght_100);
     color: var(--c-lght_100);
+}
+
+.messageSideBar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--s-xs);
 }
 
 .messageInput {
@@ -96,6 +153,8 @@
     border-left: 1px solid var(--c-lght_100);
 }
 
+/* Send button */
+
 .sendButton {
     font: var(--f-func);
     background-color: var(--c-lght_100);
@@ -116,39 +175,39 @@
 }
 
 .sendButton:disabled {
-    background-color: var(--c-brnd_-20);
-    color: var(--c-brnd_-100);
+    background-color: var(--c-lght_40);
+    color: var(--c-drk_40);
     cursor: not-allowed;
 }
 
-.fieldCornerTL {
+/* Field decorations */
+
+.fieldCorner {
     width: 48px;
     height: 48px;
     position: absolute;
+}
+
+.fieldCornerTL {
+    composes: fieldCorner;
     top: -24px;
     left: -24px;
 }
 
 .fieldCornerTR {
-    width: 48px;
-    height: 48px;
-    position: absolute;
+    composes: fieldCorner;
     top: -24px;
     right: -24px;
 }
 
 .fieldCornerBL {
-    width: 48px;
-    height: 48px;
-    position: absolute;
+    composes: fieldCorner;
     bottom: -24px;
     left: -24px;
 }
 
 .fieldCornerBR {
-    width: 48px;
-    height: 48px;
-    position: absolute;
+    composes: fieldCorner;
     bottom: -24px;
     right: -24px;
 }
@@ -160,6 +219,130 @@
     top: 20px;
     left: -24px;
 }
+
+/* ----------------------------------------------------------------
+   Status Form (intercept + complete phases)
+   ---------------------------------------------------------------- */
+
+.statusForm {
+    grid-area: form;
+    padding: var(--s-xl);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--c-brnd_-100);
+    color: var(--c-drk_100);
+    position: relative;
+    transform-origin: center center;
+    will-change: transform;
+    transition: background-color 0.5s ease;
+}
+
+.statusForm::after {
+    content: '';
+    position: absolute;
+    inset: -42px;
+    pointer-events: none;
+    border: 42px solid transparent;
+    border-image-source: url('/img/decal/MRKR_BRND_-100.svg');
+    border-image-slice: 42 42 42 42;
+    border-image-width: 42px;
+    border-image-repeat: stretch;
+    box-sizing: border-box;
+}
+
+.statusFormComplete {
+    composes: statusForm;
+    background-color: var(--c-ok_100);
+}
+
+.statusFormComplete::after {
+    border-image-source: url('/img/decal/MRKR.svg');
+}
+
+.statusFormContent {
+    width: 100%;
+    display: flex;
+    gap: var(--s-l);
+    justify-content: center;
+    align-items: center;
+}
+
+.mailIcon {
+    width: 74px;
+    height: 74px;
+}
+
+.mailInput {
+    font: var(--f-hdr_1);
+    text-align: center;
+    padding: var(--s-s);
+    background-color: var(--c-drk_100);
+    color: var(--c-brnd_-100);
+    border: none;
+}
+
+.mailInput::placeholder {
+    color: var(--c-brnd_-20);
+}
+
+.completeMessage {
+    font: var(--f-hdr_2);
+    text-transform: uppercase;
+    color: var(--c-drk_100);
+}
+
+/* ----------------------------------------------------------------
+   Intercept Corners
+   ---------------------------------------------------------------- */
+
+.corner {
+    width: 64px;
+    height: 64px;
+    background-color: var(--c-brnd_-100);
+}
+
+.cornerTl {
+    grid-area: formcornertl;
+    display: flex;
+    align-self: flex-end;
+    align-items: center;
+    gap: var(--s-s);
+    font: var(--f-hdr_3);
+    text-transform: uppercase;
+    color: var(--c-brnd_-100);
+    z-index: 1;
+}
+
+.cornerTr {
+    grid-area: formcornertr;
+    display: flex;
+    align-self: flex-end;
+    justify-content: flex-end;
+    z-index: 1;
+}
+
+.cornerBl {
+    grid-area: formcornerbl;
+    display: flex;
+    align-self: flex-start;
+    align-items: center;
+    gap: var(--s-s);
+    font: var(--f-deco-tiny);
+    color: var(--c-brnd_-100);
+    z-index: 1;
+}
+
+.cornerBr {
+    grid-area: formcornerbr;
+    display: flex;
+    justify-content: flex-end;
+    z-index: 1;
+}
+
+/* ----------------------------------------------------------------
+   Error Log & Status Grid
+   ---------------------------------------------------------------- */
 
 .errorSection {
     grid-area: errorlog;
@@ -177,104 +360,7 @@
     color: var(--c-brnd_-100);
 }
 
-.cornerTl {
-    grid-area: formcornertl;
-    display: flex;
-    align-self: flex-end;
-    align-items: center;
-    gap: var(--s-s);
-    font: var(--f-hdr_3);
-    text-transform: uppercase;
-    color: var(--c-brnd_-100);
-}
-
-.cornerTr {
-    grid-area: formcornertr;
-    display: flex;
-    align-self: flex-end;
-    justify-content: flex-end;
-}
-
-.cornerBl {
-    grid-area: formcornerbl;
-    display: flex;
-    align-self: flex-start;
-    align-items: center;
-    gap: var(--s-s);
-    font: var(--f-deco-tiny);
-    color: var(--c-brnd_-100);
-}
-
-.cornerBr {
-    grid-area: formcornerbr;
-    display: flex;
-    justify-content: flex-end;
-}
-
-.statusForm {
-    grid-area: form;
-    padding: var(--s-xl);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: var(--c-brnd_-100);
-    color: var(--c-drk_100);
-    position: relative;
-    transform-origin: center center;
-    will-change: transform;
-}
-
-.statusForm::after {
-    content: '';
-    position: absolute;
-    inset: -42px;
-    pointer-events: none;
-    border: 42px solid transparent;
-    border-image-source: url('/img/decal/MRKR_BRND_-100.svg');
-    border-image-slice: 42 42 42 42;
-    border-image-width: 42px;
-    border-image-repeat: stretch;
-    box-sizing: border-box;
-}
-
-.statusFormContent {
-    width: 100%;
-    display: flex;
-    gap: var(--s-l);
-    justify-content: center;
-    align-items: center;
-}
-
-.mailInput {
-    font: var(--f-hdr_1);
-    text-align: center;
-    padding: var(--s-s);
-    background-color: var(--c-drk_100);
-    color: var(--c-brnd_-100);
-    border: none;
-}
-
-.nameInput::placeholder {
-    color: var(--c-brnd_-20);
-}
-
-.mailIcon {
-    width: 74px;
-    height: 74px;
-}
-
-.deco {
-    width: 64px;
-    height: 64px;
-}
-
-.corner {
-    width: 64px;
-    height: 64px;
-    background-color: var(--c-brnd_-100);
-}
-
-.statusgrid {
+.statusGrid {
     grid-area: statusgrid;
     align-self: flex-end;
     display: flex;
@@ -282,8 +368,158 @@
     gap: 2px;
     font: var(--f-deco-tiny);
     color: var(--c-brnd_-100);
+    z-index: 1;
 }
 
 .logRow {
     margin: 0;
+}
+
+/* ----------------------------------------------------------------
+   Shared Icons & Decorations
+   ---------------------------------------------------------------- */
+
+.deco {
+    height: 64px;
+    width: 64px;
+}
+
+.decal {
+    height: 64px;
+    width: auto;
+}
+
+.nameIcon {
+    width: 32px;
+    height: 32px;
+}
+
+.messageIcon {
+    width: 32px;
+    height: 32px;
+}
+
+/* ----------------------------------------------------------------
+   Glitch Transition
+   ---------------------------------------------------------------- */
+
+.svgFilters {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
+
+.pageGlitch {
+    filter: url(#glitchDisplace);
+}
+
+.messageFormGlitch {
+    composes: messageFormIntercept;
+    animation: formGlitch 0.8s steps(1, end) forwards;
+    pointer-events: none;
+}
+
+.statusFormGlitch {
+    composes: statusForm;
+    animation: statusFormGlitchIn 0.8s steps(1, end) forwards;
+}
+
+@keyframes formGlitch {
+    0%,
+    14%,
+    36%,
+    58%,
+    80% {
+        background-color: transparent;
+        opacity: 1;
+    }
+    6% {
+        background-color: var(--c-blue);
+        opacity: 0.5;
+    }
+    20% {
+        background-color: var(--c-blue);
+        opacity: 0.3;
+    }
+    28% {
+        background-color: var(--c-error_100);
+        transform: translate(-480px, 200px);
+        opacity: 0.6;
+    }
+    44% {
+        background-color: transparent;
+        opacity: 0.4;
+    }
+    50% {
+        background-color: var(--c-blue);
+        opacity: 0.7;
+    }
+    64% {
+        background-color: var(--c-blue);
+        opacity: 0.3;
+    }
+    72% {
+        background-color: var(--c-blue);
+        opacity: 0.8;
+    }
+    86% {
+        background-color: var(--c-error_100);
+        transform: translate(480px, 200px);
+        opacity: 0.5;
+    }
+    100% {
+        background-color: var(--c-blue);
+        opacity: 0.4;
+    }
+}
+
+@keyframes statusFormGlitchIn {
+    0% {
+        transform: scaleX(0);
+        opacity: 0;
+    }
+    8% {
+        transform: scaleX(0.7);
+        opacity: 1;
+    }
+    14%,
+    28% {
+        transform: scaleX(0);
+        opacity: 0;
+    }
+    34% {
+        transform: scaleX(0.9) translate(-200px, -100px);
+        opacity: 0.8;
+    }
+    40%,
+    52% {
+        transform: scaleX(0);
+        opacity: 0;
+    }
+    58% {
+        transform: scaleX(1);
+        opacity: 0.6;
+    }
+    64%,
+    72% {
+        transform: scaleX(0);
+        opacity: 0;
+    }
+    78% {
+        transform: scaleX(1) translate(200px, -90px);
+        opacity: 0.9;
+    }
+    84% {
+        transform: scaleX(0.85);
+        opacity: 0.4;
+    }
+    90% {
+        transform: scaleX(1) translate(500px, 30px);
+        opacity: 1;
+    }
+    100% {
+        transform: scaleX(1);
+        opacity: 1;
+    }
 }

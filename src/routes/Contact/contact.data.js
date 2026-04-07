@@ -1,0 +1,70 @@
+export const ERROR_LOG_LINES = [
+    '[SYSTEM] CARRIER_INTERCEPT_DAEMON v9.4.0',
+    '[BOOT] WIDEBAND_FRONTEND: ACTIVE [RX_01..RX_08]',
+    '[SCAN] SPECTRUM_SWEEP: 5725MHz - 5875MHz',
+    '[SYNC] CARRIER_LOCKED: 5.821GHz [UPLINK_SIG]',
+    '[LINK] RSSI: -38dBm | SNR: 34.2dB | BER: <1e-12',
+    '\n',
+    '[LAYER_1] BITSTREAM_EXTRACTION...',
+    '0x001: [████████████████] 100% PHASE_LOCK',
+    '0x002: [████████████████] 100% CLOCK_REC',
+    '0x003: [████████████████] 100% FRAME_SYNC',
+    '\n',
+    '[LAYER_2] DE-ENCAPSULATION_ROUTINE',
+    '[PROC] REMOVING_ETHERNET_PREAMBLE... [DONE]',
+    '[PROC] STRIPPING_VLAN_TAGS (ID: 402)... [DONE]',
+    '[PROC] MAC_SPOOF_VALIDATION: BYPASSED',
+    '\n',
+    '[LAYER_3] PACKET_RECONSTRUCTION',
+    '[RECV] IPV4_DATAGRAM_TOTAL: 4096 BYTES',
+    '[RECV] SOURCE: 172.16.254.1',
+    '[RECV] DESTINATION: [PROTECTED_INTERNAL_SRV]',
+    '[FRAG] REASSEMBLING_FRAGMENTED_PAYLOAD...',
+    '[FRAG] SEGMENT_01..08 [LOCKED]',
+    '\n',
+    '[LAYER_4] TLS_INTERCEPT_ACTIVE',
+    '[AUTH] SESSION_ID: 0xFD291A_XFS',
+    '[AUTH] HANDSHAKE_STRATEGY: MAN_IN_THE_MIDDLE',
+    '[AUTH] RSA_KEY_INJECTION: SUCCESS',
+    '[AUTH] MASTER_SECRET_EXTRACTED: [0x...FF2E]',
+    '\n',
+    '[L7_DATA] DECRYPTED_STREAM_OUTPUT:',
+    '{',
+    '  "protocol": "TCP/JSON",',
+    '  "endpoint": "/api/v1/secure_contact",',
+    '  "payload_size": "2.4kb",',
+    '  "intercept": "COMMIT_SUCCESS"',
+    '}',
+    '\n',
+    '[STATUS] SIGNAL_BARRIER: PERMEATED',
+    '[STATUS] DATA_FLOW: UNRESTRICTED',
+    '[SYSTEM] STANDBY for NEXT_FRAME...',
+];
+
+export const STATUS_GRID_LINES = [
+    '[UPLINK_MONITOR] FREQ: 5.825GHz | MODE: WIDEBAND_DIVERSITY',
+    '\n',
+    'SIGNAL_CH A1 . . . . . [LOCKED]     SIGNAL_CH B1 . . . . . [LOCKED]',
+    'SIGNAL_CH A2 . . . . . [ACQUIRED]   SIGNAL_CH B2 . . . . . [STABLE]',
+    'SIGNAL_CH A3 . . . . . [PHASE_OK]   SIGNAL_CH B3 . . . . . [BIT_SYNC]',
+    'SIGNAL_CH A4 . . . . . [PARITY_OK]  SIGNAL_CH B4 . . . . . [STREAMING]',
+    'SIGNAL_CH A5 . . . . . [BUFFER]     SIGNAL_CH B5 . . . . . [ACTIVE]',
+    '\n',
+    '[PARITY: VALID] [FRAME_ALIGN: TRUE] [UPLINK: ACTIVE]',
+];
+
+export const CORNER_BL_LINES = ['SNR: 32dB | BER: 1e-9 | FRAME_LOCK: TRUE \nSIG_INT: ACTIVE | BUFFER: 0%'];
+
+export const INTERCEPT_ICONS = {
+    msg: 'img/icon/MSG_BLUE.svg',
+    decal: 'img/decal/SN_BLUE.svg',
+    pls: 'img/icon/PLS_BRND_-100.svg',
+    crs: 'img/icon/CRS_BRND_-100.svg',
+};
+
+export const DEFAULT_ICONS = {
+    msg: 'img/icon/MSG_BRND.svg',
+    decal: 'img/decal/SN_BRND.svg',
+    pls: 'img/icon/PLS.svg',
+    crs: 'img/icon/CRS.svg',
+};

@@ -4,6 +4,7 @@ import styles from './StatusMessage.module.css';
 
 const STATUS_CONFIG = {
     success: { icon: '/img/icon/GAT_DRK.svg', decal: '/img/decal/PLS_DRK.svg' },
+    warning: { icon: '/img/icon/MRK_DRK.svg', decal: '/img/decal/PLS_DRK.svg' },
     error: { icon: '/img/icon/CRS_DRK.svg', decal: '/img/decal/CRS_DRK.svg' },
 };
 
