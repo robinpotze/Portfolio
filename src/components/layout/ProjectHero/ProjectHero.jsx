@@ -1,3 +1,5 @@
+import CrsIcon from '@/assets/icons/CRS.svg?react';
+import PlsIcon from '@/assets/icons/PLS.svg?react';
 import GridOverlay from '@components/decoration/GridOverlay';
 import ScrollDown from '@components/decoration/ScrollDown';
 import { EASING, REVEAL, STAGGER } from '@config/animation.config';
@@ -100,9 +102,9 @@ export default function ProjectHero({ content }) {
 
             <motion.div className={styles.content} id="work-hero-content" variants={sideVars} custom={1} initial="hidden" animate={'visible'}>
                 <motion.div className={styles.titleWrapper} id="work-hero-title-wrapper" variants={titleVars} initial="hidden" animate={'visible'}>
-                    <img className={styles.titleDecal} id="work-hero-decal-start" src="/img/icon/PLS.svg" alt="Plus Sign" />
-                    <h2 id="work-hero-title">{content.title.replaceAll(/\s+/g, '_')}</h2>
-                    <img className={styles.titleDecal} id="work-hero-decal-end" src="/img/icon/PLS.svg" alt="Plus Sign" />
+                    <PlsIcon className={styles.titleDecal} id="work-hero-decal-start" aria-hidden="true" />
+                    <h1 id="work-hero-title">{content.title.replaceAll(/\s+/g, '_')}</h1>
+                    <PlsIcon className={styles.titleDecal} id="work-hero-decal-end" aria-hidden="true" />
                 </motion.div>
             </motion.div>
 
@@ -135,7 +137,9 @@ export default function ProjectHero({ content }) {
                             ))}
                         </motion.div>
                     </motion.div>
-                    <motion.img className={styles.sideDecal} src="/img/icon/CRS.svg" alt="A Cross Divider" variants={sideItemVars} />
+                    <motion.div className={styles.sideDecal} variants={sideItemVars}>
+                        <CrsIcon aria-hidden="true" />
+                    </motion.div>
                     <motion.div variants={sideItemVars}>
                         <motion.div className={styles.sideText} id="work-hero-side-details" variants={sideSubGroupVars}>
                             <motion.p className={`functional tr90 ${styles.sideTag}`} variants={sideItemVars}>

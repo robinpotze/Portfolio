@@ -1,3 +1,4 @@
+import PlsIcon from '@/assets/icons/PLS.svg?react';
 import { EASING, REVEAL, SPRING_CONFIG, STAGGER } from '@config/animation.config';
 import { motion, useMotionValue, useSpring } from 'framer-motion';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -18,7 +19,7 @@ import styles from './GridOverlay.module.css';
  * @param {number}   [stripeCount=20]    - Number of vertical stripes per cell.
  * @param {number}   [stripeOpacity=0.12]- Opacity of the stripe pattern.
  * @param {number}   [blurStrength=4]    - Backdrop blur strength (px) on stripe cells.
- * @param {string}   [crosshairSrc='/img/icon/PLS.svg'] - Path to the crosshair icon.
+ * @param {React.ComponentType} [CrosshairIcon=PlsIcon] - SVG icon component for crosshairs.
  * @param {number}   [crosshairSize=12]  - Crosshair icon size (px).
  * @param {number}   [crosshairOpacity=0.35] - Crosshair icon opacity.
  * @param {number}   [parallaxStrength=12]   - Max parallax shift in px.
@@ -33,7 +34,7 @@ export default function GridOverlay({
     stripeCount = 20,
     stripeOpacity = 0.12,
     blurStrength = 10,
-    crosshairSrc = '/img/icon/PLS.svg',
+    CrosshairIcon = PlsIcon,
     crosshairSize = 24,
     crosshairOpacity = 0.35,
     parallaxStrength = 12,
@@ -192,11 +193,9 @@ export default function GridOverlay({
             }
 
             crosshairs.push(
-                <motion.img
+                <motion.div
                     key={`cross-${r}-${c}`}
                     className={styles.crosshair}
-                    src={crosshairSrc}
-                    alt=""
                     style={{
                         width: crosshairSize,
                         height: crosshairSize,
@@ -206,8 +205,9 @@ export default function GridOverlay({
                         marginTop: -crosshairSize / 2,
                     }}
                     variants={crosshairVars}
-                    draggable={false}
-                />
+                >
+                    <CrosshairIcon aria-hidden="true" />
+                </motion.div>
             );
         }
     }

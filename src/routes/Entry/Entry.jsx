@@ -1,3 +1,4 @@
+import CrsIcon from '@/assets/icons/CRS.svg?react';
 import DashLine from '@components/decoration/DashLine';
 import GradualBlur from '@components/effects/GradualBlur';
 import ScrollReveal from '@components/effects/ScrollReveal';
@@ -39,7 +40,7 @@ export default function Entry() {
                         <h2>Synopsis</h2>
                         <DashLine direction="Horizontal" />
                         <div className={styles.synopsisSubtitle}>
-                            <img src="/img/icon/CRS.svg" alt="Cross symbol divider" />
+                            <CrsIcon aria-hidden="true" />
                             <p className="deco-small">{data.synopsis}</p>
                         </div>
                     </div>

@@ -57,6 +57,12 @@
     height: 5rem;
     width: 5rem;
     rotate: 90deg;
+    overflow: hidden;
+}
+
+.decalSound svg {
+    width: 100%;
+    height: 100%;
 }
 
 .scrollBottom {
@@ -104,6 +110,11 @@
     flex-direction: column;
     align-items: center;
     gap: 4px;
+}
+
+.sideDividerIcon {
+    width: 26px;
+    height: 26px;
 }
 
 .sideDecoText {

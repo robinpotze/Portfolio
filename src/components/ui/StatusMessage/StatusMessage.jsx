@@ -1,11 +1,17 @@
+import CrsDecal from '@/assets/decals/CRS.svg?react';
+import PlsDecal from '@/assets/decals/PLS.svg?react';
+import CrsIcon from '@/assets/icons/CRS.svg?react';
+import GatIcon from '@/assets/icons/GAT.svg?react';
+import MrkIcon from '@/assets/icons/MRK.svg?react';
+import PlsIcon from '@/assets/icons/PLS.svg?react';
 import { EASING, REVEAL, STAGGER } from '@config/animation.config';
 import { AnimatePresence, motion } from 'framer-motion';
 import styles from './StatusMessage.module.css';
 
 const STATUS_CONFIG = {
-    success: { icon: '/img/icon/GAT_DRK.svg', decal: '/img/decal/PLS_DRK.svg' },
-    warning: { icon: '/img/icon/MRK_DRK.svg', decal: '/img/decal/PLS_DRK.svg' },
-    error: { icon: '/img/icon/CRS_DRK.svg', decal: '/img/decal/CRS_DRK.svg' },
+    success: { Icon: GatIcon, Decal: PlsDecal },
+    warning: { Icon: MrkIcon, Decal: PlsDecal },
+    error: { Icon: CrsIcon, Decal: CrsDecal },
 };
 
 const panelVariants = {
@@ -78,7 +84,7 @@ const fromRightVariants = {
 };
 
 export default function StatusMessage({ status = 'success', message, isVisible = true }) {
-    const { icon, decal } = STATUS_CONFIG[status] ?? STATUS_CONFIG.success;
+    const { Icon, Decal } = STATUS_CONFIG[status] ?? STATUS_CONFIG.success;
 
     return (
         <AnimatePresence>
@@ -90,25 +96,19 @@ export default function StatusMessage({ status = 'success', message, isVisible =
                     animate="visible"
                     exit="exit"
                 >
-                    <motion.img
-                        className={styles.cornerIconTR}
-                        src="/img/icon/PLS_BRND_-100.svg"
-                        alt="status message corner icon"
-                        variants={fromRightVariants}
-                    />
+                    <motion.div className={styles.cornerIconTR} variants={fromRightVariants}>
+                        <PlsIcon aria-hidden="true" />
+                    </motion.div>
                     <motion.div className={styles.iconWrapper} variants={fromLeftVariants}>
-                        <img className={styles.decoIcon} src={decal} alt="" />
-                        <img className={styles.statusIcon} src={icon} alt={`${status} icon`} />
+                        <Decal className={styles.decoIcon} aria-hidden="true" />
+                        <Icon className={styles.statusIcon} aria-hidden="true" />
                     </motion.div>
                     <motion.span className={styles.message} variants={fromRightVariants}>
                         {message}
                     </motion.span>
-                    <motion.img
-                        className={styles.cornerIconBL}
-                        src="/img/icon/PLS_BRND_-100.svg"
-                        alt="status message corner icon"
-                        variants={fromLeftVariants}
-                    />
+                    <motion.div className={styles.cornerIconBL} variants={fromLeftVariants}>
+                        <PlsIcon aria-hidden="true" />
+                    </motion.div>
                 </motion.div>
             )}
         </AnimatePresence>

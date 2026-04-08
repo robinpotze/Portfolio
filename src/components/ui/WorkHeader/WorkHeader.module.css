@@ -7,7 +7,8 @@
     color: var(--c-drk_100);
 }
 
-.chapter img {
+.chapter img,
+.chapter svg {
     height: 24px;
     mix-blend-mode: difference;
 }

@@ -1,0 +1,7 @@
+<svg width="24" height="104" viewBox="0 0 24 104" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="0.5" y="0.5" width="23" height="103" rx="11.5" stroke="currentColor"/>
+<path d="M12 8V24M4 16L20 16" stroke="currentColor"/>
+<path d="M12 32V48M4 40L20 40" stroke="currentColor"/>
+<path d="M12 56V72M4 64L20 64" stroke="currentColor"/>
+<path d="M12 80V96M4 88L20 88" stroke="currentColor"/>
+</svg>

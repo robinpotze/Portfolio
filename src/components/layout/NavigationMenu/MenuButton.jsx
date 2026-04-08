@@ -1,3 +1,5 @@
+import CrsIcon from '@/assets/icons/CRS.svg?react';
+import PlsIcon from '@/assets/icons/PLS.svg?react';
 import { EASING, MENU_TIMING } from '@config/animation.config';
 import { motion } from 'framer-motion';
 import styles from './NavigationMenu.module.css';
@@ -15,20 +17,20 @@ export default function MenuButton({ open, label, toggle, glitchRefs, ref }) {
                         ease: EASING.EMPHASIZED,
                     }}
                 >
-                    <motion.img
-                        src="/img/icon/PLS.svg"
-                        alt=""
+                    <motion.div
                         className={styles.iconImg}
                         animate={{ opacity: open ? 0 : 1, scale: open ? 0.6 : 1 }}
                         transition={{ duration: MENU_TIMING.ICON_SWAP_OUT_DURATION }}
-                    />
-                    <motion.img
-                        src="/img/icon/CRS.svg"
-                        alt=""
+                    >
+                        <PlsIcon />
+                    </motion.div>
+                    <motion.div
                         className={styles.iconImg}
                         animate={{ opacity: open ? 1 : 0, scale: open ? 1 : 0.6 }}
                         transition={{ duration: MENU_TIMING.ICON_SWAP_IN_DURATION }}
-                    />
+                    >
+                        <CrsIcon />
+                    </motion.div>
                 </motion.span>
 
                 <span className={styles.toggleTextWrap}>

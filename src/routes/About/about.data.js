@@ -1,3 +1,13 @@
+import ArtIcon from '@/assets/icons/ART.svg?react';
+import ArwIcon from '@/assets/icons/ARW.svg?react';
+import BllIcon from '@/assets/icons/BLL.svg?react';
+import BrcIcon from '@/assets/icons/BRC.svg?react';
+import ChkIcon from '@/assets/icons/CHK.svg?react';
+import CrsIcon from '@/assets/icons/CRS.svg?react';
+import DceIcon from '@/assets/icons/DCE.svg?react';
+import GatIcon from '@/assets/icons/GAT.svg?react';
+import MrkIcon from '@/assets/icons/MRK.svg?react';
+
 export const ABOUT_SECTIONS = ['EXP', 'SKL', 'SFT', 'EDU'];
 
 export const ABOUT_DATA = {
@@ -7,9 +17,9 @@ export const ABOUT_DATA = {
             function: 'UX Designer',
             date: '2022-NOW',
             details: [
-                { text: 'Designed and developed serious games in both digital and physical formats.', icon: '/img/icon/DCE.svg' },
-                { text: 'Designed and developed UX for various clients in the public services sector.', icon: '/img/icon/BRC.svg' },
-                { text: 'Designed multiple marketing campaigns and promotional materials.', icon: '/img/icon/ART.svg' },
+                { text: 'Designed and developed serious games in both digital and physical formats.', icon: DceIcon },
+                { text: 'Designed and developed UX for various clients in the public services sector.', icon: BrcIcon },
+                { text: 'Designed multiple marketing campaigns and promotional materials.', icon: ArtIcon },
             ],
         },
         {
@@ -19,13 +29,13 @@ export const ABOUT_DATA = {
             details: [
                 {
                     text: 'Designed a new webstore and introduced a mascot. Redesigned the logo, revamped brand colouring and adhered to industry standard UX practices',
-                    icon: '/img/icon/ART.svg',
+                    icon: ArtIcon,
                 },
                 {
                     text: 'Introduced a learning platform in the same branding with a larger focus on industry standard designs in learning tools.',
-                    icon: '/img/icon/GAT.svg',
+                    icon: GatIcon,
                 },
-                { text: 'Created a link between the products and the learning materials to create a USP', icon: '/img/icon/ARW.svg' },
+                { text: 'Created a link between the products and the learning materials to create a USP', icon: ArwIcon },
             ],
         },
         {
@@ -33,21 +43,21 @@ export const ABOUT_DATA = {
             function: 'Creative Developer',
             date: '2020-2021',
             details: [
-                { text: 'Concepted and developed new User Avatars to fit gender, size and VR engineering environments.', icon: '/img/icon/MRK.svg' },
-                { text: 'Concepted and developed 3D assets for tools to be used in the ArchViz VR software.', icon: '/img/icon/CRS.svg' },
+                { text: 'Concepted and developed new User Avatars to fit gender, size and VR engineering environments.', icon: MrkIcon },
+                { text: 'Concepted and developed 3D assets for tools to be used in the ArchViz VR software.', icon: CrsIcon },
                 {
                     text: 'Ran end-user usability tests with the created assets and iterated on the feedback throughout the process.',
-                    icon: '/img/icon/CHK.svg',
+                    icon: ChkIcon,
                 },
             ],
         },
     ],
     SKL: [
-        { text: 'User Interface Design', icon: '/img/icon/BLL.svg' },
-        { text: 'Brand Identity', icon: '/img/icon/GAT.svg' },
-        { text: '3D Modeling', icon: '/img/icon/ARW.svg' },
-        { text: 'Visual Effects', icon: '/img/icon/CHK.svg' },
-        { text: 'Software Development', icon: '/img/icon/BRC.svg' },
+        { text: 'User Interface Design', icon: BllIcon },
+        { text: 'Brand Identity', icon: GatIcon },
+        { text: '3D Modeling', icon: ArwIcon },
+        { text: 'Visual Effects', icon: ChkIcon },
+        { text: 'Software Development', icon: BrcIcon },
     ],
     SFT: [
         { text: 'Illustrator', icon: '/img/software/Illustrator.svg' },
@@ -60,7 +70,7 @@ export const ABOUT_DATA = {
     EDU: [
         {
             school: 'Hanze',
-            icon: '/img/icon/GAT.svg',
+            icon: GatIcon,
             course: 'Communication & Multimedia Design - Game Design, Bsc.',
             date: '2017-2022',
         },

@@ -54,23 +54,24 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 24px;
+    gap: var(--s-m);
 }
 
 .iconArray {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
-    padding: 0.25rem;
+    gap: var(--s-xs);
+    padding: var(--s-xs);
 }
 
 .textArray {
     display: flex;
     flex-wrap: wrap-reverse;
-    align-items: start;
-    gap: 4px;
-    padding: 0 0.75rem;
+    align-items: center;
+    justify-content: center;
+    gap: var(--s-xs);
+    padding: 0 var(--s-s);
 }
 
 .textArray p {
@@ -81,12 +82,17 @@
 .sideText {
     display: flex;
     flex-direction: row-reverse;
-    gap: 4px;
+    gap: var(--s-xs);
 }
 
 .sideDecal {
     width: 48px;
     height: 48px;
+}
+
+.sideDecal svg {
+    width: 100%;
+    height: 100%;
 }
 
 .titleDecal {
@@ -96,13 +102,14 @@
 
 .titleWrapper {
     display: flex;
-    gap: 8px;
-    margin: 0 3rem 4rem 0;
+    align-items: center;
+    gap: var(--s-xs);
+    margin: 0 var(--s-l) var(--s-xl) 0;
     mix-blend-mode: difference;
 }
 
 .sideTag {
     color: var(--c-drk_100);
     background-color: var(--c-brnd_100);
-    padding: 0.25rem 0;
+    padding: var(--s-xs) 0;
 }

@@ -26,6 +26,7 @@
 .statusIcon {
     width: 48px;
     height: 48px;
+    color: var(--c-drk_100);
 }
 
 .message {
@@ -40,6 +41,7 @@
     right: -32px;
     width: 48px;
     height: 48px;
+    color: var(--c-brnd_-100);
 }
 
 .cornerIconBL {
@@ -48,6 +50,7 @@
     left: -32px;
     width: 48px;
     height: 48px;
+    color: var(--c-brnd_-100);
 }
 
 .success {

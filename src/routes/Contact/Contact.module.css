@@ -83,6 +83,20 @@
     border-left-color: var(--c-error_40);
 }
 
+.messageFormIntercept .fieldCorner,
+.messageFormIntercept .fieldMarker {
+    color: var(--c-brnd_-100);
+}
+
+.messageFormIntercept .nameIcon,
+.messageFormIntercept .messageIcon {
+    color: var(--c-blue);
+}
+
+.messageFormIntercept .decal {
+    color: var(--c-blue);
+}
+
 /* Name field */
 
 .nameField {
@@ -101,8 +115,10 @@
     padding-left: var(--s-s);
     background: none;
     border: none;
+    border-left: 1px solid var(--c-drk_40);
     color: var(--c-drk_100);
     font: var(--f-func);
+    transition: border-color 0.2s ease, color 0.2s ease;
 }
 
 .nameInput::placeholder {
@@ -111,7 +127,7 @@
 
 .nameInput:focus {
     outline: none;
-    border-left: 1px solid var(--c-drk_100);
+    border-left: 1px solid var(--c-brnd_100);
 }
 
 /* Message field */
@@ -142,6 +158,7 @@
     border-left: 1px solid var(--c-lght_40);
     font: var(--f-func);
     color: var(--c-lght_100);
+    transition: border-color 0.2s ease, color 0.2s ease;
 }
 
 .messageInput::placeholder {
@@ -150,7 +167,7 @@
 
 .messageInput:focus {
     outline: none;
-    border-left: 1px solid var(--c-lght_100);
+    border-left: 1px solid var(--c-brnd_100);
 }
 
 /* Send button */
@@ -167,6 +184,7 @@
     justify-content: center;
     align-items: center;
     cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
 }
 
 .sendButton:hover {
@@ -174,10 +192,15 @@
     color: var(--c-lght_100);
 }
 
+.sendButton:active {
+    transition: transform 0.08s ease;
+}
+
 .sendButton:disabled {
-    background-color: var(--c-lght_40);
-    color: var(--c-drk_40);
+    background-color: var(--c-brnd_-20);
+    color: var(--c-brnd_-100);
     cursor: not-allowed;
+    transform: none;
 }
 
 /* Field decorations */
@@ -186,6 +209,7 @@
     width: 48px;
     height: 48px;
     position: absolute;
+    color: var(--c-lght_100);
 }
 
 .fieldCornerTL {
@@ -218,6 +242,7 @@
     position: absolute;
     top: 20px;
     left: -24px;
+    color: var(--c-lght_100);
 }
 
 /* ----------------------------------------------------------------
@@ -271,6 +296,7 @@
 .mailIcon {
     width: 74px;
     height: 74px;
+    color: var(--c-drk_100);
 }
 
 .mailInput {
@@ -280,10 +306,15 @@
     background-color: var(--c-drk_100);
     color: var(--c-brnd_-100);
     border: none;
+    transition: box-shadow 0.2s ease;
 }
 
 .mailInput::placeholder {
     color: var(--c-brnd_-20);
+}
+
+.mailInput:focus {
+    outline: none;
 }
 
 .completeMessage {
@@ -328,7 +359,7 @@
     align-self: flex-start;
     align-items: center;
     gap: var(--s-s);
-    font: var(--f-deco-tiny);
+    font: var(--f-deco-micro);
     color: var(--c-brnd_-100);
     z-index: 1;
 }
@@ -356,7 +387,7 @@
     display: flex;
     flex-direction: column;
     gap: 4px;
-    font: var(--f-deco-tiny);
+    font: var(--f-deco-micro);
     color: var(--c-brnd_-100);
 }
 
@@ -366,7 +397,7 @@
     display: flex;
     flex-direction: column;
     gap: 2px;
-    font: var(--f-deco-tiny);
+    font: var(--f-deco-micro);
     color: var(--c-brnd_-100);
     z-index: 1;
 }
@@ -382,21 +413,25 @@
 .deco {
     height: 64px;
     width: 64px;
+    color: var(--c-drk_100);
 }
 
 .decal {
     height: 64px;
     width: auto;
+    color: var(--c-brnd_100);
 }
 
 .nameIcon {
     width: 32px;
     height: 32px;
+    color: var(--c-brnd_100);
 }
 
 .messageIcon {
     width: 32px;
     height: 32px;
+    color: var(--c-brnd_100);
 }
 
 /* ----------------------------------------------------------------
@@ -418,11 +453,6 @@
     composes: messageFormIntercept;
     animation: formGlitch 0.8s steps(1, end) forwards;
     pointer-events: none;
-}
-
-.statusFormGlitch {
-    composes: statusForm;
-    animation: statusFormGlitchIn 0.8s steps(1, end) forwards;
 }
 
 @keyframes formGlitch {
@@ -471,55 +501,5 @@
     100% {
         background-color: var(--c-blue);
         opacity: 0.4;
-    }
-}
-
-@keyframes statusFormGlitchIn {
-    0% {
-        transform: scaleX(0);
-        opacity: 0;
-    }
-    8% {
-        transform: scaleX(0.7);
-        opacity: 1;
-    }
-    14%,
-    28% {
-        transform: scaleX(0);
-        opacity: 0;
-    }
-    34% {
-        transform: scaleX(0.9) translate(-200px, -100px);
-        opacity: 0.8;
-    }
-    40%,
-    52% {
-        transform: scaleX(0);
-        opacity: 0;
-    }
-    58% {
-        transform: scaleX(1);
-        opacity: 0.6;
-    }
-    64%,
-    72% {
-        transform: scaleX(0);
-        opacity: 0;
-    }
-    78% {
-        transform: scaleX(1) translate(200px, -90px);
-        opacity: 0.9;
-    }
-    84% {
-        transform: scaleX(0.85);
-        opacity: 0.4;
-    }
-    90% {
-        transform: scaleX(1) translate(500px, 30px);
-        opacity: 1;
-    }
-    100% {
-        transform: scaleX(1);
-        opacity: 1;
     }
 }

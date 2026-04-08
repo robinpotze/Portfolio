@@ -190,7 +190,8 @@
     border: 1px solid var(--c-brnd_20);
 }
 
-.itemIcon img {
+.itemIcon img,
+.itemIcon svg {
     width: 20px;
     height: 20px;
     object-fit: contain;
@@ -255,7 +256,8 @@
         min-width: 28px;
     }
 
-    .itemIcon img {
+    .itemIcon img,
+    .itemIcon svg {
         width: 16px;
         height: 16px;
     }

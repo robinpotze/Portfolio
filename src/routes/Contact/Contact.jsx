@@ -1,3 +1,8 @@
+import SnDecal from '@/assets/decals/SN.svg?react';
+import ChkIcon from '@/assets/icons/CHK.svg?react';
+import CrsIcon from '@/assets/icons/CRS.svg?react';
+import MsgIcon from '@/assets/icons/MSG.svg?react';
+import PlsIcon from '@/assets/icons/PLS.svg?react';
 import RadGridTxt from '@components/decoration/RadialText/TXT/RAD_GRID_TXT';
 import TypewriterText from '@components/effects/TypewriterText';
 import ErrorBoundary from '@components/ErrorBoundary';
@@ -5,11 +10,12 @@ import StatusMessage from '@components/ui/StatusMessage/StatusMessage';
 import { CONTACT_TIMING, EASING, REVEAL, STAGGER } from '@config/animation.config';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useRef, useState } from 'react';
-import { CORNER_BL_LINES, DEFAULT_ICONS, ERROR_LOG_LINES, INTERCEPT_ICONS, STATUS_GRID_LINES } from './contact.data';
+import { CORNER_BL_LINES, ERROR_LOG_LINES, STATUS_GRID_LINES } from './contact.data';
 import styles from './Contact.module.css';
 
 const PHASE_CONFIG = {
     message: {
+        title: 'CNTCT-FRM',
         titleClass: styles.messageTitle,
         formClass: styles.messageForm,
         statusFormClass: styles.statusForm,
@@ -17,6 +23,7 @@ const PHASE_CONFIG = {
         statusMessage: null,
     },
     intercept: {
+        title: 'WDBND-PKT_DE-ENCAP',
         titleClass: styles.messageTitleIntercept,
         formClass: styles.messageFormIntercept,
         statusFormClass: styles.statusForm,
@@ -30,6 +37,7 @@ const PHASE_CONFIG = {
         ),
     },
     complete: {
+        title: 'MSG-RELAYED',
         titleClass: styles.messageTitleComplete,
         formClass: null,
         statusFormClass: styles.statusFormComplete,
@@ -147,12 +155,10 @@ export default function Contact() {
     const isIntercept = phase === 'intercept';
     const showIntercept = isIntercept || glitching;
     const activeConfig = glitching ? PHASE_CONFIG.intercept : PHASE_CONFIG[phase];
-    const { titleClass, formClass, statusFormClass, statusType, statusMessage } = activeConfig;
+    const { title, titleClass, formClass, statusFormClass, statusType, statusMessage } = activeConfig;
 
     const canSend = formData.name.trim() !== '' && formData.message.trim() !== '';
     const canIdentify = formData.email.trim() !== '';
-
-    const icons = isIntercept ? INTERCEPT_ICONS : DEFAULT_ICONS;
 
     const handleInputChange = useCallback(
         (field) => (e) => {
@@ -208,7 +214,10 @@ export default function Contact() {
                         </filter>
                     </defs>
                 </svg>
-                <motion.h2 className={titleClass}>CNTCT-FRM</motion.h2>
+
+                <AnimatePresence>
+                    {phase !== 'complete' && <motion.h2 className={titleClass}>{title}</motion.h2>}
+                </AnimatePresence>
 
                 <AnimatePresence>
                     {phase !== 'complete' && (
@@ -220,10 +229,10 @@ export default function Contact() {
                             exit="exit"
                         >
                             <motion.div className={styles.nameField} variants={fieldVariants}>
-                                <img className={styles.fieldCornerTL} src={icons.pls} alt="" />
-                                <img className={styles.fieldCornerTR} src={icons.pls} alt="" />
-                                <img className={styles.fieldMarker} src={icons.crs} alt="" />
-                                <img className={styles.nameIcon} src={icons.msg} alt="" />
+                                <PlsIcon className={styles.fieldCornerTL} aria-hidden="true" />
+                                <PlsIcon className={styles.fieldCornerTR} aria-hidden="true" />
+                                <CrsIcon className={styles.fieldMarker} aria-hidden="true" />
+                                <MsgIcon className={styles.nameIcon} aria-hidden="true" />
                                 <input
                                     className={styles.nameInput}
                                     placeholder="USR.NAME"
@@ -231,16 +240,16 @@ export default function Contact() {
                                     onChange={handleInputChange('name')}
                                     disabled={showIntercept}
                                 />
-                                <img className={styles.fieldCornerBL} src={icons.pls} alt="" />
-                                <img className={styles.fieldCornerBR} src={icons.pls} alt="" />
+                                <PlsIcon className={styles.fieldCornerBL} aria-hidden="true" />
+                                <PlsIcon className={styles.fieldCornerBR} aria-hidden="true" />
                             </motion.div>
                             <motion.div className={styles.messageField} variants={fieldVariants}>
-                                <img className={styles.fieldCornerTL} src={icons.pls} alt="" />
-                                <img className={styles.fieldCornerTR} src={icons.pls} alt="" />
-                                <img className={styles.fieldMarker} src={icons.crs} alt="" />
+                                <PlsIcon className={styles.fieldCornerTL} aria-hidden="true" />
+                                <PlsIcon className={styles.fieldCornerTR} aria-hidden="true" />
+                                <CrsIcon className={styles.fieldMarker} aria-hidden="true" />
                                 <div className={styles.messageSideBar}>
-                                    <img className={styles.messageIcon} src={icons.msg} alt="" />
-                                    <img className={styles.decal} src={icons.decal} alt="" />
+                                    <MsgIcon className={styles.messageIcon} aria-hidden="true" />
+                                    <SnDecal className={styles.decal} aria-hidden="true" />
                                 </div>
                                 <textarea
                                     className={styles.messageInput}
@@ -249,8 +258,8 @@ export default function Contact() {
                                     onChange={handleInputChange('message')}
                                     disabled={showIntercept}
                                 />
-                                <img className={styles.fieldCornerBL} src={icons.pls} alt="" />
-                                <img className={styles.fieldCornerBR} src={icons.pls} alt="" />
+                                <PlsIcon className={styles.fieldCornerBL} aria-hidden="true" />
+                                <PlsIcon className={styles.fieldCornerBR} aria-hidden="true" />
                             </motion.div>
                             <motion.button
                                 className={styles.sendButton}
@@ -265,7 +274,7 @@ export default function Contact() {
                 </AnimatePresence>
 
                 <AnimatePresence>
-                    {(phase !== 'message' || glitching) && (
+                    {phase !== 'message' && (
                         <motion.div
                             className={styles.errorSection}
                             initial={{ opacity: 0 }}
@@ -273,7 +282,7 @@ export default function Contact() {
                             exit={{ opacity: 0, transition: { duration: REVEAL.EXIT_DURATION, ease: EASING.EXIT } }}
                         >
                             <StatusMessage status={statusType} message={statusMessage} />
-                            {showIntercept && (
+                            {isIntercept && (
                                 <TypewriterText lines={ERROR_LOG_LINES} className={styles.errorlog} rowClassName={styles.logRow} />
                             )}
                         </motion.div>
@@ -281,7 +290,7 @@ export default function Contact() {
                 </AnimatePresence>
 
                 <AnimatePresence>
-                    {showIntercept && (
+                    {isIntercept && (
                         <>
                             <motion.div
                                 className={styles.cornerTl}
@@ -292,7 +301,7 @@ export default function Contact() {
                                 exit="exit"
                             >
                                 <div className={styles.corner}>
-                                    <img className={styles.deco} src="img/icon/PLS_DRK.svg" alt="" />
+                                    <PlsIcon className={styles.deco} aria-hidden="true" />
                                 </div>
                                 <h3>CNTCT-FRM</h3>
                             </motion.div>
@@ -305,7 +314,7 @@ export default function Contact() {
                                 exit="exit"
                             >
                                 <div className={styles.corner}>
-                                    <img className={styles.deco} src="img/icon/PLS_DRK.svg" alt="" />
+                                    <PlsIcon className={styles.deco} aria-hidden="true" />
                                 </div>
                             </motion.div>
                             <motion.div
@@ -317,7 +326,7 @@ export default function Contact() {
                                 exit="exit"
                             >
                                 <div className={styles.corner}>
-                                    <img className={styles.deco} src="img/icon/PLS_DRK.svg" alt="" />
+                                    <PlsIcon className={styles.deco} aria-hidden="true" />
                                 </div>
                                 <TypewriterText
                                     lines={CORNER_BL_LINES}
@@ -333,7 +342,7 @@ export default function Contact() {
                                 exit="exit"
                             >
                                 <div className={styles.corner}>
-                                    <img className={styles.deco} src="img/icon/PLS_DRK.svg" alt="" />
+                                    <PlsIcon className={styles.deco} aria-hidden="true" />
                                 </div>
                             </motion.div>
                             <TypewriterText lines={STATUS_GRID_LINES} className={styles.statusGrid} rowClassName={styles.logRow} />
@@ -342,19 +351,19 @@ export default function Contact() {
                 </AnimatePresence>
 
                 <AnimatePresence>
-                    {(phase !== 'message' || glitching) && (
+                    {phase !== 'message' && (
                         <motion.div
-                            className={glitching ? styles.statusFormGlitch : statusFormClass}
+                            className={statusFormClass}
                             variants={statusFormVariants}
                             initial="hidden"
                             animate="visible"
                             exit="exit"
                         >
                             <motion.div className={styles.statusFormContent} variants={statusFormContentVariants}>
-                                {showIntercept && (
+                                {isIntercept && (
                                     <>
-                                        <img className={styles.mailIcon} src="img/icon/MSG_DRK.svg" alt="" />
-                                        <img className={styles.deco} src="img/icon/PLS_DRK.svg" alt="" />
+                                        <MsgIcon className={styles.mailIcon} aria-hidden="true" />
+                                        <PlsIcon className={styles.deco} aria-hidden="true" />
                                         <input
                                             className={styles.mailInput}
                                             placeholder="IDENTIFY"
@@ -363,13 +372,13 @@ export default function Contact() {
                                             onKeyDown={handleEmailKeyDown}
                                             disabled={glitching}
                                         />
-                                        <img className={styles.deco} src="img/icon/PLS_DRK.svg" alt="" />
+                                        <PlsIcon className={styles.deco} aria-hidden="true" />
                                         <RadGridTxt />
                                     </>
                                 )}
                                 {phase === 'complete' && (
                                     <>
-                                        <img className={styles.mailIcon} src="img/icon/CHK_DRK.svg" alt="" />
+                                        <ChkIcon className={styles.mailIcon} aria-hidden="true" />
                                         <span className={styles.completeMessage}>MSG.RELAYED</span>
                                     </>
                                 )}

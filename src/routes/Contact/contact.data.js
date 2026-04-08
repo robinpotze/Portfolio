@@ -54,17 +54,3 @@ export const STATUS_GRID_LINES = [
 ];
 
 export const CORNER_BL_LINES = ['SNR: 32dB | BER: 1e-9 | FRAME_LOCK: TRUE \nSIG_INT: ACTIVE | BUFFER: 0%'];
-
-export const INTERCEPT_ICONS = {
-    msg: 'img/icon/MSG_BLUE.svg',
-    decal: 'img/decal/SN_BLUE.svg',
-    pls: 'img/icon/PLS_BRND_-100.svg',
-    crs: 'img/icon/CRS_BRND_-100.svg',
-};
-
-export const DEFAULT_ICONS = {
-    msg: 'img/icon/MSG_BRND.svg',
-    decal: 'img/decal/SN_BRND.svg',
-    pls: 'img/icon/PLS.svg',
-    crs: 'img/icon/CRS.svg',
-};

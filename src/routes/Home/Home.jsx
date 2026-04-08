@@ -1,3 +1,8 @@
+import MorseDecal from '@/assets/decals/MORSE.svg?react';
+import OfsDecal from '@/assets/decals/OFS.svg?react';
+import PillDecal from '@/assets/decals/PILL.svg?react';
+import SndDecal from '@/assets/decals/SND.svg?react';
+import CrsIcon from '@/assets/icons/CRS.svg?react';
 import HomeCanvas from '@canvas/home/HomeCanvas';
 import RadialGrid from '@components/decoration/RadialText/RadialGrid';
 import RedoAnimText from '@components/decoration/RandomText/RedoAnimText';
@@ -126,7 +131,7 @@ export default function Home() {
                         </p>{' '}
                         <div className={styles.accentsBottom}>
                             <RadialGrid type="CRCL" />
-                            <img className={styles.accentDecal} src="img/decal/OFS.svg" alt="Offset cyberpunk dorito decal" />
+                            <OfsDecal className={styles.accentDecal} aria-hidden="true" />
                         </div>
                         <div className={styles.scrollBottom}>
                             <ScrollDown />
@@ -145,22 +150,18 @@ export default function Home() {
                             </div>
                         </motion.div>
                         <motion.div className={`${styles.sideDivider} r90`} variants={sideItemVariants}>
-                            <img className={styles.sideDecal} src="img/icon/CRS.svg" alt="divider" />
+                            <CrsIcon className={styles.sideDividerIcon} aria-hidden="true" />
                             <p className={`deco-tiny ${styles.sideDecoText}`}>SDD.01</p>
                         </motion.div>
-                        <motion.img className={styles.sideDecal} src="img/decal/MORSE.svg" alt="robin potze in barcode" variants={sideItemVariants} />
-                        <motion.img
-                            className={styles.sideDecal}
-                            src="img/decal/PILL.svg"
-                            alt="pill with four arrows point downwards"
-                            variants={sideItemVariants}
-                        />
-                        <motion.img
-                            className={`${styles.sideDecal} ${styles.decalSound}`}
-                            src="img/decal/SND.svg"
-                            alt="ROBIN in sound waves"
-                            variants={sideItemVariants}
-                        />
+                        <motion.div variants={sideItemVariants}>
+                            <MorseDecal aria-hidden="true" />
+                        </motion.div>
+                        <motion.div variants={sideItemVariants}>
+                            <PillDecal aria-hidden="true" />
+                        </motion.div>
+                        <motion.div className={styles.decalSound} variants={sideItemVariants}>
+                            <SndDecal aria-hidden="true" />
+                        </motion.div>
                     </motion.div>
                 </div>
                 <div className={styles.transitionSection} />
