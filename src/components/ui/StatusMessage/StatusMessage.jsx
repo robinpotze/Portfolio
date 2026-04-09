@@ -17,11 +17,11 @@ const STATUS_CONFIG = {
 const panelVariants = {
     hidden: {
         opacity: 0,
-        clipPath: 'inset(0 0 0 100%)',
+        clipPath: 'inset(-32px -32px -32px 100%)',
     },
     visible: {
         opacity: 1,
-        clipPath: 'inset(0 0 0 0)',
+        clipPath: 'inset(-32px -32px -32px -32px)',
         transition: {
             duration: REVEAL.DURATION,
             ease: EASING.EMPHASIZED,
@@ -32,7 +32,7 @@ const panelVariants = {
     },
     exit: {
         opacity: 0,
-        clipPath: 'inset(0 0 0 100%)',
+        clipPath: 'inset(-32px -32px -32px 100%)',
         transition: {
             duration: REVEAL.EXIT_DURATION,
             ease: EASING.EXIT,
