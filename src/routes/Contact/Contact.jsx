@@ -204,9 +204,9 @@ export default function Contact() {
                                 <animate
                                     ref={filterAnimRef}
                                     attributeName="scale"
-                                    values="0;60;0;45;0;30;0;55;0;20;0"
-                                    keyTimes="0;0.08;0.16;0.28;0.38;0.50;0.60;0.72;0.82;0.92;1"
-                                    dur="0.8s"
+                                    values="0;70;0;55;0;85;0;0;45;40;0;75;0;0"
+                                    keyTimes="0;0.04;0.07;0.10;0.13;0.16;0.22;0.35;0.38;0.55;0.62;0.72;0.78;1"
+                                    dur="1.2s"
                                     begin="indefinite"
                                     fill="freeze"
                                 />
@@ -214,6 +214,15 @@ export default function Contact() {
                         </filter>
                     </defs>
                 </svg>
+
+                {glitching && (
+                    <div className={styles.glitchOverlay} aria-hidden="true">
+                        <div className={styles.glitchLayer1} />
+                        <div className={styles.glitchLayer2} />
+                        <div className={styles.glitchFlash} />
+                        <span className={styles.glitchWarning}>WARNING: SIGNAL INTERCEPT</span>
+                    </div>
+                )}
 
                 <AnimatePresence>
                     {phase !== 'complete' && <motion.h2 className={titleClass}>{title}</motion.h2>}
@@ -303,7 +312,7 @@ export default function Contact() {
                                 <div className={styles.corner}>
                                     <PlsIcon className={styles.deco} aria-hidden="true" />
                                 </div>
-                                <h3>CNTCT-FRM</h3>
+                                <h3>USR.EMAIL</h3>
                             </motion.div>
                             <motion.div
                                 className={styles.cornerTr}

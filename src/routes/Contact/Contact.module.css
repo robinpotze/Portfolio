@@ -52,6 +52,10 @@
     padding: var(--s-m);
     transform-origin: center center;
     will-change: transform, opacity;
+    transition:
+        background-color 0.4s ease,
+        opacity 0.4s ease,
+        margin 0.4s ease;
 }
 
 .messageFormIntercept {
@@ -108,6 +112,9 @@
     background-color: var(--c-lght_100);
     color: var(--c-drk_100);
     border: 1px solid var(--c-lght_100);
+    transition:
+        background-color 0.4s ease,
+        border-color 0.4s ease;
 }
 
 .nameInput {
@@ -141,6 +148,9 @@
     padding: var(--s-s);
     border: 1px solid var(--c-lght_100);
     color: var(--c-lght_100);
+    transition:
+        background-color 0.4s ease,
+        border-color 0.4s ease;
 }
 
 .messageSideBar {
@@ -450,53 +460,286 @@
 }
 
 .messageFormGlitch {
-    composes: messageFormIntercept;
-    animation: formGlitch 0.8s steps(1, end) forwards;
+    composes: messageForm;
+    animation: formGlitch 1.2s steps(1, end) forwards;
     pointer-events: none;
 }
 
-@keyframes formGlitch {
+/* Glitch overlay container */
+
+.glitchOverlay {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* Layer 1 — cyan channel offset right */
+
+.glitchLayer1 {
+    position: absolute;
+    inset: 0;
+    background-color: var(--c-brnd_100);
+    mix-blend-mode: screen;
+    opacity: 0;
+    transform: translate(3px, 0);
+    animation: glitchClip1 1.2s steps(1, end) forwards;
+}
+
+/* Layer 2 — red channel offset left */
+
+.glitchLayer2 {
+    position: absolute;
+    inset: 0;
+    background-color: var(--c-error_100);
+    mix-blend-mode: multiply;
+    opacity: 0;
+    transform: translate(-3px, 0);
+    animation: glitchClip2 1.2s steps(1, end) forwards;
+}
+
+/* Layer 3 — white interference flash */
+
+.glitchFlash {
+    position: absolute;
+    inset: 0;
+    background-color: var(--c-lght_100);
+    opacity: 0;
+    animation: glitchFlash 1.2s steps(1, end) forwards;
+}
+
+/* Warning text overlay */
+
+.glitchWarning {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font: var(--f-title);
+    text-transform: uppercase;
+    color: var(--c-brnd_-100);
+    white-space: nowrap;
+    z-index: 1;
+    animation: glitchWarningFlash 1.6s steps(1, end) forwards;
+}
+
+@keyframes glitchWarningFlash {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) translateX(-8px);
+    }
+    16% {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+    78% {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) translateX(8px);
+    }
+}
+
+/* ---- Clip-path slice animations ---- */
+
+@keyframes glitchClip1 {
+    0% {
+        clip-path: inset(0);
+        opacity: 0;
+    }
+    4% {
+        clip-path: inset(8% 0 85% 0);
+        opacity: 0.6;
+    }
+    7% {
+        clip-path: inset(65% 0 20% 0);
+        opacity: 0;
+    }
+    10% {
+        clip-path: inset(40% 0 45% 0);
+        opacity: 0.5;
+    }
+    13% {
+        clip-path: inset(0);
+        opacity: 0;
+    }
+    16% {
+        clip-path: inset(15% 0 70% 0);
+        opacity: 0.7;
+    }
+    22% {
+        clip-path: inset(0);
+        opacity: 0;
+    }
+    35% {
+        clip-path: inset(0);
+        opacity: 0;
+    }
+    38% {
+        clip-path: inset(30% 0 50% 0);
+        opacity: 0.4;
+    }
+    55% {
+        clip-path: inset(25% 0 55% 0);
+        opacity: 0.35;
+    }
+    62% {
+        clip-path: inset(0);
+        opacity: 0;
+    }
+    72% {
+        clip-path: inset(5% 0 80% 0);
+        opacity: 0.6;
+    }
+    78%,
+    100% {
+        clip-path: inset(0);
+        opacity: 0;
+    }
+}
+
+@keyframes glitchClip2 {
+    0% {
+        clip-path: inset(0);
+        opacity: 0;
+    }
+    4% {
+        clip-path: inset(75% 0 10% 0);
+        opacity: 0.5;
+    }
+    7% {
+        clip-path: inset(0);
+        opacity: 0;
+    }
+    10% {
+        clip-path: inset(10% 0 75% 0);
+        opacity: 0.6;
+    }
+    13% {
+        clip-path: inset(50% 0 30% 0);
+        opacity: 0.4;
+    }
+    16% {
+        clip-path: inset(80% 0 5% 0);
+        opacity: 0.6;
+    }
+    22% {
+        clip-path: inset(0);
+        opacity: 0;
+    }
+    35% {
+        clip-path: inset(0);
+        opacity: 0;
+    }
+    38% {
+        clip-path: inset(60% 0 20% 0);
+        opacity: 0.5;
+    }
+    55% {
+        clip-path: inset(55% 0 25% 0);
+        opacity: 0.3;
+    }
+    62% {
+        clip-path: inset(0);
+        opacity: 0;
+    }
+    72% {
+        clip-path: inset(70% 0 15% 0);
+        opacity: 0.5;
+    }
+    78%,
+    100% {
+        clip-path: inset(0);
+        opacity: 0;
+    }
+}
+
+@keyframes glitchFlash {
     0%,
-    14%,
-    36%,
-    58%,
-    80% {
+    7%,
+    13%,
+    22%,
+    62%,
+    78%,
+    100% {
+        opacity: 0;
+    }
+    4% {
+        opacity: 0.15;
+    }
+    10% {
+        opacity: 0.08;
+    }
+    16% {
+        opacity: 0.2;
+    }
+    72% {
+        opacity: 0.12;
+    }
+}
+
+/* ---- Base form glitch (staggered rhythm) ---- */
+
+@keyframes formGlitch {
+    0% {
         background-color: transparent;
         opacity: 1;
     }
-    6% {
+    4% {
         background-color: var(--c-blue);
         opacity: 0.5;
     }
-    20% {
+    7%,
+    13% {
+        background-color: transparent;
+        opacity: 1;
+    }
+    10% {
         background-color: var(--c-blue);
         opacity: 0.3;
     }
-    28% {
+    16% {
         background-color: var(--c-error_100);
         transform: translate(-480px, 200px);
         opacity: 0.6;
     }
-    44% {
+    22% {
         background-color: transparent;
+        opacity: 1;
+        transform: translate(0, 0);
+    }
+    28% {
+        background-color: transparent;
+        opacity: 0.85;
+    }
+    35% {
+        background-color: transparent;
+        opacity: 1;
+    }
+    38% {
+        background-color: var(--c-blue);
         opacity: 0.4;
     }
-    50% {
+    55% {
         background-color: var(--c-blue);
-        opacity: 0.7;
+        opacity: 0.35;
     }
-    64% {
-        background-color: var(--c-blue);
-        opacity: 0.3;
+    62% {
+        background-color: transparent;
+        opacity: 0.9;
     }
     72% {
-        background-color: var(--c-blue);
-        opacity: 0.8;
-    }
-    86% {
         background-color: var(--c-error_100);
         transform: translate(480px, 200px);
         opacity: 0.5;
+    }
+    78% {
+        background-color: var(--c-blue);
+        opacity: 0.6;
+        transform: translate(0, 0);
     }
     100% {
         background-color: var(--c-blue);
