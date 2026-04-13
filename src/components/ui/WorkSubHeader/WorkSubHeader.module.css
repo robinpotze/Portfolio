@@ -1,0 +1,19 @@
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: var(--s-s) 0;
+}
+
+.label {
+    font: var(--f-func-tiny);
+    color: var(--c-brnd_100);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+}
+
+.title {
+    font: var(--f-hdr_2);
+    letter-spacing: 0.06em;
+    color: var(--c-lght_100);
+}

@@ -4,12 +4,13 @@
 
 .section {
     background-color: var(--c-drk_100);
+    padding-bottom: 8rem;
 }
 
 .header {
     display: flex;
     flex-direction: column;
-    gap: var(--s-xs);
+    gap: var(--s-s);
     padding: 0 var(--s-xl);
     margin: 0 auto;
     max-width: 60%;
@@ -31,7 +32,7 @@
 
 .synopsisSubtitle img,
 .synopsisSubtitle svg {
-    height: 16px;
+    height: var(--s-s);
 }
 
 .full {
@@ -40,7 +41,8 @@
     height: 80vh;
 }
 
-.full img {
+.full img,
+.full video {
     object-fit: cover;
     width: 100%;
     height: 100%;
@@ -73,6 +75,268 @@
 
 .fullThin img {
     object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+
+.divider {
+    width: 100%;
+    max-width: 60%;
+    margin: var(--s-xl) auto 0;
+    border: none;
+    border-top: 1px solid var(--c-lght_40);
+}
+
+/* ── Case intro: video + overlay ── */
+
+.caseIntro {
+    position: relative;
+    width: 100vw;
+    height: 90vh;
+    overflow: hidden;
+}
+
+.caseIntro video {
+    position: absolute;
+    inset: 0;
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    opacity: 0.35;
+}
+
+.caseIntroOverlay {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    padding: var(--s-xl);
+    max-width: 60%;
+    gap: var(--s-s);
+}
+
+.caseIntroOverlay h1 {
+    font: var(--f-title);
+    letter-spacing: 0.04em;
+    color: var(--c-lght_100);
+    line-height: 1.1;
+}
+
+.caseIntroOverlay p {
+    font: var(--f-paragraph);
+    color: var(--c-lght_40);
+    max-width: 70%;
+}
+
+.kicker {
+    font: var(--f-func-tiny);
+    color: var(--c-brnd_100);
+    letter-spacing: 0.2em;
+}
+
+/* ── Statement block: one big idea ── */
+
+.statementBlock {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-s);
+    padding: var(--s-xl);
+    margin: 0 auto;
+    max-width: 60%;
+}
+
+.statementBlock h2 {
+    font: var(--f-hdr_1);
+    letter-spacing: 0.04em;
+    color: var(--c-lght_100);
+    line-height: 1.2;
+}
+
+.statementBlock p {
+    font: var(--f-paragraph);
+    color: var(--c-lght_40);
+}
+
+/* ── Hero statement: dominant text moment ── */
+
+.heroStatement {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--s-s);
+    padding: var(--s-xl);
+    margin: 0 auto;
+    max-width: 60%;
+    min-height: 50vh;
+}
+
+.heroStatement h2 {
+    font: var(--f-title);
+    letter-spacing: 0.04em;
+    color: var(--c-lght_100);
+    line-height: 1.1;
+}
+
+.heroStatement p {
+    font: var(--f-paragraph);
+    color: var(--c-lght_40);
+}
+
+/* ── Feature split: 65/35 visual/text ── */
+
+.featureSplit,
+.featureSplitReverse {
+    margin-top: var(--s-xl);
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    min-height: 60vh;
+}
+
+.featureSplitReverse {
+    flex-direction: row-reverse;
+}
+
+.featureMedia {
+    flex: 13;
+    height: 60vh;
+    overflow: hidden;
+}
+
+.featureMedia img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+
+.featureBody {
+    flex: 7;
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-s);
+    padding: var(--s-xl);
+}
+
+.featureBody h3 {
+    font: var(--f-hdr_3);
+    letter-spacing: 0.06em;
+    color: var(--c-lght_100);
+}
+
+.featureBody p {
+    font: var(--f-paragraph);
+    color: var(--c-lght_40);
+}
+
+/* ── Comparison block: labeled before/after ── */
+
+.comparisonBlock {
+    margin-top: var(--s-xl);
+    width: 100vw;
+    padding: 0 var(--s-xl);
+    box-sizing: border-box;
+}
+
+.comparisonIntro {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-s);
+    max-width: 60%;
+    margin: 0 auto var(--s-l);
+}
+
+.comparisonIntro h2 {
+    font: var(--f-hdr_3);
+    letter-spacing: 0.04em;
+    color: var(--c-lght_100);
+}
+
+.comparisonIntro p {
+    font: var(--f-paragraph);
+    color: var(--c-lght_40);
+}
+
+.comparisonGrid {
+    display: flex;
+    gap: var(--s-s);
+    width: 100%;
+}
+
+.comparisonGrid figure {
+    flex: 1;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-xs);
+}
+
+.comparisonGrid figure img {
+    object-fit: contain;
+    width: 100%;
+    height: 75vh;
+}
+
+.comparisonGrid figcaption {
+    font: var(--f-func-tiny);
+    color: var(--c-brnd_100);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+}
+
+/* ── Evidence row: metrics / role / scope ── */
+
+.evidenceRow {
+    display: flex;
+    gap: var(--s-l);
+    padding: var(--s-xl);
+    margin: 0 auto;
+    max-width: 60%;
+}
+
+.evidenceItem {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-xxs);
+    padding-left: var(--s-s);
+    border-left: 1px solid var(--c-brnd_100);
+}
+
+.evidenceItem strong {
+    font: var(--f-func-tiny);
+    color: var(--c-brnd_100);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+}
+
+.evidenceItem span {
+    font: var(--f-paragraph);
+    color: var(--c-lght_100);
+}
+
+/* ── Label utility (reusable) ── */
+
+.label {
+    font: var(--f-func-tiny);
+    color: var(--c-brnd_100);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+}
+
+/* ── Isolated visual: full width, extra tall, no text ── */
+
+.isolatedVisual {
+    margin-top: var(--s-xl);
+    width: 100vw;
+    height: 90vh;
+    overflow: hidden;
+}
+
+.isolatedVisual img {
+    object-fit: contain;
     width: 100%;
     height: 100%;
 }

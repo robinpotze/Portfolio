@@ -1,14 +1,29 @@
-.chapter {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    padding: 0 4px;
+.wrapper {
+    margin-top: var(--s-xl);
+    width: 100vw;
+}
+
+.bar {
     background-color: var(--c-lght_100);
     color: var(--c-drk_100);
 }
 
-.chapter img,
-.chapter svg {
+.barContent {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    max-width: 60%;
+    margin: 0 auto;
+    padding: 0 calc(var(--s-xl) + 4px);
+}
+
+.barContent img,
+.barContent svg {
     height: 24px;
-    mix-blend-mode: difference;
+}
+
+.description {
+    max-width: 60%;
+    margin: 0 auto;
+    padding: var(--s-s) var(--s-xl);
 }
