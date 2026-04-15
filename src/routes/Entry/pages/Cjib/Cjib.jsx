@@ -9,7 +9,7 @@ import StatementBlock from '@components/ui/StatementBlock/StatementBlock';
 import WorkHeader from '@components/ui/WorkHeader/WorkHeader';
 import styles from '@routes/Entry/Entry.module.css';
 
-import { Data } from './Cjib.data';
+import { Data } from './cjib.data';
 
 const assetPath = '/img/work/cjib/';
 
@@ -58,7 +58,11 @@ export default function Cjib() {
 
             <FullImage src={`${assetPath}GraphQLTransition.gif`} alt="Animated transition showing GraphQL query flow through the system." />
 
-            <FeatureSplit src={`${assetPath}McDonalds_Logo.gif`} alt="Animated logo sequence for internal presentation material." label="MOTION LANGUAGE">
+            <FeatureSplit
+                src={`${assetPath}McDonalds_Logo.gif`}
+                alt="Animated logo sequence for internal presentation material."
+                label="MOTION LANGUAGE"
+            >
                 <h3>Identity sequences for teams that never had one.</h3>
                 <ScrollReveal>
                     Animated transitions and motion graphics that replaced generic slide decks with deliberate visual storytelling. Each team got a
@@ -79,8 +83,8 @@ export default function Cjib() {
             <HeroStatement label="SYSTEM OVERVIEW">
                 <h2>One identity layer across every government source.</h2>
                 <ScrollReveal>
-                    PBS pulls from multiple registries to construct a single profile model. The documentation accounts for every connection state
-                    and failure path — no ambiguity, no guesswork. Developers know what breaks before they write a line of code.
+                    PBS pulls from multiple registries to construct a single profile model. The documentation accounts for every connection state and
+                    failure path — no ambiguity, no guesswork. Developers know what breaks before they write a line of code.
                 </ScrollReveal>
             </HeroStatement>
 
@@ -91,8 +95,7 @@ export default function Cjib() {
             <StatementBlock label="API STATES">
                 <h3>Every state documented. Every failure explained.</h3>
                 <ScrollReveal>
-                    Success paths and error states on dedicated reference pages — cause, resolution, and code samples. No hunting through
-                    changelogs.
+                    Success paths and error states on dedicated reference pages — cause, resolution, and code samples. No hunting through changelogs.
                 </ScrollReveal>
                 <img className={styles.imgFullWidth} src={`${assetPath}INFOGRAPHIC.png`} alt="Normal request reference in PBS documentation." />
                 <img className={styles.imgFullWidth} src={`${assetPath}ERROR INFO.png`} alt="Error handling reference in PBS documentation." />
@@ -102,8 +105,16 @@ export default function Cjib() {
                 label="API DOCUMENTATION"
                 heading="Stripped back until only the useful parts remained."
                 items={[
-                    { caption: 'ORIGINAL DESIGN', src: `${assetPath}PBS-MenuDocs-Design.png`, alt: 'Early iteration of PBS documentation with text-heavy reference pages.' },
-                    { caption: 'TONED DOWN', src: `${assetPath}PBS-MenuDocs-Clean.png`, alt: 'Later iteration of PBS documentation with visual reference pages.' },
+                    {
+                        caption: 'ORIGINAL DESIGN',
+                        src: `${assetPath}PBS-MenuDocs-Design.png`,
+                        alt: 'Early iteration of PBS documentation with text-heavy reference pages.',
+                    },
+                    {
+                        caption: 'TONED DOWN',
+                        src: `${assetPath}PBS-MenuDocs-Clean.png`,
+                        alt: 'Later iteration of PBS documentation with visual reference pages.',
+                    },
                 ]}
             />
 
@@ -118,8 +129,8 @@ export default function Cjib() {
             <StatementBlock label="PROBLEM">
                 <h2>Every case meant rebuilding context from scratch.</h2>
                 <ScrollReveal>
-                    What was seized, where it was stored, what its legal status was — all scattered across disconnected systems. Officers spent
-                    more time navigating tools than doing their jobs.
+                    What was seized, where it was stored, what its legal status was — all scattered across disconnected systems. Officers spent more
+                    time navigating tools than doing their jobs.
                 </ScrollReveal>
             </StatementBlock>
 
@@ -132,8 +143,8 @@ export default function Cjib() {
             <StatementBlock label="SEARCH">
                 <h2>Partial numbers. Uncertain descriptions. Still finds the record.</h2>
                 <ScrollReveal>
-                    Officers work with incomplete information — a fragment of a case number, a vague item description. The search was built for
-                    that ambiguity. Flexible filters, fast results, thousands of records.
+                    Officers work with incomplete information — a fragment of a case number, a vague item description. The search was built for that
+                    ambiguity. Flexible filters, fast results, thousands of records.
                 </ScrollReveal>
             </StatementBlock>
 
@@ -144,7 +155,11 @@ export default function Cjib() {
                 heading="Stripped for scanability."
                 items={[
                     { caption: 'EARLY STRUCTURE', src: `${assetPath}V1.png`, alt: 'Early iteration establishing information architecture.' },
-                    { caption: 'REFINED HIERARCHY', src: `${assetPath}V2.png`, alt: 'Later iteration with refined hierarchy and interaction patterns.' },
+                    {
+                        caption: 'REFINED HIERARCHY',
+                        src: `${assetPath}V2.png`,
+                        alt: 'Later iteration with refined hierarchy and interaction patterns.',
+                    },
                 ]}
             />
 
@@ -157,8 +172,8 @@ export default function Cjib() {
             <HeroStatement label="OUTCOME">
                 <h2>Systems that explain themselves.</h2>
                 <ScrollReveal>
-                    A documentation layer that made PBS integration predictable. An item-management application that replaced fragmented tools with
-                    a single workflow. Motion design that turned invisible infrastructure into something stakeholders could finally point at.
+                    A documentation layer that made PBS integration predictable. An item-management application that replaced fragmented tools with a
+                    single workflow. Motion design that turned invisible infrastructure into something stakeholders could finally point at.
                 </ScrollReveal>
             </HeroStatement>
 

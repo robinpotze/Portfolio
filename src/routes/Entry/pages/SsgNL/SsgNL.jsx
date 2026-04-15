@@ -9,7 +9,7 @@ import HeroStatement from '@components/ui/HeroStatement/HeroStatement';
 import StatementBlock from '@components/ui/StatementBlock/StatementBlock';
 import WorkHeader from '@components/ui/WorkHeader/WorkHeader';
 
-import { Data } from './SsgNL.data';
+import { Data } from './ssgnl.data';
 
 const assetPath = '/img/work/ssgnl/';
 

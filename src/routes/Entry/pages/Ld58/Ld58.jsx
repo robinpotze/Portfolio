@@ -8,7 +8,7 @@ import HeroStatement from '@components/ui/HeroStatement/HeroStatement';
 import StatementBlock from '@components/ui/StatementBlock/StatementBlock';
 import WorkHeader from '@components/ui/WorkHeader/WorkHeader';
 
-import { Data } from './Ld58.data';
+import { Data } from './ld58.data';
 
 const assetPath = '/img/work/ld58/';
 

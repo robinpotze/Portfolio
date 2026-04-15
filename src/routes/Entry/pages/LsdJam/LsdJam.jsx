@@ -9,7 +9,7 @@ import HeroStatement from '@components/ui/HeroStatement/HeroStatement';
 import StatementBlock from '@components/ui/StatementBlock/StatementBlock';
 import WorkHeader from '@components/ui/WorkHeader/WorkHeader';
 
-import { Data } from './LsdJam.data';
+import { Data } from './lsdjam.data';
 
 const assetPath = '/img/work/lsdjam/';
 
