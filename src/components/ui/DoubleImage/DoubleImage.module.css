@@ -1,25 +1,27 @@
 .wrapper {
     width: 100%;
     display: flex;
-    justify-content: space-between;
-    height: 60vh;
+    gap: var(--s-s);
+    padding: 0 var(--s-xl);
+    box-sizing: border-box;
 }
 
 .wrapper img {
-    object-fit: contain;
-    width: calc(50% - var(--s-xs));
-    height: 100%;
+    flex: 1;
+    object-fit: cover;
+    object-position: center;
+    width: 0;
+    height: 75vh;
 }
 
 @media (max-width: 768px) {
     .wrapper {
         flex-direction: column;
-        height: auto;
-        gap: var(--s-s);
+        padding: 0 var(--s-m);
     }
 
     .wrapper img {
         width: 100%;
-        height: 40vh;
+        height: 50vh;
     }
 }
