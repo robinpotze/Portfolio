@@ -1,0 +1,29 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--s-s);
+    padding: 0 var(--s-xl);
+    margin: 0 auto;
+    max-width: 60%;
+    min-height: 50vh;
+}
+
+.wrapper h2 {
+    font: var(--f-hdr_2);
+    letter-spacing: 0.04em;
+    color: var(--c-lght_100);
+    line-height: 1.1;
+}
+
+.wrapper p {
+    font: var(--f-paragraph);
+    color: var(--c-lght_40);
+}
+
+.label {
+    font: var(--f-paragraph);
+    color: var(--c-brnd_100);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+}

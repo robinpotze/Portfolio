@@ -1,0 +1,12 @@
+.wrapper {
+    width: 100vw;
+    display: flex;
+    justify-content: space-between;
+    height: 60vh;
+}
+
+.wrapper img {
+    object-fit: contain;
+    width: calc(50vw - var(--s-s));
+    height: 100%;
+}

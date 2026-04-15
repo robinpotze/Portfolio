@@ -1,6 +1,6 @@
-import DashLine from '@components/decoration/DashLine';
+import DoubleImage from '@components/ui/DoubleImage/DoubleImage';
+import FullImage from '@components/ui/FullImage/FullImage';
 import WorkHeader from '@components/ui/WorkHeader/WorkHeader';
-import styles from '@routes/Entry/Entry.module.css';
 
 const assetPath = '/img/work/ssgnl/';
 
@@ -19,10 +19,8 @@ export const Data = {
 
 export default function SsgNL() {
     return (
-        <div>
-            <div className={styles.fullThin}>
-                <img src={`${assetPath}Banner.png`} alt="An exploded overview of all the projects I made for Sopra Steria Benelux." />
-            </div>
+        <>
+            <FullImage src={`${assetPath}Banner.png`} alt="An exploded overview of all the projects I made for Sopra Steria Benelux." thin />
             <WorkHeader
                 title="Auto|Q"
                 subtitle="BRANDING:::MARKETING"
@@ -34,11 +32,12 @@ export default function SsgNL() {
                 subtitle="EDUCATION:::BOARD_GAME"
                 description="The Sopra Steria Cybersecurity boardgame is, in its very essence, a reskin of the Agile Maturity board game. I got to add some twists to it."
             />
-            <div className={styles.double}>
-                <img src={`${assetPath}CasetteWire.png`} alt="Wireframe render for Sopra Steria project" />
-                <DashLine direction="Vertical" />
-                <img src={`${assetPath}CassetteRoom.png`} alt="Final render for Sopra Steria project" />
-            </div>
-        </div>
+            <DoubleImage
+                images={[
+                    { src: `${assetPath}CasetteWire.png`, alt: 'Wireframe render for Sopra Steria project' },
+                    { src: `${assetPath}CassetteRoom.png`, alt: 'Final render for Sopra Steria project' },
+                ]}
+            />
+        </>
     );
 }

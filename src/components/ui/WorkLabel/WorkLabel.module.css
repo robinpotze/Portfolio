@@ -1,3 +1,12 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-s);
+    padding: 0 var(--s-xl);
+    margin: 0 auto;
+    max-width: 60%;
+}
+
 .label {
     font: var(--f-func-tiny);
     color: var(--c-lght_40);

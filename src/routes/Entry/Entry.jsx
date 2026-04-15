@@ -46,7 +46,9 @@ export default function Entry() {
                     </div>
                     <ScrollReveal>{data.description}</ScrollReveal>
                 </div>
-                <PageComponent />
+                <div className={styles.content}>
+                    <PageComponent />
+                </div>
             </section>
 
             <GradualBlur target="page" position="bottom" height="6rem" strength={2} divCount={5} curve="bezier" exponential={true} opacity={1} />

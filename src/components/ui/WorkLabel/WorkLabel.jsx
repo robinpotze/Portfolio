@@ -1,9 +1,8 @@
-import entryStyles from '@routes/Entry/Entry.module.css';
 import styles from './WorkLabel.module.css';
 
 export default function WorkLabel({ text }) {
     return (
-        <div className={entryStyles.header}>
+        <div className={styles.wrapper}>
             <p className={styles.label}>{text}</p>
         </div>
     );

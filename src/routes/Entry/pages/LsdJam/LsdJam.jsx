@@ -1,6 +1,6 @@
-import DashLine from '@components/decoration/DashLine';
+import DoubleImage from '@components/ui/DoubleImage/DoubleImage';
+import FullImage from '@components/ui/FullImage/FullImage';
 import WorkHeader from '@components/ui/WorkHeader/WorkHeader';
-import styles from '@routes/Entry/Entry.module.css';
 
 const assetPath = '/img/work/lsdjam/';
 
@@ -19,23 +19,20 @@ export const Data = {
 
 export default function LsdJam() {
     return (
-        <div>
-            <div className={styles.full}>
-                <img src={`${assetPath}hibernation.png`} className={styles.imgFullWidth} alt="A retro-futurist room with a VR setup in the middle." />
-            </div>
-            <div className={styles.fullThin}>
-                <img src={`${assetPath}SpaceShip.png`} alt="Low fidelity render of a spaceship bridge." />
-            </div>
+        <>
+            <FullImage src={`${assetPath}hibernation.png`} alt="A retro-futurist room with a VR setup in the middle." contain />
+            <FullImage src={`${assetPath}SpaceShip.png`} alt="Low fidelity render of a spaceship bridge." thin />
             <WorkHeader
                 title="COMMAND_ROOM"
                 subtitle="LVL_001:::HIBERNATION"
                 description="The first actual level of the game has you, the player, wake up from cryosleep in an unknown spaceship. As you navigate the narrow hallways, large storage rooms, and eventually end up on the bridge, you realize you have awakened due to a system error, the sun is burning away the ship's system as you've steered off-course."
             />
-            <div className={styles.double}>
-                <img src={`${assetPath}CasetteWire.png`} alt="The wireframe of the CassetteRoom scene" />
-                <DashLine direction="Vertical" />
-                <img src={`${assetPath}CassetteRoom.png`} alt="A retro-futurist room with a VR setup in the middle." />
-            </div>
-        </div>
+            <DoubleImage
+                images={[
+                    { src: `${assetPath}CasetteWire.png`, alt: 'The wireframe of the CassetteRoom scene' },
+                    { src: `${assetPath}CassetteRoom.png`, alt: 'A retro-futurist room with a VR setup in the middle.' },
+                ]}
+            />
+        </>
     );
 }

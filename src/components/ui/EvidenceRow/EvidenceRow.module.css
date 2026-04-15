@@ -1,28 +1,28 @@
 .wrapper {
     display: flex;
-    flex-direction: column;
-    gap: var(--s-s);
+    gap: var(--s-l);
     padding: 0 var(--s-xl);
     margin: 0 auto;
     max-width: 60%;
 }
 
-.section {
+.item {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    padding: var(--s-s) 0;
+    gap: var(--s-xxs);
+    padding-left: var(--s-s);
+    border-left: 1px solid var(--c-brnd_100);
 }
 
-.label {
+.item strong {
     font: var(--f-func-tiny);
     color: var(--c-brnd_100);
     letter-spacing: 0.2em;
     text-transform: uppercase;
 }
 
-.title {
-    font: var(--f-hdr_2);
-    letter-spacing: 0.06em;
+.item span {
+    font: var(--f-paragraph);
     color: var(--c-lght_100);
 }
