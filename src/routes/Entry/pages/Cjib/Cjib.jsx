@@ -9,6 +9,8 @@ import StatementBlock from '@components/ui/StatementBlock/StatementBlock';
 import WorkHeader from '@components/ui/WorkHeader/WorkHeader';
 import styles from '@routes/Entry/Entry.module.css';
 
+import { Data } from './Cjib.data';
+
 const assetPath = '/img/work/cjib/';
 
 export default function Cjib() {
@@ -18,7 +20,7 @@ export default function Cjib() {
 
             <CaseIntro
                 src={`${assetPath}Presentation.mp4`}
-                kicker="CJIB / 2024"
+                kicker={`CJIB / ${Data.year}`}
                 heading="Three teams. Twelve months. One designer."
                 subtitle="Embedded at CJIB to make government infrastructure legible."
             />

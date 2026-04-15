@@ -19,7 +19,7 @@
     height: 100dvh;
     z-index: 0;
     pointer-events: all;
-    touch-action: none;
+    touch-action: pan-y;
     overflow-y: auto;
     scrollbar-width: none;
 }
