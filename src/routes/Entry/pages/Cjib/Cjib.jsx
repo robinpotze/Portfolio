@@ -150,8 +150,6 @@ export default function Cjib() {
                 <h3>Every seized item, fully contextualized.</h3>
             </FeatureSplit>
 
-            <div className={styles.divider} />
-
             {/* ── CLOSING ── */}
 
             <HeroStatement label="OUTCOME">

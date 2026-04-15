@@ -41,7 +41,7 @@
 }
 
 .kicker {
-    font: var(--f-func-tiny);
+    font: var(--f-func);
     color: var(--c-brnd_100);
     letter-spacing: 0.2em;
 }
