@@ -343,6 +343,9 @@
 
     .panelItem::after {
         font-size: 0.85rem;
+        top: 0;
+        left: 100%;
+        margin-left: 0.25rem;
     }
 
     .panelList {
