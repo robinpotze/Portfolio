@@ -4,7 +4,7 @@
 
 .page {
     height: 100vh;
-    width: 100vw;
+    width: 100%;
     display: grid;
     grid-template-columns: repeat(6, minmax(0, 1fr));
     grid-template-rows: repeat(5, 1fr);
@@ -744,5 +744,108 @@
     100% {
         background-color: var(--c-blue);
         opacity: 0.4;
+    }
+}
+
+/* ----------------------------------------------------------------
+   Responsive
+   ---------------------------------------------------------------- */
+
+@media (max-width: 768px) {
+    .page {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        height: 100dvh;
+        padding: 5rem var(--s-m) var(--s-m);
+        gap: var(--s-m);
+        width: 100%;
+    }
+
+    .messageTitle,
+    .messageTitleIntercept {
+        text-align: center;
+        flex-shrink: 0;
+    }
+
+    .corner,
+    .cornerTl,
+    .cornerTr,
+    .cornerBl,
+    .cornerBr {
+        display: none;
+    }
+
+    .messageForm {
+        flex: 1;
+        margin-right: 0;
+        margin-bottom: 0;
+    }
+
+    .messageFormIntercept {
+        display: none;
+    }
+
+    .statusForm,
+    .statusFormComplete {
+        flex: 1;
+        padding: var(--s-m);
+    }
+
+    .statusForm::after,
+    .statusFormComplete::after {
+        display: none;
+    }
+
+    .statusFormContent {
+        flex-direction: column;
+        gap: var(--s-m);
+    }
+
+    .mailIcon {
+        width: 48px;
+        height: 48px;
+    }
+
+    .mailInput {
+        font: var(--f-hdr_3);
+        width: 100%;
+    }
+
+    .nameInput,
+    .messageInput {
+        min-height: 44px;
+    }
+
+    .sendButton {
+        min-height: 44px;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .errorSection {
+        flex-shrink: 0;
+        max-height: 30vh;
+        overflow-y: auto;
+    }
+
+    .errorlog {
+        display: none;
+    }
+
+    .fieldCorner,
+    .fieldMarker {
+        display: none;
+    }
+
+    .statusForm .deco,
+    .statusFormComplete .deco {
+        display: none;
+    }
+}
+
+@media (max-width: 375px) {
+    .page {
+        padding: var(--s-m) var(--s-s);
     }
 }

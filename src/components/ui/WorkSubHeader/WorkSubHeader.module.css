@@ -4,7 +4,7 @@
     gap: var(--s-s);
     padding: 0 var(--s-xl);
     margin: 0 auto;
-    max-width: 60%;
+    max-width: var(--content-max-width);
 }
 
 .section {
@@ -25,4 +25,10 @@
     font: var(--f-hdr_2);
     letter-spacing: 0.06em;
     color: var(--c-lght_100);
+}
+
+@media (max-width: 768px) {
+    .wrapper {
+        padding: 0 var(--s-m);
+    }
 }

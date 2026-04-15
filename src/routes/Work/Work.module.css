@@ -4,8 +4,9 @@
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;
+    width: 100%;
     height: 100vh;
+    height: 100dvh;
     overflow: hidden;
 }
 
@@ -13,8 +14,30 @@
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;
+    width: 100%;
     height: 100vh;
+    height: 100dvh;
     z-index: 0;
     pointer-events: all;
+    touch-action: none;
+}
+
+.touchHint {
+    position: fixed;
+    bottom: var(--s-l);
+    left: 50%;
+    transform: translateX(-50%);
+    font: var(--f-func-small);
+    color: var(--c-lght_40);
+    text-transform: uppercase;
+    pointer-events: none;
+    z-index: 1;
+    animation: fadeHint 3s ease-out forwards;
+}
+
+@keyframes fadeHint {
+    0% { opacity: 0; }
+    20% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { opacity: 0; }
 }

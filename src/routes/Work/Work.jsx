@@ -1,15 +1,16 @@
-import { useWorkItems } from '@/app/App';
+import { useWorkItems } from '@app/WorkContext';
 import WorkCanvas from '@canvas/work/WorkCanvas';
 import ErrorBoundary from '@components/ErrorBoundary';
 import { SCROLL_THRESHOLDS } from '@config/animation.config';
 import { usePageTransition } from '@hooks/usePageTransition';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import styles from './Work.module.css';
 
 export default function Work() {
     const { navigateWithTransition } = usePageTransition();
     const items = useWorkItems();
     const hasNavigated = useRef(false);
+    const [isTouchDevice] = useState(() => 'ontouchstart' in window);
 
     const onCardNavigate = useCallback(
         (pageKey) => {
@@ -38,7 +39,7 @@ export default function Work() {
     }, []);
 
     useEffect(() => {
-        const onWheel = (e) => {
+        const handleScrollDelta = (deltaY) => {
             const now = Date.now();
             const timeSinceLastScroll = now - lastScrollTime.current;
             lastScrollTime.current = now;
@@ -49,8 +50,8 @@ export default function Work() {
             }
 
             // Only accumulate upward scroll when at the very top
-            if (isAtTop.current && e.deltaY < 0) {
-                scrollAccumulator.current += Math.abs(e.deltaY);
+            if (isAtTop.current && deltaY < 0) {
+                scrollAccumulator.current += Math.abs(deltaY);
 
                 // Trigger exit after persistent upward scrolling
                 if (scrollAccumulator.current > SCROLL_THRESHOLDS.WORK_MAX_SCROLL && !hasNavigated.current) {
@@ -63,8 +64,41 @@ export default function Work() {
             }
         };
 
+        const onWheel = (e) => {
+            handleScrollDelta(e.deltaY);
+        };
+
+        let touchStartY = null;
+
+        const onTouchStart = (e) => {
+            touchStartY = e.touches[0].clientY;
+        };
+
+        const onTouchMove = (e) => {
+            if (touchStartY === null) {
+                return;
+            }
+            const currentY = e.touches[0].clientY;
+            // Swipe down = pulling content down = scroll up (negative deltaY)
+            const deltaY = touchStartY - currentY;
+            touchStartY = currentY;
+            handleScrollDelta(-deltaY);
+        };
+
+        const onTouchEnd = () => {
+            touchStartY = null;
+        };
+
         window.addEventListener('wheel', onWheel, { passive: true });
-        return () => window.removeEventListener('wheel', onWheel);
+        window.addEventListener('touchstart', onTouchStart, { passive: true });
+        window.addEventListener('touchmove', onTouchMove, { passive: true });
+        window.addEventListener('touchend', onTouchEnd, { passive: true });
+        return () => {
+            window.removeEventListener('wheel', onWheel);
+            window.removeEventListener('touchstart', onTouchStart);
+            window.removeEventListener('touchmove', onTouchMove);
+            window.removeEventListener('touchend', onTouchEnd);
+        };
     }, [navigateWithTransition]);
 
     return (
@@ -73,6 +107,7 @@ export default function Work() {
                 <ErrorBoundary>
                     <WorkCanvas items={items} onCardNavigate={onCardNavigate} onScrollChange={onCanvasScrollChange} />
                 </ErrorBoundary>
+                {isTouchDevice && <p className={styles.touchHint}>Swipe to browse</p>}
             </div>
         </ErrorBoundary>
     );

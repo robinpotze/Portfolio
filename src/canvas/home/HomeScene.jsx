@@ -69,8 +69,8 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
 
     // Memoize animation configs to prevent recreation
     const logoAnimConfig = useMemo(() => {
-        const isMobile = window.innerWidth <= 768;
-        const scaleFactor = isMobile ? 0.5 : 1;
+        const width = window.innerWidth;
+        const scaleFactor = width <= 375 ? 0.35 : width <= 768 ? 0.5 : 1;
 
         return {
             duration: ENTRY.DURATION,

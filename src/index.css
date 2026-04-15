@@ -16,15 +16,15 @@
     --c-blue: #3d06eb;
     --c_0: rgba(0, 0, 0, 0);
 
-    --f-title: 4em 'Kode Mono', monospace;
-    --f-hdr_1: 3rem 'Orbitron', sans-serif;
-    --f-hdr_2: 2.25rem 'Orbitron', sans-serif;
-    --f-hdr_3: 1.5rem 'Orbitron', sans-serif;
+    --f-title: clamp(2em, 5vw, 4em) 'Kode Mono', monospace;
+    --f-hdr_1: clamp(1.75rem, 4vw, 3rem) 'Orbitron', sans-serif;
+    --f-hdr_2: clamp(1.375rem, 3vw, 2.25rem) 'Orbitron', sans-serif;
+    --f-hdr_3: clamp(1.125rem, 2vw, 1.5rem) 'Orbitron', sans-serif;
     --f-paragraph: 1rem 'Alata', sans-serif;
     --f-func: 1rem 'Kode Mono', monospace;
     --f-func-small: 0.75rem 'Kode Mono', monospace;
     --f-func-tiny: 0.5rem 'Kode Mono', monospace;
-    --f-deco: 2rem 'Kode Mono', monospace;
+    --f-deco: clamp(1.25rem, 2.5vw, 2rem) 'Kode Mono', monospace;
     --f-deco-small: 1rem 'Kode Mono', monospace;
     --f-deco-tiny: 0.75rem 'Kode Mono', monospace;
     --f-deco-micro: 0.5rem 'Kode Mono', monospace;
@@ -35,6 +35,8 @@
     --s-m: 32px;
     --s-l: 48px;
     --s-xl: 64px;
+
+    --content-max-width: 60%;
 }
 
 html {
@@ -123,4 +125,30 @@ h3 {
 
 .tr90 {
     writing-mode: sideways-rl;
+}
+
+@media (max-width: 1024px) {
+    :root {
+        --s-l: 32px;
+        --s-xl: 48px;
+        --content-max-width: 75%;
+    }
+}
+
+@media (max-width: 768px) {
+    :root {
+        --s-m: 24px;
+        --s-l: 24px;
+        --s-xl: 32px;
+        --content-max-width: 90%;
+    }
+}
+
+@media (max-width: 375px) {
+    :root {
+        --s-m: 16px;
+        --s-l: 16px;
+        --s-xl: 24px;
+        --content-max-width: 95%;
+    }
 }

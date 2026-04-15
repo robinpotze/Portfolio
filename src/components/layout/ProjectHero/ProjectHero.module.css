@@ -113,3 +113,13 @@
     background-color: var(--c-brnd_100);
     padding: var(--s-xs) 0;
 }
+
+@media (max-width: 768px) {
+    .side {
+        display: none;
+    }
+
+    .titleWrapper {
+        margin: 0 var(--s-m) var(--s-m) 0;
+    }
+}

@@ -1,5 +1,5 @@
 .wrapper {
-    width: 100vw;
+    width: 100%;
 }
 
 .bar {
@@ -11,7 +11,7 @@
     display: flex;
     align-items: center;
     gap: 4px;
-    max-width: 60%;
+    max-width: var(--content-max-width);
     margin: 0 auto;
     padding: 0 calc(var(--s-xl) + 4px);
 }
@@ -22,7 +22,17 @@
 }
 
 .description {
-    max-width: 60%;
+    max-width: var(--content-max-width);
     margin: 0 auto;
     padding: var(--s-s) var(--s-xl);
+}
+
+@media (max-width: 768px) {
+    .barContent {
+        padding: 0 var(--s-m);
+    }
+
+    .description {
+        padding: var(--s-s) var(--s-m);
+    }
 }

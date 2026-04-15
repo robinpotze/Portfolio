@@ -32,7 +32,7 @@ export default function WorkCanvas({ items, onCardNavigate, onScrollChange }) {
         rawH,
     });
 
-    // Capture wheel velocity — damping is handled in WorkScene's useFrame
+    // Capture wheel and touch velocity — damping is handled in WorkScene's useFrame
     useEffect(() => {
         const container = containerRef.current;
         if (!container) {
@@ -44,8 +44,36 @@ export default function WorkCanvas({ items, onCardNavigate, onScrollChange }) {
             scrollVelocityRef.current += e.deltaY * CAROUSEL_CONFIG.SCROLL_SENSITIVITY;
         };
 
+        let touchStartY = null;
+
+        const onTouchStart = (e) => {
+            touchStartY = e.touches[0].clientY;
+        };
+
+        const onTouchMove = (e) => {
+            if (touchStartY === null) {
+                return;
+            }
+            e.preventDefault();
+            const deltaY = touchStartY - e.touches[0].clientY;
+            touchStartY = e.touches[0].clientY;
+            scrollVelocityRef.current += deltaY * CAROUSEL_CONFIG.SCROLL_SENSITIVITY * 2;
+        };
+
+        const onTouchEnd = () => {
+            touchStartY = null;
+        };
+
         container.addEventListener('wheel', onWheel, { passive: false });
-        return () => container.removeEventListener('wheel', onWheel);
+        container.addEventListener('touchstart', onTouchStart, { passive: true });
+        container.addEventListener('touchmove', onTouchMove, { passive: false });
+        container.addEventListener('touchend', onTouchEnd, { passive: true });
+        return () => {
+            container.removeEventListener('wheel', onWheel);
+            container.removeEventListener('touchstart', onTouchStart);
+            container.removeEventListener('touchmove', onTouchMove);
+            container.removeEventListener('touchend', onTouchEnd);
+        };
     }, []);
 
     return (
@@ -58,7 +86,11 @@ export default function WorkCanvas({ items, onCardNavigate, onScrollChange }) {
                     cameraRef.current = camera;
                 }}
             >
-                <PerspectiveCamera makeDefault position={CAROUSEL_CONFIG.CAMERA.POSITION} fov={CAROUSEL_CONFIG.CAMERA.FOV} />
+                <PerspectiveCamera
+                    makeDefault
+                    position={CAROUSEL_CONFIG.CAMERA.POSITION}
+                    fov={window.innerWidth <= 768 ? CAROUSEL_CONFIG.CAMERA.FOV + 15 : CAROUSEL_CONFIG.CAMERA.FOV}
+                />
                 <WorkScene
                     items={items}
                     scrollVelocityRef={scrollVelocityRef}

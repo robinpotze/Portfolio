@@ -11,19 +11,6 @@ import styles from '@routes/Entry/Entry.module.css';
 
 const assetPath = '/img/work/cjib/';
 
-export const Data = {
-    id: 3,
-    title: 'CJIB',
-    synopsis: 'Centraal Justitieel Incassobureau.',
-    description:
-        'At CJIB, I worked as the embedded designer across development teams, shaping technical communication, product identity, and UX for internal systems — including an application for managing seized goods.',
-    client: 'CJIB',
-    year: 2025,
-    software: ['Illustrator', 'AfterEffects', 'Figma', 'Angular', 'Java'],
-    skills: ['UX Design', 'System Visualization', 'Technical Communication', 'Interaction Design'],
-    banner: `${assetPath}GraphQL Glitch.gif`,
-};
-
 export default function Cjib() {
     return (
         <>
@@ -67,7 +54,7 @@ export default function Cjib() {
                 <h2>REST endpoints could not match the UI's data needs. GraphQL could.</h2>
             </StatementBlock>
 
-            <FullImage src={`${assetPath}GraphQL Transition_1.gif`} alt="Animated transition showing GraphQL query flow through the system." />
+            <FullImage src={`${assetPath}GraphQLTransition.gif`} alt="Animated transition showing GraphQL query flow through the system." />
 
             <FeatureSplit src={`${assetPath}McDonalds_Logo.gif`} alt="Animated logo sequence for internal presentation material." label="MOTION LANGUAGE">
                 <h3>Making internal material feel deliberate.</h3>

@@ -9,7 +9,7 @@
         '.       .         details'
         'selector selector details';
     height: 100vh;
-    width: 100vw;
+    width: 100%;
     padding: 3rem;
     color: var(--c-lght_100);
     box-sizing: border-box;
@@ -215,11 +215,11 @@
 @media (max-width: 768px) {
     .page {
         grid-template-columns: 1fr;
-        grid-template-rows: auto 1fr;
+        grid-template-rows: 1fr auto;
         grid-template-areas:
-            'selector'
-            'details';
-        padding: calc(var(--s-xl) / 2);
+            'details'
+            'selector';
+        padding: 5rem var(--s-m) var(--s-m);
         gap: 1rem;
     }
 
@@ -260,5 +260,25 @@
     .itemIcon svg {
         width: 16px;
         height: 16px;
+    }
+}
+
+@media (max-width: 375px) {
+    .page {
+        padding: var(--s-s);
+    }
+
+    .name {
+        font-size: clamp(1.5rem, 6vw, 2.5rem);
+    }
+
+    .selectorButton {
+        padding: 0.4rem 0.75rem;
+        font-size: 0.85rem;
+        min-height: 44px;
+    }
+
+    .details {
+        padding: 1rem;
     }
 }

@@ -65,3 +65,40 @@ All design tokens are defined in `src/index.css` on `:root`. Always use these va
 - Use `text-transform: uppercase` for headings (applied globally to `h1`, `h2`, `h3`)
 - Prefer `transform` and `opacity` for animated properties (GPU-accelerated)
 - Add `will-change` only for properties that will actually animate
+
+## Responsive Design
+
+### Breakpoints
+
+Use desktop-first `max-width` media queries with these standardized breakpoints:
+
+| Breakpoint | Target           |
+|------------|------------------|
+| `1024px`   | Tablet           |
+| `768px`    | Large mobile     |
+| `375px`    | Small mobile     |
+
+```css
+@media (max-width: 1024px) { /* tablet */ }
+@media (max-width: 768px)  { /* mobile */ }
+@media (max-width: 375px)  { /* small mobile */ }
+```
+
+### Content Width
+
+Use `var(--content-max-width)` instead of hardcoding `max-width: 60%`. This variable scales automatically across breakpoints: `60%` → `75%` → `90%` → `95%`.
+
+```css
+.wrapper {
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+}
+```
+
+### Guidelines
+
+- Use `clamp()` for font sizes that need fluid scaling — heading font variables already use `clamp()`
+- Prefer `width: 100%` over `width: 100vw` to avoid scrollbar-induced overflow
+- Ensure interactive elements have a minimum tap target of `44px` on mobile
+- Stack flex/grid layouts vertically at `≤768px` using `flex-direction: column` or grid template changes
+- Use `100dvh` with `100vh` fallback for full-height sections to handle mobile browser chrome

@@ -13,7 +13,7 @@
     gap: var(--s-s);
     padding: 0 var(--s-xl);
     margin: 0 auto;
-    max-width: 60%;
+    max-width: var(--content-max-width);
 }
 
 .synopsis {
@@ -46,7 +46,7 @@
 }
 
 .divider {
-    width: 100vw;
+    width: 100%;
     height: var(--s-l);
     background: linear-gradient(to top, var(--c-brnd_20), transparent);
 }
@@ -59,9 +59,30 @@
 /* ── Isolated visual: full width, extra tall, no text ── */
 
 .isolatedVisual {
-    width: 100vw;
+    width: 100%;
     height: 90vh;
     overflow: hidden;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .header {
+        padding: 0 var(--s-m);
+    }
+
+    .isolatedVisual {
+        height: 60vh;
+    }
+
+    .divider {
+        width: 100%;
+    }
+}
+
+@media (max-width: 375px) {
+    .header {
+        padding: 0 var(--s-s);
+    }
 }
 
 .isolatedVisual img {

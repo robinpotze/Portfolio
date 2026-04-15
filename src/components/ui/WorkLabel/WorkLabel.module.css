@@ -4,7 +4,7 @@
     gap: var(--s-s);
     padding: 0 var(--s-xl);
     margin: 0 auto;
-    max-width: 60%;
+    max-width: var(--content-max-width);
 }
 
 .label {

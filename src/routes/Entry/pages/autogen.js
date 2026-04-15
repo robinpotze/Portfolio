@@ -2,19 +2,23 @@ import { normalizeKey } from '@utils/stringUtils';
 
 const modules = import.meta.glob('./*/*.{jsx,js}', { eager: true });
 
-const pages = Object.entries(modules).reduce((acc, [path, mod]) => {
-    const Component = mod && mod.default ? mod.default : null;
-    const data = (mod && (mod.Data || mod.data)) || {};
+// Group modules by directory so data files and component files are merged
+const dirs = {};
+for (const [path, mod] of Object.entries(modules)) {
+    const dir = path.split('/')[1];
+    if (!dirs[dir]) dirs[dir] = {};
+    Object.assign(dirs[dir], mod);
+}
+
+const pages = Object.entries(dirs).reduce((acc, [, merged]) => {
+    const Component = merged.default || null;
+    const data = merged.Data || merged.data || {};
 
     if (!Component) {
         return acc;
     }
 
-    const filename = String(path)
-        .split('/')
-        .pop()
-        .replace(/\.[^/.]+$/, '');
-    const sourceName = data && data.title ? data.title : Component.name || filename;
+    const sourceName = data.title || Component.name;
     const key = normalizeKey(sourceName);
 
     acc[key] = { Component, data };

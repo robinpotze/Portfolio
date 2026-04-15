@@ -3,7 +3,7 @@
     gap: var(--s-l);
     padding: 0 var(--s-xl);
     margin: 0 auto;
-    max-width: 60%;
+    max-width: var(--content-max-width);
 }
 
 .item {
@@ -25,4 +25,12 @@
 .item span {
     font: var(--f-paragraph);
     color: var(--c-lght_100);
+}
+
+@media (max-width: 768px) {
+    .wrapper {
+        flex-direction: column;
+        gap: var(--s-m);
+        padding: 0 var(--s-m);
+    }
 }
