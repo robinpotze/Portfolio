@@ -113,7 +113,7 @@ float fbm2_low(vec2 p){
 }
 float fbm2_high(vec2 p){
     float v=0.,amp=.6;mat2 m=mat2(.86,.5,-.5,.86);
-    for(int i=0;i<5;++i){v+=amp*vnoise(p);p=m*p*2.03+17.1;amp*=.52;}
+    for(int i=0;i<3;++i){v+=amp*vnoise(p);p=m*p*2.03+17.1;amp*=.52;}
     return v;
 }
 float fbm2(vec2 p){

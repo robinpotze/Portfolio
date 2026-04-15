@@ -20,6 +20,16 @@
     z-index: 0;
     pointer-events: all;
     touch-action: none;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+
+.canvasContainer::-webkit-scrollbar {
+    display: none;
+}
+
+.scrollContent {
+    pointer-events: none;
 }
 
 .touchHint {

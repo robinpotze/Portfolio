@@ -4,9 +4,8 @@ import { calculateCardCenteredness } from '@utils/carousel';
 import { useRef, useState } from 'react';
 import WorkCard from './WorkCard';
 
-export default function WorkScene({ items = [], scrollVelocityRef, onCardNavigate, onScrollChange, onCenterednessChange, rigRef: externalRigRef }) {
+export default function WorkScene({ items = [], scrollProgressRef, onCardNavigate, onScrollChange, onCenterednessChange, rigRef: externalRigRef }) {
     const rigRef = useRef();
-    const scrollOffsetRef = useRef(0);
     const centerednessRef = useRef([]);
     const bestIndexRef = useRef(0);
     const [visibleCenter, setVisibleCenter] = useState(0);
@@ -25,13 +24,8 @@ export default function WorkScene({ items = [], scrollVelocityRef, onCardNavigat
             return;
         }
 
-        // Apply scroll velocity with damping (owns the scroll state)
-        if (Math.abs(scrollVelocityRef.current) > CAROUSEL_CONFIG.SCROLL_DEADZONE) {
-            scrollOffsetRef.current = Math.max(0, Math.min(1, scrollOffsetRef.current + scrollVelocityRef.current));
-            scrollVelocityRef.current *= 1 - CAROUSEL_CONFIG.SCROLL_DAMPING;
-        }
-
-        const offset = scrollOffsetRef.current;
+        // Read smooth scroll progress directly from Lenis (already interpolated)
+        const offset = scrollProgressRef.current;
 
         // Lerp rig rotation toward target
         const targetRotation = -offset * (items.length - 1) * CAROUSEL_CONFIG.ANGLE_STEP;

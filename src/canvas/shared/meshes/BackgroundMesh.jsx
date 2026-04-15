@@ -1,8 +1,8 @@
 import { useGLTF, useVideoTexture } from '@react-three/drei';
-import { Suspense, memo } from 'react';
+import { Suspense, memo, useEffect } from 'react';
 import * as THREE from 'three';
 
-function BackgroundMeshInner({ ...props }) {
+function BackgroundMeshInner({ paused = false, ...props }) {
     const video = useVideoTexture('/assets/video/blackwall.mp4', {
         unsuspend: 'canplaythrough',
         start: true,
@@ -20,6 +20,16 @@ function BackgroundMeshInner({ ...props }) {
         video.magFilter = THREE.LinearFilter;
         video.generateMipmaps = false;
     }
+
+    useEffect(() => {
+        const el = video?.image;
+        if (!el) return;
+        if (paused) {
+            el.pause();
+        } else {
+            el.play().catch(() => { });
+        }
+    }, [paused, video]);
 
     return (
         <mesh geometry={nodes.Wall.geometry} {...props}>

@@ -6,14 +6,16 @@ import { PerspectiveCamera } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import styles from '@routes/Work/Work.module.css';
 import { useMotionValue, useSpring } from 'framer-motion';
+import Lenis from 'lenis';
 import { useEffect, useRef } from 'react';
 import WorkScene from './WorkScene';
 
 export default function WorkCanvas({ items, onCardNavigate, onScrollChange }) {
-    const scrollVelocityRef = useRef(0);
+    const scrollProgressRef = useRef(0);
     const containerRef = useRef(null);
     const cameraRef = useRef(null);
     const rigRef = useRef(null);
+    const lenisRef = useRef(null);
 
     // Border spring animation values
     const rawX = useMotionValue(0);
@@ -32,52 +34,66 @@ export default function WorkCanvas({ items, onCardNavigate, onScrollChange }) {
         rawH,
     });
 
-    // Capture wheel and touch velocity — damping is handled in WorkScene's useFrame
+    // Lenis smooth scrolling — replaces manual velocity/damping system
     useEffect(() => {
         const container = containerRef.current;
         if (!container) {
             return;
         }
 
-        const onWheel = (e) => {
-            e.preventDefault();
-            scrollVelocityRef.current += e.deltaY * CAROUSEL_CONFIG.SCROLL_SENSITIVITY;
-        };
+        const lenis = new Lenis({
+            wrapper: container,
+            content: container.firstElementChild,
+            lerp: CAROUSEL_CONFIG.LENIS.LERP,
+            smoothWheel: true,
+            wheelMultiplier: CAROUSEL_CONFIG.LENIS.WHEEL_MULTIPLIER,
+            touchMultiplier: CAROUSEL_CONFIG.LENIS.TOUCH_MULTIPLIER,
+        });
 
-        let touchStartY = null;
+        lenisRef.current = lenis;
 
-        const onTouchStart = (e) => {
-            touchStartY = e.touches[0].clientY;
-        };
+        lenis.on('scroll', ({ progress }) => {
+            scrollProgressRef.current = progress;
+        });
 
-        const onTouchMove = (e) => {
-            if (touchStartY === null) {
+        let mounted = true;
+        let idleFrames = 0;
+
+        function raf(time) {
+            if (!mounted) {
                 return;
             }
-            e.preventDefault();
-            const deltaY = touchStartY - e.touches[0].clientY;
-            touchStartY = e.touches[0].clientY;
-            scrollVelocityRef.current += deltaY * CAROUSEL_CONFIG.SCROLL_SENSITIVITY * 2;
-        };
+            lenis.raf(time);
 
-        const onTouchEnd = () => {
-            touchStartY = null;
-        };
+            // Snap to nearest item after scroll settles
+            if (!lenis.isScrolling && items.length > 1) {
+                idleFrames++;
+                if (idleFrames === CAROUSEL_CONFIG.SNAP_IDLE_FRAMES) {
+                    const itemHeight = lenis.limit / (items.length - 1);
+                    const nearest = Math.round(lenis.scroll / itemHeight) * itemHeight;
+                    if (Math.abs(lenis.scroll - nearest) > 1) {
+                        lenis.scrollTo(nearest, { duration: CAROUSEL_CONFIG.SNAP_DURATION });
+                    }
+                }
+            } else {
+                idleFrames = 0;
+            }
 
-        container.addEventListener('wheel', onWheel, { passive: false });
-        container.addEventListener('touchstart', onTouchStart, { passive: true });
-        container.addEventListener('touchmove', onTouchMove, { passive: false });
-        container.addEventListener('touchend', onTouchEnd, { passive: true });
+            requestAnimationFrame(raf);
+        }
+
+        requestAnimationFrame(raf);
+
         return () => {
-            container.removeEventListener('wheel', onWheel);
-            container.removeEventListener('touchstart', onTouchStart);
-            container.removeEventListener('touchmove', onTouchMove);
-            container.removeEventListener('touchend', onTouchEnd);
+            mounted = false;
+            lenis.destroy();
+            lenisRef.current = null;
         };
-    }, []);
+    }, [items.length]);
 
     return (
         <div ref={containerRef} className={styles.canvasContainer}>
+            <div className={styles.scrollContent} style={{ height: `${items.length * 100}vh` }} />
             <Canvas
                 dpr={[1, 1.5]}
                 gl={{ antialias: false, powerPreference: 'high-performance' }}
@@ -93,7 +109,7 @@ export default function WorkCanvas({ items, onCardNavigate, onScrollChange }) {
                 />
                 <WorkScene
                     items={items}
-                    scrollVelocityRef={scrollVelocityRef}
+                    scrollProgressRef={scrollProgressRef}
                     onCardNavigate={onCardNavigate}
                     onScrollChange={onScrollChange}
                     onCenterednessChange={onCenterednessChange}

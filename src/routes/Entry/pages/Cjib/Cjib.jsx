@@ -19,17 +19,17 @@ export default function Cjib() {
             <CaseIntro
                 src={`${assetPath}Presentation.mp4`}
                 kicker="CJIB / 2024"
-                heading="Designing clarity across fragmented systems."
-                subtitle="Embedded designer across development teams."
+                heading="Three teams. Twelve months. One designer."
+                subtitle="Embedded at CJIB to make government infrastructure legible."
             />
 
             {/* ── ROLE ── */}
 
             <StatementBlock label="ROLE">
-                <h2>Sole designer across three product teams.</h2>
+                <h2>Nobody had visualized these systems before. That was the job.</h2>
                 <ScrollReveal>
-                    I translated complex operational systems into usable interfaces, technical narratives, and visual material for stakeholders who
-                    had never seen their own infrastructure explained clearly.
+                    Three product teams running parallel workstreams — motion design, developer documentation, and seizure-management UX. No
+                    templates. No precedent. Every deliverable built from zero.
                 </ScrollReveal>
             </StatementBlock>
 
@@ -46,21 +46,21 @@ export default function Cjib() {
 
             <WorkHeader
                 title="COMMUNICATING SYSTEMS"
-                subtitle="MOTION:::TECHNICAL_NARRATIVE"
-                description="Internal presentations at CJIB relied on stock templates and wall-of-text slides. I produced animated transitions, data visualizations, and identity sequences that made technical architecture legible to non-technical stakeholders."
+                subtitle="001:::MOTION_DESIGN"
+                description="CJIB's internal presentations were walls of text over stock templates. I replaced them with animated system narratives — transitions that traced data through architecture, identity sequences that gave each team a visual language worth remembering."
             />
 
             <StatementBlock label="DECISION">
-                <h2>REST endpoints could not match the UI's data needs. GraphQL could.</h2>
+                <h2>REST couldn't match the data layer. GraphQL could. That story needed telling in sixty seconds.</h2>
             </StatementBlock>
 
             <FullImage src={`${assetPath}GraphQLTransition.gif`} alt="Animated transition showing GraphQL query flow through the system." />
 
             <FeatureSplit src={`${assetPath}McDonalds_Logo.gif`} alt="Animated logo sequence for internal presentation material." label="MOTION LANGUAGE">
-                <h3>Making internal material feel deliberate.</h3>
+                <h3>Identity sequences for teams that never had one.</h3>
                 <ScrollReveal>
-                    Animated identities and transitional graphics that made technical presentations coherent and memorable — replacing generic
-                    templates with purposeful visual storytelling.
+                    Animated transitions and motion graphics that replaced generic slide decks with deliberate visual storytelling. Each team got a
+                    recognizable visual language — not a template, a system.
                 </ScrollReveal>
             </FeatureSplit>
 
@@ -68,17 +68,17 @@ export default function Cjib() {
 
             <WorkHeader
                 title="PBS"
-                subtitle="SYSTEM:::DOCUMENTATION"
-                description="Persoonsbeeldenservice — the system that aggregates fragmented identity data into unified profiles. I designed the full documentation site for developers integrating with the API."
+                subtitle="002:::DOCUMENTATION"
+                description="The system that merges fragmented government identity data into unified person profiles. Dozens of integration states. Hundreds of edge cases. I designed the documentation site that maps it all for the developers building against it."
             />
 
             <FullImage src={`${assetPath}LANDING TMI.png`} alt="Landing page for the PBS documentation website." />
 
             <HeroStatement label="SYSTEM OVERVIEW">
-                <h2>One profile layer over fragmented government data.</h2>
+                <h2>One identity layer across every government source.</h2>
                 <ScrollReveal>
-                    PBS aggregates multiple identity sources into a single integration model. The documentation maps every connection state and
-                    failure path so developers know exactly what to expect before writing a line of code.
+                    PBS pulls from multiple registries to construct a single profile model. The documentation accounts for every connection state
+                    and failure path — no ambiguity, no guesswork. Developers know what breaks before they write a line of code.
                 </ScrollReveal>
             </HeroStatement>
 
@@ -87,10 +87,10 @@ export default function Cjib() {
             </div>
 
             <StatementBlock label="API STATES">
-                <h3>Documenting what works and what breaks.</h3>
+                <h3>Every state documented. Every failure explained.</h3>
                 <ScrollReveal>
-                    Connection success and error states needed to be immediately legible. Each state has a dedicated reference page with cause,
-                    resolution, and relevant code samples.
+                    Success paths and error states on dedicated reference pages — cause, resolution, and code samples. No hunting through
+                    changelogs.
                 </ScrollReveal>
                 <img className={styles.imgFullWidth} src={`${assetPath}INFOGRAPHIC.png`} alt="Normal request reference in PBS documentation." />
                 <img className={styles.imgFullWidth} src={`${assetPath}ERROR INFO.png`} alt="Error handling reference in PBS documentation." />
@@ -98,7 +98,7 @@ export default function Cjib() {
 
             <ComparisonBlock
                 label="API DOCUMENTATION"
-                heading="From cool designs to workable pages."
+                heading="Stripped back until only the useful parts remained."
                 items={[
                     { caption: 'ORIGINAL DESIGN', src: `${assetPath}PBS-MenuDocs-Design.png`, alt: 'Early iteration of PBS documentation with text-heavy reference pages.' },
                     { caption: 'TONED DOWN', src: `${assetPath}PBS-MenuDocs-Clean.png`, alt: 'Later iteration of PBS documentation with visual reference pages.' },
@@ -109,29 +109,29 @@ export default function Cjib() {
 
             <WorkHeader
                 title="BESLAGPORTAAL"
-                subtitle="UX:::ITEM_MANAGEMENT"
-                description="A dedicated application that consolidates search, case records, and item management into one workflow — replacing the fragmented systems officers relied on."
+                subtitle="003:::UX_DESIGN"
+                description="Search, case records, and seized-item management in one application. Officers were reconstructing context across three disconnected tools for every case. That workflow ended here."
             />
 
             <StatementBlock label="PROBLEM">
-                <h2>Case data, seized goods, and search were spread across disconnected tools.</h2>
+                <h2>Every case meant rebuilding context from scratch.</h2>
                 <ScrollReveal>
-                    Officers had to reconstruct context across multiple systems for every case. The existing tooling made it difficult to track what
-                    was seized, where it was stored, and what its legal status was.
+                    What was seized, where it was stored, what its legal status was — all scattered across disconnected systems. Officers spent
+                    more time navigating tools than doing their jobs.
                 </ScrollReveal>
             </StatementBlock>
 
             <StatementBlock label="CASE OVERVIEW">
-                <h2>All case data, one screen.</h2>
+                <h2>One screen. Full context. No reconstruction.</h2>
             </StatementBlock>
 
             <FullImage src={`${assetPath}Zaakoverzicht-v1.png`} alt="Case overview screen of the Beslagportaal application." />
 
             <StatementBlock label="SEARCH">
-                <h2>From partial case numbers to the right record in one query.</h2>
+                <h2>Partial numbers. Uncertain descriptions. Still finds the record.</h2>
                 <ScrollReveal>
-                    Officers work with incomplete information — a fragment of a case number, an uncertain item description. The search interface was
-                    designed around that ambiguity, with flexible filtering and fast results across thousands of records.
+                    Officers work with incomplete information — a fragment of a case number, a vague item description. The search was built for
+                    that ambiguity. Flexible filters, fast results, thousands of records.
                 </ScrollReveal>
             </StatementBlock>
 
@@ -139,7 +139,7 @@ export default function Cjib() {
 
             <ComparisonBlock
                 label="ITERATION"
-                heading="From layout-first to scanability-first."
+                heading="Stripped for scanability."
                 items={[
                     { caption: 'EARLY STRUCTURE', src: `${assetPath}V1.png`, alt: 'Early iteration establishing information architecture.' },
                     { caption: 'REFINED HIERARCHY', src: `${assetPath}V2.png`, alt: 'Later iteration with refined hierarchy and interaction patterns.' },
@@ -153,18 +153,18 @@ export default function Cjib() {
             {/* ── CLOSING ── */}
 
             <HeroStatement label="OUTCOME">
-                <h2>Unified systems, clearer workflows, scalable foundations.</h2>
+                <h2>Systems that explain themselves.</h2>
                 <ScrollReveal>
-                    A cohesive identity layer for fragmented government data. An item-management application that replaced disconnected tools with a
-                    single workflow. Technical communication that made complex systems legible to the people who depend on them.
+                    A documentation layer that made PBS integration predictable. An item-management application that replaced fragmented tools with
+                    a single workflow. Motion design that turned invisible infrastructure into something stakeholders could finally point at.
                 </ScrollReveal>
             </HeroStatement>
 
             <EvidenceRow
                 items={[
-                    { label: 'SYSTEMS DESIGNED', value: 'PBS, Beslagportaal' },
-                    { label: 'COMMUNICATION', value: 'Motion, infographics, documentation' },
-                    { label: 'IMPLEMENTATION', value: 'Angular, Pega Cosmos' },
+                    { label: 'SYSTEMS', value: 'PBS, ABE, BSP' },
+                    { label: 'SKILLS', value: 'Motion Design, Infographics, Documentation, UX Design' },
+                    { label: 'IMPLEMENTATION', value: 'Angular, Antora, SpectaQl, AfterEffects' },
                 ]}
             />
         </>

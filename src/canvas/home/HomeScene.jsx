@@ -8,8 +8,9 @@ import useObjectAnimation from '@hooks/useObjectAnimation';
 import { Float, PerspectiveCamera, Text } from '@react-three/drei';
 import { Bloom, EffectComposer, N8AO } from '@react-three/postprocessing';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import LaserPlane from './LaserPlane';
 
-export default function HomeScene({ scrollProgress = 0, startAnimations = true }) {
+export default function HomeScene({ scrollProgress = 0, startAnimations = true, laserParams = {} }) {
     const logoRef = useRef();
     const backgroundRef = useRef();
     const subtitleRef = useRef();
@@ -151,11 +152,12 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
 
     return (
         <>
+            <LaserPlane {...laserParams} />
             <PerspectiveCamera ref={cameraRef} makeDefault position={[0, 0, 30]} fov={70} />
             <ambientLight ref={lightRef} intensity={0} />
 
             <group ref={backgroundRef} scale={8}>
-                <BackgroundMesh />
+                <BackgroundMesh paused={scrollProgress > 0.4} />
                 <Text font="/assets/fonts/Orbitron/static/Orbitron-Medium.ttf" color="#EEE">
                     ROBIN POTZE
                 </Text>

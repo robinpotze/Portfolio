@@ -26,10 +26,10 @@ export default function LsdJam() {
             {/* ── ROLE ── */}
 
             <StatementBlock label="ROLE">
-                <h2>3D art, textures, level design, and lighting.</h2>
+                <h2>Every environment. Every surface. Every light source.</h2>
                 <ScrollReveal>
-                    Partnered with Cyril Ojoga for the LSD Jam — a game jam themed around altered perception. I created all 3D art, textures, level
-                    layouts, lighting setups, and promotional material. The game was built in Unity with Blender for 3D assets.
+                    Partnered with Cyril Ojoga for the LSD Jam — a game jam themed around altered perception. All 3D art, textures, level layouts,
+                    and lighting rigs were mine. Unity for the build. Blender for the assets.
                 </ScrollReveal>
             </StatementBlock>
 
@@ -46,8 +46,8 @@ export default function LsdJam() {
 
             <WorkHeader
                 title="COMMAND_ROOM"
-                subtitle="LVL_001:::HIBERNATION"
-                description="The first level has you wake from cryosleep in an unknown spaceship. As you navigate narrow hallways, large storage rooms, and eventually reach the bridge, you realize a system error has awakened you — the sun is burning away the ship's systems as you've steered off-course."
+                subtitle="001:::HIBERNATION"
+                description="You wake in cryosleep aboard an unknown ship. Narrow hallways lead to storage bays. Storage bays lead to the bridge. A system error pulled you out early — the sun is burning through the hull, and you're headed straight for it."
             />
 
             <FullImage src={`${assetPath}hibernation.png`} alt="A retro-futurist room with a VR setup in the middle." />
@@ -63,8 +63,8 @@ export default function LsdJam() {
 
             <WorkHeader
                 title="THE BRIDGE"
-                subtitle="ENVIRONMENT:::COMMAND_CENTER"
-                description="The spaceship bridge represents the climax of the first level — a vast command center filled with failing systems and emergency lighting. Every element was designed to reinforce the tension between familiarity and disorientation."
+                subtitle="002:::COMMAND_CENTER"
+                description="The climax of the first level. A command center filled with failing systems and emergency lighting. Every panel, every screen, every flickering display designed to blur the line between what you recognize and what you don't."
             />
 
             <FullImage src={`${assetPath}SpaceShip.png`} alt="Low fidelity render of a spaceship bridge." />
@@ -72,8 +72,8 @@ export default function LsdJam() {
             <FeatureSplit src={`${assetPath}SpaceShipClose.png`} alt="Close-up of spaceship bridge control panels." label="DETAIL">
                 <h3>Analog controls in a digital world.</h3>
                 <ScrollReveal>
-                    The bridge design mixes retro analog controls with futuristic displays — creating an environment that feels simultaneously
-                    familiar and alien, mirroring the game's theme of shifting realities.
+                    Retro switches next to holographic readouts. The bridge was built to feel simultaneously familiar and alien — the same
+                    dissonance the player feels when reality starts to shift.
                 </ScrollReveal>
             </FeatureSplit>
 
@@ -90,8 +90,8 @@ export default function LsdJam() {
 
             <WorkHeader
                 title="CASSETTE_ROOM"
-                subtitle="LVL:::ALTERNATE_REALITY"
-                description="One of the alternate realities the player experiences — a nostalgic space built around the warm glow of CRT monitors and the hiss of cassette tapes. The room serves as a stark contrast to the cold, failing spaceship."
+                subtitle="003:::ALTERNATE_REALITY"
+                description="An alternate reality. CRT glow. Cassette hiss. A warm, analog room that shouldn't exist inside a freezing spaceship — but here it is. The contrast is the point."
             />
 
             <DoubleImage
@@ -104,10 +104,10 @@ export default function LsdJam() {
             {/* ── CLOSING ── */}
 
             <HeroStatement label="OUTCOME">
-                <h2>Multiple realities, one cohesive visual language.</h2>
+                <h2>Every reality different. Every reality yours.</h2>
                 <ScrollReveal>
-                    A reality-bending game jam entry with handcrafted 3D environments that blur the line between waking and dreaming — each level a
-                    distinct world that questions which reality is real.
+                    A game jam entry built on the premise that nothing is stable — handcrafted 3D environments where each level questions
+                    what's real. The visual language holds it together. The disorientation is designed.
                 </ScrollReveal>
             </HeroStatement>
 

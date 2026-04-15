@@ -2,7 +2,7 @@ import { Canvas } from '@react-three/fiber';
 import styles from '@routes/Home/Home.module.css';
 import HomeScene from './HomeScene';
 
-export default function HomeCanvas({ scrollProgress, startAnimations }) {
+export default function HomeCanvas({ scrollProgress, startAnimations, laserParams }) {
     return (
         <div className={styles.canvasContainer}>
             <Canvas
@@ -18,7 +18,7 @@ export default function HomeCanvas({ scrollProgress, startAnimations }) {
                     stencil: false,
                 }}
             >
-                <HomeScene scrollProgress={scrollProgress} startAnimations={startAnimations} />
+                <HomeScene scrollProgress={scrollProgress} startAnimations={startAnimations} laserParams={laserParams} />
             </Canvas>
         </div>
     );

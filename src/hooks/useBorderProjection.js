@@ -12,6 +12,10 @@ const _cornerB = new THREE.Vector3();
 
 export default function useBorderProjection(containerRef, cameraRef, rigRef, { rawX, rawY, rawW, rawH }) {
     const initializedRef = useRef(false);
+    const frameCountRef = useRef(0);
+
+    // Wait for the rig to have stable world matrices before projecting
+    const WARMUP_FRAMES = 2;
 
     const onCenterednessChange = useCallback(
         (centeredness, bestIndex) => {
@@ -22,11 +26,18 @@ export default function useBorderProjection(containerRef, cameraRef, rigRef, { r
                 return;
             }
 
+            // Skip until the scene has had a few frames to settle matrices
+            frameCountRef.current++;
+            if (frameCountRef.current < WARMUP_FRAMES) {
+                return;
+            }
+
             const rect = container.getBoundingClientRect();
 
             // Ensure matrices reflect the rig rotation and camera position set this frame
             rig.updateWorldMatrix(true, false);
             camera.updateMatrixWorld();
+            camera.updateProjectionMatrix();
 
             const localPos = calculateCardPosition(bestIndex);
             const angle = bestIndex * CAROUSEL_CONFIG.ANGLE_STEP;

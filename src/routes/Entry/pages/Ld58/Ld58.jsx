@@ -18,17 +18,17 @@ export default function Ld58() {
             <CaseIntro
                 src={`${assetPath}Wallpaper.png`}
                 kicker="LUDUM DARE / 2025"
-                heading="Cap-collecting meets couch culture."
+                heading="72 hours to build a world worth cracking open."
                 subtitle="3D artist and UI designer for a 72-hour game jam."
             />
 
             {/* ── ROLE ── */}
 
             <StatementBlock label="ROLE">
-                <h2>3D environments, UI design, and brand identity in 72 hours.</h2>
+                <h2>Every surface, every label, every pixel — in three days.</h2>
                 <ScrollReveal>
-                    Built the entire visual layer for a satirical day-drinking simulator — from hand-crafted interiors and brand assets to in-game
-                    UI — all within the Ludum Dare 58 time constraint.
+                    The full visual layer for a satirical cap-collecting simulator. Hand-modeled interiors, in-game UI, and a brand identity that
+                    sells the bit — all under the Ludum Dare 58 clock.
                 </ScrollReveal>
             </StatementBlock>
 
@@ -45,8 +45,8 @@ export default function Ld58() {
 
             <WorkHeader
                 title="THE PAD"
-                subtitle="ENVIRONMENT:::STYLE_FRAMES"
-                description="The bachelor pad needed to feel lived-in — a cluttered shrine to convenience and consumption. Every object tells a story of peak relaxation and zero ambition, rendered in a warm 80s palette that makes the mess feel intentional."
+                subtitle="001:::ENVIRONMENT"
+                description="A bachelor pad built to feel lived-in. Every prop placed to tell a story of convenience and zero ambition. Warm 80s palette. Intentional mess. The kind of room you'd never leave — and that's the point."
             />
 
             <FullImage src={`${assetPath}Styleframe.png`} alt="An 80s inspired interior of a bachelor with one goal in mind: collecting." />
@@ -57,15 +57,15 @@ export default function Ld58() {
 
             <WorkHeader
                 title="TELEVISION"
-                subtitle="SALVATION:::CONSUMPTION"
-                description="The TV was the centerpiece of the bachelor pad, a glowing rectangle that promised escape and entertainment. Filled with content to distract the modern man from the crushing weight of his own existence, the television was both a blessing and a curse."
+                subtitle="002:::GAME_DESIGN"
+                description="The centerpiece. A glowing rectangle of escape and distraction. The entire gameplay loop orbits around it — simple inputs, satisfying feedback, and a collection system designed to keep you reaching for one more cap."
             />
 
             <FeatureSplit src={`${assetPath}Controls.png`} alt="Game control scheme for cap collecting mechanics." label="CONTROLS">
-                <h3>Satisfying mechanics, simple inputs.</h3>
+                <h3>One input. Maximum satisfaction.</h3>
                 <ScrollReveal>
-                    The interaction design focused on making every cap pop feel rewarding — tactile feedback, juicy animations, and a progression
-                    system that keeps the dopamine flowing.
+                    Every cap pop tuned for tactile feedback — snap animations, juice, and a collection loop that keeps the dopamine flowing.
+                    Simple to learn. Impossible to put down.
                 </ScrollReveal>
             </FeatureSplit>
 
@@ -73,8 +73,8 @@ export default function Ld58() {
 
             <WorkHeader
                 title="BRAND"
-                subtitle="IDENTITY:::PROMOTION"
-                description="Every jam game needs an identity that sells the joke. The branding leaned into retro beer culture and ironic self-help aesthetics — a logo, logotype, and thumbnail that tell the whole story at a glance."
+                subtitle="003:::IDENTITY"
+                description="Every jam game needs an identity that sells the joke instantly. Retro beer culture meets ironic self-help — a logo, logotype, and thumbnail that tell the story before you've read a word."
             />
 
             <DoubleImage
@@ -85,10 +85,9 @@ export default function Ld58() {
             />
 
             <FeatureSplit src={`${assetPath}Logotype.png`} alt="Logotype design for the LD58 entry." reverse label="LOGOTYPE">
-                <h3>Retro-flavored type that sells the premise.</h3>
+                <h3>Type that sells the premise at a glance.</h3>
                 <ScrollReveal>
-                    The logotype captures the tone of the game — bold, unapologetic, and slightly absurd. Designed to work across promotional
-                    material and in-game UI.
+                    Bold, unapologetic, slightly absurd. Designed to carry the tone across promotional material and in-game screens.
                 </ScrollReveal>
             </FeatureSplit>
 
@@ -104,10 +103,10 @@ export default function Ld58() {
             {/* ── CLOSING ── */}
 
             <HeroStatement label="OUTCOME">
-                <h2>72 hours, one couch, zero regrets.</h2>
+                <h2>Built in 72 hours. Plays like it wasn't.</h2>
                 <ScrollReveal>
-                    A complete game with handcrafted environments, polished UI, cohesive branding, and a gameplay loop that makes cap collecting
-                    feel like an achievement — delivered under the pressure of a 72-hour jam.
+                    Handcrafted environments, polished UI, cohesive branding, and a gameplay loop that makes cap collecting genuinely satisfying —
+                    delivered under the kind of pressure that burns away everything except the work.
                 </ScrollReveal>
             </HeroStatement>
 

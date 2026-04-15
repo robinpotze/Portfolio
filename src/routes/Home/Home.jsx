@@ -7,7 +7,6 @@ import HomeCanvas from '@canvas/home/HomeCanvas';
 import RadialGrid from '@components/decoration/RadialText/RadialGrid';
 import RedoAnimText from '@components/decoration/RandomText/RedoAnimText';
 import ScrollDown from '@components/decoration/ScrollDown';
-import LaserFlow from '@components/effects/LaserFlow';
 import LoadingScreen from '@components/effects/LoadingScreen';
 import ErrorBoundary from '@components/ErrorBoundary';
 import { EASING, LOADING, REVEAL, SCROLL_THRESHOLDS, STAGGER } from '@config/animation.config';
@@ -105,17 +104,6 @@ export default function Home() {
                 ref={containerRef}
                 style={{ opacity: showContent ? 1 : 0, transition: 'opacity 0.6s ease-out', pointerEvents: showContent ? 'auto' : 'none' }}
             >
-                <LaserFlow
-                    horizontalSizing={laserParams.horizontalSizing}
-                    verticalSizing={laserParams.verticalSizing}
-                    horizontalBeamOffset={0}
-                    verticalBeamOffset={laserParams.verticalBeamOffset}
-                    color="--c-brnd_100"
-                    fogIntensity={laserParams.fogIntensity}
-                    wispSpeed={laserParams.wispSpeed}
-                    wispIntensity={laserParams.wispIntensity}
-                    decay={laserParams.decay}
-                />
                 <div className={styles.section}>
                     <div className={styles.content}>
                         <p className={`deco-small ${styles.name}`}>
@@ -166,7 +154,7 @@ export default function Home() {
                 </div>
                 <div className={styles.transitionSection} />
                 <ErrorBoundary>
-                    <HomeCanvas scrollProgress={scrollProgress} startAnimations={showContent} />
+                    <HomeCanvas scrollProgress={scrollProgress} startAnimations={showContent} laserParams={laserParams} />
                 </ErrorBoundary>
             </div>
         </>

@@ -19,18 +19,17 @@ export default function SsgNL() {
             <CaseIntro
                 src={`${assetPath}autoq/MAIN.mp4`}
                 kicker="SOPRA STERIA / 2024"
-                heading="Designing across disciplines at enterprise scale."
-                subtitle="UX designer, full-stack developer, and game designer."
+                heading="Five products. No templates. No repeats."
+                subtitle="Design, development, and game design at Sopra Steria."
             />
 
             {/* ── ROLE ── */}
 
             <StatementBlock label="ROLE">
-                <h2>Designer and developer across five internal products.</h2>
+                <h2>Every product needed everything from scratch.</h2>
                 <ScrollReveal>
-                    At Sopra Steria, I wore multiple hats — designing brand identities, building educational board games, developing chatbot
-                    interfaces, and crafting interactive learning tools. Each project required a different skillset but shared the same goal: making
-                    complex corporate content engaging.
+                    Brand systems, educational board games, conversational interfaces, interactive learning tools. Each project demanded a
+                    different discipline but the same standard — make complex corporate content impossible to ignore.
                 </ScrollReveal>
             </StatementBlock>
 
@@ -47,8 +46,8 @@ export default function SsgNL() {
 
             <WorkHeader
                 title="AUTO|Q"
-                subtitle="BRANDING:::MARKETING"
-                description="The Test Automation department needed a visual identity that could communicate technical expertise without alienating non-technical stakeholders. I designed the brand system and produced all marketing material."
+                subtitle="001:::BRANDING"
+                description="Test Automation needed an identity that could speak to engineers and executives in the same breath. I built the brand system from zero and produced every piece of marketing material the department shipped."
             />
 
             <DoubleImage
@@ -69,8 +68,8 @@ export default function SsgNL() {
 
             <WorkHeader
                 title="CYBERSECURITY"
-                subtitle="EDUCATION:::BOARD_GAME"
-                description="The Sopra Steria Cybersecurity board game translates complex security concepts into strategic gameplay. I designed the full visual identity — board layout, card systems, rulebook, and 3D renders for promotional material."
+                subtitle="002:::BOARD_GAME"
+                description="A board game that turns cybersecurity concepts into strategic decisions. Full visual identity — board layout, card systems, rulebook, and 3D renders for internal promotion. Every element designed to make security training something people actually want to do."
             />
 
             <FullImage src={`${assetPath}cybersec/CyberSec_Render.png`} alt="3D render of the Cybersecurity board game." />
@@ -80,10 +79,10 @@ export default function SsgNL() {
                 alt="Board layout for the Cybersecurity game."
                 label="BOARD DESIGN"
             >
-                <h3>Strategic layout for security scenarios.</h3>
+                <h3>Attack vectors as game mechanics.</h3>
                 <ScrollReveal>
-                    The board design maps cybersecurity attack vectors and defense strategies into a spatial game mechanic — players navigate
-                    threats and build defenses across interconnected nodes.
+                    The board maps real cybersecurity threats into spatial strategy — players navigate attack vectors and build defenses across
+                    interconnected nodes. The learning happens without anyone noticing.
                 </ScrollReveal>
             </FeatureSplit>
 
@@ -100,8 +99,8 @@ export default function SsgNL() {
 
             <WorkHeader
                 title="AGILE MATURITY"
-                subtitle="EDUCATION:::BOARD_GAME"
-                description="A board game designed to teach agile methodology through competitive play. I designed the complete game system — board, cards, rulebook, and scoring mechanics — all within Sopra Steria's brand framework."
+                subtitle="003:::BOARD_GAME"
+                description="A second board game — same medium, completely different system. Agile methodology turned into competitive play. Board, cards, rulebook, and scoring mechanics, all within Sopra Steria's brand framework but visually distinct from the cybersecurity game."
             />
 
             <DoubleImage
@@ -131,17 +130,17 @@ export default function SsgNL() {
 
             <WorkHeader
                 title="SQL QUEST"
-                subtitle="EDUCATION:::INTERACTIVE_GAME"
-                description="An interactive game that teaches SQL through exploration and puzzle-solving. I designed the full interface — from the query tool and inventory system to the world map and level progression."
+                subtitle="004:::INTERACTIVE_GAME"
+                description="An interactive game that teaches SQL through exploration. Players write real queries to progress. I designed every screen — query tool, inventory system, world map, and level progression."
             />
 
             <FullImage src={`${assetPath}sqlgame/Interactive.png`} alt="Interactive SQL game interface." />
 
             <FeatureSplit src={`${assetPath}sqlgame/QueryTool.png`} alt="SQL query tool interface." label="QUERY TOOL">
-                <h3>Learning SQL by writing real queries.</h3>
+                <h3>Real queries. Real feedback. Real learning.</h3>
                 <ScrollReveal>
-                    The query tool provides a sandbox where players write actual SQL statements to progress — with immediate visual feedback that
-                    makes abstract database concepts tangible.
+                    A sandbox where players write actual SQL statements and see immediate visual results. Abstract database concepts become
+                    tangible the moment the query runs.
                 </ScrollReveal>
             </FeatureSplit>
 
@@ -154,7 +153,7 @@ export default function SsgNL() {
 
             <ComparisonBlock
                 label="ITERATION"
-                heading="From early wireframes to polished interface."
+                heading="Stripped down, then built back up."
                 items={[
                     { caption: 'EARLY VERSION', src: `${assetPath}sqlgame/Versie 0.png`, alt: 'Early wireframe of the SQL game.' },
                     { caption: 'FINAL VERSION', src: `${assetPath}sqlgame/Versie 3.0.png`, alt: 'Final polished version of the SQL game.' },
@@ -165,13 +164,13 @@ export default function SsgNL() {
 
             <WorkHeader
                 title="CHATBOT"
-                subtitle="UX:::CONVERSATIONAL_UI"
-                description="A conversational interface designed for internal knowledge management. I designed both light and dark variants, focusing on readability, response formatting, and natural conversation flow."
+                subtitle="005:::CONVERSATIONAL_UI"
+                description="A conversational interface for internal knowledge management. Light and dark variants designed around readability, response formatting, and the rhythm of natural conversation. Clean enough to disappear. Structured enough to be useful."
             />
 
             <ComparisonBlock
                 label="THEME"
-                heading="Light and dark for every context."
+                heading="Two modes. Same clarity."
                 items={[
                     { caption: 'DARK MODE', src: `${assetPath}chatbot/V1_Dark.png`, alt: 'Chatbot interface in dark mode.' },
                     { caption: 'LIGHT MODE', src: `${assetPath}chatbot/V1_Light.png`, alt: 'Chatbot interface in light mode.' },
@@ -181,10 +180,10 @@ export default function SsgNL() {
             {/* ── CLOSING ── */}
 
             <HeroStatement label="OUTCOME">
-                <h2>Five products, multiple design systems, zero templates.</h2>
+                <h2>Five products. Five systems. Zero shortcuts.</h2>
                 <ScrollReveal>
-                    A portfolio of internal tools and games that made corporate training, cybersecurity awareness, and agile methodology engaging —
-                    each product purpose-built for its audience while sharing a cohesive visual foundation.
+                    Corporate training, cybersecurity awareness, agile methodology, SQL education, and knowledge management — each product built
+                    for its audience, each visually distinct, all sharing the same uncompromising design standard.
                 </ScrollReveal>
             </HeroStatement>
 

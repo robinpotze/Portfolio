@@ -5,9 +5,15 @@ export const CAROUSEL_CONFIG = {
     SCALE_FACTOR: 1.5,
 
     LERP_SPEED: 0.12,
-    SCROLL_SENSITIVITY: 0.0008,
-    SCROLL_DAMPING: 0.15,
-    SCROLL_DEADZONE: 0.0001,
+
+    LENIS: {
+        LERP: 0.08,
+        WHEEL_MULTIPLIER: 1,
+        TOUCH_MULTIPLIER: 2,
+    },
+
+    SNAP_DURATION: 0.6,
+    SNAP_IDLE_FRAMES: 10,
 
     SCALE_RANGE: 0.3,
 
