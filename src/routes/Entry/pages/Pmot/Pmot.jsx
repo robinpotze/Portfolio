@@ -200,7 +200,7 @@ export default function Pmot() {
                     { label: 'PLATFORMS', value: 'Webstore + Learning' },
                     { label: 'VALIDATION', value: 'Expert review + User testing' },
                     { label: 'METHODOLOGY', value: 'Full design cycle' },
-                    { label: 'TOOLS', value: 'Figma, XD, Axure RP' },
+                    { label: 'TOOLS', value: 'Blender, Illustrator, Axure RP' },
                 ]}
             />
         </>
