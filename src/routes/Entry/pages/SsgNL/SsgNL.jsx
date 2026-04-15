@@ -9,6 +9,8 @@ import HeroStatement from '@components/ui/HeroStatement/HeroStatement';
 import StatementBlock from '@components/ui/StatementBlock/StatementBlock';
 import WorkHeader from '@components/ui/WorkHeader/WorkHeader';
 
+import { Data } from './SsgNL.data';
+
 const assetPath = '/img/work/ssgnl/';
 
 export default function SsgNL() {
@@ -18,7 +20,7 @@ export default function SsgNL() {
 
             <CaseIntro
                 src={`${assetPath}autoq/MAIN.mp4`}
-                kicker="SOPRA STERIA / 2024"
+                kicker={`SOPRA STERIA / ${Data.year}`}
                 heading="Five products. No templates. No repeats."
                 subtitle="Design, development, and game design at Sopra Steria."
             />
@@ -28,8 +30,8 @@ export default function SsgNL() {
             <StatementBlock label="ROLE">
                 <h2>Every product needed everything from scratch.</h2>
                 <ScrollReveal>
-                    Brand systems, educational board games, conversational interfaces, interactive learning tools. Each project demanded a
-                    different discipline but the same standard — make complex corporate content impossible to ignore.
+                    Brand systems, educational board games, conversational interfaces, interactive learning tools. Each project demanded a different
+                    discipline but the same standard — make complex corporate content impossible to ignore.
                 </ScrollReveal>
             </StatementBlock>
 
@@ -74,11 +76,7 @@ export default function SsgNL() {
 
             <FullImage src={`${assetPath}cybersec/CyberSec_Render.png`} alt="3D render of the Cybersecurity board game." />
 
-            <FeatureSplit
-                src={`${assetPath}cybersec/CyberSec_Board.png`}
-                alt="Board layout for the Cybersecurity game."
-                label="BOARD DESIGN"
-            >
+            <FeatureSplit src={`${assetPath}cybersec/CyberSec_Board.png`} alt="Board layout for the Cybersecurity game." label="BOARD DESIGN">
                 <h3>Attack vectors as game mechanics.</h3>
                 <ScrollReveal>
                     The board maps real cybersecurity threats into spatial strategy — players navigate attack vectors and build defenses across
@@ -139,8 +137,8 @@ export default function SsgNL() {
             <FeatureSplit src={`${assetPath}sqlgame/QueryTool.png`} alt="SQL query tool interface." label="QUERY TOOL">
                 <h3>Real queries. Real feedback. Real learning.</h3>
                 <ScrollReveal>
-                    A sandbox where players write actual SQL statements and see immediate visual results. Abstract database concepts become
-                    tangible the moment the query runs.
+                    A sandbox where players write actual SQL statements and see immediate visual results. Abstract database concepts become tangible
+                    the moment the query runs.
                 </ScrollReveal>
             </FeatureSplit>
 
@@ -182,8 +180,8 @@ export default function SsgNL() {
             <HeroStatement label="OUTCOME">
                 <h2>Five products. Five systems. Zero shortcuts.</h2>
                 <ScrollReveal>
-                    Corporate training, cybersecurity awareness, agile methodology, SQL education, and knowledge management — each product built
-                    for its audience, each visually distinct, all sharing the same uncompromising design standard.
+                    Corporate training, cybersecurity awareness, agile methodology, SQL education, and knowledge management — each product built for
+                    its audience, each visually distinct, all sharing the same uncompromising design standard.
                 </ScrollReveal>
             </HeroStatement>
 

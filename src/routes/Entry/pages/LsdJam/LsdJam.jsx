@@ -9,6 +9,8 @@ import HeroStatement from '@components/ui/HeroStatement/HeroStatement';
 import StatementBlock from '@components/ui/StatementBlock/StatementBlock';
 import WorkHeader from '@components/ui/WorkHeader/WorkHeader';
 
+import { Data } from './LsdJam.data';
+
 const assetPath = '/img/work/lsdjam/';
 
 export default function LsdJam() {
@@ -18,7 +20,7 @@ export default function LsdJam() {
 
             <CaseIntro
                 src={`${assetPath}Corridor.png`}
-                kicker="LSD JAM / 2024"
+                kicker={`LSD JAM / ${Data.year}`}
                 heading="Which reality is yours?"
                 subtitle="3D artist and level designer for a reality-bending game jam."
             />
@@ -28,8 +30,8 @@ export default function LsdJam() {
             <StatementBlock label="ROLE">
                 <h2>Every environment. Every surface. Every light source.</h2>
                 <ScrollReveal>
-                    Partnered with Cyril Ojoga for the LSD Jam — a game jam themed around altered perception. All 3D art, textures, level layouts,
-                    and lighting rigs were mine. Unity for the build. Blender for the assets.
+                    Partnered with Cyril Ojoga for the LSD Jam — a game jam themed around altered perception. All 3D art, textures, level layouts, and
+                    lighting rigs were mine. Unity for the build. Blender for the assets.
                 </ScrollReveal>
             </StatementBlock>
 
@@ -72,8 +74,8 @@ export default function LsdJam() {
             <FeatureSplit src={`${assetPath}SpaceShipClose.png`} alt="Close-up of spaceship bridge control panels." label="DETAIL">
                 <h3>Analog controls in a digital world.</h3>
                 <ScrollReveal>
-                    Retro switches next to holographic readouts. The bridge was built to feel simultaneously familiar and alien — the same
-                    dissonance the player feels when reality starts to shift.
+                    Retro switches next to holographic readouts. The bridge was built to feel simultaneously familiar and alien — the same dissonance
+                    the player feels when reality starts to shift.
                 </ScrollReveal>
             </FeatureSplit>
 
@@ -106,8 +108,8 @@ export default function LsdJam() {
             <HeroStatement label="OUTCOME">
                 <h2>Every reality different. Every reality yours.</h2>
                 <ScrollReveal>
-                    A game jam entry built on the premise that nothing is stable — handcrafted 3D environments where each level questions
-                    what's real. The visual language holds it together. The disorientation is designed.
+                    A game jam entry built on the premise that nothing is stable — handcrafted 3D environments where each level questions what's real.
+                    The visual language holds it together. The disorientation is designed.
                 </ScrollReveal>
             </HeroStatement>
 

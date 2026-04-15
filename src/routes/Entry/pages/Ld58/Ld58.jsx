@@ -8,6 +8,8 @@ import HeroStatement from '@components/ui/HeroStatement/HeroStatement';
 import StatementBlock from '@components/ui/StatementBlock/StatementBlock';
 import WorkHeader from '@components/ui/WorkHeader/WorkHeader';
 
+import { Data } from './Ld58.data';
+
 const assetPath = '/img/work/ld58/';
 
 export default function Ld58() {
@@ -17,7 +19,7 @@ export default function Ld58() {
 
             <CaseIntro
                 src={`${assetPath}Wallpaper.png`}
-                kicker="LUDUM DARE / 2025"
+                kicker={`LUDUM DARE / ${Data.year}`}
                 heading="72 hours to build a world worth cracking open."
                 subtitle="3D artist and UI designer for a 72-hour game jam."
             />
@@ -64,8 +66,8 @@ export default function Ld58() {
             <FeatureSplit src={`${assetPath}Controls.png`} alt="Game control scheme for cap collecting mechanics." label="CONTROLS">
                 <h3>One input. Maximum satisfaction.</h3>
                 <ScrollReveal>
-                    Every cap pop tuned for tactile feedback — snap animations, juice, and a collection loop that keeps the dopamine flowing.
-                    Simple to learn. Impossible to put down.
+                    Every cap pop tuned for tactile feedback — snap animations, juice, and a collection loop that keeps the dopamine flowing. Simple
+                    to learn. Impossible to put down.
                 </ScrollReveal>
             </FeatureSplit>
 
