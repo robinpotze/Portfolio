@@ -5,7 +5,8 @@
     overflow: hidden;
 }
 
-.wrapper video {
+.wrapper video,
+.wrapper img {
     position: absolute;
     inset: 0;
     object-fit: cover;
