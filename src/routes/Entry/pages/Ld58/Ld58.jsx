@@ -107,8 +107,8 @@ export default function Ld58() {
             <HeroStatement label="OUTCOME">
                 <h2>Built in 72 hours. Plays like it wasn't.</h2>
                 <ScrollReveal>
-                    Handcrafted environments, polished UI, cohesive branding, and a gameplay loop that makes cap collecting genuinely satisfying —
-                    delivered under the kind of pressure that burns away everything except the work.
+                    Handcrafted 3D environments, polished UI, cohesive branding, original audio, and a gameplay loop that makes cap collecting
+                    genuinely satisfying — all delivered within a single weekend.
                 </ScrollReveal>
             </HeroStatement>
 

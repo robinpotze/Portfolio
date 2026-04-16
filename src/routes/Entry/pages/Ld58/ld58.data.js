@@ -3,10 +3,9 @@ const assetPath = '/img/work/ld58/';
 export const Data = {
     id: 2,
     title: 'LD58',
-    synopsis:
-        "They said I'd never amount to anything, but thanks to the power of day drinking, I've achieved god-tier cap collection and total emotional detachment.",
+    synopsis: '3D environments, branding, and audio for a 72-hour game jam.',
     description:
-        'Crash on the couch, crack cold ones, and turn cap-popping into peak performance. Collect, sort, and frame every shiny trophy in this chill, juicy parody about achieving God-Tier Cap Collection & Total Emotional Detachment one satisfying pop at a time.',
+        'A satirical cap-collecting simulator built in 72 hours for Ludum Dare 58 with one developer. I handled all visuals — 3D-modeled interiors, textures, lighting, effects, animated TV content, tutorial material, and knock-off beer branding — plus recorded and edited the audio and music.',
     client: 'LUDUM DRUNKS',
     year: 2025,
     software: ['Figma', 'Unity', 'Blender'],
