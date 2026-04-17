@@ -71,10 +71,7 @@ export default function WorkScene({ items = [], scrollProgressRef, onCardNavigat
                 <group ref={setRigRef}>
                     {items.map((item, i) => {
                         const distance = Math.abs(i - visibleCenter);
-                        if (distance > 1) {
-                            return null;
-                        }
-                        return <WorkCard key={item.key} item={item} index={i} onNavigate={onCardNavigate} centerednessRef={centerednessRef} />;
+                        return <WorkCard key={item.key} item={item} index={i} visible={distance <= 1} onNavigate={onCardNavigate} centerednessRef={centerednessRef} />;
                     })}
                 </group>
             </group>

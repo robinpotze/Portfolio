@@ -1,10 +1,10 @@
-import { createBrowserRouter } from 'react-router-dom';
-import App from './App';
-import Home from '@routes/Home/Home.jsx';
-import Work from '@routes/Work/Work.jsx';
 import About from '@routes/About/About.jsx';
 import Contact from '@routes/Contact/Contact.jsx';
 import Entry from '@routes/Entry/Entry.jsx';
+import Home from '@routes/Home/Home.jsx';
+import Work from '@routes/Work/Work.jsx';
+import { createBrowserRouter } from 'react-router-dom';
+import App from './App';
 
 export const router = createBrowserRouter([
     {

@@ -1,29 +1,43 @@
 import { normalizeKey } from '@utils/stringUtils';
+import { lazy } from 'react';
 
-const modules = import.meta.glob('./*/*.{jsx,js}', { eager: true });
+// Data files loaded eagerly (lightweight metadata)
+const dataModules = import.meta.glob('./*/*.data.{js,jsx}', { eager: true });
 
-// Group modules by directory so data files and component files are merged
-const dirs = {};
-for (const [path, mod] of Object.entries(modules)) {
+// Component files loaded lazily (heavy JSX, split per page)
+const componentLoaders = import.meta.glob(['./*/*.jsx', '!./*/*.data.jsx']);
+
+// Group data by directory
+const dataByDir = {};
+for (const [path, mod] of Object.entries(dataModules)) {
     const dir = path.split('/')[1];
-    if (!dirs[dir]) dirs[dir] = {};
-    Object.assign(dirs[dir], mod);
+    dataByDir[dir] = mod.Data || mod.data || {};
 }
 
-const pages = Object.entries(dirs).reduce((acc, [, merged]) => {
-    const Component = merged.default || null;
-    const data = merged.Data || merged.data || {};
+// Map component loaders by directory (skip data files if any matched)
+const loaderByDir = {};
+for (const [path, loader] of Object.entries(componentLoaders)) {
+    if (path.includes('.data.')) continue;
+    const dir = path.split('/')[1];
+    loaderByDir[dir] = loader;
+}
 
-    if (!Component) {
-        return acc;
-    }
+// Full pages map with lazy components (for Entry.jsx)
+const pages = {};
+// Data-only map (for WorkContext / App.jsx)
+const pagesData = {};
 
-    const sourceName = data.title || Component.name;
+for (const [dir, data] of Object.entries(dataByDir)) {
+    const loader = loaderByDir[dir];
+    if (!loader) continue;
+
+    const sourceName = data.title || dir;
     const key = normalizeKey(sourceName);
 
-    acc[key] = { Component, data };
-    return acc;
-}, {});
+    const Component = lazy(loader);
+    pages[key] = { Component, data };
+    pagesData[key] = { data };
+}
 
 if (import.meta.env.DEV) {
     for (const [key, { data }] of Object.entries(pages)) {
@@ -34,4 +48,4 @@ if (import.meta.env.DEV) {
     }
 }
 
-export { pages };
+export { pages, pagesData };

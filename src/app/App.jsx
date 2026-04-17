@@ -1,7 +1,7 @@
 import ErrorBoundary from '@components/ErrorBoundary';
 import NavigationMenu from '@components/layout/NavigationMenu/NavigationMenu';
 import { PageTransitionProvider } from '@hooks/usePageTransition';
-import { pages as autogenPages } from '@routes/Entry/pages/autogen';
+import { pagesData } from '@routes/Entry/pages/autogen';
 import { sortItems } from '@utils/workUtils';
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
@@ -12,7 +12,7 @@ export default function App() {
     const [items, setItems] = useState([]);
 
     useEffect(() => {
-        setItems(sortItems(autogenPages));
+        setItems(sortItems(pagesData));
     }, []);
 
     return (

@@ -32,6 +32,10 @@ export default function WorkCanvas({ items, onCardNavigate, onScrollChange }) {
         rawY,
         rawW,
         rawH,
+        springX: x,
+        springY: y,
+        springW: w,
+        springH: h,
     });
 
     // Lenis smooth scrolling — replaces manual velocity/damping system
@@ -98,11 +102,9 @@ export default function WorkCanvas({ items, onCardNavigate, onScrollChange }) {
                 dpr={[1, 1.5]}
                 gl={{ antialias: false, powerPreference: 'high-performance' }}
                 style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%' }}
-                onCreated={({ camera }) => {
-                    cameraRef.current = camera;
-                }}
             >
                 <PerspectiveCamera
+                    ref={cameraRef}
                     makeDefault
                     position={CAROUSEL_CONFIG.CAMERA.POSITION}
                     fov={window.innerWidth <= 768 ? CAROUSEL_CONFIG.CAMERA.FOV + 15 : CAROUSEL_CONFIG.CAMERA.FOV}

@@ -6,6 +6,7 @@ import ProjectHero from '@components/layout/ProjectHero/ProjectHero';
 import { LENIS } from '@config/animation.config';
 import useLenisScroll from '@hooks/useLenisScroll';
 import { normalizeKey } from '@utils/stringUtils';
+import { Suspense } from 'react';
 import { useParams } from 'react-router-dom';
 import styles from './Entry.module.css';
 import { pages } from './pages/autogen';
@@ -47,7 +48,9 @@ export default function Entry() {
                     <ScrollReveal>{data.description}</ScrollReveal>
                 </div>
                 <div className={styles.content}>
-                    <PageComponent />
+                    <Suspense>
+                        <PageComponent />
+                    </Suspense>
                 </div>
             </section>
 

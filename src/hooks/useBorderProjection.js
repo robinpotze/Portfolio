@@ -10,12 +10,12 @@ const _cardWorld = new THREE.Vector3();
 const _cornerA = new THREE.Vector3();
 const _cornerB = new THREE.Vector3();
 
-export default function useBorderProjection(containerRef, cameraRef, rigRef, { rawX, rawY, rawW, rawH }) {
+export default function useBorderProjection(containerRef, cameraRef, rigRef, { rawX, rawY, rawW, rawH, springX, springY, springW, springH }) {
     const initializedRef = useRef(false);
     const frameCountRef = useRef(0);
 
     // Wait for the rig to have stable world matrices before projecting
-    const WARMUP_FRAMES = 2;
+    const WARMUP_FRAMES = 3;
 
     const onCenterednessChange = useCallback(
         (centeredness, bestIndex) => {
@@ -84,6 +84,11 @@ export default function useBorderProjection(containerRef, cameraRef, rigRef, { r
                 rawY.jump(targetY);
                 rawW.jump(targetW);
                 rawH.jump(targetH);
+                // Also jump the springs so they don't animate from initial values
+                if (springX) springX.jump(targetX);
+                if (springY) springY.jump(targetY);
+                if (springW) springW.jump(targetW);
+                if (springH) springH.jump(targetH);
             } else {
                 rawX.set(targetX);
                 rawY.set(targetY);
@@ -91,7 +96,7 @@ export default function useBorderProjection(containerRef, cameraRef, rigRef, { r
                 rawH.set(targetH);
             }
         },
-        [containerRef, cameraRef, rigRef, rawX, rawY, rawW, rawH]
+        [containerRef, cameraRef, rigRef, rawX, rawY, rawW, rawH, springX, springY, springW, springH]
     );
 
     return onCenterednessChange;
