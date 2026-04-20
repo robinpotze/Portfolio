@@ -9,7 +9,7 @@ export const CAROUSEL_CONFIG = {
     LENIS: {
         LERP: 0.08,
         WHEEL_MULTIPLIER: 2,
-        TOUCH_MULTIPLIER: 1,
+        TOUCH_MULTIPLIER: 3,
     },
 
     SNAP_DURATION: 0.6,
