@@ -38,29 +38,29 @@ const DIRECTION_CONFIG = {
 export default function CurtainTransition({ isOpen = false, direction = 'up', pageName, onCoverComplete, onRevealComplete }) {
     const config = DIRECTION_CONFIG[direction] || DIRECTION_CONFIG.up;
     const lastLayerRef = useRef(null);
-    const prevIsOpenRef = useRef(isOpen);
+    const phaseRef = useRef(isOpen ? 'covering' : 'idle');
 
     useEffect(() => {
-        prevIsOpenRef.current = isOpen;
+        if (isOpen) {
+            phaseRef.current = 'covering';
+        }
     }, [isOpen]);
 
     const onAnimationComplete = () => {
-        if (isOpen && onCoverComplete) {
-            onCoverComplete();
+        if (phaseRef.current === 'covering') {
+            phaseRef.current = 'revealing';
+            if (onCoverComplete) onCoverComplete();
             return;
         }
-        if (onRevealComplete) {
-            onRevealComplete();
+        if (phaseRef.current === 'revealing') {
+            phaseRef.current = 'done';
+            if (onRevealComplete) onRevealComplete();
         }
     };
 
     const getAnimateValue = () => {
-        if (isOpen) {
-            return config.covered;
-        }
-        if (prevIsOpenRef.current) {
-            return config.revealed;
-        }
+        if (phaseRef.current === 'covering') return config.covered;
+        if (phaseRef.current === 'revealing' || phaseRef.current === 'done') return config.revealed;
         return config.initial;
     };
 
