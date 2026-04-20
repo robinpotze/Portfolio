@@ -24,6 +24,15 @@
     scrollbar-width: none;
 }
 
+@media (max-width: 768px) {
+    .canvasContainer {
+        display: flex;
+        overflow-x: auto;
+        overflow-y: hidden;
+        touch-action: pan-x;
+    }
+}
+
 .canvasContainer::-webkit-scrollbar {
     display: none;
 }

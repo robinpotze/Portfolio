@@ -6,6 +6,7 @@ import useAdaptiveQuality from '@hooks/useAdaptiveQuality';
 import useCameraAnimation from '@hooks/useCameraAnimation';
 import useObjectAnimation from '@hooks/useObjectAnimation';
 import { Float, PerspectiveCamera, Text } from '@react-three/drei';
+import { useFrame } from '@react-three/fiber';
 import { Bloom, EffectComposer, N8AO } from '@react-three/postprocessing';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import LaserPlane from './LaserPlane';
@@ -18,10 +19,36 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true, 
     const cameraRef = useRef();
     const [entryComplete, setEntryComplete] = useState(false);
 
+    // Smoothly interpolated float intensity to avoid jarring snaps on quality change
+    const floatIntensityRef = useRef(0);
+    const rotationIntensityRef = useRef(0);
+    const [smoothFloat, setSmoothFloat] = useState({ float: 0, rotation: 0 });
+
     // Adaptive quality monitoring
     const { quality } = useAdaptiveQuality({
         targetFps: 55,
         enabled: startAnimations && entryComplete,
+    });
+
+    // Lerp float intensity toward quality target
+    useFrame((_, delta) => {
+        const targetFloat = entryComplete && quality !== 'low' ? FLOAT_CONFIG.INTENSITY : 0;
+        const targetRotation = entryComplete && quality !== 'low' ? FLOAT_CONFIG.ROTATION_INTENSITY : 0;
+        const lerpSpeed = 2; // units per second
+
+        const prevFloat = floatIntensityRef.current;
+        const prevRotation = rotationIntensityRef.current;
+
+        floatIntensityRef.current += (targetFloat - prevFloat) * Math.min(1, lerpSpeed * delta);
+        rotationIntensityRef.current += (targetRotation - prevRotation) * Math.min(1, lerpSpeed * delta);
+
+        // Only trigger re-render when the change is visually significant
+        if (
+            Math.abs(floatIntensityRef.current - smoothFloat.float) > 0.01 ||
+            Math.abs(rotationIntensityRef.current - smoothFloat.rotation) > 0.01
+        ) {
+            setSmoothFloat({ float: floatIntensityRef.current, rotation: rotationIntensityRef.current });
+        }
     });
 
     // Memoize quality-based post-processing settings
@@ -170,8 +197,8 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true, 
             </group>
 
             <Float
-                floatIntensity={entryComplete && quality !== 'low' ? FLOAT_CONFIG.INTENSITY : 0}
-                rotationIntensity={entryComplete && quality !== 'low' ? FLOAT_CONFIG.ROTATION_INTENSITY : 0}
+                floatIntensity={smoothFloat.float}
+                rotationIntensity={smoothFloat.rotation}
                 speed={FLOAT_CONFIG.SPEED}
             >
                 <group ref={logoRef} scale={0.5}>

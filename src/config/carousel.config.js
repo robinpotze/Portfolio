@@ -1,15 +1,15 @@
 export const CAROUSEL_CONFIG = {
-    RADIUS: 3,
+    RADIUS: 4.5,
     ANGLE_STEP: 0.8,
     VERTICAL_STEP: -0.4,
-    SCALE_FACTOR: 1.5,
+    SCALE_FACTOR: 1,
 
     LERP_SPEED: 0.12,
 
     LENIS: {
         LERP: 0.08,
-        WHEEL_MULTIPLIER: 3,
-        TOUCH_MULTIPLIER: 2,
+        WHEEL_MULTIPLIER: 2,
+        TOUCH_MULTIPLIER: 1,
     },
 
     SNAP_DURATION: 0.6,
@@ -23,5 +23,10 @@ export const CAROUSEL_CONFIG = {
     CAMERA: {
         POSITION: [0, 0, 8],
         FOV: 50,
+    },
+
+    MOBILE: {
+        BREAKPOINT: 768,
+        SCALE_FACTOR: 0.7,
     },
 };

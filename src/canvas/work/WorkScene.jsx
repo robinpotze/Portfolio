@@ -4,7 +4,7 @@ import { calculateCardCenteredness } from '@utils/carousel';
 import { useRef, useState } from 'react';
 import WorkCard from './WorkCard';
 
-export default function WorkScene({ items = [], scrollProgressRef, onCardNavigate, onScrollChange, onCenterednessChange, rigRef: externalRigRef }) {
+export default function WorkScene({ items = [], scrollProgressRef, onCardNavigate, onScrollChange, onCenterednessChange, rigRef: externalRigRef, isMobile }) {
     const rigRef = useRef();
     const centerednessRef = useRef([]);
     const bestIndexRef = useRef(0);
@@ -67,7 +67,7 @@ export default function WorkScene({ items = [], scrollProgressRef, onCardNavigat
 
     return (
         <>
-            <group scale={CAROUSEL_CONFIG.SCALE_FACTOR}>
+            <group scale={isMobile ? CAROUSEL_CONFIG.MOBILE.SCALE_FACTOR : CAROUSEL_CONFIG.SCALE_FACTOR}>
                 <group ref={setRigRef}>
                     {items.map((item, i) => {
                         const distance = Math.abs(i - visibleCenter);

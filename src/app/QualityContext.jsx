@@ -9,8 +9,8 @@ export function QualityProvider({ children }) {
 
     const setQuality = useCallback((newQuality) => {
         const now = performance.now();
-        // Prevent rapid quality changes (minimum 2s between changes)
-        if (now - lastChangeRef.current < 2000) {
+        // Prevent rapid quality changes (minimum 5s between changes)
+        if (now - lastChangeRef.current < 5000) {
             return;
         }
         lastChangeRef.current = now;

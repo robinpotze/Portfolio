@@ -7,7 +7,7 @@ import { Canvas } from '@react-three/fiber';
 import styles from '@routes/Work/Work.module.css';
 import { useMotionValue, useSpring } from 'framer-motion';
 import Lenis from 'lenis';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import WorkScene from './WorkScene';
 
 export default function WorkCanvas({ items, onCardNavigate, onScrollChange }) {
@@ -16,6 +16,7 @@ export default function WorkCanvas({ items, onCardNavigate, onScrollChange }) {
     const cameraRef = useRef(null);
     const rigRef = useRef(null);
     const lenisRef = useRef(null);
+    const [isMobile] = useState(() => window.innerWidth <= CAROUSEL_CONFIG.MOBILE.BREAKPOINT);
 
     // Border spring animation values
     const rawX = useMotionValue(0);
@@ -47,6 +48,7 @@ export default function WorkCanvas({ items, onCardNavigate, onScrollChange }) {
 
         const lenis = new Lenis({
             wrapper: container,
+            orientation: isMobile ? 'horizontal' : 'vertical',
             lerp: CAROUSEL_CONFIG.LENIS.LERP,
             smoothWheel: true,
             wheelMultiplier: CAROUSEL_CONFIG.LENIS.WHEEL_MULTIPLIER,
@@ -94,12 +96,20 @@ export default function WorkCanvas({ items, onCardNavigate, onScrollChange }) {
         };
     }, [items.length]);
 
+    const canvasStyle = isMobile
+        ? { position: 'sticky', left: 0, width: '100vw', height: '100dvh', touchAction: 'pan-x', flexShrink: 0 }
+        : { position: 'sticky', top: 0, width: '100%', height: '100dvh', touchAction: 'pan-y' };
+
+    const scrollStyle = isMobile
+        ? { width: `${(items.length - 1) * 100}vw`, height: '100%', flexShrink: 0 }
+        : { height: `${(items.length - 1) * 100}vh` };
+
     return (
         <div ref={containerRef} className={styles.canvasContainer}>
             <Canvas
                 dpr={[1, 1.5]}
                 gl={{ antialias: false, powerPreference: 'high-performance' }}
-                style={{ position: 'sticky', top: 0, width: '100%', height: '100dvh', touchAction: 'pan-y' }}
+                style={canvasStyle}
             >
                 <PerspectiveCamera
                     ref={cameraRef}
@@ -114,9 +124,10 @@ export default function WorkCanvas({ items, onCardNavigate, onScrollChange }) {
                     onScrollChange={onScrollChange}
                     onCenterednessChange={onCenterednessChange}
                     rigRef={rigRef}
+                    isMobile={isMobile}
                 />
             </Canvas>
-            <div className={styles.scrollContent} style={{ height: `${(items.length - 1) * 100}vh` }} />
+            <div className={styles.scrollContent} style={scrollStyle} />
             <NineSliceBorder x={x} y={y} w={w} h={h} />
         </div>
     );

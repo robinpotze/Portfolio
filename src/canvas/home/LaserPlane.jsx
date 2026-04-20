@@ -38,6 +38,8 @@ export default function LaserPlane({
     const { quality } = useQuality();
     const { size, viewport } = useThree();
 
+    const targetFogQualityRef = useRef(FOG_QUALITY_BY_QUALITY[quality] ?? 1);
+
     const colorVec = useMemo(() => {
         const { r, g, b } = getCSSColorRGBA(color || '--c-brnd_100');
         return new THREE.Vector3(r / 255, g / 255, b / 255);
@@ -51,15 +53,10 @@ export default function LaserPlane({
         mat.uniforms.iResolution.value.set(size.width * dpr, size.height * dpr, dpr);
     }, [size.width, size.height, viewport.dpr]);
 
-    // Update quality-dependent uniforms
+    // Track quality target (lerped in useFrame)
     useEffect(() => {
-        const mat = matRef.current;
-        if (!mat) return;
-        mat.uniforms.uFogQuality.value = FOG_QUALITY_BY_QUALITY[quality] ?? 1;
-        if (quality === 'low') {
-            mat.uniforms.uWispDensity.value = Math.min(wispDensity, 0.3);
-        }
-    }, [quality, wispDensity]);
+        targetFogQualityRef.current = FOG_QUALITY_BY_QUALITY[quality] ?? 1;
+    }, [quality]);
 
     useFrame((state, delta) => {
         const mat = matRef.current;
@@ -83,6 +80,14 @@ export default function LaserPlane({
             u.uFade.value = fadeValue.current;
             if (fadeValue.current >= 1) hasFaded.current = true;
         }
+
+        // Smoothly interpolate fog quality toward target
+        const fogTarget = targetFogQualityRef.current;
+        u.uFogQuality.value += (fogTarget - u.uFogQuality.value) * Math.min(1, 2 * cdt);
+
+        // Smoothly interpolate wisp density (capped on low quality)
+        const wispTarget = quality === 'low' ? Math.min(wispDensity, 0.3) : wispDensity;
+        u.uWispDensity.value += (wispTarget - u.uWispDensity.value) * Math.min(1, 2 * cdt);
 
         // Mouse: convert R3F pointer [-1,1] to pixel coords
         const dpr = state.viewport.dpr;
@@ -112,10 +117,6 @@ export default function LaserPlane({
         u.uFogFallSpeed.value = fogFallSpeed;
         u.uTiltScale.value = mouseTiltStrength;
         u.uColor.value.copy(colorVec);
-
-        if (quality !== 'low') {
-            u.uWispDensity.value = wispDensity;
-        }
     });
 
     return (
