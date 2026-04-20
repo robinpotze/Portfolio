@@ -9,10 +9,12 @@
         '.       .         details'
         'selector selector details';
     height: 100vh;
+    height: 100dvh;
     width: 100%;
     padding: 3rem;
     color: var(--c-lght_100);
     box-sizing: border-box;
+    overflow: hidden;
     background-image: url('/img/about/face.jpg');
     background-size: cover;
     background-position: center;
@@ -219,7 +221,7 @@
         grid-template-areas:
             'details'
             'selector';
-        padding: 5rem var(--s-m) var(--s-m);
+        padding: 5rem var(--s-m) calc(var(--s-m) + env(safe-area-inset-bottom, 0px));
         gap: 1rem;
     }
 
