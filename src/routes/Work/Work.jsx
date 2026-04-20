@@ -79,10 +79,10 @@ export default function Work() {
                 return;
             }
             const currentY = e.touches[0].clientY;
-            // Swipe down = pulling content down = scroll up (negative deltaY)
+            // Positive deltaY = finger moved up = scroll down; negative = finger moved down = scroll up
             const deltaY = touchStartY - currentY;
             touchStartY = currentY;
-            handleScrollDelta(-deltaY);
+            handleScrollDelta(deltaY);
         };
 
         const onTouchEnd = () => {
