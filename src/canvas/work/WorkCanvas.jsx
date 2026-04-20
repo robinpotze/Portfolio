@@ -47,7 +47,6 @@ export default function WorkCanvas({ items, onCardNavigate, onScrollChange }) {
 
         const lenis = new Lenis({
             wrapper: container,
-            content: container.firstElementChild,
             lerp: CAROUSEL_CONFIG.LENIS.LERP,
             smoothWheel: true,
             wheelMultiplier: CAROUSEL_CONFIG.LENIS.WHEEL_MULTIPLIER,
@@ -97,11 +96,10 @@ export default function WorkCanvas({ items, onCardNavigate, onScrollChange }) {
 
     return (
         <div ref={containerRef} className={styles.canvasContainer}>
-            <div className={styles.scrollContent} style={{ height: `${items.length * 100}vh` }} />
             <Canvas
                 dpr={[1, 1.5]}
                 gl={{ antialias: false, powerPreference: 'high-performance' }}
-                style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%' }}
+                style={{ position: 'sticky', top: 0, width: '100%', height: '100dvh', touchAction: 'pan-y' }}
             >
                 <PerspectiveCamera
                     ref={cameraRef}
@@ -118,6 +116,7 @@ export default function WorkCanvas({ items, onCardNavigate, onScrollChange }) {
                     rigRef={rigRef}
                 />
             </Canvas>
+            <div className={styles.scrollContent} style={{ height: `${(items.length - 1) * 100}vh` }} />
             <NineSliceBorder x={x} y={y} w={w} h={h} />
         </div>
     );
