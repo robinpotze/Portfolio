@@ -70,6 +70,7 @@ const statusFormVariants = {
         scaleX: 1,
         opacity: 1,
         transition: {
+            delay: REVEAL.MEDIUM_DURATION,
             duration: REVEAL.SLOW_DURATION,
             ease: EASING.EMPHASIZED,
         },
@@ -85,7 +86,7 @@ const statusFormContentVariants = {
         opacity: 1,
         transition: {
             duration: REVEAL.DURATION,
-            delay: REVEAL.MEDIUM_DURATION,
+            delay: REVEAL.LONG_DURATION,
         },
     },
 };
@@ -102,7 +103,7 @@ const cornerVariants = {
         y: 0,
         transition: {
             duration: REVEAL.QUICK_DURATION,
-            delay: REVEAL.MEDIUM_DURATION + STAGGER.PAGE,
+            delay: REVEAL.LONG_DURATION + STAGGER.PAGE,
             ease: EASING.EMPHASIZED,
         },
     },
