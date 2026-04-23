@@ -1,4 +1,4 @@
-import { MENU_TIMING, REVEAL } from '@config/animation.config';
+import { REVEAL } from '@config/animation.config';
 import { motion } from 'framer-motion';
 import styles from './NavigationMenu.module.css';
 
@@ -20,7 +20,7 @@ export default function MenuSocials({ open }) {
                         key={social.link}
                         initial={{ y: REVEAL.Y_OFFSET, opacity: 0 }}
                         animate={open ? { y: 0, opacity: 1 } : { y: REVEAL.Y_OFFSET, opacity: 0 }}
-                        transition={{ duration: MENU_TIMING.SOCIAL_ITEM_DURATION }}
+                        transition={{ duration: REVEAL.QUICK_DURATION }}
                     >
                         <a href={social.link} target="_blank" rel="noopener noreferrer">
                             {social.label}

@@ -1,4 +1,5 @@
 import { Canvas } from '@react-three/fiber';
+import { CANVAS_DPR, CANVAS_GL_DEFAULTS } from '@config/canvas.config';
 import styles from '@routes/Home/Home.module.css';
 import HomeScene from './HomeScene';
 
@@ -6,16 +7,13 @@ export default function HomeCanvas({ scrollProgress, startAnimations, laserParam
     return (
         <div className={styles.canvasContainer}>
             <Canvas
-                dpr={[1, 1.5]}
+                dpr={CANVAS_DPR}
                 performance={{ min: 0.5 }}
                 eventSource={document.getElementById('root')}
                 eventPrefix="client"
                 gl={{
+                    ...CANVAS_GL_DEFAULTS,
                     antialias: true,
-                    powerPreference: 'high-performance',
-                    preserveDrawingBuffer: false,
-                    alpha: false,
-                    stencil: false,
                 }}
             >
                 <HomeScene scrollProgress={scrollProgress} startAnimations={startAnimations} laserParams={laserParams} />

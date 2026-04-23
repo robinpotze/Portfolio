@@ -3,17 +3,26 @@
  * Centralized timing values, easing functions, and animation configs for consistent animations across the app
  */
 
+export const BREAKPOINTS = {
+    MOBILE: 375,
+    TABLET: 768,
+    DESKTOP: 1024,
+    REFERENCE_WIDTH: 1920,
+};
+
 export const EASING = {
     EMPHASIZED: [0.22, 1, 0.36, 1],
     EXIT: [0.55, 0.06, 0.68, 0.19],
-    SMOOTH: [0.25, 0.1, 0.25, 1],
     HERO: [0.2, 0.9, 0.2, 1],
 };
 
 export const REVEAL = {
-    DURATION: 0.6,
-    QUICK_DURATION: 0.3,
     EXIT_DURATION: 0.2,
+    QUICK_DURATION: 0.3,
+    MEDIUM_DURATION: 0.4,
+    DURATION: 0.6,
+    SLOW_DURATION: 0.65,
+    LONG_DURATION: 0.9,
     DELAY: 0.1,
     X_OFFSET: 8,
     Y_OFFSET: 25,
@@ -21,9 +30,10 @@ export const REVEAL = {
 
 export const STAGGER = {
     FAST: 0.05,
+    MICRO: 0.06,
     DEFAULT: 0.08,
     SLOW: 0.1,
-    MICRO: 0.06,
+    PAGE: 0.12,
 };
 
 export const TYPEWRITER = {
@@ -32,57 +42,29 @@ export const TYPEWRITER = {
     CURSOR: '▌',
 };
 
-export const MENU_TIMING = {
-    TOGGLE_OPEN_DURATION: 0.6,
-    TOGGLE_CLOSE_DURATION: 0.35,
-    ITEM_DURATION: 0.9,
-    ITEM_STAGGER: 0.1,
-    ITEM_DELAY_BASE: 0.15,
-    ICON_SWAP_OUT_DURATION: 0.28,
-    ICON_SWAP_IN_DURATION: 0.32,
-    PANEL_OPEN_DURATION: 0.3,
-    PANEL_CLOSE_DURATION: 0.2,
-    CLOSE_NAV_DELAY_MS: 300,
-    PANEL_OPEN_DELAY: 0.22,
-    LAYER_DURATION: 0.2,
-    LAYER_STAGGER: 0.07,
-    SOCIAL_ITEM_DURATION: 0.3,
-};
-
-export const CONTACT_TIMING = {
-    FORM_DURATION: 0.65,
-    FORM_CONTENT_DELAY: 0.42,
-    CORNER_DELAY: 0.58,
-    FORM_STAGGER: 0.12,
-    FIELD_DURATION: 0.4,
-    PHASE_TRANSITION_DURATION: 0.4,
-    GLITCH_DURATION_MS: 1200,
-};
-
-export const CURTAIN = {
-    DURATION_MS: 500,
-    LAYER_STAGGER_MS: 70,
-};
-
-export const LOADING = {
-    MIN_DISPLAY_MS: 2000,
-    FADE_OUT_MS: 600,
-    COMPLETE_DELAY_MS: 50,
-    EXIT_DURATION: REVEAL.DURATION,
-};
-
-export const GLITCH = {
-    DURATION: REVEAL.EXIT_DURATION,
-    COLOR_DELAY_MS: 180,
-    BUSY_TIMEOUT_MS: 500,
-};
-
-export const ENTRY = {
-    DURATION: REVEAL.DURATION,
-    DELAY: REVEAL.DURATION,
-    COMPLETE_TIMEOUT_MS: 800,
+export const SCENE = {
     CAMERA_DURATION: 1.5,
     FADE_DURATION: 1,
+};
+
+export const CAMERA_DEFAULTS = {
+    START_POSITION: [0, 0, 30],
+    END_POSITION: [0, 0, 20],
+    START_FOV: 70,
+    END_FOV: 50,
+};
+
+export const TIMEOUT = {
+    COMPLETE_DELAY_MS: 50,
+    CURTAIN_STAGGER_MS: 70,
+    GLITCH_COLOR_MS: 180,
+    NAV_CLOSE_MS: 300,
+    CURTAIN_MS: 500,
+    GLITCH_BUSY_MS: 500,
+    LOADING_FADE_MS: 600,
+    ENTRY_COMPLETE_MS: 800,
+    GLITCH_DURATION_MS: 1200,
+    LOADING_MIN_DISPLAY_MS: 2000,
 };
 
 export const LENIS = {

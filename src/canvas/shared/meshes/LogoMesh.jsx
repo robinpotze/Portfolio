@@ -1,3 +1,4 @@
+import { useQuality } from '@app/QualityContext';
 import { GlassLogoMaterial } from '@canvas/shared/materials/GlassLogoMaterial';
 import useNoiseTexture from '@hooks/useNoiseTexture';
 import { useFBO, useGLTF } from '@react-three/drei';
@@ -12,6 +13,7 @@ function LogoMesh({ enableFBO = true, ...props }) {
     const meshRef = useRef();
     const materialRef = useRef();
     const frameCount = useRef(0);
+    const { quality } = useQuality();
 
     // Reduce FBO resolution for better performance
     const fbo = useFBO(256, 256, {
@@ -43,9 +45,10 @@ function LogoMesh({ enableFBO = true, ...props }) {
             materialRef.current.uTime = state.clock.elapsedTime;
             materialRef.current.uResolution.set(state.size.width, state.size.height);
 
-            // Only render to FBO when enabled and every other frame for better performance
+            // Only render to FBO when enabled — skip frequency based on quality
+            const skipInterval = quality === 'low' ? 3 : quality === 'medium' ? 2 : 1;
             frameCount.current++;
-            if (enableFBO && frameCount.current % 2 === 0) {
+            if (enableFBO && frameCount.current % skipInterval === 0) {
                 const oldTarget = state.gl.getRenderTarget();
                 meshRef.current.visible = false;
                 state.gl.setRenderTarget(fbo);

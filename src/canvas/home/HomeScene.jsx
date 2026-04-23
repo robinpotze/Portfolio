@@ -1,12 +1,12 @@
 import Rig from '@canvas/shared/camera/Rig';
 import BackgroundMesh from '@canvas/shared/meshes/BackgroundMesh';
 import LogoMesh from '@canvas/shared/meshes/LogoMesh';
-import { ENTRY, FLOAT_CONFIG } from '@config/animation.config';
+import { FLOAT_CONFIG, REVEAL, SCENE, TIMEOUT, BREAKPOINTS } from '@config/animation.config';
 import useAdaptiveQuality from '@hooks/useAdaptiveQuality';
 import useCameraAnimation from '@hooks/useCameraAnimation';
 import useObjectAnimation from '@hooks/useObjectAnimation';
 import { Float, PerspectiveCamera, Text } from '@react-three/drei';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import { Bloom, EffectComposer, N8AO } from '@react-three/postprocessing';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import LaserPlane from './LaserPlane';
@@ -18,6 +18,10 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true, 
     const lightRef = useRef();
     const cameraRef = useRef();
     const [entryComplete, setEntryComplete] = useState(false);
+
+    const { size } = useThree();
+
+    const viewportScale = useMemo(() => Math.max(0.3, Math.min(1, size.width / BREAKPOINTS.REFERENCE_WIDTH)), [size.width]);
 
     // Smoothly interpolated float intensity to avoid jarring snaps on quality change
     const floatIntensityRef = useRef(0);
@@ -43,10 +47,7 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true, 
         rotationIntensityRef.current += (targetRotation - prevRotation) * Math.min(1, lerpSpeed * delta);
 
         // Only trigger re-render when the change is visually significant
-        if (
-            Math.abs(floatIntensityRef.current - smoothFloat.float) > 0.01 ||
-            Math.abs(rotationIntensityRef.current - smoothFloat.rotation) > 0.01
-        ) {
+        if (Math.abs(floatIntensityRef.current - smoothFloat.float) > 0.01 || Math.abs(rotationIntensityRef.current - smoothFloat.rotation) > 0.01) {
             setSmoothFloat({ float: floatIntensityRef.current, rotation: rotationIntensityRef.current });
         }
     });
@@ -91,62 +92,60 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true, 
         }
         const timer = setTimeout(() => {
             setEntryComplete(true);
-        }, ENTRY.COMPLETE_TIMEOUT_MS);
+        }, TIMEOUT.ENTRY_COMPLETE_MS);
         return () => clearTimeout(timer);
     }, [startAnimations]);
 
     // Memoize animation configs to prevent recreation
-    const logoAnimConfig = useMemo(() => {
-        const width = window.innerWidth;
-        const scaleFactor = width <= 375 ? 0.35 : width <= 768 ? 0.5 : 1;
-
-        return {
-            duration: ENTRY.DURATION,
+    const logoAnimConfig = useMemo(
+        () => ({
+            duration: REVEAL.DURATION,
             startPosition: [0, 0, 20],
             endPosition: [0, 0, -5],
             scrollEndPosition: [0, 0, -15],
-            startScale: [4 * scaleFactor, 4 * scaleFactor, 4 * scaleFactor],
-            endScale: [2.5 * scaleFactor, 2.5 * scaleFactor, 2.5 * scaleFactor],
-            scrollEndScale: [2 * scaleFactor, 2 * scaleFactor, 2 * scaleFactor],
-            scrollProgress,
-            enabled: startAnimations,
-        };
-    }, [scrollProgress, startAnimations]);
-
-    const backgroundAnimConfig = useMemo(
-        () => ({
-            duration: ENTRY.DURATION,
-            startPosition: [0, 0, -15],
-            endPosition: [0, 0, -30],
-            scrollEndPosition: [0, 0, -10],
-            startScale: [8, 8, 8],
-            endScale: [6, 6, 6],
-            scrollEndScale: [5, 5, 5],
+            startScale: [4 * viewportScale, 4 * viewportScale, 4 * viewportScale],
+            endScale: [2.5 * viewportScale, 2.5 * viewportScale, 2.5 * viewportScale],
+            scrollEndScale: [2 * viewportScale, 2 * viewportScale, 2 * viewportScale],
             scrollProgress,
             enabled: startAnimations,
         }),
-        [scrollProgress, startAnimations]
+        [scrollProgress, startAnimations, viewportScale]
+    );
+
+    const backgroundAnimConfig = useMemo(
+        () => ({
+            duration: REVEAL.DURATION,
+            startPosition: [0, 0, -15],
+            endPosition: [0, 0, -30],
+            scrollEndPosition: [0, 0, -10],
+            startScale: [8 * viewportScale, 8 * viewportScale, 8 * viewportScale],
+            endScale: [6 * viewportScale, 6 * viewportScale, 6 * viewportScale],
+            scrollEndScale: [5 * viewportScale, 5 * viewportScale, 5 * viewportScale],
+            scrollProgress,
+            enabled: startAnimations,
+        }),
+        [scrollProgress, startAnimations, viewportScale]
     );
 
     const subtitleAnimConfig = useMemo(
         () => ({
-            duration: ENTRY.DURATION,
-            delay: ENTRY.DELAY,
+            duration: REVEAL.DURATION,
+            delay: REVEAL.DURATION,
             startPosition: [0, -10, 20],
             endPosition: [0, -9, -5],
             scrollEndPosition: [0, -7, -5],
-            startScale: [1, 1, 1],
-            endScale: [1, 1, 1],
-            scrollEndScale: [0.9, 0.9, 0.9],
+            startScale: [viewportScale, viewportScale, viewportScale],
+            endScale: [viewportScale, viewportScale, viewportScale],
+            scrollEndScale: [0.9 * viewportScale, 0.9 * viewportScale, 0.9 * viewportScale],
             scrollProgress,
             enabled: startAnimations,
         }),
-        [scrollProgress, startAnimations]
+        [scrollProgress, startAnimations, viewportScale]
     );
 
     const cameraAnimConfig = useMemo(
         () => ({
-            duration: ENTRY.CAMERA_DURATION,
+            duration: SCENE.CAMERA_DURATION,
             startPosition: [0, 0, 30],
             endPosition: [0, 0, 20],
             scrollEndPosition: [0, 0, 10],
@@ -173,7 +172,7 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true, 
             if (lightRef.current) {
                 lightRef.current.intensity = 1;
             }
-        }, ENTRY.FADE_DURATION * 1000);
+        }, SCENE.FADE_DURATION * 1000);
         return () => clearTimeout(timer);
     }, [startAnimations]);
 
@@ -196,11 +195,7 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true, 
                 </Text>
             </group>
 
-            <Float
-                floatIntensity={smoothFloat.float}
-                rotationIntensity={smoothFloat.rotation}
-                speed={FLOAT_CONFIG.SPEED}
-            >
+            <Float floatIntensity={smoothFloat.float} rotationIntensity={smoothFloat.rotation} speed={FLOAT_CONFIG.SPEED}>
                 <group ref={logoRef} scale={0.5}>
                     <LogoMesh enableFBO={startAnimations && entryComplete && quality !== 'low'} />
                 </group>

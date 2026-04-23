@@ -1,5 +1,6 @@
 import NineSliceBorder from '@components/decoration/NineSliceBorder';
 import { SPRING_CONFIG } from '@config/animation.config';
+import { CANVAS_DPR, CANVAS_GL_DEFAULTS } from '@config/canvas.config';
 import { CAROUSEL_CONFIG } from '@config/carousel.config';
 import useBorderProjection from '@hooks/useBorderProjection';
 import { PerspectiveCamera } from '@react-three/drei';
@@ -57,9 +58,10 @@ export default function WorkCanvas({ items, onCardNavigate, onScrollChange }) {
 
         lenisRef.current = lenis;
 
-        lenis.on('scroll', ({ progress }) => {
+        const onScroll = ({ progress }) => {
             scrollProgressRef.current = progress;
-        });
+        };
+        lenis.on('scroll', onScroll);
 
         let mounted = true;
         let idleFrames = 0;
@@ -91,6 +93,7 @@ export default function WorkCanvas({ items, onCardNavigate, onScrollChange }) {
 
         return () => {
             mounted = false;
+            lenis.off('scroll', onScroll);
             lenis.destroy();
             lenisRef.current = null;
         };
@@ -107,16 +110,15 @@ export default function WorkCanvas({ items, onCardNavigate, onScrollChange }) {
     return (
         <div ref={containerRef} className={styles.canvasContainer}>
             <Canvas
-                dpr={[1, 1.5]}
-                gl={{ antialias: false, powerPreference: 'high-performance' }}
+                dpr={CANVAS_DPR}
+                performance={{ min: 0.5 }}
+                gl={{
+                    ...CANVAS_GL_DEFAULTS,
+                    antialias: false,
+                }}
                 style={canvasStyle}
             >
-                <PerspectiveCamera
-                    ref={cameraRef}
-                    makeDefault
-                    position={CAROUSEL_CONFIG.CAMERA.POSITION}
-                    fov={window.innerWidth <= 768 ? CAROUSEL_CONFIG.CAMERA.FOV + 15 : CAROUSEL_CONFIG.CAMERA.FOV}
-                />
+                <PerspectiveCamera ref={cameraRef} makeDefault position={CAROUSEL_CONFIG.CAMERA.POSITION} fov={CAROUSEL_CONFIG.CAMERA.FOV} />
                 <WorkScene
                     items={items}
                     scrollProgressRef={scrollProgressRef}

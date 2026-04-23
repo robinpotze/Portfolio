@@ -1,4 +1,4 @@
-import { LOADING } from '@config/animation.config';
+import { REVEAL, TIMEOUT } from '@config/animation.config';
 import { useProgress } from '@react-three/drei';
 import { getCSSColorRGBA } from '@utils/cssUtils';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -209,7 +209,7 @@ export default function LoadingScreen({ onComplete, minDisplayTime = 1500, logoS
                     if (onComplete) {
                         onComplete();
                     }
-                }, LOADING.FADE_OUT_MS);
+                }, TIMEOUT.LOADING_FADE_MS);
                 timerRefs.current.push(innerTimer);
             }, remainingTime);
             timerRefs.current.push(outerTimer);
@@ -268,7 +268,7 @@ export default function LoadingScreen({ onComplete, minDisplayTime = 1500, logoS
                     className={styles.loadingScreen}
                     initial={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: LOADING.EXIT_DURATION, ease: 'easeOut' }}
+                    transition={{ duration: REVEAL.DURATION, ease: 'easeOut' }}
                 >
                     {logoSrc && <BlockLogo logoSrc={logoSrc} cycleIndex={messageIndex} />}
                     <div className={`${styles.loadingText} deco-small`}>

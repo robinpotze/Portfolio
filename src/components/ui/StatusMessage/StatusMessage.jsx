@@ -19,17 +19,18 @@ const panelVariants = {
         opacity: 0,
         clipPath: 'inset(-32px -32px -32px 100%)',
     },
-    visible: {
+    visible: (delay = 0) => ({
         opacity: 1,
         clipPath: 'inset(-32px -32px -32px -32px)',
         transition: {
+            delay,
             duration: REVEAL.DURATION,
             ease: EASING.EMPHASIZED,
             when: 'beforeChildren',
             delayChildren: REVEAL.DELAY,
             staggerChildren: STAGGER.FAST,
         },
-    },
+    }),
     exit: {
         opacity: 0,
         clipPath: 'inset(-32px -32px -32px 100%)',
@@ -83,7 +84,7 @@ const fromRightVariants = {
     },
 };
 
-export default function StatusMessage({ status = 'success', message, isVisible = true }) {
+export default function StatusMessage({ status = 'success', message, isVisible = true, delay = 0 }) {
     const { Icon, Decal } = STATUS_CONFIG[status] ?? STATUS_CONFIG.success;
 
     return (
@@ -92,6 +93,7 @@ export default function StatusMessage({ status = 'success', message, isVisible =
                 <motion.div
                     className={`${styles.statusMessage} ${styles[status] ?? ''}`}
                     variants={panelVariants}
+                    custom={delay}
                     initial="hidden"
                     animate="visible"
                     exit="exit"

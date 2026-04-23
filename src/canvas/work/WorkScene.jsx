@@ -1,15 +1,37 @@
+import { BREAKPOINTS } from '@config/animation.config';
 import { CAROUSEL_CONFIG } from '@config/carousel.config';
+import useAdaptiveQuality from '@hooks/useAdaptiveQuality';
 import { useFrame, useThree } from '@react-three/fiber';
 import { calculateCardCenteredness } from '@utils/carousel';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import WorkCard from './WorkCard';
 
-export default function WorkScene({ items = [], scrollProgressRef, onCardNavigate, onScrollChange, onCenterednessChange, rigRef: externalRigRef, isMobile }) {
+export default function WorkScene({
+    items = [],
+    scrollProgressRef,
+    onCardNavigate,
+    onScrollChange,
+    onCenterednessChange,
+    rigRef: externalRigRef,
+    isMobile,
+}) {
     const rigRef = useRef();
     const centerednessRef = useRef([]);
     const bestIndexRef = useRef(0);
     const [visibleCenter, setVisibleCenter] = useState(0);
-    const { camera } = useThree();
+    const { camera, size } = useThree();
+
+    // Adaptive quality monitoring for the work scene
+    useAdaptiveQuality({ targetFps: 55, enabled: items.length > 0 });
+
+    // Reactive FOV based on viewport width
+    useEffect(() => {
+        const fov = size.width <= BREAKPOINTS.TABLET ? CAROUSEL_CONFIG.CAMERA.FOV + 15 : CAROUSEL_CONFIG.CAMERA.FOV;
+        if (camera.isPerspectiveCamera && camera.fov !== fov) {
+            camera.fov = fov;
+            camera.updateProjectionMatrix();
+        }
+    }, [size.width, camera]);
 
     // Sync external ref for border projection
     const setRigRef = (node) => {
@@ -71,7 +93,16 @@ export default function WorkScene({ items = [], scrollProgressRef, onCardNavigat
                 <group ref={setRigRef}>
                     {items.map((item, i) => {
                         const distance = Math.abs(i - visibleCenter);
-                        return <WorkCard key={item.key} item={item} index={i} visible={distance <= 1} onNavigate={onCardNavigate} centerednessRef={centerednessRef} />;
+                        return (
+                            <WorkCard
+                                key={item.key}
+                                item={item}
+                                index={i}
+                                visible={distance <= 1}
+                                onNavigate={onCardNavigate}
+                                centerednessRef={centerednessRef}
+                            />
+                        );
                     })}
                 </group>
             </group>

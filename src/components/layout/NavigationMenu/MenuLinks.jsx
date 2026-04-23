@@ -1,4 +1,4 @@
-import { EASING, MENU_TIMING } from '@config/animation.config';
+import { EASING, REVEAL, STAGGER } from '@config/animation.config';
 import { motion } from 'framer-motion';
 import styles from './NavigationMenu.module.css';
 
@@ -23,8 +23,8 @@ export default function MenuLinks({ open, navigateWithCurtain }) {
             variants={{
                 open: {
                     transition: {
-                        staggerChildren: MENU_TIMING.ITEM_STAGGER,
-                        delayChildren: MENU_TIMING.ITEM_DELAY_BASE,
+                        staggerChildren: STAGGER.SLOW,
+                        delayChildren: 0.15,
                     },
                 },
             }}
@@ -38,7 +38,7 @@ export default function MenuLinks({ open, navigateWithCurtain }) {
                                 y: '0%',
                                 rotate: 0,
                                 transition: {
-                                    duration: MENU_TIMING.ITEM_DURATION,
+                                    duration: REVEAL.LONG_DURATION,
                                     ease: EASING.EMPHASIZED,
                                 },
                             },

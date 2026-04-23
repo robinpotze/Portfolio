@@ -1,3 +1,4 @@
+import { useQuality } from '@app/QualityContext';
 import { useFrame } from '@react-three/fiber';
 import { useRef } from 'react';
 
@@ -6,11 +7,12 @@ export default function Rig({ intensity = 0.5 }) {
     const basePosRef = useRef({ x: 0, y: 0, z: 0 });
     const previousOffsetRef = useRef({ x: 0, y: 0, z: 0 });
     const frameCount = useRef(0);
+    const { quality } = useQuality();
 
     useFrame((state, delta) => {
-        // Update every other frame to reduce CPU cost
+        const skipInterval = quality === 'low' ? 3 : quality === 'medium' ? 2 : 1;
         frameCount.current++;
-        if (frameCount.current % 2 !== 0) {
+        if (frameCount.current % skipInterval !== 0) {
             return;
         }
         const targetOffsetX = Math.sin(-state.pointer.x) * 5 * intensity;

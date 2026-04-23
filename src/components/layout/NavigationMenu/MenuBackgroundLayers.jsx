@@ -1,4 +1,4 @@
-import { EASING, MENU_TIMING } from '@config/animation.config';
+import { EASING, REVEAL, STAGGER } from '@config/animation.config';
 import { motion } from 'framer-motion';
 import styles from './NavigationMenu.module.css';
 
@@ -15,9 +15,9 @@ export default function MenuBackgroundLayers({ open }) {
                     initial={{ x: '-100%' }}
                     animate={{ x: open ? '0%' : '-100%' }}
                     transition={{
-                        duration: MENU_TIMING.LAYER_DURATION,
+                        duration: REVEAL.EXIT_DURATION,
                         ease: EASING.EMPHASIZED,
-                        delay: i * MENU_TIMING.LAYER_STAGGER,
+                        delay: i * STAGGER.MICRO,
                     }}
                 />
             ))}

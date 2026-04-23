@@ -1,4 +1,4 @@
-import { ENTRY } from '@config/animation.config';
+import { REVEAL } from '@config/animation.config';
 import { useFrame } from '@react-three/fiber';
 import { easeCurve, entryEase } from '@utils/easingFunctions.js';
 import { useEffect, useRef } from 'react';
@@ -6,8 +6,8 @@ import * as THREE from 'three';
 
 export default function useObjectAnimation(ref, routeName, options = {}) {
     const {
-        duration = ENTRY.DURATION,
-        delay = 0,
+        duration = REVEAL.DURATION,
+        delay = REVEAL.DELAY,
         startPosition = [0, 0, 0],
         endPosition = [0, 0, 0],
         startScale = [1, 1, 1],
@@ -18,7 +18,11 @@ export default function useObjectAnimation(ref, routeName, options = {}) {
         scrollProgress = 0,
     } = options;
 
-    const optionsRef = useRef({
+    const optionsRef = useRef(null);
+
+    // Sync ref on every render — callers already memoize config objects,
+    // so this is cheap and avoids a long dependency array in useEffect.
+    optionsRef.current = {
         finalEndPosition: scrollEndPosition || endPosition,
         finalEndScale: scrollEndScale || endScale,
         duration,
@@ -27,20 +31,7 @@ export default function useObjectAnimation(ref, routeName, options = {}) {
         endPosition,
         startScale,
         endScale,
-    });
-
-    useEffect(() => {
-        optionsRef.current = {
-            finalEndPosition: scrollEndPosition || endPosition,
-            finalEndScale: scrollEndScale || endScale,
-            duration,
-            delay,
-            startPosition,
-            endPosition,
-            startScale,
-            endScale,
-        };
-    }, [duration, delay, startPosition, endPosition, startScale, endScale, scrollEndPosition, scrollEndScale]);
+    };
 
     const startTime = useRef(null);
     const hasCompletedEntry = useRef(false);

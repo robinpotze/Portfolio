@@ -1,4 +1,4 @@
-import { ENTRY } from '@config/animation.config';
+import { CAMERA_DEFAULTS, SCENE } from '@config/animation.config';
 import { useFrame } from '@react-three/fiber';
 import { easeCurve, entryEase } from '@utils/easingFunctions.js';
 import { useEffect, useRef } from 'react';
@@ -17,12 +17,12 @@ import * as THREE from 'three';
  */
 export default function useCameraAnimation(cameraRef, routeName, options = {}) {
     const {
-        duration = ENTRY.CAMERA_DURATION,
-        startPosition = [0, 0, 30],
-        endPosition = [0, 0, 20],
+        duration = SCENE.CAMERA_DURATION,
+        startPosition = CAMERA_DEFAULTS.START_POSITION,
+        endPosition = CAMERA_DEFAULTS.END_POSITION,
         scrollEndPosition = null,
-        startFov = 70,
-        endFov = 50,
+        startFov = CAMERA_DEFAULTS.START_FOV,
+        endFov = CAMERA_DEFAULTS.END_FOV,
         scrollEndFov = null,
         enabled = true,
         scrollProgress = 0,
@@ -44,7 +44,7 @@ export default function useCameraAnimation(cameraRef, routeName, options = {}) {
             initializedRoute.current = routeName;
             lastFov.current = startFov;
         }
-    }, [routeName, startFov]);
+    }, [routeName]);
 
     useFrame(({ clock, camera }) => {
         if (!enabled) {

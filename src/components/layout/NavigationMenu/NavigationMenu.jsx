@@ -1,4 +1,4 @@
-import { GLITCH, MENU_TIMING } from '@config/animation.config';
+import { REVEAL, TIMEOUT } from '@config/animation.config';
 import { usePageTransition } from '@hooks/usePageTransition';
 import { animate } from 'framer-motion';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
@@ -18,6 +18,7 @@ export default function NavigationMenu() {
     const busy = useRef(false);
 
     const glitchRefs = useRef({ main: null, red: null, blue: null });
+    const timerIds = useRef([]);
 
     useLayoutEffect(() => {
         if (buttonRef.current) {
@@ -38,7 +39,7 @@ export default function NavigationMenu() {
                     opacity: [1, 0.3, 0.8, 0.2, 0],
                     x: [0, -2, 1, -3, 0],
                 },
-                { duration: GLITCH.DURATION }
+                { duration: REVEAL.EXIT_DURATION }
             ),
             animate(
                 red,
@@ -47,7 +48,7 @@ export default function NavigationMenu() {
                     x: [0, 3, -2, 4, 2],
                     y: [0, -1, 1, -2, 0],
                 },
-                { duration: GLITCH.DURATION }
+                { duration: REVEAL.EXIT_DURATION }
             ),
             animate(
                 blue,
@@ -56,7 +57,7 @@ export default function NavigationMenu() {
                     x: [0, -3, 2, -4, -2],
                     y: [0, 1, -1, 2, 1],
                 },
-                { duration: GLITCH.DURATION }
+                { duration: REVEAL.EXIT_DURATION }
             ),
         ]);
 
@@ -69,7 +70,7 @@ export default function NavigationMenu() {
                     opacity: [0, 0.2, 0.7, 0.4, 1],
                     x: [0, 2, -1, 3, 0],
                 },
-                { duration: GLITCH.DURATION }
+                { duration: REVEAL.EXIT_DURATION }
             ),
             animate(
                 red,
@@ -78,7 +79,7 @@ export default function NavigationMenu() {
                     x: [2, -3, 4, -2, 0],
                     y: [0, 1, -2, 1, 0],
                 },
-                { duration: GLITCH.DURATION }
+                { duration: REVEAL.EXIT_DURATION }
             ),
             animate(
                 blue,
@@ -87,7 +88,7 @@ export default function NavigationMenu() {
                     x: [-2, 3, -4, 2, 0],
                     y: [1, -1, 2, -1, 0],
                 },
-                { duration: GLITCH.DURATION }
+                { duration: REVEAL.EXIT_DURATION }
             ),
         ]);
     }, []);
@@ -102,15 +103,19 @@ export default function NavigationMenu() {
         setOpen(willOpen);
         runGlitch(willOpen ? 'Close' : 'Menu');
 
-        setTimeout(() => {
-            if (buttonRef.current) {
-                buttonRef.current.style.color = willOpen ? BTN_COLOR_OPEN : BTN_COLOR;
-            }
-        }, GLITCH.COLOR_DELAY_MS);
+        timerIds.current.push(
+            setTimeout(() => {
+                if (buttonRef.current) {
+                    buttonRef.current.style.color = willOpen ? BTN_COLOR_OPEN : BTN_COLOR;
+                }
+            }, TIMEOUT.GLITCH_COLOR_MS)
+        );
 
-        setTimeout(() => {
-            busy.current = false;
-        }, GLITCH.BUSY_TIMEOUT_MS);
+        timerIds.current.push(
+            setTimeout(() => {
+                busy.current = false;
+            }, TIMEOUT.GLITCH_BUSY_MS)
+        );
     }, [open, runGlitch]);
 
     const onClose = useCallback(() => {
@@ -129,6 +134,13 @@ export default function NavigationMenu() {
         };
     }, [open, toggle]);
 
+    useEffect(
+        () => () => {
+            timerIds.current.forEach(clearTimeout);
+        },
+        []
+    );
+
     const navigateWithCurtain = useCallback(
         (path, name) => {
             setOpen(false);
@@ -136,9 +148,11 @@ export default function NavigationMenu() {
             if (buttonRef.current) {
                 buttonRef.current.style.color = BTN_COLOR;
             }
-            setTimeout(() => {
-                navigateWithTransition(path, name);
-            }, MENU_TIMING.CLOSE_NAV_DELAY_MS);
+            timerIds.current.push(
+                setTimeout(() => {
+                    navigateWithTransition(path, name);
+                }, TIMEOUT.NAV_CLOSE_MS)
+            );
         },
         [navigateWithTransition, runGlitch]
     );

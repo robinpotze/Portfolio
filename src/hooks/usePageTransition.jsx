@@ -17,20 +17,21 @@ export function PageTransitionProvider({ children }) {
     const [curtainOpen, setCurtainOpen] = useState(false);
     const [pageName, setPageName] = useState(null);
     const [direction, setDirection] = useState('right');
+    const [transitionKey, setTransitionKey] = useState(0);
     const pendingNavigation = useRef(null);
     const pendingState = useRef(null);
-    const transitionKey = useRef(0);
 
     const navigateWithTransition = useCallback((path, name, dir = 'right', state) => {
         if (pendingNavigation.current) {
-            return;
+            return false;
         }
         pendingNavigation.current = path;
         pendingState.current = state || null;
         setPageName(name || null);
         setDirection(dir);
-        transitionKey.current += 1;
+        setTransitionKey((k) => k + 1);
         setCurtainOpen(true);
+        return true;
     }, []);
 
     const onCoverComplete = useCallback(() => {
@@ -39,8 +40,8 @@ export function PageTransitionProvider({ children }) {
             navigate(pendingNavigation.current, { state: navState });
             pendingNavigation.current = null;
             pendingState.current = null;
+            setCurtainOpen(false);
         }
-        setCurtainOpen(false);
     }, [navigate]);
 
     const onRevealComplete = useCallback(() => {
@@ -51,7 +52,7 @@ export function PageTransitionProvider({ children }) {
     return (
         <PageTransitionContext.Provider value={{ navigateWithTransition }}>
             <CurtainTransition
-                key={transitionKey.current}
+                key={transitionKey}
                 isOpen={curtainOpen}
                 direction={direction}
                 pageName={pageName}

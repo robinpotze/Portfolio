@@ -7,7 +7,7 @@ import RadGridTxt from '@components/decoration/RadialText/TXT/RAD_GRID_TXT';
 import TypewriterText from '@components/effects/TypewriterText';
 import ErrorBoundary from '@components/ErrorBoundary';
 import StatusMessage from '@components/ui/StatusMessage/StatusMessage';
-import { CONTACT_TIMING, EASING, REVEAL, STAGGER } from '@config/animation.config';
+import { EASING, REVEAL, STAGGER, TIMEOUT } from '@config/animation.config';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useRef, useState } from 'react';
 import { CORNER_BL_LINES, ERROR_LOG_LINES, STATUS_GRID_LINES } from './contact.data';
@@ -56,7 +56,7 @@ const scaleExit = {
     opacity: 0,
     scaleY: 0,
     transition: {
-        duration: CONTACT_TIMING.PHASE_TRANSITION_DURATION,
+        duration: REVEAL.MEDIUM_DURATION,
         ease: EASING.EXIT,
     },
 };
@@ -70,7 +70,7 @@ const statusFormVariants = {
         scaleX: 1,
         opacity: 1,
         transition: {
-            duration: CONTACT_TIMING.FORM_DURATION,
+            duration: REVEAL.SLOW_DURATION,
             ease: EASING.EMPHASIZED,
         },
     },
@@ -85,7 +85,7 @@ const statusFormContentVariants = {
         opacity: 1,
         transition: {
             duration: REVEAL.DURATION,
-            delay: CONTACT_TIMING.FORM_CONTENT_DELAY,
+            delay: REVEAL.MEDIUM_DURATION,
         },
     },
 };
@@ -102,7 +102,7 @@ const cornerVariants = {
         y: 0,
         transition: {
             duration: REVEAL.QUICK_DURATION,
-            delay: CONTACT_TIMING.CORNER_DELAY,
+            delay: REVEAL.MEDIUM_DURATION + STAGGER.PAGE,
             ease: EASING.EMPHASIZED,
         },
     },
@@ -124,9 +124,11 @@ const messageFormVariants = {
         opacity: 1,
         scaleX: 1,
         transition: {
-            duration: CONTACT_TIMING.FORM_DURATION,
+            delay: STAGGER.PAGE,
+            duration: REVEAL.SLOW_DURATION,
             ease: EASING.EMPHASIZED,
-            staggerChildren: CONTACT_TIMING.FORM_STAGGER,
+            delayChildren: STAGGER.PAGE,
+            staggerChildren: STAGGER.PAGE,
         },
     },
     exit: scaleExit,
@@ -139,8 +141,28 @@ const fieldVariants = {
     visible: {
         opacity: 1,
         transition: {
-            duration: CONTACT_TIMING.FIELD_DURATION,
+            duration: REVEAL.MEDIUM_DURATION,
             ease: EASING.EMPHASIZED,
+        },
+    },
+};
+
+const titleVariants = {
+    hidden: { opacity: 0, y: REVEAL.Y_OFFSET },
+    visible: {
+        opacity: 1,
+        y: 0,
+        transition: {
+            duration: REVEAL.QUICK_DURATION,
+            ease: EASING.EMPHASIZED,
+        },
+    },
+    exit: {
+        opacity: 0,
+        y: -REVEAL.Y_OFFSET,
+        transition: {
+            duration: REVEAL.EXIT_DURATION,
+            ease: EASING.EXIT,
         },
     },
 };
@@ -174,7 +196,7 @@ export default function Contact() {
             setTimeout(() => {
                 setPhase('intercept');
                 setGlitching(false);
-            }, CONTACT_TIMING.GLITCH_DURATION_MS);
+            }, TIMEOUT.GLITCH_DURATION_MS);
         }
     }, [canSend, glitching]);
 
@@ -225,7 +247,11 @@ export default function Contact() {
                 )}
 
                 <AnimatePresence>
-                    {phase !== 'complete' && <motion.h2 className={titleClass}>{title}</motion.h2>}
+                    {phase !== 'complete' && (
+                        <motion.h2 className={titleClass} variants={titleVariants} initial="hidden" animate="visible" exit="exit">
+                            {title}
+                        </motion.h2>
+                    )}
                 </AnimatePresence>
 
                 <AnimatePresence>
@@ -286,13 +312,37 @@ export default function Contact() {
                     {phase !== 'message' && (
                         <motion.div
                             className={styles.errorSection}
-                            initial={{ opacity: 0 }}
+                            initial={{ opacity: 1 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0, transition: { duration: REVEAL.EXIT_DURATION, ease: EASING.EXIT } }}
                         >
-                            <StatusMessage status={statusType} message={statusMessage} />
+                            <StatusMessage status={statusType} message={statusMessage} delay={REVEAL.MEDIUM_DURATION + 2 * STAGGER.PAGE} />
                             {isIntercept && (
-                                <TypewriterText lines={ERROR_LOG_LINES} className={styles.errorlog} rowClassName={styles.logRow} />
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{
+                                        opacity: 1,
+                                        transition: {
+                                            delay: REVEAL.MEDIUM_DURATION + 3 * STAGGER.PAGE,
+                                            duration: REVEAL.QUICK_DURATION,
+                                            ease: EASING.EMPHASIZED,
+                                        },
+                                    }}
+                                    exit={{
+                                        opacity: 0,
+                                        transition: {
+                                            duration: REVEAL.EXIT_DURATION,
+                                            ease: EASING.EXIT,
+                                        },
+                                    }}
+                                >
+                                    <TypewriterText
+                                        lines={ERROR_LOG_LINES}
+                                        className={styles.errorlog}
+                                        rowClassName={styles.logRow}
+                                        delay={(REVEAL.MEDIUM_DURATION + 3 * STAGGER.PAGE) * 1000}
+                                    />
+                                </motion.div>
                             )}
                         </motion.div>
                     )}
@@ -337,10 +387,7 @@ export default function Contact() {
                                 <div className={styles.corner}>
                                     <PlsIcon className={styles.deco} aria-hidden="true" />
                                 </div>
-                                <TypewriterText
-                                    lines={CORNER_BL_LINES}
-                                    rowClassName={styles.logRow}
-                                />
+                                <TypewriterText lines={CORNER_BL_LINES} rowClassName={styles.logRow} />
                             </motion.div>
                             <motion.div
                                 className={styles.cornerBr}
@@ -354,20 +401,39 @@ export default function Contact() {
                                     <PlsIcon className={styles.deco} aria-hidden="true" />
                                 </div>
                             </motion.div>
-                            <TypewriterText lines={STATUS_GRID_LINES} className={styles.statusGrid} rowClassName={styles.logRow} />
+                            <motion.div
+                                className={styles.statusGridWrapper}
+                                initial={{ opacity: 0 }}
+                                animate={{
+                                    opacity: 1,
+                                    transition: {
+                                        delay: REVEAL.MEDIUM_DURATION + 4 * STAGGER.PAGE,
+                                        duration: REVEAL.QUICK_DURATION,
+                                        ease: EASING.EMPHASIZED,
+                                    },
+                                }}
+                                exit={{
+                                    opacity: 0,
+                                    transition: {
+                                        duration: REVEAL.EXIT_DURATION,
+                                        ease: EASING.EXIT,
+                                    },
+                                }}
+                            >
+                                <TypewriterText
+                                    lines={STATUS_GRID_LINES}
+                                    className={styles.statusGrid}
+                                    rowClassName={styles.logRow}
+                                    delay={(REVEAL.MEDIUM_DURATION + 4 * STAGGER.PAGE) * 1000}
+                                />
+                            </motion.div>
                         </>
                     )}
                 </AnimatePresence>
 
                 <AnimatePresence>
                     {phase !== 'message' && (
-                        <motion.div
-                            className={statusFormClass}
-                            variants={statusFormVariants}
-                            initial="hidden"
-                            animate="visible"
-                            exit="exit"
-                        >
+                        <motion.div className={statusFormClass} variants={statusFormVariants} initial="hidden" animate="visible" exit="exit">
                             <motion.div className={styles.statusFormContent} variants={statusFormContentVariants}>
                                 {isIntercept && (
                                     <>

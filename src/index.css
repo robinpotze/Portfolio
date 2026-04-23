@@ -38,6 +38,10 @@
     --s-xl: 64px;
 
     --content-max-width: 60%;
+
+    --bp-mobile: 375px;
+    --bp-tablet: 768px;
+    --bp-desktop: 1024px;
 }
 
 html {

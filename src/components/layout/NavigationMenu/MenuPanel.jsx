@@ -1,4 +1,4 @@
-import { EASING, MENU_TIMING } from '@config/animation.config';
+import { EASING, REVEAL } from '@config/animation.config';
 import { AnimatePresence, motion } from 'framer-motion';
 import MenuLinks from './MenuLinks';
 import MenuSocials from './MenuSocials';
@@ -14,9 +14,9 @@ export default function MenuPanel({ open, onClose: _onClose, navigateWithCurtain
                 initial={{ x: '-100%' }}
                 animate={{ x: open ? '0%' : '-100%' }}
                 transition={{
-                    duration: open ? MENU_TIMING.PANEL_OPEN_DURATION : MENU_TIMING.PANEL_CLOSE_DURATION,
+                    duration: open ? REVEAL.QUICK_DURATION : REVEAL.EXIT_DURATION,
                     ease: open ? EASING.EMPHASIZED : EASING.EXIT,
-                    delay: open ? MENU_TIMING.PANEL_OPEN_DELAY : 0,
+                    delay: open ? REVEAL.EXIT_DURATION : 0,
                 }}
             >
                 <div className={styles.panelInner}>

@@ -9,7 +9,7 @@ import RedoAnimText from '@components/decoration/RandomText/RedoAnimText';
 import ScrollDown from '@components/decoration/ScrollDown';
 import LoadingScreen from '@components/effects/LoadingScreen';
 import ErrorBoundary from '@components/ErrorBoundary';
-import { EASING, LOADING, REVEAL, SCROLL_THRESHOLDS, STAGGER } from '@config/animation.config';
+import { EASING, REVEAL, SCROLL_THRESHOLDS, STAGGER, TIMEOUT } from '@config/animation.config';
 import { LASER_PARAMS } from '@config/laser.config';
 import useScrollNavigation from '@hooks/useScrollNavigation';
 import { useGLTF } from '@react-three/drei';
@@ -54,6 +54,7 @@ export default function Home() {
     const skipLoading = !!location.state?.fromNavigation;
     const [isLoading, setIsLoading] = useState(!skipLoading);
     const [showContent, setShowContent] = useState(skipLoading);
+    const loadingTimerRef = useRef(null);
 
     const { scrollProgress, resetNavigation } = useScrollNavigation(containerRef, {
         threshold: SCROLL_THRESHOLDS.HOME_TRANSITION,
@@ -81,11 +82,20 @@ export default function Home() {
     }, [location.state?.fromNavigation, resetNavigation, navigate]);
 
     const onLoadingComplete = () => {
-        setTimeout(() => {
+        loadingTimerRef.current = setTimeout(() => {
             setIsLoading(false);
             setShowContent(true);
-        }, LOADING.COMPLETE_DELAY_MS);
+        }, TIMEOUT.COMPLETE_DELAY_MS);
     };
+
+    useEffect(
+        () => () => {
+            if (loadingTimerRef.current) {
+                clearTimeout(loadingTimerRef.current);
+            }
+        },
+        []
+    );
 
     const laserProgress = showContent ? scrollProgress : 0;
     const laserParams = useMemo(() => {
@@ -98,7 +108,9 @@ export default function Home() {
 
     return (
         <>
-            {isLoading && <LoadingScreen onComplete={onLoadingComplete} minDisplayTime={LOADING.MIN_DISPLAY_MS} logoSrc="/img/logo/logo.svg" />}
+            {isLoading && (
+                <LoadingScreen onComplete={onLoadingComplete} minDisplayTime={TIMEOUT.LOADING_MIN_DISPLAY_MS} logoSrc="/img/logo/logo.svg" />
+            )}
             <div
                 className={styles.page}
                 ref={containerRef}

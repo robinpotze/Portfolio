@@ -1,10 +1,12 @@
 import ScrollReveal from '@components/effects/ScrollReveal';
 import CaseIntro from '@components/ui/CaseIntro/CaseIntro';
+import ComparisonBlock from '@components/ui/ComparisonBlock/ComparisonBlock';
 import DoubleImage from '@components/ui/DoubleImage/DoubleImage';
 import EvidenceRow from '@components/ui/EvidenceRow/EvidenceRow';
 import FeatureSplit from '@components/ui/FeatureSplit/FeatureSplit';
 import FullImage from '@components/ui/FullImage/FullImage';
 import HeroStatement from '@components/ui/HeroStatement/HeroStatement';
+import ImageGrid from '@components/ui/ImageGrid/ImageGrid';
 import StatementBlock from '@components/ui/StatementBlock/StatementBlock';
 import WorkHeader from '@components/ui/WorkHeader/WorkHeader';
 
@@ -12,16 +14,49 @@ import { Data } from './ld58.data';
 
 const assetPath = '/img/work/ld58/';
 
+const BRAND_IMAGES = [
+    { src: `${assetPath}Brands/9_WONDER.png`, alt: '9 Wonder beer label.' },
+    { src: `${assetPath}Brands/ATOMBREW.png`, alt: 'Atombrew beer label.' },
+    { src: `${assetPath}Brands/BEPIS.png`, alt: 'Bepis beer label.' },
+    { src: `${assetPath}Brands/BIGBESTIE.png`, alt: 'Big Bestie beer label.' },
+    { src: `${assetPath}Brands/BOMBOCLART.png`, alt: 'Bomboclart beer label.' },
+    { src: `${assetPath}Brands/CLANKERGREASE.png`, alt: 'Clankergrease beer label.' },
+    { src: `${assetPath}Brands/CYKACOLA.png`, alt: 'Cyka Cola beer label.' },
+    { src: `${assetPath}Brands/GONSTER.png`, alt: 'Gonster beer label.' },
+    { src: `${assetPath}Brands/HEIMLICH.png`, alt: 'Heimlich beer label.' },
+    { src: `${assetPath}Brands/HUFFBEER.png`, alt: 'Huff Beer label.' },
+    { src: `${assetPath}Brands/NOCAP.png`, alt: 'No Cap beer label.' },
+    { src: `${assetPath}Brands/RADHOPS.png`, alt: 'Radhops beer label.' },
+    { src: `${assetPath}Brands/SASKIAZEELAND.png`, alt: 'Saskia Zeeland beer label.' },
+    { src: `${assetPath}Brands/SYNTHALE.png`, alt: 'Synthale beer label.' },
+    { src: `${assetPath}Brands/THEONEBEER.png`, alt: 'The One Beer label.' },
+    { src: `${assetPath}Brands/VIGOR.png`, alt: 'Vigor beer label.' },
+];
+
+const TUTORIAL_IMAGES = [
+    { src: `${assetPath}Tutorial/TUT_01.png`, alt: 'Tutorial screen — controls and basic mechanics.' },
+    { src: `${assetPath}Tutorial/TUT_02.png`, alt: 'Tutorial screen — crate collection instructions.' },
+    { src: `${assetPath}Tutorial/TUT_03.png`, alt: 'Tutorial screen — bottle and cap details.' },
+    { src: `${assetPath}Tutorial/TUT_04.png`, alt: 'Tutorial screen — collection overview.' },
+];
+
+const CHANNEL_IMAGES = [
+    { src: `${assetPath}Channels/DOOMED.png`, alt: 'DOOMED TV channel screen.' },
+    { src: `${assetPath}Channels/TEST.png`, alt: 'Test pattern TV channel screen.' },
+    { src: `${assetPath}Channels/STATIC.png`, alt: 'Static TV channel screen.' },
+    { src: `${assetPath}Channels/STATIC2.png`, alt: 'Second static TV channel screen.' },
+];
+
 export default function Ld58() {
     return (
         <>
             {/* ── INTRO ── */}
 
             <CaseIntro
-                src={`${assetPath}Wallpaper.png`}
+                src={`${assetPath}Marketing/MARKET_Wallpaper.png`}
                 kicker={`LUDUM DARE / ${Data.year}`}
                 heading="72 hours to build a world worth cracking open."
-                subtitle="3D artist and UI designer for a 72-hour game jam."
+                subtitle="3D environments, branding, TV content, and audio for a satirical cap-collecting simulator."
             />
 
             {/* ── ROLE ── */}
@@ -29,8 +64,8 @@ export default function Ld58() {
             <StatementBlock label="ROLE">
                 <h2>Every surface, every label, every pixel — in three days.</h2>
                 <ScrollReveal>
-                    The full visual layer for a satirical cap-collecting simulator. Hand-modeled interiors, in-game UI, and a brand identity that
-                    sells the bit — all under the Ludum Dare 58 clock.
+                    The full visual layer for a satirical cap-collecting simulator. Hand-modeled interiors, sixteen knock-off beer brands, animated TV
+                    channels, tutorial graphics, and a cohesive brand identity — all under the Ludum Dare 58 clock.
                 </ScrollReveal>
             </StatementBlock>
 
@@ -38,7 +73,7 @@ export default function Ld58() {
                 items={[
                     { label: 'EVENT', value: 'Ludum Dare 58' },
                     { label: 'DURATION', value: '72 hours' },
-                    { label: 'ROLE', value: '3D Art, UI Design' },
+                    { label: 'ROLE', value: '3D Art, UI, Branding, Audio' },
                     { label: 'TOOLS', value: 'Unity, Blender, Figma' },
                 ]}
             />
@@ -48,12 +83,39 @@ export default function Ld58() {
             <WorkHeader
                 title="THE PAD"
                 subtitle="001:::ENVIRONMENT"
-                description="A bachelor pad built to feel lived-in. Every prop placed to tell a story of convenience and zero ambition. Warm 80s palette. Intentional mess. The kind of room you'd never leave — and that's the point."
+                description="A bachelor pad built to feel lived-in. Every prop placed to tell a story of convenience and zero ambition. Warm palette. Intentional mess. The kind of room you'd never leave — and that's the point."
             />
 
-            <FullImage src={`${assetPath}Styleframe.png`} alt="An 80s inspired interior of a bachelor with one goal in mind: collecting." />
+            <FullImage
+                src={`${assetPath}Environment/ENV_Chair.png`}
+                alt="An interior view of the bachelor pad — armchair, clutter, and warm lighting."
+            />
 
-            <FullImage src={`${assetPath}Styleframe2.png`} alt="Another angle of the bachelor pad interior." thin />
+            <ComparisonBlock
+                label="CONSTRUCTION"
+                heading="From wireframe to final render."
+                items={[
+                    {
+                        caption: 'WIREFRAME',
+                        src: `${assetPath}Environment/ENV_Chair_WireFrame.png`,
+                        alt: 'Wireframe render of the armchair environment.',
+                    },
+                    {
+                        caption: 'FINAL RENDER',
+                        src: `${assetPath}Environment/ENV_Chair.png`,
+                        alt: 'Final rendered armchair environment with lighting.',
+                    },
+                ]}
+            />
+
+            <ComparisonBlock
+                label="THE TV CORNER"
+                heading="Every surface modeled. Every screen functional."
+                items={[
+                    { caption: 'WIREFRAME', src: `${assetPath}Environment/ENV_TV_WireFrame.png`, alt: 'Wireframe render of the TV setup.' },
+                    { caption: 'FINAL RENDER', src: `${assetPath}Environment/ENV_TV.png`, alt: 'Final rendered TV corner with glowing screen.' },
+                ]}
+            />
 
             {/* ── TELEVISION ── */}
 
@@ -63,60 +125,50 @@ export default function Ld58() {
                 description="The centerpiece. A glowing rectangle of escape and distraction. The entire gameplay loop orbits around it — simple inputs, satisfying feedback, and a collection system designed to keep you reaching for one more cap."
             />
 
-            <FeatureSplit src={`${assetPath}Controls.png`} alt="Game control scheme for cap collecting mechanics." label="CONTROLS">
-                <h3>One input. Maximum satisfaction.</h3>
-                <ScrollReveal>
-                    Every cap pop tuned for tactile feedback — snap animations, juice, and a collection loop that keeps the dopamine flowing. Simple
-                    to learn. Impossible to put down.
-                </ScrollReveal>
-            </FeatureSplit>
+            <ImageGrid images={TUTORIAL_IMAGES} columns={2} label="TUTORIAL" heading="Teaches without interrupting." />
+
+            <ImageGrid images={CHANNEL_IMAGES} columns={2} label="CHANNELS" heading="So many channels. None of them helpful." />
 
             {/* ── BRANDING ── */}
 
             <WorkHeader
                 title="BRAND"
                 subtitle="003:::IDENTITY"
-                description="Every jam game needs an identity that sells the joke instantly. Retro beer culture meets ironic self-help — a logo, logotype, and thumbnail that tell the story before you've read a word."
+                description="Every jam game needs an identity that sells the joke instantly. Retro beer culture meets ironic self-awareness — a logo, logotype, and thumbnail that tell the story before you've read a word."
             />
 
             <DoubleImage
                 images={[
-                    { src: `${assetPath}LOGO.png`, alt: 'Logo design for the LD58 game jam entry.' },
-                    { src: `${assetPath}Thumbnail.png`, alt: 'Thumbnail for the LD58 game jam entry.' },
+                    { src: `${assetPath}Marketing/MARKET_Logo.png`, alt: 'Logo design for the LD58 game jam entry.' },
+                    { src: `${assetPath}Marketing/MARKET_Thumbnail.png`, alt: 'Thumbnail for the LD58 game jam entry.' },
                 ]}
             />
 
-            <FeatureSplit src={`${assetPath}Logotype.png`} alt="Logotype design for the LD58 entry." reverse label="LOGOTYPE">
+            <FeatureSplit src={`${assetPath}Marketing/MARKET_Logotype.png`} alt="Logotype design for the LD58 entry." reverse label="LOGOTYPE">
                 <h3>Type that sells the premise at a glance.</h3>
                 <ScrollReveal>
                     Bold, unapologetic, slightly absurd. Designed to carry the tone across promotional material and in-game screens.
                 </ScrollReveal>
             </FeatureSplit>
 
-            {/* ── PROPS ── */}
-
-            <DoubleImage
-                images={[
-                    { src: `${assetPath}CAP Bottle.png`, alt: 'Cap and bottle 3D model.' },
-                    { src: `${assetPath}BOTTLE Pile.png`, alt: 'Pile of bottles 3D render.' },
-                ]}
-            />
+            <ImageGrid images={BRAND_IMAGES} columns={4} label="BEER LABELS" heading="Sixteen knock-off brands. All fictional. Mostly drinkable." />
 
             {/* ── CLOSING ── */}
 
             <HeroStatement label="OUTCOME">
                 <h2>Built in 72 hours. Plays like it wasn't.</h2>
                 <ScrollReveal>
-                    Handcrafted 3D environments, polished UI, cohesive branding, original audio, and a gameplay loop that makes cap collecting
-                    genuinely satisfying — all delivered within a single weekend.
+                    Handcrafted 3D environments, sixteen beer brands, four TV channels, polished UI, cohesive branding, original audio, and a gameplay
+                    loop that makes cap collecting genuinely satisfying — all delivered within a single weekend.
                 </ScrollReveal>
             </HeroStatement>
 
             <EvidenceRow
                 items={[
-                    { label: '3D SCENES', value: 'Full interior environment' },
-                    { label: 'BRAND', value: 'Logo, logotype, thumbnail' },
-                    { label: 'UI', value: 'In-game HUD and menus' },
+                    { label: '3D', value: 'Full interior environment' },
+                    { label: 'BRANDS', value: '16 beer labels' },
+                    { label: 'TV', value: '4 channels + tutorial' },
+                    { label: 'IDENTITY', value: 'Logo, logotype, thumbnail' },
                 ]}
             />
         </>

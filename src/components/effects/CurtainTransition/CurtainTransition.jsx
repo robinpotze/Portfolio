@@ -1,12 +1,12 @@
-import { CURTAIN, EASING } from '@config/animation.config';
+import { EASING, TIMEOUT } from '@config/animation.config';
 import { motion } from 'framer-motion';
 import { useEffect, useRef } from 'react';
 import styles from './CurtainTransition.module.css';
 
 const LAYER_COLORS = ['var(--c-lght_100)', 'var(--c-brnd_100)', 'var(--c-drk_100)'];
 const EASE = EASING.EMPHASIZED;
-const DURATION = CURTAIN.DURATION_MS / 1000;
-const STAGGER_DELAY = CURTAIN.LAYER_STAGGER_MS / 1000;
+const DURATION = TIMEOUT.CURTAIN_MS / 1000;
+const STAGGER_DELAY = TIMEOUT.CURTAIN_STAGGER_MS / 1000;
 
 const DIRECTION_CONFIG = {
     up: {
@@ -49,18 +49,26 @@ export default function CurtainTransition({ isOpen = false, direction = 'up', pa
     const onAnimationComplete = () => {
         if (phaseRef.current === 'covering') {
             phaseRef.current = 'revealing';
-            if (onCoverComplete) onCoverComplete();
+            if (onCoverComplete) {
+                onCoverComplete();
+            }
             return;
         }
         if (phaseRef.current === 'revealing') {
             phaseRef.current = 'done';
-            if (onRevealComplete) onRevealComplete();
+            if (onRevealComplete) {
+                onRevealComplete();
+            }
         }
     };
 
     const getAnimateValue = () => {
-        if (phaseRef.current === 'covering') return config.covered;
-        if (phaseRef.current === 'revealing' || phaseRef.current === 'done') return config.revealed;
+        if (phaseRef.current === 'covering') {
+            return config.covered;
+        }
+        if (phaseRef.current === 'revealing' || phaseRef.current === 'done') {
+            return config.revealed;
+        }
         return config.initial;
     };
 

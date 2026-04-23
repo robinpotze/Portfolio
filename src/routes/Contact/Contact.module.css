@@ -125,7 +125,9 @@
     border-left: 1px solid var(--c-drk_40);
     color: var(--c-drk_100);
     font: var(--f-func);
-    transition: border-color 0.2s ease, color 0.2s ease;
+    transition:
+        border-color 0.2s ease,
+        color 0.2s ease;
 }
 
 .nameInput::placeholder {
@@ -168,7 +170,9 @@
     border-left: 1px solid var(--c-lght_40);
     font: var(--f-func);
     color: var(--c-lght_100);
-    transition: border-color 0.2s ease, color 0.2s ease;
+    transition:
+        border-color 0.2s ease,
+        color 0.2s ease;
 }
 
 .messageInput::placeholder {
@@ -194,7 +198,10 @@
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease,
+        transform 0.15s ease;
 }
 
 .sendButton:hover {
@@ -313,6 +320,7 @@
     font: var(--f-hdr_1);
     text-align: center;
     padding: var(--s-s);
+    width: 100%;
     background-color: var(--c-drk_100);
     color: var(--c-brnd_-100);
     border: none;
@@ -401,15 +409,18 @@
     color: var(--c-brnd_-100);
 }
 
-.statusGrid {
+.statusGridWrapper {
     grid-area: statusgrid;
     align-self: flex-end;
+    z-index: 1;
+}
+
+.statusGrid {
     display: flex;
     flex-direction: column;
     gap: 2px;
     font: var(--f-deco-micro);
     color: var(--c-brnd_-100);
-    z-index: 1;
 }
 
 .logRow {

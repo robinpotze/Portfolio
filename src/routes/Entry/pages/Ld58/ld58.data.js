@@ -10,5 +10,5 @@ export const Data = {
     year: 2025,
     software: ['Figma', 'Unity', 'Blender'],
     skills: ['Figma', 'Unity', 'Blender'],
-    banner: `${assetPath}Wallpaper.png`,
+    banner: `${assetPath}Marketing/MARKET_Wallpaper.png`,
 };
