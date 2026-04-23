@@ -53,9 +53,6 @@
         "vite-plugin-glsl": "^1.6.0",
         "vite-plugin-svgr": "^5.2.0"
     },
-    "overrides": {
-        "postprocessing": "^6.39.0"
-    },
     "lint-staged": {
         "src/**/*.{js,jsx}": [
             "eslint --fix",
