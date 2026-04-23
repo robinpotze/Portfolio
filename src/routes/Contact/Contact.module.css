@@ -24,9 +24,9 @@
    ---------------------------------------------------------------- */
 
 .messageTitle {
-    grid-area: formtitle;
+    grid-area: formtitle / formtitle / statustitle / statustitle;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     align-self: flex-end;
     font: var(--f-hdr_2);
     text-transform: uppercase;
