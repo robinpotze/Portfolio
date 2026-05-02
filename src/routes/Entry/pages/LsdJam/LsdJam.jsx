@@ -19,10 +19,10 @@ export default function LsdJam() {
             {/* ── INTRO ── */}
 
             <CaseIntro
-                src={`${assetPath}Corridor.png`}
+                src={`${assetPath}Animation.mp4`}
                 kicker={`LSD JAM / ${Data.year}`}
                 heading="Which reality is yours?"
-                subtitle="3D artist and level designer for a reality-bending game jam."
+                subtitle="I participated as a 3D artist and level designer for a reality-bending game jam."
             />
 
             {/* ── ROLE ── */}
@@ -30,8 +30,8 @@ export default function LsdJam() {
             <StatementBlock label="ROLE">
                 <h2>Every environment. Every surface. Every light source.</h2>
                 <ScrollReveal>
-                    Partnered with Cyril Ojoga for the LSD Jam — a game jam themed around altered perception. All 3D art, textures, level layouts, and
-                    lighting rigs were mine. Unity for the build. Blender for the assets.
+                    Partnered with Kiril Ojoga for the LSD Jam — a game jam themed around altered perception. All 3D art, textures, level layouts, and
+                    lighting rigs were mine. Unity for the build, Blender and After Effects for the assets.
                 </ScrollReveal>
             </StatementBlock>
 
