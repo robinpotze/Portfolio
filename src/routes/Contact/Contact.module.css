@@ -74,7 +74,7 @@
 }
 
 .messageFormIntercept .nameInput {
-    color: var(--c-blue);
+    color: var(--c-drk_100);
 }
 
 .messageFormIntercept .messageField {
@@ -83,8 +83,8 @@
 }
 
 .messageFormIntercept .messageInput {
-    color: var(--c-blue);
-    border-left-color: var(--c-error_40);
+    color: var(--c-drk_100);
+    border-left-color: var(--c-drk_100);
 }
 
 .messageFormIntercept .fieldCorner,
