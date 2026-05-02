@@ -1,6 +1,5 @@
 import { BREAKPOINTS } from '@config/animation.config';
 import { CAROUSEL_CONFIG } from '@config/carousel.config';
-import useAdaptiveQuality from '@hooks/useAdaptiveQuality';
 import { useFrame, useThree } from '@react-three/fiber';
 import { calculateCardCenteredness } from '@utils/carousel';
 import { useEffect, useRef, useState } from 'react';
@@ -20,9 +19,6 @@ export default function WorkScene({
     const bestIndexRef = useRef(0);
     const [visibleCenter, setVisibleCenter] = useState(0);
     const { camera, size } = useThree();
-
-    // Adaptive quality monitoring for the work scene
-    useAdaptiveQuality({ targetFps: 55, enabled: items.length > 0 });
 
     // Reactive FOV based on viewport width
     useEffect(() => {

@@ -1,5 +1,5 @@
 import PlsIcon from '@/assets/icons/PLS.svg?react';
-import ScrollReveal from '@components/effects/ScrollReveal';
+import ScrollReveal from '@components/ui/ScrollReveal';
 import styles from './WorkHeader.module.css';
 
 export default function WorkHeader({ title, subtitle, description }) {

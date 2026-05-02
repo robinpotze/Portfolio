@@ -7,11 +7,7 @@ export default function CaseIntro({ src, kicker, heading, subtitle }) {
 
     return (
         <section className={styles.wrapper}>
-            {isVideo ? (
-                <video src={src} autoPlay loop muted playsInline />
-            ) : (
-                <img src={src} alt="" />
-            )}
+            {isVideo ? <video src={src} autoPlay loop muted playsInline /> : <img src={src} alt="" />}
             <div className={styles.overlay}>
                 {kicker && <label className={styles.kicker}>{kicker}</label>}
                 <h1>{heading}</h1>

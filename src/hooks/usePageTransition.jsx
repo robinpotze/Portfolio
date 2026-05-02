@@ -1,4 +1,4 @@
-import CurtainTransition from '@components/effects/CurtainTransition';
+import CurtainTransition from '@components/navigation/CurtainTransition';
 import { createContext, useCallback, useContext, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 

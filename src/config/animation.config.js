@@ -65,6 +65,8 @@ export const TIMEOUT = {
     ENTRY_COMPLETE_MS: 800,
     GLITCH_DURATION_MS: 1200,
     LOADING_MIN_DISPLAY_MS: 2000,
+    LOADING_FORCE_COMPLETE_MS: 6500,
+    SCENE_READY_GRACE_MS: 1200,
 };
 
 export const LENIS = {
@@ -92,6 +94,11 @@ export const FLOAT_CONFIG = {
     INTENSITY: 2,
     ROTATION_INTENSITY: 0.5,
     SPEED: 0.5,
+};
+
+export const LOGO_BOOTSTRAP = {
+    DURATION_MS: 1800,
+    GLASS_FADE_MS: 900,
 };
 
 export const SPRING_CONFIG = {

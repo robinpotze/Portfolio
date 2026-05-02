@@ -1,13 +1,13 @@
-import ScrollReveal from '@components/effects/ScrollReveal';
-import CaseIntro from '@components/ui/CaseIntro/CaseIntro';
-import ComparisonBlock from '@components/ui/ComparisonBlock/ComparisonBlock';
-import DoubleImage from '@components/ui/DoubleImage/DoubleImage';
-import EvidenceRow from '@components/ui/EvidenceRow/EvidenceRow';
-import FeatureSplit from '@components/ui/FeatureSplit/FeatureSplit';
-import FullImage from '@components/ui/FullImage/FullImage';
-import HeroStatement from '@components/ui/HeroStatement/HeroStatement';
-import StatementBlock from '@components/ui/StatementBlock/StatementBlock';
-import WorkHeader from '@components/ui/WorkHeader/WorkHeader';
+import ScrollReveal from '@components/ui/ScrollReveal';
+import CaseIntro from '@components/sections/CaseIntro/CaseIntro';
+import ComparisonBlock from '@components/sections/ComparisonBlock/ComparisonBlock';
+import DoubleImage from '@components/sections/DoubleImage/DoubleImage';
+import EvidenceRow from '@components/sections/EvidenceRow/EvidenceRow';
+import FeatureSplit from '@components/sections/FeatureSplit/FeatureSplit';
+import FullImage from '@components/sections/FullImage/FullImage';
+import HeroStatement from '@components/sections/HeroStatement/HeroStatement';
+import StatementBlock from '@components/sections/StatementBlock/StatementBlock';
+import WorkHeader from '@components/sections/WorkHeader/WorkHeader';
 
 import { Data } from './pmot.data';
 

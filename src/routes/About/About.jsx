@@ -1,6 +1,6 @@
 import ErrorBoundary from '@components/ErrorBoundary';
-import GridOverlay from '@components/decoration/GridOverlay';
-import PixelCard from '@components/effects/PixelCard/PixelCard';
+import GridOverlay from '@components/ui/GridOverlay';
+import PixelCard from '@components/ui/PixelCard/PixelCard';
 import { EASING, REVEAL, SPRING_CONFIG, STAGGER } from '@config/animation.config';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';

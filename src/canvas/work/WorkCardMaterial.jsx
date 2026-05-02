@@ -11,7 +11,7 @@ const WorkCardMaterial = shaderMaterial(
         uTextureSize: new THREE.Vector2(1, 1),
         uPlaneSize: new THREE.Vector2(1, 1),
         uTime: 0,
-        uRoughness: 0.1 ,
+        uRoughness: 0.1,
         uNoiseScale: 2.0,
         uRefractPower: 0.006,
         uChromaticAberration: 0.8,

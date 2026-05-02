@@ -2,7 +2,7 @@ import { REVEAL, TIMEOUT } from '@config/animation.config';
 import { useProgress } from '@react-three/drei';
 import { getCSSColorRGBA } from '@utils/cssUtils';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import styles from './LoadingScreen.module.css';
 
 const CRYPTIC_MESSAGES = [
@@ -196,12 +196,13 @@ export default function LoadingScreen({ onComplete, minDisplayTime = 1500, logoS
         setProgress(threeProgress);
     }, [threeProgress]);
 
-    useEffect(() => {
-        if (progress >= 100 && !hasCompletedRef.current) {
-            hasCompletedRef.current = true;
+    const completeLoading = useCallback(
+        (remainingTime = 0) => {
+            if (hasCompletedRef.current) {
+                return;
+            }
 
-            const elapsed = Date.now() - startTimeRef.current;
-            const remainingTime = Math.max(0, minDisplayTime - elapsed);
+            hasCompletedRef.current = true;
 
             const outerTimer = setTimeout(() => {
                 setIsHidden(true);
@@ -212,9 +213,37 @@ export default function LoadingScreen({ onComplete, minDisplayTime = 1500, logoS
                 }, TIMEOUT.LOADING_FADE_MS);
                 timerRefs.current.push(innerTimer);
             }, remainingTime);
+
             timerRefs.current.push(outerTimer);
+        },
+        [onComplete]
+    );
+
+    useEffect(() => {
+        if (progress >= 100) {
+            const elapsed = Date.now() - startTimeRef.current;
+            const remainingTime = Math.max(0, minDisplayTime - elapsed);
+            completeLoading(remainingTime);
         }
-    }, [progress, minDisplayTime, onComplete]);
+    }, [progress, minDisplayTime, completeLoading]);
+
+    useEffect(() => {
+        if (hasCompletedRef.current) {
+            return;
+        }
+
+        const elapsed = Date.now() - startTimeRef.current;
+        const remainingTime = Math.max(0, TIMEOUT.LOADING_FORCE_COMPLETE_MS - elapsed);
+
+        const forceCompleteTimer = setTimeout(() => {
+            const currentElapsed = Date.now() - startTimeRef.current;
+            const minDisplayRemaining = Math.max(0, minDisplayTime - currentElapsed);
+            completeLoading(minDisplayRemaining);
+        }, remainingTime);
+
+        timerRefs.current.push(forceCompleteTimer);
+        return () => clearTimeout(forceCompleteTimer);
+    }, [minDisplayTime, completeLoading]);
 
     // Cycle messages
     useEffect(() => {

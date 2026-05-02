@@ -48,7 +48,9 @@ export default function LaserPlane({
     // Update resolution when viewport changes
     useEffect(() => {
         const mat = matRef.current;
-        if (!mat) return;
+        if (!mat) {
+            return;
+        }
         const dpr = viewport.dpr;
         mat.uniforms.iResolution.value.set(size.width * dpr, size.height * dpr, dpr);
     }, [size.width, size.height, viewport.dpr]);
@@ -60,11 +62,15 @@ export default function LaserPlane({
 
     useFrame((state, delta) => {
         const mat = matRef.current;
-        if (!mat) return;
+        if (!mat) {
+            return;
+        }
 
         // Frame skipping on low quality
         frameCount.current++;
-        if (quality === 'low' && frameCount.current % 2 !== 0) return;
+        if (quality === 'low' && frameCount.current % 2 !== 0) {
+            return;
+        }
 
         const u = mat.uniforms;
         const t = state.clock.getElapsedTime();
@@ -78,7 +84,9 @@ export default function LaserPlane({
         if (!hasFaded.current) {
             fadeValue.current = Math.min(1, fadeValue.current + cdt);
             u.uFade.value = fadeValue.current;
-            if (fadeValue.current >= 1) hasFaded.current = true;
+            if (fadeValue.current >= 1) {
+                hasFaded.current = true;
+            }
         }
 
         // Smoothly interpolate fog quality toward target

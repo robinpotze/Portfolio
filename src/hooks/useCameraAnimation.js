@@ -44,7 +44,7 @@ export default function useCameraAnimation(cameraRef, routeName, options = {}) {
             initializedRoute.current = routeName;
             lastFov.current = startFov;
         }
-    }, [routeName]);
+    }, [routeName, startFov]);
 
     useFrame(({ clock, camera }) => {
         if (!enabled) {

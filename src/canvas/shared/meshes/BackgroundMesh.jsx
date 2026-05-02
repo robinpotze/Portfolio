@@ -23,11 +23,13 @@ function BackgroundMeshInner({ paused = false, ...props }) {
 
     useEffect(() => {
         const el = video?.image;
-        if (!el) return;
+        if (!el) {
+            return;
+        }
         if (paused) {
             el.pause();
         } else {
-            el.play().catch(() => { });
+            el.play().catch(() => {});
         }
     }, [paused, video]);
 

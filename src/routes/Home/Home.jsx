@@ -3,20 +3,21 @@ import OfsDecal from '@/assets/decals/OFS.svg?react';
 import PillDecal from '@/assets/decals/PILL.svg?react';
 import SndDecal from '@/assets/decals/SND.svg?react';
 import CrsIcon from '@/assets/icons/CRS.svg?react';
-import HomeCanvas from '@canvas/home/HomeCanvas';
-import RadialGrid from '@components/decoration/RadialText/RadialGrid';
-import RedoAnimText from '@components/decoration/RandomText/RedoAnimText';
-import ScrollDown from '@components/decoration/ScrollDown';
-import LoadingScreen from '@components/effects/LoadingScreen';
+import RadialGrid from '@components/ui/RadialText/RadialGrid';
+import RedoAnimText from '@components/ui/RandomText/RedoAnimText';
+import ScrollDown from '@components/ui/ScrollDown';
+import LoadingScreen from '@components/navigation/LoadingScreen';
 import ErrorBoundary from '@components/ErrorBoundary';
 import { EASING, REVEAL, SCROLL_THRESHOLDS, STAGGER, TIMEOUT } from '@config/animation.config';
 import { LASER_PARAMS } from '@config/laser.config';
 import useScrollNavigation from '@hooks/useScrollNavigation';
 import { useGLTF } from '@react-three/drei';
 import { motion } from 'framer-motion';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styles from './Home.module.css';
+
+const HomeCanvas = lazy(() => import('@canvas/home/HomeCanvas'));
 
 const sideContainerVariants = {
     hidden: {
@@ -166,7 +167,9 @@ export default function Home() {
                 </div>
                 <div className={styles.transitionSection} />
                 <ErrorBoundary>
-                    <HomeCanvas scrollProgress={scrollProgress} startAnimations={showContent} laserParams={laserParams} />
+                    <Suspense fallback={null}>
+                        <HomeCanvas scrollProgress={scrollProgress} startAnimations={showContent} laserParams={laserParams} />
+                    </Suspense>
                 </ErrorBoundary>
             </div>
         </>

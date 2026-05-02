@@ -1,4 +1,4 @@
-import ScrollReveal from '@components/effects/ScrollReveal';
+import ScrollReveal from '@components/ui/ScrollReveal';
 
 import styles from './WorkSubHeader.module.css';
 

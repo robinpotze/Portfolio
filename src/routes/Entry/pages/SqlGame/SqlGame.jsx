@@ -1,13 +1,13 @@
-import ScrollReveal from '@components/effects/ScrollReveal';
-import CaseIntro from '@components/ui/CaseIntro/CaseIntro';
-import ComparisonBlock from '@components/ui/ComparisonBlock/ComparisonBlock';
-import DoubleImage from '@components/ui/DoubleImage/DoubleImage';
-import EvidenceRow from '@components/ui/EvidenceRow/EvidenceRow';
-import FeatureSplit from '@components/ui/FeatureSplit/FeatureSplit';
-import FullImage from '@components/ui/FullImage/FullImage';
-import HeroStatement from '@components/ui/HeroStatement/HeroStatement';
-import StatementBlock from '@components/ui/StatementBlock/StatementBlock';
-import WorkHeader from '@components/ui/WorkHeader/WorkHeader';
+import ScrollReveal from '@components/ui/ScrollReveal';
+import CaseIntro from '@components/sections/CaseIntro/CaseIntro';
+import ComparisonBlock from '@components/sections/ComparisonBlock/ComparisonBlock';
+import DoubleImage from '@components/sections/DoubleImage/DoubleImage';
+import EvidenceRow from '@components/sections/EvidenceRow/EvidenceRow';
+import FeatureSplit from '@components/sections/FeatureSplit/FeatureSplit';
+import FullImage from '@components/sections/FullImage/FullImage';
+import HeroStatement from '@components/sections/HeroStatement/HeroStatement';
+import StatementBlock from '@components/sections/StatementBlock/StatementBlock';
+import WorkHeader from '@components/sections/WorkHeader/WorkHeader';
 
 import { Data } from './sqlgame.data';
 
@@ -63,7 +63,8 @@ export default function SqlGame() {
             <FeatureSplit src={`${assetPath}Components_Interactive.png`} alt="Global interactive components" label="INTERACTIVE" reverse={true}>
                 <h3>Every element directs something.</h3>
                 <ScrollReveal>
-                    Apart from the query editor, every component is designed to provide feedback and guide players. Buttons, tooltips, result sets — all built to make the learning feel intuitive and responsive.
+                    Apart from the query editor, every component is designed to provide feedback and guide players. Buttons, tooltips, result sets —
+                    all built to make the learning feel intuitive and responsive.
                 </ScrollReveal>
             </FeatureSplit>
 
@@ -88,14 +89,16 @@ export default function SqlGame() {
             <FeatureSplit src={`${assetPath}BookPage_Quests.png`} alt="Quest book page showing available missions." label="QUEST PAGE">
                 <h3>Quests turn concepts into tasks.</h3>
                 <ScrollReveal>
-                    Each quest is designed to teach a specific SQL concept. Players complete tasks that require writing queries, reinforcing their understanding through practical application.
+                    Each quest is designed to teach a specific SQL concept. Players complete tasks that require writing queries, reinforcing their
+                    understanding through practical application.
                 </ScrollReveal>
             </FeatureSplit>
 
             <FeatureSplit src={`${assetPath}Components_Quests.png`} alt="Quest component breakdown." label="QUEST COMPONENTS" reverse={true}>
                 <h3>Quests guide learning.</h3>
                 <ScrollReveal>
-                    Each quest is designed to teach a specific SQL concept. Players complete tasks that require writing queries, reinforcing their understanding through practical application.
+                    Each quest is designed to teach a specific SQL concept. Players complete tasks that require writing queries, reinforcing their
+                    understanding through practical application.
                 </ScrollReveal>
             </FeatureSplit>
 

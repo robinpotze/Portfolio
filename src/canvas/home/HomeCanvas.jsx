@@ -1,9 +1,15 @@
 import { Canvas } from '@react-three/fiber';
 import { CANVAS_DPR, CANVAS_GL_DEFAULTS } from '@config/canvas.config';
+import useAdaptiveQuality from '@hooks/useAdaptiveQuality';
 import styles from '@routes/Home/Home.module.css';
 import HomeScene from './HomeScene';
 
-export default function HomeCanvas({ scrollProgress, startAnimations, laserParams }) {
+function AdaptiveQualityMonitor({ enabled = true }) {
+    useAdaptiveQuality({ enabled });
+    return null;
+}
+
+export default function HomeCanvas({ scrollProgress, startAnimations, laserParams, onSceneReady }) {
     return (
         <div className={styles.canvasContainer}>
             <Canvas
@@ -16,7 +22,8 @@ export default function HomeCanvas({ scrollProgress, startAnimations, laserParam
                     antialias: true,
                 }}
             >
-                <HomeScene scrollProgress={scrollProgress} startAnimations={startAnimations} laserParams={laserParams} />
+                <AdaptiveQualityMonitor enabled={startAnimations} />
+                <HomeScene scrollProgress={scrollProgress} startAnimations={startAnimations} laserParams={laserParams} onSceneReady={onSceneReady} />
             </Canvas>
         </div>
     );

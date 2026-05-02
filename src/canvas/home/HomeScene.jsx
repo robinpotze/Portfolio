@@ -1,8 +1,8 @@
 import Rig from '@canvas/shared/camera/Rig';
 import BackgroundMesh from '@canvas/shared/meshes/BackgroundMesh';
 import LogoMesh from '@canvas/shared/meshes/LogoMesh';
+import { useQuality } from '@app/QualityContext';
 import { FLOAT_CONFIG, REVEAL, SCENE, TIMEOUT, BREAKPOINTS } from '@config/animation.config';
-import useAdaptiveQuality from '@hooks/useAdaptiveQuality';
 import useCameraAnimation from '@hooks/useCameraAnimation';
 import useObjectAnimation from '@hooks/useObjectAnimation';
 import { Float, PerspectiveCamera, Text } from '@react-three/drei';
@@ -11,28 +11,33 @@ import { Bloom, EffectComposer, N8AO } from '@react-three/postprocessing';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import LaserPlane from './LaserPlane';
 
-export default function HomeScene({ scrollProgress = 0, startAnimations = true, laserParams = {} }) {
+export default function HomeScene({ scrollProgress = 0, startAnimations = true, laserParams = {}, onSceneReady = null }) {
     const logoRef = useRef();
     const backgroundRef = useRef();
     const subtitleRef = useRef();
     const lightRef = useRef();
     const cameraRef = useRef();
     const [entryComplete, setEntryComplete] = useState(false);
+    const sceneReadyRef = useRef(false);
+    const { quality } = useQuality();
 
     const { size } = useThree();
 
     const viewportScale = useMemo(() => Math.max(0.3, Math.min(1, size.width / BREAKPOINTS.REFERENCE_WIDTH)), [size.width]);
 
+    useEffect(() => {
+        if (entryComplete && !sceneReadyRef.current) {
+            sceneReadyRef.current = true;
+            if (onSceneReady) {
+                onSceneReady();
+            }
+        }
+    }, [entryComplete, onSceneReady]);
+
     // Smoothly interpolated float intensity to avoid jarring snaps on quality change
     const floatIntensityRef = useRef(0);
     const rotationIntensityRef = useRef(0);
     const [smoothFloat, setSmoothFloat] = useState({ float: 0, rotation: 0 });
-
-    // Adaptive quality monitoring
-    const { quality } = useAdaptiveQuality({
-        targetFps: 55,
-        enabled: startAnimations && entryComplete,
-    });
 
     // Lerp float intensity toward quality target
     useFrame((_, delta) => {

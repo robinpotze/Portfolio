@@ -10,6 +10,8 @@ export const GlassLogoMaterial = shaderMaterial(
         uNoiseTex: null,
         uEnvMap: null,
         uTime: 0,
+        uHasTransmission: 0,
+        uOpacity: 1,
         uRoughness: 0.3,
         uNoiseScale: 2.0,
         uRefractPower: 0.1,

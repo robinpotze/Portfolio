@@ -85,10 +85,18 @@ export default function useBorderProjection(containerRef, cameraRef, rigRef, { r
                 rawW.jump(targetW);
                 rawH.jump(targetH);
                 // Also jump the springs so they don't animate from initial values
-                if (springX) springX.jump(targetX);
-                if (springY) springY.jump(targetY);
-                if (springW) springW.jump(targetW);
-                if (springH) springH.jump(targetH);
+                if (springX) {
+                    springX.jump(targetX);
+                }
+                if (springY) {
+                    springY.jump(targetY);
+                }
+                if (springW) {
+                    springW.jump(targetW);
+                }
+                if (springH) {
+                    springH.jump(targetH);
+                }
             } else {
                 rawX.set(targetX);
                 rawY.set(targetY);

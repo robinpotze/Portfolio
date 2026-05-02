@@ -35,38 +35,45 @@ const DIRECTION_CONFIG = {
     },
 };
 
-export default function CurtainTransition({ isOpen = false, direction = 'up', pageName, onCoverComplete, onRevealComplete }) {
+export default function CurtainTransition({ isOpen = false, direction = 'up', pageName, phase = 'idle', onCoverComplete, onRevealComplete }) {
     const config = DIRECTION_CONFIG[direction] || DIRECTION_CONFIG.up;
     const lastLayerRef = useRef(null);
-    const phaseRef = useRef(isOpen ? 'covering' : 'idle');
+    const localPhaseRef = useRef(isOpen ? 'covering' : 'idle');
 
     useEffect(() => {
         if (isOpen) {
-            phaseRef.current = 'covering';
+            localPhaseRef.current = 'covering';
         }
     }, [isOpen]);
 
     const onAnimationComplete = () => {
-        if (phaseRef.current === 'covering') {
-            phaseRef.current = 'revealing';
+        if (localPhaseRef.current === 'covering') {
+            localPhaseRef.current = 'awaiting-reveal';
             if (onCoverComplete) {
                 onCoverComplete();
             }
             return;
         }
-        if (phaseRef.current === 'revealing') {
-            phaseRef.current = 'done';
+        if (localPhaseRef.current === 'revealing') {
+            localPhaseRef.current = 'done';
             if (onRevealComplete) {
                 onRevealComplete();
             }
         }
     };
 
+    // Sync local phase with external transition phase
+    useEffect(() => {
+        if (phase === 'revealing' && localPhaseRef.current === 'awaiting-reveal') {
+            localPhaseRef.current = 'revealing';
+        }
+    }, [phase]);
+
     const getAnimateValue = () => {
-        if (phaseRef.current === 'covering') {
+        if (localPhaseRef.current === 'covering') {
             return config.covered;
         }
-        if (phaseRef.current === 'revealing' || phaseRef.current === 'done') {
+        if (localPhaseRef.current === 'revealing' || localPhaseRef.current === 'done') {
             return config.revealed;
         }
         return config.initial;

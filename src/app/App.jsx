@@ -1,5 +1,5 @@
 import ErrorBoundary from '@components/ErrorBoundary';
-import NavigationMenu from '@components/layout/NavigationMenu/NavigationMenu';
+import NavigationMenu from '@components/navigation/NavigationMenu/NavigationMenu';
 import { PageTransitionProvider } from '@hooks/usePageTransition';
 import { pagesData } from '@routes/Entry/pages/autogen';
 import { sortItems } from '@utils/workUtils';

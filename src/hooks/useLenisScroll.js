@@ -35,19 +35,21 @@ export default function useLenisScroll({
         }
 
         let mounted = true;
+        let rafId = 0;
 
         function raf(time) {
             if (!mounted) {
                 return;
             }
             lenis.raf(time);
-            requestAnimationFrame(raf);
+            rafId = requestAnimationFrame(raf);
         }
 
-        requestAnimationFrame(raf);
+        rafId = requestAnimationFrame(raf);
 
         return () => {
             mounted = false;
+            cancelAnimationFrame(rafId);
             lenis.destroy();
             lenisRef.current = null;
             if (typeof globalThis !== 'undefined') {

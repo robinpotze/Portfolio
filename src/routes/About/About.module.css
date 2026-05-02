@@ -134,7 +134,7 @@
 .subsectionName {
     font: var(--f-hdr_3);
     text-transform: uppercase;
-    color: var(--c-brnd_100);
+    color: var(--c-lght_100);
 }
 
 .subsectionDetails {
@@ -145,7 +145,7 @@
 
 .subsectionFunction {
     font: var(--f-func-small);
-    color: var(--c-lght_40);
+    color: var(--c-brnd_100);
 }
 
 .subsectionCourse {
@@ -155,7 +155,7 @@
 
 .subsectionDate {
     font: var(--f-func-small);
-    color: var(--c-lght_40);
+    color: var(--c-brnd_100);
     margin-left: auto;
 }
 

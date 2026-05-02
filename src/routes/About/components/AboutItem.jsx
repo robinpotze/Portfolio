@@ -17,9 +17,7 @@ const itemVariants = {
 export default function AboutItem({ text, icon: Icon, meta }) {
     return (
         <motion.li className={styles.item} variants={itemVariants}>
-            <div className={styles.itemIcon}>
-                {typeof Icon === 'string' ? <img src={Icon} alt="" /> : <Icon aria-hidden="true" />}
-            </div>
+            <div className={styles.itemIcon}>{typeof Icon === 'string' ? <img src={Icon} alt="" /> : <Icon aria-hidden="true" />}</div>
             <span className={styles.itemText}>{text}</span>
             {meta && <span className={styles.itemMeta}>{meta}</span>}
         </motion.li>

@@ -1,8 +1,8 @@
 import CrsIcon from '@/assets/icons/CRS.svg?react';
-import DashLine from '@components/decoration/DashLine';
-import GradualBlur from '@components/effects/GradualBlur';
-import ScrollReveal from '@components/effects/ScrollReveal';
-import ProjectHero from '@components/layout/ProjectHero/ProjectHero';
+import DashLine from '@components/ui/DashLine';
+import GradualBlur from '@components/ui/GradualBlur';
+import ScrollReveal from '@components/ui/ScrollReveal';
+import ProjectHero from '@routes/Entry/components/ProjectHero/ProjectHero';
 import { LENIS } from '@config/animation.config';
 import useLenisScroll from '@hooks/useLenisScroll';
 import { normalizeKey } from '@utils/stringUtils';

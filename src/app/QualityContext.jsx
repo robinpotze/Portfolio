@@ -1,20 +1,13 @@
 import { getInitialQuality } from '@utils/deviceCapability';
-import { createContext, useCallback, useContext, useRef, useState } from 'react';
+import { createContext, useCallback, useContext, useState } from 'react';
 
 const QualityContext = createContext(null);
 
 export function QualityProvider({ children }) {
     const [quality, setQualityState] = useState(getInitialQuality);
-    const lastChangeRef = useRef(0);
 
     const setQuality = useCallback((newQuality) => {
-        const now = performance.now();
-        // Prevent rapid quality changes (minimum 5s between changes)
-        if (now - lastChangeRef.current < 5000) {
-            return;
-        }
-        lastChangeRef.current = now;
-        setQualityState(newQuality);
+        setQualityState((currentQuality) => (currentQuality === newQuality ? currentQuality : newQuality));
     }, []);
 
     return <QualityContext.Provider value={{ quality, setQuality }}>{children}</QualityContext.Provider>;

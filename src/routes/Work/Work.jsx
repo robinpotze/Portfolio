@@ -1,10 +1,11 @@
 import { useWorkItems } from '@app/WorkContext';
-import WorkCanvas from '@canvas/work/WorkCanvas';
 import ErrorBoundary from '@components/ErrorBoundary';
 import { SCROLL_THRESHOLDS } from '@config/animation.config';
 import { usePageTransition } from '@hooks/usePageTransition';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import styles from './Work.module.css';
+
+const WorkCanvas = lazy(() => import('@canvas/work/WorkCanvas'));
 
 export default function Work() {
     const { navigateWithTransition } = usePageTransition();
@@ -105,7 +106,9 @@ export default function Work() {
         <ErrorBoundary>
             <div className={styles.pageContainer}>
                 <ErrorBoundary>
-                    <WorkCanvas items={items} onCardNavigate={onCardNavigate} onScrollChange={onCanvasScrollChange} />
+                    <Suspense fallback={null}>
+                        <WorkCanvas items={items} onCardNavigate={onCardNavigate} onScrollChange={onCanvasScrollChange} />
+                    </Suspense>
                 </ErrorBoundary>
                 {isTouchDevice && <p className={styles.touchHint}>Swipe to browse</p>}
             </div>

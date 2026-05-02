@@ -17,7 +17,9 @@ for (const [path, mod] of Object.entries(dataModules)) {
 // Map component loaders by directory (skip data files if any matched)
 const loaderByDir = {};
 for (const [path, loader] of Object.entries(componentLoaders)) {
-    if (path.includes('.data.')) continue;
+    if (path.includes('.data.')) {
+        continue;
+    }
     const dir = path.split('/')[1];
     loaderByDir[dir] = loader;
 }
@@ -29,7 +31,9 @@ const pagesData = {};
 
 for (const [dir, data] of Object.entries(dataByDir)) {
     const loader = loaderByDir[dir];
-    if (!loader) continue;
+    if (!loader) {
+        continue;
+    }
 
     const sourceName = data.title || dir;
     const key = normalizeKey(sourceName);

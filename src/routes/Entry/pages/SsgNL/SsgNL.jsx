@@ -1,13 +1,13 @@
-import ScrollReveal from '@components/effects/ScrollReveal';
-import CaseIntro from '@components/ui/CaseIntro/CaseIntro';
-import ComparisonBlock from '@components/ui/ComparisonBlock/ComparisonBlock';
-import DoubleImage from '@components/ui/DoubleImage/DoubleImage';
-import EvidenceRow from '@components/ui/EvidenceRow/EvidenceRow';
-import FeatureSplit from '@components/ui/FeatureSplit/FeatureSplit';
-import FullImage from '@components/ui/FullImage/FullImage';
-import HeroStatement from '@components/ui/HeroStatement/HeroStatement';
-import StatementBlock from '@components/ui/StatementBlock/StatementBlock';
-import WorkHeader from '@components/ui/WorkHeader/WorkHeader';
+import ScrollReveal from '@components/ui/ScrollReveal';
+import CaseIntro from '@components/sections/CaseIntro/CaseIntro';
+import ComparisonBlock from '@components/sections/ComparisonBlock/ComparisonBlock';
+import DoubleImage from '@components/sections/DoubleImage/DoubleImage';
+import EvidenceRow from '@components/sections/EvidenceRow/EvidenceRow';
+import FeatureSplit from '@components/sections/FeatureSplit/FeatureSplit';
+import FullImage from '@components/sections/FullImage/FullImage';
+import HeroStatement from '@components/sections/HeroStatement/HeroStatement';
+import StatementBlock from '@components/sections/StatementBlock/StatementBlock';
+import WorkHeader from '@components/sections/WorkHeader/WorkHeader';
 
 import { Data } from './ssgnl.data';
 
@@ -30,8 +30,8 @@ export default function SsgNL() {
             <StatementBlock label="ROLE">
                 <h2>Every product needed everything from scratch.</h2>
                 <ScrollReveal>
-                    Brand systems, educational board games, conversational interfaces. Each project demanded a different
-                    discipline but the same standard — clear design that earns attention from both engineers and executives.
+                    Brand systems, educational board games, conversational interfaces. Each project demanded a different discipline but the same
+                    standard — clear design that earns attention from both engineers and executives.
                 </ScrollReveal>
             </StatementBlock>
 
@@ -79,8 +79,8 @@ export default function SsgNL() {
             <FeatureSplit src={`${assetPath}cybersec/CyberSec_Board.png`} alt="Board layout for the Cybersecurity game." label="BOARD DESIGN">
                 <h3>Five domains. One board.</h3>
                 <ScrollReveal>
-                    Each card tests a specific aspect of cybersecurity — from crisis response to enterprise governance. The difficulty scales with
-                    the player's level: basic awareness at the start, detailed technical answers by the end.
+                    Each card tests a specific aspect of cybersecurity — from crisis response to enterprise governance. The difficulty scales with the
+                    player's level: basic awareness at the start, detailed technical answers by the end.
                 </ScrollReveal>
             </FeatureSplit>
 
@@ -108,11 +108,7 @@ export default function SsgNL() {
                 ]}
             />
 
-            <FeatureSplit
-                src={`${assetPath}agilegame/PLATO CARD.png`}
-                alt="PLATO situation card for the Agile Maturity game."
-                label="CARD SYSTEM"
-            >
+            <FeatureSplit src={`${assetPath}agilegame/PLATO CARD.png`} alt="PLATO situation card for the Agile Maturity game." label="CARD SYSTEM">
                 <h3>Situation cards, question cards, and a token economy.</h3>
                 <ScrollReveal>
                     PLATO situation cards describe an event — players guess which domain it belongs to. Question cards test knowledge directly.
@@ -166,9 +162,8 @@ export default function SsgNL() {
             <HeroStatement label="OUTCOME">
                 <h2>Four products. Four systems. Zero shortcuts.</h2>
                 <ScrollReveal>
-                    Corporate training, cybersecurity awareness, agile methodology, and knowledge management — each product built for
-                    its audience, each visually distinct. The board games are in active use at the office, and the marketing materials shipped on
-                    LinkedIn.
+                    Corporate training, cybersecurity awareness, agile methodology, and knowledge management — each product built for its audience,
+                    each visually distinct. The board games are in active use at the office, and the marketing materials shipped on LinkedIn.
                 </ScrollReveal>
             </HeroStatement>
 

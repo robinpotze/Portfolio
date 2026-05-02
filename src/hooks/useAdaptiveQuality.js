@@ -1,16 +1,25 @@
 import { useQuality } from '@app/QualityContext';
+import { usePageTransition } from '@hooks/usePageTransition';
 import { useFrame } from '@react-three/fiber';
 import { useRef, useState } from 'react';
 
 function qualityRank(value) {
-    if (value === 'low') return 0;
-    if (value === 'medium') return 1;
+    if (value === 'low') {
+        return 0;
+    }
+    if (value === 'medium') {
+        return 1;
+    }
     return 2;
 }
 
 function rankToQuality(rank) {
-    if (rank <= 0) return 'low';
-    if (rank === 1) return 'medium';
+    if (rank <= 0) {
+        return 'low';
+    }
+    if (rank === 1) {
+        return 'medium';
+    }
     return 'high';
 }
 
@@ -48,6 +57,7 @@ export default function useAdaptiveQuality(options = {}) {
     } = options;
 
     const { quality, setQuality } = useQuality();
+    const { isTransitionActive } = usePageTransition();
     const [fps, setFps] = useState(60);
 
     const lastCheckRef = useRef(0);
@@ -58,7 +68,9 @@ export default function useAdaptiveQuality(options = {}) {
     const badChecksRef = useRef(0);
 
     useFrame((_, delta) => {
-        if (!enabled) return;
+        if (!enabled) {
+            return;
+        }
 
         const now = performance.now();
 
@@ -92,6 +104,11 @@ export default function useAdaptiveQuality(options = {}) {
 
         // During cooldown, keep measuring fps but do not change quality
         if (now < cooldownUntilRef.current) {
+            return;
+        }
+
+        // During active transitions, keep measuring fps but do not change quality
+        if (isTransitionActive) {
             return;
         }
 

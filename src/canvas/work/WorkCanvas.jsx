@@ -1,4 +1,4 @@
-import NineSliceBorder from '@components/decoration/NineSliceBorder';
+import NineSliceBorder from '@components/ui/NineSliceBorder';
 import { SPRING_CONFIG } from '@config/animation.config';
 import { CANVAS_DPR, CANVAS_GL_DEFAULTS } from '@config/canvas.config';
 import { CAROUSEL_CONFIG } from '@config/carousel.config';
@@ -97,7 +97,7 @@ export default function WorkCanvas({ items, onCardNavigate, onScrollChange }) {
             lenis.destroy();
             lenisRef.current = null;
         };
-    }, [items.length]);
+    }, [isMobile, items.length]);
 
     const canvasStyle = isMobile
         ? { position: 'sticky', left: 0, width: '100vw', height: '100dvh', touchAction: 'pan-x', flexShrink: 0 }

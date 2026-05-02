@@ -1,7 +1,7 @@
 import CrsIcon from '@/assets/icons/CRS.svg?react';
 import PlsIcon from '@/assets/icons/PLS.svg?react';
-import GridOverlay from '@components/decoration/GridOverlay';
-import ScrollDown from '@components/decoration/ScrollDown';
+import GridOverlay from '@components/ui/GridOverlay';
+import ScrollDown from '@components/ui/ScrollDown';
 import { EASING, REVEAL, STAGGER } from '@config/animation.config';
 import { motion } from 'framer-motion';
 import styles from './ProjectHero.module.css';
