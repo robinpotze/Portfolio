@@ -1,4 +1,4 @@
-const assetPath = '/img/work/lsdjam/';
+const assetPath = '/assets/img/work/lsdjam/';
 
 export const Data = {
     id: 1,

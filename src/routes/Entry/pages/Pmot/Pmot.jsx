@@ -11,7 +11,7 @@ import WorkHeader from '@components/sections/WorkHeader/WorkHeader';
 
 import { Data } from './pmot.data';
 
-const assetPath = '/img/work/pmot/';
+const assetPath = '/assets/img/work/pmot/';
 
 export default function Pmot() {
     return (

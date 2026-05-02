@@ -12,7 +12,7 @@ import WorkHeader from '@components/sections/WorkHeader/WorkHeader';
 
 import { Data } from './ld58.data';
 
-const assetPath = '/img/work/ld58/';
+const assetPath = '/assets/img/work/ld58/';
 
 const BRAND_IMAGES = [
     { src: `${assetPath}Brands/9_WONDER.png`, alt: '9 Wonder beer label.' },

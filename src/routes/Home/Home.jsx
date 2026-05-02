@@ -110,7 +110,7 @@ export default function Home() {
     return (
         <>
             {isLoading && (
-                <LoadingScreen onComplete={onLoadingComplete} minDisplayTime={TIMEOUT.LOADING_MIN_DISPLAY_MS} logoSrc="/img/logo/logo.svg" />
+                <LoadingScreen onComplete={onLoadingComplete} minDisplayTime={TIMEOUT.LOADING_MIN_DISPLAY_MS} logoSrc="/assets/img/logo/logo.svg" />
             )}
             <div
                 className={styles.page}

@@ -286,7 +286,7 @@
     inset: -42px;
     pointer-events: none;
     border: 42px solid transparent;
-    border-image-source: url('/img/decal/MRKR_BRND_-100.svg');
+    border-image-source: url('../../assets/decals/MRKR_BRND_-100.svg');
     border-image-slice: 42 42 42 42;
     border-image-width: 42px;
     border-image-repeat: stretch;
@@ -299,7 +299,7 @@
 }
 
 .statusFormComplete::after {
-    border-image-source: url('/img/decal/MRKR.svg');
+    border-image-source: url('../../assets/decals/MRKR.svg');
 }
 
 .statusFormContent {

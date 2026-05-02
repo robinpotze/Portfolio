@@ -11,7 +11,7 @@ import WorkHeader from '@components/sections/WorkHeader/WorkHeader';
 
 import { Data } from './sqlgame.data';
 
-const assetPath = '/img/work/ssgnl/sqlgame/';
+const assetPath = '/assets/img/work/ssgnl/sqlgame/';
 
 export default function SqlGame() {
     return (

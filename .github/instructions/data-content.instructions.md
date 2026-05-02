@@ -20,7 +20,7 @@ export const Data = {
     year: 2025,                               // number — primary sort key (descending)
     software: ['Figma', 'Unity', 'Blender'],  // string[] — tools used
     skills: ['UI Design', 'Game Dev'],        // string[] — skills demonstrated
-    banner: '/img/work/ld58/Wallpaper.png',   // string — hero banner image path
+    banner: '/assets/img/work/ld58/Wallpaper.png',   // string — hero banner image path
 };
 ```
 
@@ -33,7 +33,7 @@ export const Data = {
 | `synopsis` | **Yes** | `string` | Short tagline in ProjectHero |
 | `description` | **Yes** | `string` | Full description in entry page |
 | `client` | **Yes** | `string` | Client/event name shown on work cards |
-| `banner` | **Yes** | `string` | Hero image path (must exist in `public/img/work/`) |
+| `banner` | **Yes** | `string` | Hero image path (must exist in `public/assets/img/work/`) |
 | `software` | No | `string[]` | Tools list in ProjectHero |
 | `skills` | No | `string[]` | Skills list in ProjectHero |
 
@@ -53,7 +53,7 @@ export const Data = {
     year: 2026,
     software: ['React', 'Three.js'],
     skills: ['Creative Dev'],
-    banner: '/img/work/myproject/banner.png',
+    banner: '/assets/img/work/myproject/banner.png',
 };
 
 export default function MyProject() {
@@ -65,7 +65,7 @@ export default function MyProject() {
 }
 ```
 
-4. Place banner image at `public/img/work/myproject/banner.png`
+4. Place banner image at `public/assets/img/work/myproject/banner.png`
 5. The autogen pipeline discovers and registers it automatically — no manual route or import needed
 
 ## Autogen Pipeline
@@ -142,8 +142,8 @@ All static assets live under `public/`:
 
 | Content | Path pattern |
 |---------|--------------|
-| Work banners | `/img/work/{project}/` |
-| About icons | `/img/icon/` or `/img/software/` |
-| Logo assets | `/img/logo/` |
+| Work banners | `/assets/img/work/{project}/` |
+| About icons | `/assets/img/icon/` or `/assets/img/software/` |
+| Logo assets | `/assets/img/logo/` |
 | 3D models | `/assets/3d/` |
 | Fonts | `/assets/fonts/` |

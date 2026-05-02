@@ -91,7 +91,7 @@ function LogoMesh({ enableFBO = true, ...props }) {
             const canRevealGlass = quality === 'low' ? bootstrapProgress >= 0.55 : fboReadyRef.current;
             const glassTarget = canRevealGlass ? 1 : 0;
             const pulseTarget = canRevealGlass ? 0 : 1;
-            const fadeLerp = Math.min(1, (delta * 1000) / LOGO_BOOTSTRAP.GLASS_FADE_MS);
+            const fadeLerp = Math.min(1, (delta * 400) / LOGO_BOOTSTRAP.GLASS_FADE_MS);
             glassOpacityRef.current += (glassTarget - glassOpacityRef.current) * fadeLerp;
             pulseOpacityRef.current += (pulseTarget - pulseOpacityRef.current) * fadeLerp;
 

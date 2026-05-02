@@ -20,7 +20,7 @@
 
     /* border-image does all the nine-slicing */
     border: 42px solid transparent;
-    border-image-source: url('/img/decal/MRKR.svg');
+    border-image-source: url('../../../assets/decals/MRKR.svg');
     border-image-slice: 42 42 42 42;
     border-image-width: 42px;
     border-image-repeat: stretch;

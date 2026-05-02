@@ -1,5 +1,3 @@
-import CrsDecal from '@/assets/decals/CRS.svg?react';
-import PlsDecal from '@/assets/decals/PLS.svg?react';
 import CrsIcon from '@/assets/icons/CRS.svg?react';
 import GatIcon from '@/assets/icons/GAT.svg?react';
 import MrkIcon from '@/assets/icons/MRK.svg?react';
@@ -9,9 +7,9 @@ import { AnimatePresence, motion } from 'framer-motion';
 import styles from './StatusMessage.module.css';
 
 const STATUS_CONFIG = {
-    success: { Icon: GatIcon, Decal: PlsDecal },
-    warning: { Icon: MrkIcon, Decal: PlsDecal },
-    error: { Icon: CrsIcon, Decal: CrsDecal },
+    success: { Icon: GatIcon, Decal: PlsIcon },
+    warning: { Icon: MrkIcon, Decal: PlsIcon },
+    error: { Icon: CrsIcon, Decal: CrsIcon },
 };
 
 const panelVariants = {

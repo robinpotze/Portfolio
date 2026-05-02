@@ -60,12 +60,12 @@ export const ABOUT_DATA = {
         { text: 'Software Development', icon: BrcIcon },
     ],
     SFT: [
-        { text: 'Illustrator', icon: '/img/software/Illustrator.svg' },
-        { text: 'After Effects', icon: '/img/software/AfterEffects.svg' },
-        { text: 'Figma', icon: '/img/software/Figma.svg' },
-        { text: 'Blender', icon: '/img/software/Blender.svg' },
-        { text: 'Unity', icon: '/img/software/Unity.svg' },
-        { text: 'Unreal', icon: '/img/software/Unreal.svg' },
+        { text: 'Illustrator', icon: '/assets/img/software/Illustrator.svg' },
+        { text: 'After Effects', icon: '/assets/img/software/AfterEffects.svg' },
+        { text: 'Figma', icon: '/assets/img/software/Figma.svg' },
+        { text: 'Blender', icon: '/assets/img/software/Blender.svg' },
+        { text: 'Unity', icon: '/assets/img/software/Unity.svg' },
+        { text: 'Unreal', icon: '/assets/img/software/Unreal.svg' },
     ],
     EDU: [
         {

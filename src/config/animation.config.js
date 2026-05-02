@@ -97,8 +97,8 @@ export const FLOAT_CONFIG = {
 };
 
 export const LOGO_BOOTSTRAP = {
-    DURATION_MS: 1800,
-    GLASS_FADE_MS: 900,
+    DURATION_MS: 800,
+    GLASS_FADE_MS: 400,
 };
 
 export const SPRING_CONFIG = {

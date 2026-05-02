@@ -1,4 +1,4 @@
-const assetPath = '/img/work/ssgnl/sqlgame/';
+const assetPath = '/assets/img/work/ssgnl/sqlgame/';
 
 export const Data = {
     id: 4,

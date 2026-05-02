@@ -11,7 +11,7 @@ import styles from '@routes/Entry/Entry.module.css';
 
 import { Data } from './cjib.data';
 
-const assetPath = '/img/work/cjib/';
+const assetPath = '/assets/img/work/cjib/';
 
 export default function Cjib() {
     return (

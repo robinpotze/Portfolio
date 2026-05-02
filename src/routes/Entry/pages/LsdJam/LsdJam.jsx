@@ -11,7 +11,7 @@ import WorkHeader from '@components/sections/WorkHeader/WorkHeader';
 
 import { Data } from './lsdjam.data';
 
-const assetPath = '/img/work/lsdjam/';
+const assetPath = '/assets/img/work/lsdjam/';
 
 export default function LsdJam() {
     return (

@@ -15,7 +15,7 @@
     color: var(--c-lght_100);
     box-sizing: border-box;
     overflow: hidden;
-    background-image: url('/img/about/face.jpg');
+    background-image: url('/assets/img/about/face.jpg');
     background-size: cover;
     background-position: center;
 }
@@ -73,7 +73,7 @@
     inset: -50px;
     pointer-events: none;
     border: 42px solid transparent;
-    border-image-source: url('/img/decal/MRKR.svg');
+    border-image-source: url('../../assets/decals/MRKR.svg');
     border-image-slice: 42 42 42 42;
     border-image-width: 42px;
     border-image-repeat: stretch;

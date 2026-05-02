@@ -116,7 +116,7 @@ export default function ProjectHero({ content }) {
                                 <motion.img
                                     className={styles.sideDecal}
                                     key={software}
-                                    src={`/img/software/${software}.svg`}
+                                    src={`/assets/img/software/${software}.svg`}
                                     alt={`${software}-logo`}
                                     variants={sideItemVars}
                                 />

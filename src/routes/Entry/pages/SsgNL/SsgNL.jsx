@@ -11,7 +11,7 @@ import WorkHeader from '@components/sections/WorkHeader/WorkHeader';
 
 import { Data } from './ssgnl.data';
 
-const assetPath = '/img/work/ssgnl/';
+const assetPath = '/assets/img/work/ssgnl/';
 
 export default function SsgNL() {
     return (
