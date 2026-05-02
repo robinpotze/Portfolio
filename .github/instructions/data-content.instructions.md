@@ -1,7 +1,8 @@
 ---
-description: "Use when adding project entries, editing work/about data, modifying the autogen pipeline, or working with WorkContext, sortItems, or normalizeKey."
-applyTo: "src/routes/Entry/**, src/routes/About/about.data.js, src/app/App.jsx, src/utils/workUtils.js, src/utils/stringUtils.js"
+description: 'Use when adding project entries, editing work/about data, modifying the autogen pipeline, or working with WorkContext, sortItems, or normalizeKey.'
+applyTo: 'src/routes/Entry/**, src/routes/About/about.data.js, src/app/App.jsx, src/utils/workUtils.js, src/utils/stringUtils.js'
 ---
+
 # Data Structures & Content
 
 ## Project Entry Data
@@ -12,30 +13,30 @@ Every project page in `src/routes/Entry/pages/` must export a `Data` object with
 
 ```javascript
 export const Data = {
-    id: 2,                                    // number — sort tiebreaker (ascending)
-    title: 'LD58',                            // string — display title, also used for URL key
-    synopsis: 'Short one-liner description',  // string — shown in ProjectHero subtitle
-    description: 'Detailed description...',   // string — full description in hero section
-    client: 'LUDUM DRUNKS',                   // string — client or event name
-    year: 2025,                               // number — primary sort key (descending)
-    software: ['Figma', 'Unity', 'Blender'],  // string[] — tools used
-    skills: ['UI Design', 'Game Dev'],        // string[] — skills demonstrated
-    banner: '/assets/img/work/ld58/Wallpaper.png',   // string — hero banner image path
+    id: 2, // number — sort tiebreaker (ascending)
+    title: 'LD58', // string — display title, also used for URL key
+    synopsis: 'Short one-liner description', // string — shown in ProjectHero subtitle
+    description: 'Detailed description...', // string — full description in hero section
+    client: 'LUDUM DRUNKS', // string — client or event name
+    year: 2025, // number — primary sort key (descending)
+    software: ['Figma', 'Unity', 'Blender'], // string[] — tools used
+    skills: ['UI Design', 'Game Dev'], // string[] — skills demonstrated
+    banner: '/assets/img/work/ld58/Wallpaper.png', // string — hero banner image path
 };
 ```
 
-| Field | Required | Type | Purpose |
-|-------|----------|------|---------|
-| `title` | **Yes** | `string` | Display name + autogen key (normalized for URL) |
-| `year` | **Yes** | `number` | Primary sort: newest first |
-| `date` | No | `string` | ISO date string for month-level precision (e.g., `'2024-06'`) — overrides `year` in sort when present |
-| `id` | **Yes** | `number` | Secondary sort: ascending tiebreaker |
-| `synopsis` | **Yes** | `string` | Short tagline in ProjectHero |
-| `description` | **Yes** | `string` | Full description in entry page |
-| `client` | **Yes** | `string` | Client/event name shown on work cards |
-| `banner` | **Yes** | `string` | Hero image path (must exist in `public/assets/img/work/`) |
-| `software` | No | `string[]` | Tools list in ProjectHero |
-| `skills` | No | `string[]` | Skills list in ProjectHero |
+| Field         | Required | Type       | Purpose                                                                                               |
+| ------------- | -------- | ---------- | ----------------------------------------------------------------------------------------------------- |
+| `title`       | **Yes**  | `string`   | Display name + autogen key (normalized for URL)                                                       |
+| `year`        | **Yes**  | `number`   | Primary sort: newest first                                                                            |
+| `date`        | No       | `string`   | ISO date string for month-level precision (e.g., `'2024-06'`) — overrides `year` in sort when present |
+| `id`          | **Yes**  | `number`   | Secondary sort: ascending tiebreaker                                                                  |
+| `synopsis`    | **Yes**  | `string`   | Short tagline in ProjectHero                                                                          |
+| `description` | **Yes**  | `string`   | Full description in entry page                                                                        |
+| `client`      | **Yes**  | `string`   | Client/event name shown on work cards                                                                 |
+| `banner`      | **Yes**  | `string`   | Hero image path (must exist in `public/assets/img/work/`)                                             |
+| `software`    | No       | `string[]` | Tools list in ProjectHero                                                                             |
+| `skills`      | No       | `string[]` | Skills list in ProjectHero                                                                            |
 
 ### Adding a New Project
 
@@ -57,11 +58,7 @@ export const Data = {
 };
 
 export default function MyProject() {
-    return (
-        <>
-            {/* Project-specific content sections */}
-        </>
-    );
+    return <>{/* Project-specific content sections */}</>;
 }
 ```
 
@@ -120,12 +117,12 @@ export const ABOUT_DATA = {
 };
 ```
 
-| Section | Key | Item shape | Rendered by |
-|---------|-----|------------|-------------|
-| Experience | `EXP` | `{ name, function, date, details[] }` | `ExpSection` |
-| Skills | `SKL` | `{ text, icon }` | `ListSection` |
-| Software | `SFT` | `{ text, icon }` | `ListSection` |
-| Education | `EDU` | `{ school, icon, course, date }` | `EduSection` |
+| Section    | Key   | Item shape                            | Rendered by   |
+| ---------- | ----- | ------------------------------------- | ------------- |
+| Experience | `EXP` | `{ name, function, date, details[] }` | `ExpSection`  |
+| Skills     | `SKL` | `{ text, icon }`                      | `ListSection` |
+| Software   | `SFT` | `{ text, icon }`                      | `ListSection` |
+| Education  | `EDU` | `{ school, icon, course, date }`      | `EduSection`  |
 
 Section rendering is mapped via `SECTION_MAP` in `About.jsx` — each section key maps to a component and prop name.
 
@@ -140,10 +137,10 @@ Section rendering is mapped via `SECTION_MAP` in `About.jsx` — each section ke
 
 All static assets live under `public/`:
 
-| Content | Path pattern |
-|---------|--------------|
-| Work banners | `/assets/img/work/{project}/` |
-| About icons | `/assets/img/icon/` or `/assets/img/software/` |
-| Logo assets | `/assets/img/logo/` |
-| 3D models | `/assets/3d/` |
-| Fonts | `/assets/fonts/` |
+| Content      | Path pattern                                   |
+| ------------ | ---------------------------------------------- |
+| Work banners | `/assets/img/work/{project}/`                  |
+| About icons  | `/assets/img/icon/` or `/assets/img/software/` |
+| Logo assets  | `/assets/img/logo/`                            |
+| 3D models    | `/assets/3d/`                                  |
+| Fonts        | `/assets/fonts/`                               |
