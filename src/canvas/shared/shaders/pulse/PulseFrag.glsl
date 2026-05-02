@@ -51,17 +51,23 @@ float loadingRipple(vec2 uv,float progress,float time){
     float waveIntensity=max(0.,1.-abs(distFromWave)/waveWidth);
 
     float blockId=hash21(blockCenterUv*173.);
-    float waveGate=smoothstep(.12,.7,waveIntensity);
 
-    // Scatter only around the active wavefront so the effect reads as structure, not noise.
+    // Scatter follows wave but extends slightly beyond for continuous energy feel.
     float scatterGate=step(.88,hash21(blockCenterUv*91.+vec2(timeStep,timeStep*1.7)));
-    float scatter=blockId*0.7*scatterGate*waveGate;
+    float scatterMask=smoothstep(-.15,.85,waveIntensity);
+    float scatter=blockId*0.9*scatterGate*scatterMask;
 
-    // Rare brightness bursts approximate CPU block displacement glitches.
+    // Frequent brightness bursts for more dynamic glitch feel matching loading screen.
     float glitchSeed=hash21(blockCenterUv*57.+vec2(timeStep*0.7,timeStep*1.3));
-    float glitchBoost=step(.985,glitchSeed)*0.42*waveGate;
+    float glitchBoost=step(.98,glitchSeed)*0.68;
 
-    float ripple=min(1.,waveIntensity+scatter+glitchBoost);
+    // Scanline pulsing emphasizes temporal energy.
+    float scanBand=smoothstep(.0,.012,abs(fract(uv.y*42.+time*3.1)-.5));
+    float scanPulse=step(.93,sin(time*6.5)*.5+.5);
+    float scanGlitch=scanBand*scanPulse*0.12;
+
+    // Combine with visual baseline to keep effect alive between pulses.
+    float ripple=max(.08,min(1.,waveIntensity+scatter+glitchBoost+scanGlitch));
 
     // Use bootstrap progress as intensity envelope, not as cycle driver.
     float bootstrapEnvelope=smoothstep(.02,.25,progress);
