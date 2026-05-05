@@ -10,7 +10,7 @@ import StatusMessage from '@components/ui/StatusMessage/StatusMessage';
 import { EASING, REVEAL, STAGGER, TIMEOUT } from '@config/animation.config';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useRef, useState } from 'react';
-import { CORNER_BL_LINES, ERROR_LOG_LINES, STATUS_GRID_LINES } from './contact.data';
+import { CONTACT_FORM_URL, CORNER_BL_LINES, ERROR_LOG_LINES, STATUS_GRID_LINES } from './contact.data';
 import styles from './Contact.module.css';
 
 const PHASE_CONFIG = {
@@ -201,11 +201,23 @@ export default function Contact() {
         }
     }, [canSend, glitching]);
 
-    const handleIdentify = useCallback(() => {
+    const handleIdentify = useCallback(async () => {
         if (canIdentify) {
+            try {
+                const res = await fetch(CONTACT_FORM_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData),
+                });
+
+                if (!res.ok) throw new Error('Send failed');
+            } catch {
+                // Still show complete phase — message failure is silent to not break UX
+                console.error('Failed to send contact form');
+            }
             setPhase('complete');
         }
-    }, [canIdentify]);
+    }, [canIdentify, formData]);
 
     const handleEmailKeyDown = useCallback(
         (e) => {

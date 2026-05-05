@@ -1,3 +1,5 @@
+export const CONTACT_FORM_URL = 'https://contact-form.robinpotze.workers.dev';
+
 export const ERROR_LOG_LINES = [
     '[SYSTEM] CARRIER_INTERCEPT_DAEMON v9.4.0',
     '[BOOT] WIDEBAND_FRONTEND: ACTIVE [RX_01..RX_08]',
