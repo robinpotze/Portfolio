@@ -35,6 +35,9 @@ export default {
                 });
             }
 
+            const fromAddress = env.FROM_EMAIL || 'onboarding@resend.dev';
+            const toAddress = env.TO_EMAIL || 'contact@robinpotze.com';
+
             const res = await fetch('https://api.resend.com/emails', {
                 method: 'POST',
                 headers: {
@@ -42,8 +45,8 @@ export default {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    from: 'Contact Form <noreply@robinpotze.com>',
-                    to: ['contact@robinpotze.com'],
+                    from: `Contact Form <${fromAddress}>`,
+                    to: [toAddress],
                     subject: `Portfolio contact from ${name}`,
                     reply_to: email,
                     text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
