@@ -1,23 +1,23 @@
 # Component Documentation
 
 > Canonical reference for every rendered component in the portfolio codebase.
-> Combines detailed behavior descriptions with dependency tables and cross-cutting indexes.
+> Updated 2026-05-05 against actual source.
 
 ---
 
 ## Table of Contents
 
-- [Scope](#scope)
+- [Project Structure](#project-structure)
 - [1 — App Shell & Providers](#1--app-shell--providers)
 - [2 — Route Components](#2--route-components)
 - [3 — About Route Subcomponents](#3--about-route-subcomponents)
 - [4 — Entry Page Bodies](#4--entry-page-bodies)
 - [5 — Reusable DOM Components](#5--reusable-dom-components)
-  - [5.1 — Root](#51--root)
-  - [5.2 — Decoration](#52--decoration)
-  - [5.3 — Effects](#53--effects)
-  - [5.4 — Layout](#54--layout)
-  - [5.5 — UI (Content Blocks)](#55--ui-content-blocks)
+  - [5.1 — Navigation](#51--navigation)
+  - [5.2 — UI](#52--ui)
+  - [5.3 — Blocks](#53--blocks)
+  - [5.4 — Sections](#54--sections)
+  - [5.5 — Layout](#55--layout)
 - [6 — Canvas & Scene Components](#6--canvas--scene-components)
   - [6.1 — Home Scene](#61--home-scene)
   - [6.2 — Work Scene](#62--work-scene)
@@ -27,16 +27,33 @@
 
 ---
 
-## Scope
+## Project Structure
 
-| Included | Excluded |
-|---|---|
-| App shell and providers | Hook implementations (`src/hooks/`) |
-| Route and page components | Utility modules (`src/utils/`) |
-| Reusable DOM components | Config internals (`src/config/`) |
-| R3F scene/mesh components | Data files and `autogen.js` |
-| Custom JSX render primitives | GLSL shader source files |
-| | `index.js` barrel re-exports |
+```
+src/components/
+├── ErrorBoundary.jsx          # Class-based error boundary (root)
+├── blocks/                    # Reusable content blocks (WorkHeader, WorkSubHeader)
+├── layout/
+│   └── image/                 # Image layout utilities (double/, grid/, wide/)
+├── navigation/                # App-level navigation & transitions
+│   ├── CurtainTransition/     #   Page transition curtain effect
+│   ├── LoadingScreen/         #   Asset-loading experience
+│   └── NavigationMenu/        #   Global menu (button, panel, links, socials, layers)
+├── sections/                  # Case-study content blocks (CaseIntro, FeatureSplit, etc.)
+└── ui/                        # Generic UI components (decorations, effects, indicators)
+    ├── DashLine/
+    ├── GradualBlur/
+    ├── GridOverlay/
+    ├── NineSliceBorder/
+    ├── PixelCard/
+    ├── RadialText/            #   CRCL/ and TXT/ subfolders
+    ├── RandomText/
+    ├── ScrollDown/
+    ├── ScrollReveal/
+    ├── StatusMessage/
+    ├── TypewriterText/
+    └── WorkLabel/
+```
 
 ---
 
@@ -46,15 +63,15 @@
 
 > **`src/app/App.jsx`** — Root shell
 
-The root app shell composes the entire runtime tree. It initializes the project list from the generated entry-page data, sorts it once on mount with `sortItems`, and then wraps the route outlet with the quality provider, work-item context, page-transition provider, persistent navigation menu, and error boundary.
+Composes the entire runtime tree. Initializes the sorted project list from generated entry-page data via `sortItems`, then wraps the route outlet with nested providers and persistent navigation.
 
 - Owns the `items` state that powers the work carousel and project detail routes.
-- Makes navigation UI global by rendering `NavigationMenu` outside the outlet.
-- Uses nested providers to keep quality, work data, and route-transition state available everywhere.
+- Renders `NavigationMenu` outside the outlet so it persists across routes.
+- Provider nesting order: `QualityProvider` → `WorkContext.Provider` → `PageTransitionProvider`.
 
-| Hooks | Context | Config | Children |
+| Hooks | Context Provided | Config | Children |
 |---|---|---|---|
-| `useState`, `useEffect` | Provides: `QualityProvider`, `WorkContext.Provider`, `PageTransitionProvider` | — | `NavigationMenu`, `ErrorBoundary`, `Outlet` |
+| `useState`, `useEffect` | `QualityProvider`, `WorkContext.Provider`, `PageTransitionProvider` | — | `NavigationMenu`, `ErrorBoundary`, `Outlet` |
 
 ---
 
@@ -62,14 +79,26 @@ The root app shell composes the entire runtime tree. It initializes the project 
 
 > **`src/app/QualityContext.jsx`** — Rendering-quality state provider
 
-Manages the global rendering-quality tier used by the canvas layer. Seeds its initial state from `getInitialQuality()` and exposes `quality` plus a guarded `setQuality` method through context.
+Manages the global rendering-quality tier (`'low'` / `'medium'` / `'high'`). Seeds initial state from `getInitialQuality()` (GPU detection). Exposes `quality` and `setQuality` via context.
 
-- Debounces quality changes by enforcing a 2-second minimum delay between updates.
-- Exists mainly to let scene code degrade gracefully on weaker devices.
+- `setQuality` only updates state when the new value differs from current (avoids pointless rerenders).
+- No debouncing or timer logic — the adaptive quality hook handles rate-limiting externally.
 
-| Hooks | Context | Config | Children |
+| Hooks | Context Provided | Config | Children |
 |---|---|---|---|
-| `useState`, `useRef`, `useCallback` | Provides: `QualityContext` | — | — |
+| `useState`, `useCallback` | `QualityContext` | — | — |
+
+---
+
+### `WorkContext`
+
+> **`src/app/WorkContext.jsx`** — Work items context
+
+Simple context that holds the sorted project items array. Exposes `useWorkItems()` hook for consumers.
+
+| Hooks | Context Provided |
+|---|---|
+| `createContext`, `useContext` | `WorkContext` |
 
 ---
 
@@ -79,17 +108,17 @@ Manages the global rendering-quality tier used by the canvas layer. Seeds its in
 
 > **`src/routes/Home/Home.jsx`** — Landing page
 
-The landing page combines the loading sequence, hero copy, decorative overlays, and the home 3D scene. It uses `useScrollNavigation` to turn downward scroll progress into both route-transition intent and laser-scene parameter changes.
+Combines the loading sequence, hero copy, decorative overlays, and the home 3D scene. Uses `useScrollNavigation` to turn downward scroll progress into both route-transition intent and laser-scene parameter changes.
 
-- Skips the loading screen when arriving via internal navigation state (`location.state.fromNavigation`).
-- Preloads the GLB assets (`Logo.glb`, `Wall.glb`) used by the home scene.
+- Skips the loading screen when arriving via internal navigation (`location.state.fromNavigation`).
+- Preloads GLB assets (`Logo.glb`, `Wall.glb`) on mount.
 - Resets scroll position and clears navigation state on entry.
-- Derives `laserParams` from `LASER_PARAMS`, scaling each value with scroll progress.
-- Renders `HomeCanvas` behind the DOM hero content and only enables interaction once loading completes.
+- Derives `laserParams` by scaling each `LASER_PARAMS` value with scroll progress.
+- `HomeCanvas` renders behind the DOM content; interaction enabled only after loading completes.
 
 | Hooks | Context | Config | Children |
 |---|---|---|---|
-| `useState`, `useEffect`, `useMemo`, `useRef`, **`useScrollNavigation`** | — | `EASING`, `LOADING`, `REVEAL`, `SCROLL_THRESHOLDS`, `STAGGER`, `LASER_PARAMS` | `HomeCanvas`, `LoadingScreen`, `ScrollDown`, `RadialGrid`, `RedoAnimText` |
+| `useState`, `useEffect`, `useMemo`, `useRef`, **`useScrollNavigation`** | — | `EASING`, `REVEAL`, `SCROLL_THRESHOLDS`, `STAGGER`, `TIMEOUT`, `LASER_PARAMS` | `HomeCanvas`, `LoadingScreen`, `ScrollDown`, `RadialGrid`, `RedoAnimText` |
 
 ---
 
@@ -97,12 +126,12 @@ The landing page combines the loading sequence, hero copy, decorative overlays, 
 
 > **`src/routes/Work/Work.jsx`** — 3D work carousel
 
-The scrollable project carousel page. It delegates the 3D presentation to `WorkCanvas`, translates card clicks into page transitions, and implements the "scroll up at the top to go home" interaction.
+The scrollable project carousel page. Delegates 3D presentation to `WorkCanvas`, translates card clicks into page transitions, and implements "scroll up at top to go home".
 
-- Uses `useWorkItems()` to read the sorted project list built in `App`.
-- Guards navigation with a `hasNavigated` ref so repeated scroll or click events cannot double-fire.
-- Tracks whether the carousel is near its top and accumulates upward wheel or touch input until it crosses the configured exit threshold.
-- Shows a mobile-only swipe hint when touch support is detected.
+- Uses `useWorkItems()` for the sorted project list.
+- Guards navigation with `hasNavigated` ref to prevent double-fires.
+- Accumulates upward wheel/touch input at the top of the carousel until it crosses `WORK_MAX_SCROLL`, then triggers transition home.
+- Detects touch devices for mobile swipe hint.
 
 | Hooks | Context | Config | Children |
 |---|---|---|---|
@@ -114,12 +143,11 @@ The scrollable project carousel page. It delegates the 3D presentation to `WorkC
 
 > **`src/routes/About/About.jsx`** — Tabbed profile page
 
-A tabbed profile page that swaps between experience, education, skills, and software lists. It is a composition-heavy page: a selector rail on one side, animated content panel on the other, and a large decorative grid behind both.
+Tabbed profile page swapping between experience, education, skills, and software sections. Uses Framer Motion `AnimatePresence` and `layoutId` for the active-tab indicator.
 
-- Keeps local `currentPage` state to select one of the section components (`EXP`, `EDU`, `SKL`, `SFT`).
-- Uses Framer Motion `AnimatePresence` and shared-layout animation (`layoutId`) for the active-tab indicator.
-- Uses `PixelCard` as an animated accent inside each selector button.
-- Applies `GridOverlay` as a full-page decorative system.
+- Local `currentPage` state selects one of `EXP`, `EDU`, `SKL`, `SFT` components.
+- `PixelCard` used as animated accent inside each selector button.
+- `GridOverlay` provides full-page decorative background.
 
 | Hooks | Context | Config | Children |
 |---|---|---|---|
@@ -131,17 +159,15 @@ A tabbed profile page that swaps between experience, education, skills, and soft
 
 > **`src/routes/Contact/Contact.jsx`** — Terminal-style contact flow
 
-The contact page behaves like a staged terminal-interface flow rather than a plain form. It moves through `message`, `intercept`, and `complete` phases, combining inputs, glitch effects, status messaging, and typewriter-driven diagnostic text.
+Staged terminal-interface flow through `message`, `intercept`, and `complete` phases. Combines inputs, glitch effects, status messaging, and typewriter-driven diagnostic text.
 
-- Tracks phase, form data (`name`, `message`, `email`), and a `glitching` flag in local state.
-- Uses an SVG `feTurbulence` displacement filter plus layered overlays for the intercept glitch sequence.
-- First phase collects name and message; second phase asks for email identification; final phase confirms relay.
-- Uses `StatusMessage`, `TypewriterText`, and radial text decorations to sell the "signal intercept" fiction.
-- Wraps the full page in `ErrorBoundary` so failures in the motion-heavy UI degrade safely.
+- Phase config object maps each phase to its title, styling, and status message.
+- Uses SVG `feTurbulence` displacement filter for glitch sequence.
+- First phase collects name + message; second asks for email; final confirms relay.
 
 | Hooks | Context | Config | Children |
 |---|---|---|---|
-| `useState`, `useCallback`, `useRef` | — | `CONTACT_TIMING`, `EASING`, `REVEAL`, `STAGGER` | `StatusMessage`, `TypewriterText`, `ErrorBoundary`, `PixelCard` |
+| `useState`, `useCallback`, `useRef` | — | `EASING`, `REVEAL`, `STAGGER`, `TIMEOUT` | `StatusMessage`, `TypewriterText`, `ErrorBoundary`, `PixelCard`, `RadGridTxt` |
 
 ---
 
@@ -149,12 +175,11 @@ The contact page behaves like a staged terminal-interface flow rather than a pla
 
 > **`src/routes/Entry/Entry.jsx`** — Dynamic project detail wrapper
 
-The dynamic wrapper for all project case-study pages. It reads the `:title` route param, normalizes it via `normalizeKey()`, looks up the matching generated page entry, and then renders a common hero plus the project-specific content component.
+Reads the `:title` route param, normalizes via `normalizeKey()`, looks up the matching generated page entry, and renders a common hero plus project-specific content.
 
 - Enables Lenis smooth scrolling for long-form reading.
-- Renders a 404-style fallback when the normalized key does not resolve.
-- Uses `ProjectHero` for the standard project header and then mounts the page-specific body inside `Suspense`.
-- Adds a synopsis block, `DashLine`, `ScrollReveal`, and bottom `GradualBlur` so every project page shares the same narrative structure.
+- Renders 404 fallback when normalized key doesn't resolve.
+- Shared structure: `ProjectHero` → synopsis block → `DashLine` → `ScrollReveal` → page body → `GradualBlur`.
 
 | Hooks | Context | Config | Children |
 |---|---|---|---|
@@ -164,299 +189,324 @@ The dynamic wrapper for all project case-study pages. It reads the `:title` rout
 
 ## 3 — About Route Subcomponents
 
-These form a small isolated tree used exclusively inside the About page.
+Small isolated tree used exclusively inside the About page.
 
 | Component | File | Description | Hooks | Config | Children |
 |---|---|---|---|---|---|
-| **`ExpSection`** | `src/routes/About/components/ExpSection.jsx` | Renders the experience timeline. Maps each item into company, role, date, and details. | — | `EASING`, `REVEAL` | `AboutItem` |
-| **`EduSection`** | `src/routes/About/components/EduSection.jsx` | Renders the education list. Formats school, course, and date data. | — | `EASING`, `REVEAL` | — |
-| **`ListSection`** | `src/routes/About/components/ListSection.jsx` | Generic list renderer for the skills and software tabs. | — | — | `AboutItem` |
-| **`AboutItem`** | `src/routes/About/components/AboutItem.jsx` | Smallest reusable unit: one line of text with optional icon and metadata. Handles both SVG components and plain image sources. | — | `EASING`, `REVEAL` | — |
+| **`ExpSection`** | `src/routes/About/components/ExpSection.jsx` | Experience timeline. Maps items into company, role, date, details. | — | `EASING`, `REVEAL` | `AboutItem` |
+| **`EduSection`** | `src/routes/About/components/EduSection.jsx` | Education list. Formats school, course, date. | — | `EASING`, `REVEAL` | — |
+| **`ListSection`** | `src/routes/About/components/ListSection.jsx` | Generic list for skills and software tabs. | — | — | `AboutItem` |
+| **`AboutItem`** | `src/routes/About/components/AboutItem.jsx` | Single line with optional icon and metadata. Handles SVG components and image sources. | — | `EASING`, `REVEAL` | — |
 
 ---
 
 ## 4 — Entry Page Bodies
 
-All of these are **composition-only** page components. None owns significant interactive state — they sequence shared UI blocks, project copy, and asset references into case-study narratives. All share the same dependency profile:
+All are **composition-only** — they sequence shared section blocks into case-study narratives. None owns interactive state.
 
-> **Hooks:** none &nbsp;|&nbsp; **Context:** none &nbsp;|&nbsp; **Config:** none
+> **Hooks:** none | **Context:** none | **Config:** none
 
 | Component | File | Project | Shared Blocks Used |
 |---|---|---|---|
-| **`Cjib`** | `src/routes/Entry/pages/Cjib/Cjib.jsx` | CJIB — motion design, documentation, and seizure-management UX across three product teams. | `CaseIntro`, `WorkHeader`, `StatementBlock`, `FullImage`, `FeatureSplit`, `ComparisonBlock`, `HeroStatement`, `EvidenceRow`, `ScrollReveal` |
-| **`Ld58`** | `src/routes/Entry/pages/Ld58/Ld58.jsx` | Ludum Dare 58 — 3D art, UI design, and branding delivered in 72 hours. | `CaseIntro`, `WorkHeader`, `StatementBlock`, `FullImage`, `FeatureSplit`, `DoubleImage`, `HeroStatement`, `EvidenceRow`, `ScrollReveal` |
-| **`LsdJam`** | `src/routes/Entry/pages/LsdJam/LsdJam.jsx` | LSD Jam — level art and environment design for a reality-bending game jam. | `CaseIntro`, `WorkHeader`, `StatementBlock`, `FullImage`, `FeatureSplit`, `DoubleImage`, `ComparisonBlock`, `HeroStatement`, `EvidenceRow`, `ScrollReveal` |
-| **`Pmot`** | `src/routes/Entry/pages/Pmot/Pmot.jsx` | PMOT — retail webstore and learning platform redesign. Most information-dense case study. | `CaseIntro`, `WorkHeader`, `StatementBlock`, `FullImage`, `FeatureSplit`, `DoubleImage`, `ComparisonBlock`, `HeroStatement`, `EvidenceRow`, `ScrollReveal` |
-| **`SqlGame`** | `src/routes/Entry/pages/SqlGame/SqlGame.jsx` | SQL Game — educational game that teaches SQL through play. | `CaseIntro`, `WorkHeader`, `StatementBlock`, `FullImage`, `FeatureSplit`, `DoubleImage`, `ComparisonBlock`, `HeroStatement`, `EvidenceRow`, `ScrollReveal` |
-| **`SsgNL`** | `src/routes/Entry/pages/SsgNL/SsgNL.jsx` | Sopra Steria — four internal products (branding, board games, chatbot UI). | `CaseIntro`, `WorkHeader`, `StatementBlock`, `FullImage`, `FeatureSplit`, `DoubleImage`, `ComparisonBlock`, `HeroStatement`, `EvidenceRow`, `ScrollReveal` |
+| **`Cjib`** | `src/routes/Entry/pages/Cjib/Cjib.jsx` | CJIB — motion design and seizure-management UX | `CaseIntro`, `WorkHeader`, `StatementBlock`, `FullImage`, `FeatureSplit`, `ComparisonBlock`, `HeroStatement`, `EvidenceRow`, `ScrollReveal` |
+| **`Ld58`** | `src/routes/Entry/pages/Ld58/Ld58.jsx` | Ludum Dare 58 — 3D art and branding in 72h | `CaseIntro`, `WorkHeader`, `StatementBlock`, `FullImage`, `FeatureSplit`, `DoubleImage`, `HeroStatement`, `EvidenceRow`, `ScrollReveal` |
+| **`LsdJam`** | `src/routes/Entry/pages/LsdJam/LsdJam.jsx` | LSD Jam — level art and environment design | `CaseIntro`, `WorkHeader`, `StatementBlock`, `FullImage`, `FeatureSplit`, `DoubleImage`, `ComparisonBlock`, `HeroStatement`, `EvidenceRow`, `ScrollReveal` |
+| **`Pmot`** | `src/routes/Entry/pages/Pmot/Pmot.jsx` | PMOT — retail webstore redesign | `CaseIntro`, `WorkHeader`, `StatementBlock`, `FullImage`, `FeatureSplit`, `DoubleImage`, `ComparisonBlock`, `HeroStatement`, `EvidenceRow`, `ScrollReveal` |
+| **`SqlGame`** | `src/routes/Entry/pages/SqlGame/SqlGame.jsx` | SQL Game — educational SQL game | `CaseIntro`, `WorkHeader`, `StatementBlock`, `FullImage`, `FeatureSplit`, `DoubleImage`, `ComparisonBlock`, `HeroStatement`, `EvidenceRow`, `ScrollReveal` |
+| **`SsgNL`** | `src/routes/Entry/pages/SsgNL/SsgNL.jsx` | Sopra Steria — internal products | `CaseIntro`, `WorkHeader`, `StatementBlock`, `FullImage`, `FeatureSplit`, `DoubleImage`, `ComparisonBlock`, `HeroStatement`, `EvidenceRow`, `ScrollReveal` |
 
 ---
 
 ## 5 — Reusable DOM Components
 
-### 5.1 — Root
+### 5.1 — Navigation
 
-#### `ErrorBoundary`
-
-> **`src/components/ErrorBoundary.jsx`** — Runtime error containment
-
-The global failure-containment component used around high-risk route and canvas trees. It is a **class-based** React error boundary — the one deliberate exception to the project's functional-component style.
-
-- Catches render-time errors and stores both the thrown error and component stack info.
-- Renders a fallback screen with recovery actions ("Try Again", "Go Home") instead of crashing the entire app.
-- Used around routes and canvas-heavy pages where runtime failures are more likely.
-
-| Hooks | Context | Config | Children |
-|---|---|---|---|
-| — (class component) | — | — | — |
-
----
-
-### 5.2 — Decoration
-
-#### `DashLine`
-
-> **`src/components/decoration/DashLine/DashLine.jsx`** — Adaptive dashed SVG divider
-
-An SVG-based decorative divider that measures its container and draws either a horizontal or vertical dashed line. It uses a `ResizeObserver` so the path stays correct when the layout changes.
-
-| Hooks | Context | Config | Children |
-|---|---|---|---|
-| `useRef`, `useState`, `useEffect` | — | — | — |
-
----
-
-#### `GridOverlay`
-
-> **`src/components/decoration/GridOverlay/GridOverlay.jsx`** — Responsive decorative grid system
-
-The most elaborate decorative DOM component in the codebase. It computes a responsive cell grid from its own bounds, randomly activates some cells as striped/blurred accents, and overlays crosshair icons that move with a spring-smoothed mouse parallax offset.
-
-- Accepts many sizing and styling props for cell density, stripe intensity, blur, icon size, and parallax strength.
-- Recalculates rows and columns with `ResizeObserver`.
-- Uses Framer Motion values and springs for smooth mouse tracking.
-- Keeps its random stripe pattern stable until the grid dimensions change.
-
-| Hooks | Context | Config | Children |
-|---|---|---|---|
-| `useRef`, `useState`, `useEffect`, `useMemo`, `useCallback`, `useMotionValue`, `useSpring` | — | `EASING`, `REVEAL`, `SPRING_CONFIG`, `STAGGER` | Default crosshair icon (`PlsIcon`) |
-
----
-
-#### `NineSliceBorder`
-
-> **`src/components/decoration/NineSliceBorder/NineSliceBorder.jsx`** — Screen-space framing border
-
-Renders a screen-space border overlay whose position and size come from Framer Motion values. Used by the work carousel to frame the currently centered card, after the 3D card bounds have been projected into 2D screen coordinates.
-
-| Hooks | Context | Config | Children |
-|---|---|---|---|
-| `useTransform` | — | — | — |
-
----
-
-#### Radial Decoration System
-
-A family of small decorative components used on the Home page and elsewhere:
-
-| Component | File | Description | Hooks | Config | Children |
-|---|---|---|---|---|---|
-| **`RadialGrid`** | `src/components/decoration/RadialText/RadialGrid.jsx` | Dispatcher — selects circle or text grid via `type` prop. | — | — | `RAD_GRID_CRCL`, `RAD_GRID_TXT` |
-| **`RAD_CRCL`** | `src/components/decoration/RadialText/CRCL/RAD_CRCL.jsx` | Single SVG ring with animated progress arc. | — | `SPRING_CONFIG` | — |
-| **`RAD_GRID_CRCL`** | `src/components/decoration/RadialText/CRCL/RAD_GRID_CRCL.jsx` | 3×3 circle indicator grid with randomized values. | **`useRandomNumber`** | — | `RAD_CRCL` |
-| **`RAD_TXT`** | `src/components/decoration/RadialText/TXT/RAD_TXT.jsx` | Animated zero-padded numeric counter. | `useRef`, `useEffect` | — | — |
-| **`RAD_GRID_TXT`** | `src/components/decoration/RadialText/TXT/RAD_GRID_TXT.jsx` | 3×3 numeric counter grid with randomized values. | **`useRandomNumber`** | — | `RAD_TXT` |
-
----
-
-#### `RedoAnimText`
-
-> **`src/components/decoration/RandomText/RedoAnimText.jsx`** — Cycling phrase animation
-
-Cycles through a fixed set of phrases (`"| VOID OF AMBITION |"`, `"| VOID OF CREATION |"`, `"| VOID OF PROGRESS |"`) with a character-count animation. Used on the home page to inject motion into the quote block.
-
-| Hooks | Context | Config | Children |
-|---|---|---|---|
-| `useEffect`, `useMotionValue`, `useTransform`, `animate` | — | — | — |
-
----
-
-#### `ScrollDown`
-
-> **`src/components/decoration/ScrollDown/ScrollDown.jsx`** — Scroll affordance indicator
-
-An animated SVG scroll indicator with pulsing lines and a bouncing arrow. Parameterized by `color`, `width`, `height`, and `speed`.
-
-| Hooks | Context | Config | Children |
-|---|---|---|---|
-| — | — | — | — |
-
----
-
-### 5.3 — Effects
+> **`src/components/navigation/`**
 
 #### `CurtainTransition`
 
-> **`src/components/effects/CurtainTransition/CurtainTransition.jsx`** — Page transition curtain
+> **`src/components/navigation/CurtainTransition/CurtainTransition.jsx`**
 
-The page-transition effect that visually covers one route before revealing the next. It renders three staggered color layers, each moving along an axis determined by the requested direction, and fires completion callbacks when the last layer finishes.
+Page-transition curtain that visually covers one route before revealing the next. Renders three staggered color layers moving along a direction axis, firing lifecycle callbacks on completion.
 
-- Supports `up`, `down`, `left`, and `right` entry directions.
-- Knows whether it is covering or revealing by comparing `isOpen` to the previous render.
-- Displays the destination page label on the final layer.
-- Serves as the visual half of `usePageTransition`.
+- Supports `up`, `down`, `left`, `right` directions.
+- Determines cover vs. reveal by comparing `isOpen` to previous render.
+- Displays destination page label on the final layer.
+- Visual half of the `usePageTransition` system.
 
-| Hooks | Context | Config | Children |
-|---|---|---|---|
-| `useRef`, `useEffect` | — | `CURTAIN`, `EASING` | — |
-
----
-
-#### `GradualBlur`
-
-> **`src/components/effects/GradualBlur/GradualBlur.jsx`** — Directional progressive blur
-
-Creates a directional blur fade by stacking multiple masked `backdrop-filter: blur()` layers. Used to soften hard visual cutoffs, especially at the bottom of long pages.
-
-- Supports top, bottom, left, and right orientations.
-- Allows different curve types (`linear`, `bezier`, `ease-in`, `ease-out`, `ease-in-out`) and exponential progression.
-- Is `React.memo`-wrapped because its output is fully derived from props.
-
-| Hooks | Context | Config | Children |
-|---|---|---|---|
-| `useMemo`, `memo` | — | — | — |
+| Hooks | Config | Children |
+|---|---|---|
+| `useRef`, `useEffect` | `EASING`, `TIMEOUT` | — |
 
 ---
 
 #### `LoadingScreen`
 
-> **`src/components/effects/LoadingScreen/LoadingScreen.jsx`** — Asset-loading experience
+> **`src/components/navigation/LoadingScreen/LoadingScreen.jsx`**
 
-A custom animated loading system rather than a simple spinner. It watches Three.js asset progress with `useProgress`, renders the logo as a block-based canvas graphic, cycles cryptic messages with glitch-text decoding, and only exits after both loading and a minimum display time have been satisfied.
+Custom animated loading experience. Watches Three.js asset progress via `useProgress`, renders a block-based canvas logo pixelation, cycles cryptic messages with glitch-text decoding. Only exits after both loading and minimum display time are satisfied.
 
-- Contains an internal `BlockLogo` helper that samples the SVG into a block field.
-- Animates a radial pulse wave through those blocks and occasionally applies scanline-like glitches.
-- Exposes `onComplete`, `minDisplayTime`, and `logoSrc` so the route can coordinate when the main content fades in.
+- Internal `BlockLogo` helper samples SVG into a block field.
+- Radial pulse wave through blocks; occasional scanline glitches.
+- Props: `onComplete`, `minDisplayTime`, `logoSrc`.
+
+| Hooks | Config | Children |
+|---|---|---|
+| `useState`, `useRef`, `useEffect`, `useCallback`, `useProgress` | `REVEAL`, `TIMEOUT` | Internal `BlockLogo` |
+
+---
+
+#### `NavigationMenu`
+
+> **`src/components/navigation/NavigationMenu/NavigationMenu.jsx`**
+
+Persistent global menu controller. Owns open/closed state, runs RGB glitch on label text, closes on Escape, and delegates visuals to child components.
+
+- Uses `busy` ref to prevent rapid toggle spam.
+- Wraps route changes in a close delay so menu animates out before curtain starts.
 
 | Hooks | Context | Config | Children |
 |---|---|---|---|
-| `useState`, `useRef`, `useEffect`, `useProgress` | — | `LOADING` | Internal `BlockLogo`, `AnimatePresence` |
+| `useState`, `useRef`, `useLayoutEffect`, `useCallback`, FM `animate` | **`usePageTransition`** | `REVEAL`, `TIMEOUT` | `MenuBackgroundLayers`, `MenuButton`, `MenuPanel` |
+
+**Menu subcomponents** (all in `src/components/navigation/NavigationMenu/`):
+
+| Component | Description | Config |
+|---|---|---|
+| `MenuButton` | Toggle button with icon swap and glitch text. ARIA toggle attributes. | `EASING`, `REVEAL` |
+| `MenuPanel` | Sliding panel for links/socials. `inert` + `aria-hidden` when closed. | `EASING`, `REVEAL` |
+| `MenuLinks` | Fixed nav list (Home, Work, About, Contact). Staggered reveal. | `EASING`, `REVEAL`, `STAGGER` |
+| `MenuSocials` | External links (Artstation, GitHub, LinkedIn). `rel="noopener noreferrer"`. | `REVEAL` |
+| `MenuBackgroundLayers` | Two animated color slabs. Decorative, `aria-hidden`. | `EASING`, `REVEAL`, `STAGGER` |
+
+> All menu subcomponents are pure presentational — no hooks, no context.
+
+---
+
+### 5.2 — UI
+
+> **`src/components/ui/`**
+
+#### `DashLine`
+
+> **`src/components/ui/DashLine/DashLine.jsx`**
+
+SVG dashed divider. Measures container with resize handling and animates `stroke-dashoffset`. Supports horizontal/vertical via `direction` prop.
+
+| Hooks | Config |
+|---|---|
+| `useRef`, `useState`, `useEffect` | — |
+
+---
+
+#### `GradualBlur`
+
+> **`src/components/ui/GradualBlur/GradualBlur.jsx`**
+
+Directional progressive blur using stacked `backdrop-filter: blur()` layers. `React.memo`-wrapped.
+
+- Props: `position` (top/bottom/left/right), `strength`, `divCount`, `curve`, `exponential`, `opacity`.
+
+| Hooks | Config |
+|---|---|
+| `useMemo`, `memo` | — |
+
+---
+
+#### `GridOverlay`
+
+> **`src/components/ui/GridOverlay/GridOverlay.jsx`**
+
+Responsive decorative grid. Computes cell grid from container bounds, randomly activates cells as striped/blurred accents, overlays crosshair icons with spring-smoothed mouse parallax.
+
+- Recalculates via `ResizeObserver`.
+- Stable random pattern until grid dimensions change.
+- Many sizing/styling props: cell density, stripe intensity, blur, icon size, parallax strength.
+
+| Hooks | Config |
+|---|---|
+| `useRef`, `useState`, `useEffect`, `useMemo`, `useCallback`, FM `useMotionValue`, `useSpring` | `EASING`, `REVEAL`, `SPRING_CONFIG`, `STAGGER` |
+
+---
+
+#### `NineSliceBorder`
+
+> **`src/components/ui/NineSliceBorder/NineSliceBorder.jsx`**
+
+Screen-space border overlay driven by Framer Motion values (`x`, `y`, `w`, `h`). Used by WorkCanvas to frame the currently centered 3D card after projection.
+
+| Hooks | Config |
+|---|---|
+| FM `useTransform` | — |
 
 ---
 
 #### `PixelCard`
 
-> **`src/components/effects/PixelCard/PixelCard.jsx`** — Pixel shimmer overlay
+> **`src/components/ui/PixelCard/PixelCard.jsx`**
 
-An effect component that overlays a canvas-based pixel shimmer on top of its children. Used mostly as a decorative surface treatment. Respects `prefers-reduced-motion` by collapsing animation speed.
+Canvas-based pixel shimmer overlay. Runs a pixel simulation with configurable color, speed, and delay. Respects `prefers-reduced-motion`.
 
-| Hooks | Context | Config | Children |
+| Hooks | Config |
+|---|---|
+| `useRef`, `useEffect`, `useCallback` | — |
+
+---
+
+#### `RadialText` System
+
+> **`src/components/ui/RadialText/`**
+
+Family of small decorative components:
+
+| Component | File | Description | Hooks |
 |---|---|---|---|
-| `useRef`, `useEffect`, `useCallback` | — | — | Canvas pixel animation internals |
+| `RadialGrid` | `RadialGrid.jsx` | Dispatcher — selects circle or text grid via `type` prop | — |
+| `RAD_CRCL` | `CRCL/RAD_CRCL.jsx` | SVG ring with animated progress arc | — |
+| `RAD_GRID_CRCL` | `CRCL/RAD_GRID_CRCL.jsx` | 3×3 circle grid with randomized values | `useRandomNumber` |
+| `RAD_TXT` | `TXT/RAD_TXT.jsx` | Animated zero-padded numeric counter | `useRef`, `useEffect` |
+| `RAD_GRID_TXT` | `TXT/RAD_GRID_TXT.jsx` | 3×3 numeric counter grid | `useRandomNumber` |
+
+---
+
+#### `RedoAnimText`
+
+> **`src/components/ui/RandomText/RedoAnimText.jsx`**
+
+Cycles through fixed phrases with character-count animation using MotionValue counter. Infinite loop through predefined set.
+
+| Hooks | Config |
+|---|---|
+| `useEffect`, FM `useMotionValue`, `useTransform`, `animate` | — |
+
+---
+
+#### `ScrollDown`
+
+> **`src/components/ui/ScrollDown/ScrollDown.jsx`**
+
+Animated scroll indicator with staggered vertical lines and infinite opacity pulse. Pure Framer Motion variants.
+
+| Hooks | Config |
+|---|---|
+| — | — |
 
 ---
 
 #### `ScrollReveal`
 
-> **`src/components/effects/ScrollReveal/ScrollReveal.jsx`** — Viewport-triggered reveal
+> **`src/components/ui/ScrollReveal/ScrollReveal.jsx`**
 
-Wraps text in a viewport-triggered reveal animation. Uses Framer Motion's `useInView` with intersection detection and animates from low-opacity, slightly shifted content into its resting position.
+Viewport-triggered reveal wrapper. Uses Framer Motion `useInView` with custom `rootMargin` for Lenis compatibility. Animates from low-opacity/shifted to resting position.
 
-| Hooks | Context | Config | Children |
-|---|---|---|---|
-| `useRef`, `useMemo`, `useInView` | — | `REVEAL` | — |
+| Hooks | Config |
+|---|---|
+| `useRef`, `useMemo`, `useInView` | `REVEAL` |
+
+---
+
+#### `StatusMessage`
+
+> **`src/components/ui/StatusMessage/StatusMessage.jsx`**
+
+Animated status panel (success/warning/error). Selects icons and decals based on status type. Uses `AnimatePresence` for mount/unmount animation.
+
+| Hooks | Config |
+|---|---|
+| — | `EASING`, `REVEAL`, `STAGGER` |
 
 ---
 
 #### `TypewriterText`
 
-> **`src/components/effects/TypewriterText/TypewriterText.jsx`** — Multi-line typewriter
+> **`src/components/ui/TypewriterText/TypewriterText.jsx`**
 
-Renders an array of text lines with a timed character-by-character reveal. Tracks the current row and character index in state. Used heavily on the contact page for diagnostic-log styling.
+Multi-line typewriter effect. Renders text lines character-by-character with row stagger. Tracks current row and character index in state.
 
-| Hooks | Context | Config | Children |
+| Hooks | Config |
+|---|---|
+| `useState`, `useRef`, `useEffect` | `REVEAL`, `TYPEWRITER` |
+
+---
+
+#### `WorkLabel`
+
+> **`src/components/ui/WorkLabel/WorkLabel.jsx`**
+
+Simple badge-style label. Pure presentational — CSS Modules only, no hooks, no config.
+
+---
+
+### 5.3 — Blocks
+
+> **`src/components/blocks/`**
+
+Reusable content blocks that compose into case-study pages. Differ from sections in that they add interactive behavior (scroll reveal).
+
+| Component | File | Description | Children |
 |---|---|---|---|
-| `useState`, `useRef`, `useEffect` | — | `REVEAL`, `TYPEWRITER` | `AnimatePresence` |
+| **`WorkHeader`** | `src/components/blocks/WorkHeader/WorkHeader.jsx` | Main section heading: title + subtitle + description wrapped in `ScrollReveal` | `ScrollReveal` |
+| **`WorkSubHeader`** | `src/components/blocks/WorkSubHeader/WorkSubHeader.jsx` | Secondary heading: label + title + optional description in `ScrollReveal` | `ScrollReveal` |
 
 ---
 
-### 5.4 — Layout
+### 5.4 — Sections
 
-#### `NavigationMenu`
+> **`src/components/sections/`**
 
-> **`src/components/layout/NavigationMenu/NavigationMenu.jsx`** — Global menu controller
-
-The persistent site navigation controller. Owns the open/closed state, runs the RGB glitch treatment on the label, closes on Escape, and delegates the actual visuals to `MenuBackgroundLayers`, `MenuButton`, and `MenuPanel`.
-
-- Uses a `busy` ref to prevent rapid toggle spam.
-- Changes button color after a delay timed to the glitch effect.
-- Wraps route changes in a small close delay so the menu can animate out before the curtain transition starts.
-
-| Hooks | Context | Config | Children |
-|---|---|---|---|
-| `useState`, `useRef`, `useEffect`, `useLayoutEffect`, `useCallback`, `animate` | **`usePageTransition`** | `GLITCH`, `MENU_TIMING` | `MenuBackgroundLayers`, `MenuButton`, `MenuPanel` |
-
----
-
-#### Menu Subcomponents
-
-These form the internal structure of the `NavigationMenu` and share common config dependencies:
-
-| Component | File | Description | Config | Children |
-|---|---|---|---|---|
-| **`MenuButton`** | `src/components/layout/NavigationMenu/MenuButton.jsx` | Toggle button with icon swap and glitch text layers. Exposes ARIA toggle attributes. | `EASING`, `MENU_TIMING` | Icon stack + glitch refs |
-| **`MenuPanel`** | `src/components/layout/NavigationMenu/MenuPanel.jsx` | Sliding container for links and socials. Marked `inert` and `aria-hidden` when closed. Uses separate open/close timings. | `EASING`, `MENU_TIMING` | `MenuLinks`, `MenuSocials` |
-| **`MenuLinks`** | `src/components/layout/NavigationMenu/MenuLinks.jsx` | Fixed nav list (Home, Work, About, Contact). Staggered slide-up reveal. | `EASING`, `MENU_TIMING` | — |
-| **`MenuSocials`** | `src/components/layout/NavigationMenu/MenuSocials.jsx` | External social links (Artstation, GitHub, LinkedIn). Opens in new tab with `rel="noopener noreferrer"`. | `MENU_TIMING`, `REVEAL` | — |
-| **`MenuBackgroundLayers`** | `src/components/layout/NavigationMenu/MenuBackgroundLayers.jsx` | Two animated color slabs behind the panel. Purely decorative, `aria-hidden`. | `EASING`, `MENU_TIMING` | — |
-
-> All menu subcomponents have **no hooks** and **no context** dependencies.
-
----
-
-#### `ProjectHero`
-
-> **`src/components/layout/ProjectHero/ProjectHero.jsx`** — Project page hero section
-
-The standard hero section for every case-study page. Renders the project banner, overlays `GridOverlay`, reveals title and metadata with staggered motion, and anchors the page with the same visual language regardless of which entry component follows.
-
-| Hooks | Context | Config | Children |
-|---|---|---|---|
-| — | — | `EASING`, `REVEAL`, `STAGGER` | `GridOverlay`, `ScrollDown` |
-
----
-
-### 5.5 — UI (Content Blocks)
-
-These components form the **case-study content system**. Most are thin presentational wrappers with no hooks, no context, and no config — they rely entirely on props and CSS Modules for their output.
-
-#### Zero-Dependency Content Blocks
+Case-study content blocks. All are **pure presentational** — no hooks, no context, no config. They rely on props and CSS Modules.
 
 | Component | File | Description |
 |---|---|---|
-| **`CaseIntro`** | `src/components/ui/CaseIntro/CaseIntro.jsx` | Leading media block with kicker, heading, and subtitle. Auto-detects video vs. image source. |
-| **`ComparisonBlock`** | `src/components/ui/ComparisonBlock/ComparisonBlock.jsx` | Side-by-side comparison figures with label and heading. Used for "before vs. after" sections. |
-| **`DoubleImage`** | `src/components/ui/DoubleImage/DoubleImage.jsx` | Two-image side-by-side layout. The simplest image component. |
-| **`EvidenceRow`** | `src/components/ui/EvidenceRow/EvidenceRow.jsx` | Horizontal row of labeled facts/stats. Summarizes scope, duration, tools, or outcomes. |
-| **`FeatureSplit`** | `src/components/ui/FeatureSplit/FeatureSplit.jsx` | Two-column section with media on one side and text on the other. `reverse` prop flips layout. |
-| **`FullImage`** | `src/components/ui/FullImage/FullImage.jsx` | Full-width image with `thin` (reduced height) and `contain` (object-fit) modifiers. |
-| **`HeroStatement`** | `src/components/ui/HeroStatement/HeroStatement.jsx` | Prominent statement callout. Used for outcome or system-summary moments. |
-| **`StatementBlock`** | `src/components/ui/StatementBlock/StatementBlock.jsx` | Generic labeled prose/content section wrapper. |
-| **`WorkLabel`** | `src/components/ui/WorkLabel/WorkLabel.jsx` | Small badge-style label for project classification. |
+| **`CaseIntro`** | `CaseIntro/CaseIntro.jsx` | Leading media block with kicker, heading, subtitle. Auto-detects video vs. image. |
+| **`ComparisonBlock`** | `ComparisonBlock/ComparisonBlock.jsx` | Side-by-side comparison figures with labels. "Before vs. after" sections. |
+| **`DoubleImage`** | `DoubleImage/DoubleImage.jsx` | Two-image side-by-side layout. |
+| **`EvidenceRow`** | `EvidenceRow/EvidenceRow.jsx` | Horizontal row of labeled facts/stats. |
+| **`FeatureSplit`** | `FeatureSplit/FeatureSplit.jsx` | Two-column: media + text. `reverse` prop flips layout. |
+| **`FullImage`** | `FullImage/FullImage.jsx` | Full-width image with `thin` and `contain` modifiers. |
+| **`HeroStatement`** | `HeroStatement/HeroStatement.jsx` | Prominent statement callout for outcomes/summaries. |
+| **`ImageGrid`** | `ImageGrid/ImageGrid.jsx` | Multi-image grid layout. |
+| **`StatementBlock`** | `StatementBlock/StatementBlock.jsx` | Generic labeled prose/content section wrapper. |
 
-#### Content Blocks With Dependencies
+---
 
-| Component | File | Description | Config | Children |
-|---|---|---|---|---|
-| **`StatusMessage`** | `src/components/ui/StatusMessage/StatusMessage.jsx` | Animated status panel (success/warning/error). Selects icons, decals, and styling based on status. | `EASING`, `REVEAL`, `STAGGER` | Decorative icon/decal stack |
-| **`WorkHeader`** | `src/components/ui/WorkHeader/WorkHeader.jsx` | Main section heading block for case studies. Combines title, subtitle, and description. | — | `ScrollReveal` |
-| **`WorkSubHeader`** | `src/components/ui/WorkSubHeader/WorkSubHeader.jsx` | Secondary heading block for subsection framing. Optionally reveals a descriptive paragraph. | — | `ScrollReveal` |
+### 5.5 — Layout
+
+> **`src/components/layout/`**
+
+Contains `image/` with subdirectories (`double/`, `grid/`, `wide/`) — currently empty placeholder folders.
+
+---
+
+### Root-Level
+
+#### `ErrorBoundary`
+
+> **`src/components/ErrorBoundary.jsx`**
+
+Class-based React error boundary — the one deliberate exception to functional-component style.
+
+- Catches render-time errors and stores error + component stack.
+- Renders fallback with recovery actions ("Try Again", "Go Home").
+- Used around routes and canvas-heavy pages.
+
+---
+
+### Entry Route Subcomponents
+
+#### `ProjectHero`
+
+> **`src/routes/Entry/components/ProjectHero/ProjectHero.jsx`**
+
+Standard hero section for every case-study page. Renders project banner, overlays `GridOverlay`, reveals title and metadata with staggered motion.
+
+| Hooks | Config | Children |
+|---|---|---|
+| — | `EASING`, `REVEAL`, `STAGGER` | `GridOverlay`, `ScrollDown` |
 
 ---
 
 ## 6 — Canvas & Scene Components
-
-The codebase treats the 3D layer as a component system of its own. These pieces either create a `<Canvas>`, orchestrate a scene, or render reusable scene nodes.
 
 ### 6.1 — Home Scene
 
@@ -464,11 +514,11 @@ The codebase treats the 3D layer as a component system of its own. These pieces 
 
 > **`src/canvas/home/HomeCanvas.jsx`** — Canvas wrapper for home route
 
-Creates the R3F `<Canvas>` with the project's preferred WebGL settings (`dpr: [1, 1.5]`, `performance.min: 0.5`, high-performance GPU preference) and passes scroll/animation props through to `HomeScene`.
+Creates the R3F `<Canvas>` with project-preferred WebGL settings and passes scroll/animation props to `HomeScene`. Contains an internal `AdaptiveQualityMonitor` component that runs the quality monitoring loop.
 
-| Hooks | Context | Config | Children |
-|---|---|---|---|
-| — | — | — | `HomeScene` |
+| Hooks | Config | Children |
+|---|---|---|
+| **`useAdaptiveQuality`** (in `AdaptiveQualityMonitor`) | `CANVAS_DPR`, `CANVAS_GL_DEFAULTS` | `HomeScene` |
 
 ---
 
@@ -476,20 +526,21 @@ Creates the R3F `<Canvas>` with the project's preferred WebGL settings (`dpr: [1
 
 > **`src/canvas/home/HomeScene.jsx`** — Home 3D scene orchestrator
 
-The main 3D orchestrator for the landing page. Combines the background mesh, animated logo, subtitle text, laser plane, camera setup, post-processing, and mouse-reactive camera rig into one scroll-aware scene.
+Combines background mesh, animated logo, subtitle text, laser plane, camera, post-processing, and mouse-reactive rig into one scroll-aware scene.
 
-- Tracks an `entryComplete` flag so expensive effects (FBO, Float, AO) only turn on after the ~1.5s opening animation has settled.
-- Uses `useAdaptiveQuality` to pick among low, medium, and high post-processing presets:
+- `entryComplete` flag gates expensive effects (Float, AO) until the ~1.5s opening animation settles.
+- Reads `quality` from context to select post-processing preset:
   - **Low:** bloom only (intensity 0.3, 2 levels)
   - **Medium:** N8AO (4 samples) + bloom (intensity 0.45, 4 levels)
   - **High:** N8AO (8 samples) + bloom (intensity 0.55, 6 levels)
-- Uses `useObjectAnimation` for logo, background, and subtitle transforms.
-- Uses `useCameraAnimation` to animate both camera position and FOV.
-- Pauses the background video once scroll progress passes `0.4`.
+- Uses `useObjectAnimation` for logo, background, subtitle transforms.
+- Uses `useCameraAnimation` for camera position + FOV.
+- Pauses background video once scroll > 0.4.
+- Viewport-responsive scale via `BREAKPOINTS.REFERENCE_WIDTH`.
 
 | Hooks | Context | Config | Children |
 |---|---|---|---|
-| `useRef`, `useState`, `useEffect`, `useMemo`, **`useAdaptiveQuality`**, **`useObjectAnimation`**, **`useCameraAnimation`** | — | `ENTRY`, `FLOAT_CONFIG` | `Rig`, `BackgroundMesh`, `LogoMesh`, `LaserPlane`, `EffectComposer` stack |
+| `useRef`, `useState`, `useEffect`, `useMemo`, `useFrame`, `useThree`, **`useObjectAnimation`**, **`useCameraAnimation`** | **`useQuality`** | `FLOAT_CONFIG`, `REVEAL`, `SCENE`, `TIMEOUT`, `BREAKPOINTS` | `Rig`, `BackgroundMesh`, `LogoMesh`, `LaserPlane`, `EffectComposer` |
 
 ---
 
@@ -497,12 +548,12 @@ The main 3D orchestrator for the landing page. Combines the background mesh, ani
 
 > **`src/canvas/home/LaserPlane.jsx`** — Procedural laser/fog effect
 
-Renders the procedural laser or fog layer that cuts through the home hero scene. Driven almost entirely by uniforms on the custom laser material and scales some behavior according to the global quality tier.
+Procedural laser/fog layer driven by shader uniforms. Scales behavior by quality tier.
 
-- Accepts many visual tuning props: `flowSpeed`, `wispSpeed`, `wispDensity`, `wispIntensity`, `fogIntensity`, `fogScale`, `decay`, `falloffStart`, `color`, etc.
-- Updates shader time, mouse, resolution, and quality-dependent uniforms every frame via `useFrame`.
-- Skips frames on low quality (every 2nd frame) to keep the effect cheap.
-- Sits high in render order (`1000`) and ignores frustum culling — acts more like a full-screen post effect than a mesh.
+- Props: `flowSpeed`, `wispSpeed`, `wispDensity`, `wispIntensity`, `fogIntensity`, `fogScale`, `decay`, `falloffStart`, `color`, etc.
+- Updates time, mouse, resolution, quality uniforms every frame.
+- Skips frames on low quality (every 2nd frame).
+- Render order 1000, ignores frustum culling — effectively a full-screen post effect.
 
 | Hooks | Context | Config | Children |
 |---|---|---|---|
@@ -516,16 +567,16 @@ Renders the procedural laser or fog layer that cuts through the home hero scene.
 
 > **`src/canvas/work/WorkCanvas.jsx`** — Canvas wrapper + scroll orchestration
 
-Pairs a fixed-position canvas with a scroll container, runs Lenis smooth scrolling on that container, and feeds the current normalized scroll progress into the carousel scene.
+Fixed-position canvas paired with a scroll container. Runs Lenis smooth scrolling and feeds normalized scroll progress into the carousel scene.
 
-- Owns the Framer Motion spring values used by `NineSliceBorder` to frame the active card.
-- Creates a synthetic scroll height equal to `items.length × 100vh`.
-- Snaps to the nearest project once scrolling settles (idle frames ≥ 30, snap duration 400ms).
-- Passes camera and rig refs into `useBorderProjection` so the active 3D card can be framed in the DOM layer.
+- Owns Framer Motion spring values for `NineSliceBorder` to frame the active card.
+- Synthetic scroll height = `items.length × 100vh`.
+- Snaps to nearest project once scrolling settles (idle frames ≥ 30, snap duration 400ms).
+- `useBorderProjection` projects 3D card bounds into 2D for the border overlay.
 
 | Hooks | Context | Config | Children |
 |---|---|---|---|
-| `useRef`, `useEffect`, `useMotionValue`, `useSpring`, **`useBorderProjection`** | — | `SPRING_CONFIG`, `CAROUSEL_CONFIG` | `WorkScene`, `NineSliceBorder`, Lenis instance |
+| `useRef`, `useEffect`, `useState`, FM `useMotionValue`, `useSpring`, **`useBorderProjection`** | — | `SPRING_CONFIG`, `CANVAS_DPR`, `CANVAS_GL_DEFAULTS`, `CAROUSEL_CONFIG` | `WorkScene`, `NineSliceBorder`, Lenis instance |
 
 ---
 
@@ -533,16 +584,17 @@ Pairs a fixed-position canvas with a scroll container, runs Lenis smooth scrolli
 
 > **`src/canvas/work/WorkScene.jsx`** — Carousel rotation and centeredness manager
 
-The scene manager for the 3D project carousel. Rotates the rig according to scroll position, moves the camera vertically along the spiral, computes which card is currently most centered, and only keeps nearby cards visible.
+Rotates the rig per scroll position, moves camera along the spiral, computes which card is most centered, culls distant cards.
 
-- Stores centeredness scores for all cards in a ref so children can read them without causing rerenders.
-- Updates `visibleCenter` only when the best card index changes (avoids per-frame state updates).
-- Notifies the parent about centeredness and scroll so border projection and route-level exit logic stay synchronized.
-- Renders only cards within distance ≤ 1 from the visible center (visibility culling).
+- Stores centeredness scores in a ref (no per-frame state updates).
+- Updates `visibleCenter` only when best card index changes.
+- Notifies parent about centeredness/scroll for border projection and exit logic.
+- Visibility culling: only cards within distance ≤ 1 from visible center.
+- Responsive FOV adjustment for mobile via `BREAKPOINTS.TABLET`.
 
 | Hooks | Context | Config | Children |
 |---|---|---|---|
-| `useRef`, `useState`, `useFrame`, `useThree` | — | `CAROUSEL_CONFIG` | `WorkCard` × N |
+| `useRef`, `useState`, `useEffect`, `useFrame`, `useThree` | — | `BREAKPOINTS`, `CAROUSEL_CONFIG` | `WorkCard` × N |
 
 ---
 
@@ -550,15 +602,15 @@ The scene manager for the 3D project carousel. Rotates the rig according to scro
 
 > **`src/canvas/work/WorkCard.jsx`** — Individual 3D project card
 
-Represents a single project card in the 3D carousel. Combines the refractive banner shader, optional pixel-overlay hover treatment, floating motion, and text labels for year, title, and client.
+Single project card in the 3D carousel. Combines refractive banner shader, optional pixel-overlay hover, floating motion, and text labels.
 
 - Uses `useTexture` for the banner and `useNoiseTexture` for refraction noise.
-- Reads the global quality tier and adjusts shader fidelity:
+- Quality-tiered shader fidelity:
   - **Low:** no refraction, no chromatic aberration, no pixel overlay, no float
   - **Medium:** `uRefractPower: 0.003`, `uChromaticAberration: 0.4`
   - **High:** `uRefractPower: 0.006`, `uChromaticAberration: 0.8`, pixel overlay enabled
-- Smoothly scales based on the centeredness value computed by `WorkScene`.
-- Sets `document.body.style.cursor` on hover and delegates navigation via the supplied callback.
+- Smoothly scales based on centeredness from `WorkScene`.
+- Sets `document.body.style.cursor` on hover; delegates navigation via callback.
 
 | Hooks | Context | Config | Children |
 |---|---|---|---|
@@ -572,11 +624,11 @@ Represents a single project card in the 3D carousel. Combines the refractive ban
 
 > **`src/canvas/shared/camera/Rig.jsx`** — Mouse-driven camera parallax
 
-Reusable camera-rig controller. Applies a smoothed camera offset based on pointer position and reorients the camera toward the scene origin every frame. Frame-skips (every 2nd frame) for CPU savings.
+Applies smoothed camera offset based on pointer position and reorients camera toward origin. Frame-skips based on quality tier.
 
-| Hooks | Context | Config | Children |
-|---|---|---|---|
-| `useFrame` | — | — | — |
+| Hooks | Context | Config |
+|---|---|---|
+| `useRef`, `useFrame` | **`useQuality`** | — |
 
 ---
 
@@ -584,11 +636,11 @@ Reusable camera-rig controller. Applies a smoothed camera offset based on pointe
 
 > **`src/canvas/shared/meshes/BackgroundMesh.jsx`** — Video-textured background
 
-Renders the GLB wall/background asset and maps a looping video onto it. The `paused` prop lets the scene stop playback after a certain scroll threshold to save resources. `React.memo`-wrapped.
+Renders GLB wall asset with looping video texture. `paused` prop stops playback to save resources. `React.memo`-wrapped with Suspense boundary.
 
-| Hooks | Context | Config | Children |
-|---|---|---|---|
-| `useMemo`, `memo`, `Suspense`, `useGLTF`, `useVideoTexture` | — | — | — |
+| Hooks | Context | Config |
+|---|---|---|
+| `useEffect`, `memo`, `useGLTF`, `useVideoTexture` | — | — |
 
 ---
 
@@ -596,17 +648,17 @@ Renders the GLB wall/background asset and maps a looping video onto it. The `pau
 
 > **`src/canvas/shared/meshes/LogoMesh.jsx`** — Refractive logo with FBO
 
-Renders the 3D logo mesh with the glass/refraction material. Manages a small off-screen render target (256×256 FBO) to feed transition texture data back into the material. Applies pointer-driven rotational motion. `React.memo`-wrapped, FBO renders every 2nd frame.
+3D logo mesh with glass/refraction material. Manages a small FBO (off-screen render target) for transition texture data. Applies pointer-driven rotational motion. `React.memo`-wrapped, FBO renders every 2nd frame.
 
-| Hooks | Context | Config | Children |
-|---|---|---|---|
-| `useRef`, `useMemo`, `memo`, `useFrame`, `useGLTF`, `useFBO`, **`useNoiseTexture`** | — | — | `glassLogoMaterial` |
+| Hooks | Context | Config |
+|---|---|---|
+| `useRef`, `useEffect`, `useFrame`, `useGLTF`, `useFBO`, **`useNoiseTexture`** | **`useQuality`** | `LOGO_BOOTSTRAP` |
 
 ---
 
 ## 7 — Custom JSX Render Primitives
 
-These are not traditional React function components but they register custom JSX elements via `shaderMaterial` + `extend()` (or `RawShaderMaterial` + `extend()`) used directly in scene component markup.
+These register custom JSX elements via `shaderMaterial` + `extend()` (or `RawShaderMaterial` + `extend()`). Used directly in scene component markup.
 
 | Primitive | File | Material Type | Key Uniforms | Used By |
 |---|---|---|---|---|
@@ -623,13 +675,13 @@ These are not traditional React function components but they register custom JSX
 
 | Hook | Consumers |
 |---|---|
-| `useAdaptiveQuality` | `HomeScene` |
+| `useAdaptiveQuality` | `HomeCanvas` (via `AdaptiveQualityMonitor`) |
 | `useBorderProjection` | `WorkCanvas` |
 | `useCameraAnimation` | `HomeScene` |
 | `useLenisScroll` | `Entry` |
 | `useNoiseTexture` | `WorkCard`, `LogoMesh` |
-| `useObjectAnimation` | `HomeScene` |
-| `usePageTransition` | `Work`, `NavigationMenu` |
+| `useObjectAnimation` | `HomeScene` (×3 instances) |
+| `usePageTransition` | `Work`, `NavigationMenu`, `useScrollNavigation`, `useAdaptiveQuality` |
 | `useRandomNumber` | `RAD_GRID_CRCL`, `RAD_GRID_TXT` |
 | `useScrollNavigation` | `Home` |
 | `useWorkItems` | `Work` |
@@ -638,18 +690,19 @@ These are not traditional React function components but they register custom JSX
 
 | Context Hook | Consumers |
 |---|---|
-| `useQuality` | `LaserPlane`, `WorkCard` |
+| `useQuality` | `HomeScene`, `LaserPlane`, `WorkCard`, `Rig`, `LogoMesh` |
 | `useWorkItems` | `Work` |
-| `usePageTransition` | `Work`, `NavigationMenu` |
+| `usePageTransition` | `Work`, `NavigationMenu`, `useScrollNavigation`, `useAdaptiveQuality` |
 
 ### Config File → Consumer Map
 
-| Config Module | Consumers |
-|---|---|
-| `animation.config.js` | `Home`, `About`, `Contact`, `GridOverlay`, `CurtainTransition`, `LoadingScreen`, `ScrollReveal`, `TypewriterText`, `StatusMessage`, `NavigationMenu` + menu subs, `ProjectHero`, `HomeScene`, `WorkCanvas` |
-| `carousel.config.js` | `WorkCanvas`, `WorkScene`, `WorkCard` |
-| `laser.config.js` | `Home` |
+| Config Module | Key Exports | Consumers |
+|---|---|---|
+| `animation.config.js` | `EASING`, `REVEAL`, `STAGGER`, `TIMEOUT`, `LENIS`, `SCROLL_THRESHOLDS`, `FLOAT_CONFIG`, `SCENE`, `SPRING_CONFIG`, `TYPEWRITER`, `BREAKPOINTS`, `LOGO_BOOTSTRAP`, `CAMERA_DEFAULTS` | Most components — see individual tables |
+| `canvas.config.js` | `CANVAS_GL_DEFAULTS`, `CANVAS_DPR` | `HomeCanvas`, `WorkCanvas` |
+| `carousel.config.js` | `CAROUSEL_CONFIG` | `WorkCanvas`, `WorkScene`, `WorkCard`, `useBorderProjection`, `carousel.js` utils |
+| `laser.config.js` | `LASER_PARAMS` | `Home` |
 
 ---
 
-> **Maintenance note:** This file is the canonical merged version and should be updated first when component behavior or dependencies change.
+> **Maintenance note:** Update this file when component behavior, paths, or dependencies change. Last verified against source: 2026-05-05.

@@ -103,8 +103,12 @@ export default function About() {
                 </motion.div>
 
                 <div className={styles.details}>
-                    <h1 className={styles.name}>Robin Potze</h1>
-
+                    <div className={styles.header}>
+                        <h1 className={styles.name}>Robin Potze</h1>
+                        <span className={styles.subsectionFunction}>Digital Artist <br></br> Creative Developer</span>
+                    </div>
+                    <h2 className={styles.title}>{currentPage}</h2>
+                        
                     <div className={styles.contentScroll}>
                         <AnimatePresence mode="wait">
                             <motion.div

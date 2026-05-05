@@ -95,12 +95,25 @@
     z-index: 1;
 }
 
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
 .name {
     font: var(--f-title);
     text-transform: uppercase;
     color: var(--c-lght_100);
     text-shadow: 0 0 20px var(--c-lght_40);
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.5rem;
+    flex-shrink: 0;
+}
+
+.title {
+    font: var(--f-hdr_2);
+    border-bottom: 1px solid var(--c-brnd_100);
+    margin-bottom: 0.5rem;
     flex-shrink: 0;
 }
 
@@ -127,6 +140,7 @@
     align-items: baseline;
     gap: 1rem;
     margin-bottom: 1rem;
+    margin-top: 0.5rem;
     padding-bottom: 0.5rem;
     border-bottom: 1px solid var(--c-brnd_20);
 }
@@ -201,7 +215,7 @@
 }
 
 .itemText {
-    font: var(--f-func);
+    font: var(--f-paragraph);
     color: var(--c-lght_100);
 }
 

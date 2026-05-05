@@ -40,9 +40,9 @@ export default function WorkCard({ item, index, visible = true, onNavigate, cent
     const isLowQuality = quality === 'low';
 
     const noiseTexture = useNoiseTexture({
-        size: isLowQuality ? 1 : 256,
+        size: isLowQuality ? 64 : 256,
         scale: 10,
-        octaves: isLowQuality ? 1 : 3,
+        octaves: isLowQuality ? 2 : 3,
         persistence: 0.5,
     });
 
@@ -57,8 +57,6 @@ export default function WorkCard({ item, index, visible = true, onNavigate, cent
                 return { uRoughness: 0.1, uRefractPower: 0.006, uChromaticAberration: 0.8 };
         }
     }, [quality]);
-
-    const floatSpeed = useMemo(() => ((index * 0.1234567) % 1) * (FLOAT_CONFIG.SPEED_MAX - FLOAT_CONFIG.SPEED_MIN) + FLOAT_CONFIG.SPEED_MIN, [index]);
 
     const position = useMemo(() => calculateCardPosition(index), [index]);
     const rotation = useMemo(() => calculateCardRotation(index), [index]);
@@ -109,7 +107,7 @@ export default function WorkCard({ item, index, visible = true, onNavigate, cent
     };
 
     return (
-        <Float speed={floatSpeed} rotationIntensity={isLowQuality ? 0 : 0.1} floatIntensity={isLowQuality ? 0 : 0.2}>
+        <Float speed={FLOAT_CONFIG.SPEED} rotationIntensity={FLOAT_CONFIG.ROTATION_INTENSITY} floatIntensity={FLOAT_CONFIG.INTENSITY}>
             <group
                 ref={groupRef}
                 position={position}

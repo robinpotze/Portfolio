@@ -80,7 +80,8 @@ function LogoMesh({ enableFBO = true, ...props }) {
             groupRef.current.rotation.x += (targetRotationX - groupRef.current.rotation.x) * smoothing;
 
             glassMaterialRef.current.uTime = state.clock.elapsedTime;
-            glassMaterialRef.current.uResolution.set(state.size.width, state.size.height);
+            const dpr = state.viewport.dpr;
+            glassMaterialRef.current.uResolution.set(state.size.width * dpr, state.size.height * dpr);
             pulseMaterialRef.current.uTime = state.clock.elapsedTime;
 
             const bootstrapElapsedMs = (state.clock.elapsedTime - bootstrapStartRef.current) * 1000;

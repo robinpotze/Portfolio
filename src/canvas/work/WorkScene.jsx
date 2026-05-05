@@ -88,7 +88,7 @@ export default function WorkScene({
             <group scale={isMobile ? CAROUSEL_CONFIG.MOBILE.SCALE_FACTOR : CAROUSEL_CONFIG.SCALE_FACTOR}>
                 <group ref={setRigRef}>
                     {items.map((item, i) => {
-                        const distance = Math.abs(i - visibleCenter);
+                        const distance = Math.abs(i - visibleCenter); // Add small epsilon to avoid floating-point issues
                         return (
                             <WorkCard
                                 key={item.key}

@@ -82,17 +82,8 @@ export const SCROLL_THRESHOLDS = {
 };
 
 export const FLOAT_CONFIG = {
-    X_FREQUENCY: 0.3,
-    X_AMPLITUDE: 0.03,
-    Y_FREQUENCY: 0.4,
-    Y_AMPLITUDE: 0.04,
-    Z_FREQUENCY: 0.35,
-    Z_AMPLITUDE: 0.02,
-    SPEED_MIN: 0.5,
-    SPEED_MAX: 1,
-    PHASE_SEED: 13.7,
-    INTENSITY: 2,
-    ROTATION_INTENSITY: 0.5,
+    INTENSITY: 0.2,
+    ROTATION_INTENSITY: 0.2,
     SPEED: 0.5,
 };
 
