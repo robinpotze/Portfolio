@@ -1,5 +1,4 @@
 import { useQuality } from '@app/QualityContext';
-import { usePageTransition } from '@hooks/usePageTransition';
 import { useFrame } from '@react-three/fiber';
 import { useRef, useState } from 'react';
 
