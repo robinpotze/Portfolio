@@ -57,7 +57,6 @@ export default function useAdaptiveQuality(options = {}) {
     } = options;
 
     const { quality, setQuality } = useQuality();
-    const { isTransitionActive } = usePageTransition();
     const [fps, setFps] = useState(60);
 
     const lastCheckRef = useRef(0);
@@ -104,11 +103,6 @@ export default function useAdaptiveQuality(options = {}) {
 
         // During cooldown, keep measuring fps but do not change quality
         if (now < cooldownUntilRef.current) {
-            return;
-        }
-
-        // During active transitions, keep measuring fps but do not change quality
-        if (isTransitionActive) {
             return;
         }
 
