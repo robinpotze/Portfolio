@@ -210,7 +210,7 @@ export default function Contact() {
                     body: JSON.stringify(formData),
                 });
 
-                if (!res.ok) throw new Error('Send failed');
+                if (!res.ok) {throw new Error('Send failed');}
             } catch {
                 // Still show complete phase — message failure is silent to not break UX
                 console.error('Failed to send contact form');
