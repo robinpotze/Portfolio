@@ -1,4 +1,4 @@
-import { REVEAL, TIMEOUT } from '@config/animation.config';
+import { LOADING_REVEAL, TIMEOUT } from '@config/animation.config';
 import { useProgress } from '@react-three/drei';
 import { getCSSColorRGBA } from '@utils/cssUtils';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -175,10 +175,10 @@ function BlockLogo({ logoSrc, cycleIndex }) {
     return <canvas ref={canvasRef} className={styles.blockLogo} />;
 }
 
-export default function LoadingScreen({ onComplete, minDisplayTime = 1500, logoSrc = null }) {
+export default function LoadingScreen({ onComplete, onRevealStart, minDisplayTime = 1500, logoSrc = null }) {
     const { progress: threeProgress } = useProgress();
     const [progress, setProgress] = useState(0);
-    const [isHidden, setIsHidden] = useState(false);
+    const [phase, setPhase] = useState('loading'); // 'loading' | 'revealing' | 'hidden'
     const [messageIndex, setMessageIndex] = useState(0);
     const [displayText, setDisplayText] = useState(CRYPTIC_MESSAGES[0]);
     const startTimeRef = useRef(Date.now());
@@ -205,18 +205,26 @@ export default function LoadingScreen({ onComplete, minDisplayTime = 1500, logoS
             hasCompletedRef.current = true;
 
             const outerTimer = setTimeout(() => {
-                setIsHidden(true);
-                const innerTimer = setTimeout(() => {
+                // Start reveal phase: bg fades, text fades, logo grows
+                setPhase('revealing');
+                if (onRevealStart) {
+                    onRevealStart();
+                }
+
+                // After logo grow + fade, fully hide and call onComplete
+                const totalRevealMs = LOADING_REVEAL.LOGO_GROW_MS + LOADING_REVEAL.LOGO_FADE_MS;
+                const completeTimer = setTimeout(() => {
+                    setPhase('hidden');
                     if (onComplete) {
                         onComplete();
                     }
-                }, TIMEOUT.LOADING_FADE_MS);
-                timerRefs.current.push(innerTimer);
+                }, totalRevealMs);
+                timerRefs.current.push(completeTimer);
             }, remainingTime);
 
             timerRefs.current.push(outerTimer);
         },
-        [onComplete]
+        [onComplete, onRevealStart]
     );
 
     useEffect(() => {
@@ -290,19 +298,61 @@ export default function LoadingScreen({ onComplete, minDisplayTime = 1500, logoS
         };
     }, [messageIndex]);
 
+    const isRevealing = phase === 'revealing';
+
     return (
         <AnimatePresence>
-            {!isHidden && (
+            {phase !== 'hidden' && (
                 <motion.div
                     className={styles.loadingScreen}
                     initial={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: REVEAL.DURATION, ease: 'easeOut' }}
+                    transition={{ duration: 0 }}
                 >
-                    {logoSrc && <BlockLogo logoSrc={logoSrc} cycleIndex={messageIndex} />}
-                    <div className={`${styles.loadingText} deco-small`}>
+                    {/* Background — fades independently */}
+                    <motion.div
+                        className={styles.loadingBackground}
+                        animate={{ opacity: isRevealing ? 0 : 1 }}
+                        transition={{ duration: LOADING_REVEAL.BG_FADE_MS / 1000, ease: 'easeOut' }}
+                    />
+
+                    {/* Logo — grows then fades */}
+                    {logoSrc && (
+                        <motion.div
+                            className={styles.logoWrapper}
+                            animate={
+                                isRevealing
+                                    ? { scale: LOADING_REVEAL.LOGO_GROW_SCALE, opacity: [1, 1, 0] }
+                                    : { scale: 1, opacity: 1 }
+                            }
+                            transition={
+                                isRevealing
+                                    ? {
+                                        scale: {
+                                            duration: LOADING_REVEAL.LOGO_GROW_MS / 1000,
+                                            ease: 'easeOut',
+                                        },
+                                        opacity: {
+                                            duration: (LOADING_REVEAL.LOGO_GROW_MS + LOADING_REVEAL.LOGO_FADE_MS) / 1000,
+                                            times: [0, LOADING_REVEAL.LOGO_GROW_MS / (LOADING_REVEAL.LOGO_GROW_MS + LOADING_REVEAL.LOGO_FADE_MS), 1],
+                                            ease: 'easeOut',
+                                        },
+                                    }
+                                    : { duration: 0 }
+                            }
+                        >
+                            <BlockLogo logoSrc={logoSrc} cycleIndex={messageIndex} />
+                        </motion.div>
+                    )}
+
+                    {/* Text — fades out quickly */}
+                    <motion.div
+                        className={`${styles.loadingText} deco-small`}
+                        animate={{ opacity: isRevealing ? 0 : 1 }}
+                        transition={{ duration: LOADING_REVEAL.TEXT_FADE_MS / 1000, ease: 'easeOut' }}
+                    >
                         {displayText} ::: {Math.floor(progress)}%
-                    </div>
+                    </motion.div>
                 </motion.div>
             )}
         </AnimatePresence>

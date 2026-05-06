@@ -1,7 +1,5 @@
 import { useQuality } from '@app/QualityContext';
 import '@canvas/materials/GlassLogoMaterial';
-import '@canvas/materials/PulseLogoMaterial';
-import { LOGO_BOOTSTRAP } from '@config/animation.config';
 import useNoiseTexture from '@hooks/useNoiseTexture';
 import { useFBO, useGLTF } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
@@ -11,13 +9,8 @@ import * as THREE from 'three';
 function LogoMesh({ enableFBO = true, ...props }) {
     const groupRef = useRef();
     const glassMaterialRef = useRef();
-    const pulseMaterialRef = useRef();
     const frameCount = useRef(0);
-    const fboWarmupFramesRef = useRef(0);
     const fboReadyRef = useRef(false);
-    const bootstrapStartRef = useRef(0);
-    const glassOpacityRef = useRef(0);
-    const pulseOpacityRef = useRef(1);
     const { quality } = useQuality();
 
     // Reduce FBO resolution for better performance
@@ -31,7 +24,7 @@ function LogoMesh({ enableFBO = true, ...props }) {
     const noiseTexture = useNoiseTexture({
         size: 256,
         scale: 10,
-        octaves: 3, // Reduced from 4
+        octaves: 3,
         persistence: 0.5,
     });
 
@@ -46,31 +39,8 @@ function LogoMesh({ enableFBO = true, ...props }) {
 
     const { nodes } = useGLTF('/assets/3d/Logo.glb');
 
-    useEffect(() => {
-        const logoGeometry = nodes?.Logo?.geometry;
-        if (!logoGeometry || !pulseMaterialRef.current) {
-            return;
-        }
-
-        if (!logoGeometry.boundingBox) {
-            logoGeometry.computeBoundingBox();
-        }
-
-        const bounds = logoGeometry.boundingBox;
-        if (!bounds) {
-            return;
-        }
-
-        pulseMaterialRef.current.uBoundsMin.set(bounds.min.x, bounds.min.y);
-        pulseMaterialRef.current.uBoundsMax.set(bounds.max.x, bounds.max.y);
-    }, [nodes]);
-
     useFrame((state, delta) => {
-        if (groupRef.current && glassMaterialRef.current && pulseMaterialRef.current) {
-            if (bootstrapStartRef.current === 0) {
-                bootstrapStartRef.current = state.clock.elapsedTime;
-            }
-
+        if (groupRef.current && glassMaterialRef.current) {
             const targetRotationY = state.pointer.x * Math.PI * 0.1;
             const targetRotationX = -state.pointer.y * Math.PI * 0.1;
 
@@ -82,46 +52,30 @@ function LogoMesh({ enableFBO = true, ...props }) {
             glassMaterialRef.current.uTime = state.clock.elapsedTime;
             const dpr = state.viewport.dpr;
             glassMaterialRef.current.uResolution.set(state.size.width * dpr, state.size.height * dpr);
-            pulseMaterialRef.current.uTime = state.clock.elapsedTime;
-
-            const bootstrapElapsedMs = (state.clock.elapsedTime - bootstrapStartRef.current) * 1000;
-            const bootstrapProgress = Math.min(1, bootstrapElapsedMs / LOGO_BOOTSTRAP.DURATION_MS);
-            pulseMaterialRef.current.uProgress = bootstrapProgress;
             glassMaterialRef.current.uHasTransmission = fboReadyRef.current ? 1 : 0;
+            glassMaterialRef.current.uOpacity = 1;
 
-            const canRevealGlass = quality === 'low' ? bootstrapProgress >= 0.55 : fboReadyRef.current;
-            const glassTarget = canRevealGlass ? 1 : 0;
-            const pulseTarget = canRevealGlass ? 0 : 1;
-            const fadeLerp = Math.min(1, (delta * 400) / LOGO_BOOTSTRAP.GLASS_FADE_MS);
-            glassOpacityRef.current += (glassTarget - glassOpacityRef.current) * fadeLerp;
-            pulseOpacityRef.current += (pulseTarget - pulseOpacityRef.current) * fadeLerp;
-
-            glassMaterialRef.current.uOpacity = glassOpacityRef.current;
-            pulseMaterialRef.current.uOpacity = pulseOpacityRef.current;
-
-            // Warmup phase: render FBO for first 1-2 frames when enabled
-            if (enableFBO && !fboReadyRef.current && fboWarmupFramesRef.current < 2) {
+            // FBO warmup: runs immediately on mount (during loading screen)
+            // so texture is cached and ready before reveal
+            if (!fboReadyRef.current) {
                 const oldTarget = state.gl.getRenderTarget();
                 try {
                     groupRef.current.visible = false;
                     state.gl.setRenderTarget(fbo);
                     state.gl.render(state.scene, state.camera);
                     glassMaterialRef.current.uTrnsTex = fbo.texture;
-                    fboWarmupFramesRef.current++;
                 } finally {
                     state.gl.setRenderTarget(oldTarget);
                     groupRef.current.visible = true;
                 }
-
-                if (fboWarmupFramesRef.current >= 2) {
-                    fboReadyRef.current = true;
-                }
+                fboReadyRef.current = true;
                 return;
             }
 
+            // Ongoing FBO updates — frame-skipped based on quality
             const skipInterval = quality === 'low' ? 3 : quality === 'medium' ? 2 : 1;
             frameCount.current++;
-            if (enableFBO && fboReadyRef.current && frameCount.current % skipInterval === 0) {
+            if (enableFBO && frameCount.current % skipInterval === 0) {
                 const oldTarget = state.gl.getRenderTarget();
                 try {
                     groupRef.current.visible = false;
@@ -138,9 +92,6 @@ function LogoMesh({ enableFBO = true, ...props }) {
 
     return (
         <group ref={groupRef} {...props}>
-            <mesh renderOrder={99} receiveShadow castShadow geometry={nodes.Logo.geometry}>
-                <pulseLogoMaterial ref={pulseMaterialRef} transparent depthWrite={false} toneMapped={false} />
-            </mesh>
             <mesh renderOrder={100} receiveShadow castShadow geometry={nodes.Logo.geometry}>
                 <glassLogoMaterial
                     ref={glassMaterialRef}

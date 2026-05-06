@@ -154,52 +154,58 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true, 
             if (lightRef.current) {
                 lightRef.current.intensity = 1;
             }
-        }, SCENE.FADE_DURATION * 1000);
+        }, SCENE.FADE_DURATION * 1000 + 200);
         return () => clearTimeout(timer);
     }, [startAnimations]);
 
     return (
         <>
-            <LaserPlane {...laserParams} />
+            {startAnimations && <LaserPlane {...laserParams} />}
             <PerspectiveCamera ref={cameraRef} makeDefault position={[0, 0, 30]} fov={70} />
             <ambientLight ref={lightRef} intensity={0} />
 
-            <group ref={backgroundRef} scale={8}>
-                <BackgroundMesh paused={scrollProgress > 0.4} />
-                <Text font="/assets/fonts/Orbitron/static/Orbitron-Medium.ttf" color="#EEE">
-                    ROBIN POTZE
-                </Text>
-            </group>
+            {startAnimations && (
+                <group ref={backgroundRef} scale={8}>
+                    <BackgroundMesh paused={scrollProgress > 0.4} />
+                    <Text font="/assets/fonts/Orbitron/static/Orbitron-Medium.ttf" color="#EEE">
+                        ROBIN POTZE
+                    </Text>
+                </group>
+            )}
 
-            <group ref={subtitleRef}>
-                <Text fontSize={0.6} font="/assets/fonts/Kode_Mono/static/KodeMono-Regular.ttf" color="#EEE">
-                    PRJNo::000 | _CREATIVE_/DEVELOPER | /DIGITAL_/ARTIST | ~% /PRJ/PRT/V1
-                </Text>
-            </group>
+            {startAnimations && (
+                <group ref={subtitleRef}>
+                    <Text fontSize={0.6} font="/assets/fonts/Kode_Mono/static/KodeMono-Regular.ttf" color="#EEE">
+                        PRJNo::000 | _CREATIVE_/DEVELOPER | /DIGITAL_/ARTIST | ~% /PRJ/PRT/V1
+                    </Text>
+                </group>
+            )}
 
             <Float floatIntensity={FLOAT_CONFIG.INTENSITY} rotationIntensity={FLOAT_CONFIG.ROTATION_INTENSITY} speed={FLOAT_CONFIG.SPEED}>
-                <group ref={logoRef} scale={0.3}>
-                    <LogoMesh enableFBO={startAnimations && entryComplete && quality !== 'low'} />
+                <group ref={logoRef} scale={2 * viewportScale}>
+                    <LogoMesh enableFBO={entryComplete && quality !== 'low'} />
                 </group>
             </Float>
 
-            <EffectComposer multisampling={postProcessingSettings.multisampling}>
-                {postProcessingSettings.enableAO && (
-                    <N8AO
-                        aoRadius={1}
-                        intensity={postProcessingSettings.aoIntensity}
-                        aoSamples={postProcessingSettings.aoSamples}
-                        denoiseSamples={postProcessingSettings.denoiseSamples}
+            {startAnimations && (
+                <EffectComposer multisampling={postProcessingSettings.multisampling}>
+                    {postProcessingSettings.enableAO && (
+                        <N8AO
+                            aoRadius={1}
+                            intensity={postProcessingSettings.aoIntensity}
+                            aoSamples={postProcessingSettings.aoSamples}
+                            denoiseSamples={postProcessingSettings.denoiseSamples}
+                        />
+                    )}
+                    <Bloom
+                        mipmapBlur
+                        luminanceThreshold={0.92}
+                        intensity={postProcessingSettings.bloomIntensity}
+                        radius={0.4}
+                        levels={postProcessingSettings.bloomLevels}
                     />
-                )}
-                <Bloom
-                    mipmapBlur
-                    luminanceThreshold={0.92}
-                    intensity={postProcessingSettings.bloomIntensity}
-                    radius={0.4}
-                    levels={postProcessingSettings.bloomLevels}
-                />
-            </EffectComposer>
+                </EffectComposer>
+            )}
 
             <Rig intensity={0.3} />
         </>

@@ -3,17 +3,17 @@ import OfsDecal from '@/assets/decals/OFS.svg?react';
 import PillDecal from '@/assets/decals/PILL.svg?react';
 import SndDecal from '@/assets/decals/SND.svg?react';
 import CrsIcon from '@/assets/icons/CRS.svg?react';
+import ErrorBoundary from '@components/ErrorBoundary';
+import LoadingScreen from '@components/navigation/LoadingScreen';
 import RadialGrid from '@components/ui/RadialText/RadialGrid';
 import RedoAnimText from '@components/ui/RandomText/RedoAnimText';
 import ScrollDown from '@components/ui/ScrollDown';
-import LoadingScreen from '@components/navigation/LoadingScreen';
-import ErrorBoundary from '@components/ErrorBoundary';
 import { EASING, REVEAL, SCROLL_THRESHOLDS, STAGGER, TIMEOUT } from '@config/animation.config';
 import { LASER_PARAMS } from '@config/laser.config';
 import useScrollNavigation from '@hooks/useScrollNavigation';
 import { useGLTF } from '@react-three/drei';
 import { motion } from 'framer-motion';
-import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styles from './Home.module.css';
 
@@ -54,6 +54,7 @@ export default function Home() {
 
     const skipLoading = !!location.state?.fromNavigation;
     const [isLoading, setIsLoading] = useState(!skipLoading);
+    const [sceneStarted, setSceneStarted] = useState(skipLoading);
     const [showContent, setShowContent] = useState(skipLoading);
     const loadingTimerRef = useRef(null);
 
@@ -82,6 +83,10 @@ export default function Home() {
         }
     }, [location.state?.fromNavigation, resetNavigation, navigate]);
 
+    const onRevealStart = useCallback(() => {
+        setSceneStarted(true);
+    }, []);
+
     const onLoadingComplete = () => {
         loadingTimerRef.current = setTimeout(() => {
             setIsLoading(false);
@@ -98,7 +103,7 @@ export default function Home() {
         []
     );
 
-    const laserProgress = showContent ? scrollProgress : 0;
+    const laserProgress = sceneStarted ? scrollProgress : 0;
     const laserParams = useMemo(() => {
         const params = {};
         for (const [key, { base, scale }] of Object.entries(LASER_PARAMS)) {
@@ -110,7 +115,7 @@ export default function Home() {
     return (
         <>
             {isLoading && (
-                <LoadingScreen onComplete={onLoadingComplete} minDisplayTime={TIMEOUT.LOADING_MIN_DISPLAY_MS} logoSrc="/assets/img/logo/logo.svg" />
+                <LoadingScreen onComplete={onLoadingComplete} onRevealStart={onRevealStart} minDisplayTime={TIMEOUT.LOADING_MIN_DISPLAY_MS} logoSrc="/assets/img/logo/logo.svg" />
             )}
             <div
                 className={styles.page}
@@ -166,12 +171,12 @@ export default function Home() {
                     </motion.div>
                 </div>
                 <div className={styles.transitionSection} />
-                <ErrorBoundary>
-                    <Suspense fallback={null}>
-                        <HomeCanvas scrollProgress={scrollProgress} startAnimations={showContent} laserParams={laserParams} />
-                    </Suspense>
-                </ErrorBoundary>
             </div>
+            <ErrorBoundary>
+                <Suspense fallback={null}>
+                    <HomeCanvas scrollProgress={scrollProgress} startAnimations={sceneStarted} laserParams={laserParams} />
+                </Suspense>
+            </ErrorBoundary>
         </>
     );
 }

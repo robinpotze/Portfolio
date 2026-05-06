@@ -87,9 +87,12 @@ export const FLOAT_CONFIG = {
     SPEED: 0.5,
 };
 
-export const LOGO_BOOTSTRAP = {
-    DURATION_MS: 800,
-    GLASS_FADE_MS: 400,
+export const LOADING_REVEAL = {
+    BG_FADE_MS: 600,
+    TEXT_FADE_MS: 300,
+    LOGO_GROW_MS: 400,
+    LOGO_GROW_SCALE: 4,
+    LOGO_FADE_MS: 400,
 };
 
 export const SPRING_CONFIG = {
