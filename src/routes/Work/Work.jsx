@@ -107,7 +107,7 @@ export default function Work() {
             <div className={styles.pageContainer}>
                 <ErrorBoundary>
                     <Suspense fallback={null}>
-                        <WorkCanvas items={items} onCardNavigate={onCardNavigate} onScrollChange={onCanvasScrollChange} />
+                        <WorkCanvas items={items} onCardNavigate={onCardNavigate} onScrollChange={onCanvasScrollChange} startAnimations />
                     </Suspense>
                 </ErrorBoundary>
                 {isTouchDevice && <p className={styles.touchHint}>Swipe to browse</p>}

@@ -2,6 +2,7 @@ import NineSliceBorder from '@components/ui/NineSliceBorder';
 import { SPRING_CONFIG } from '@config/animation.config';
 import { CANVAS_DPR, CANVAS_GL_DEFAULTS } from '@config/canvas.config';
 import { CAROUSEL_CONFIG } from '@config/carousel.config';
+import useAdaptiveQuality from '@hooks/useAdaptiveQuality';
 import useBorderProjection from '@hooks/useBorderProjection';
 import { PerspectiveCamera } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
@@ -11,7 +12,12 @@ import Lenis from 'lenis';
 import { useEffect, useRef, useState } from 'react';
 import WorkScene from './WorkScene';
 
-export default function WorkCanvas({ items, onCardNavigate, onScrollChange }) {
+function AdaptiveQualityMonitor({ enabled = true }) {
+    useAdaptiveQuality({ enabled });
+    return null;
+}
+
+export default function WorkCanvas({ items, onCardNavigate, onScrollChange, startAnimations = true }) {
     const scrollProgressRef = useRef(0);
     const containerRef = useRef(null);
     const cameraRef = useRef(null);
@@ -118,6 +124,7 @@ export default function WorkCanvas({ items, onCardNavigate, onScrollChange }) {
                 }}
                 style={canvasStyle}
             >
+                <AdaptiveQualityMonitor enabled={startAnimations} />
                 <PerspectiveCamera ref={cameraRef} makeDefault position={CAROUSEL_CONFIG.CAMERA.POSITION} fov={CAROUSEL_CONFIG.CAMERA.FOV} />
                 <WorkScene
                     items={items}
@@ -127,6 +134,7 @@ export default function WorkCanvas({ items, onCardNavigate, onScrollChange }) {
                     onCenterednessChange={onCenterednessChange}
                     rigRef={rigRef}
                     isMobile={isMobile}
+                    startAnimations={startAnimations}
                 />
             </Canvas>
             <div className={styles.scrollContent} style={scrollStyle} />

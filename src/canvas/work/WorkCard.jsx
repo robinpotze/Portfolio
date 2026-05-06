@@ -1,5 +1,5 @@
 import { useQuality } from '@app/QualityContext';
-import '@canvas/shared/materials/PixelOverlayMaterial';
+import '@canvas/materials/PixelOverlayMaterial';
 import { FLOAT_CONFIG } from '@config/animation.config';
 import { CAROUSEL_CONFIG } from '@config/carousel.config';
 import useNoiseTexture from '@hooks/useNoiseTexture';
@@ -7,9 +7,10 @@ import { Float, Text, useTexture } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { calculateCardPosition, calculateCardRotation, calculateCardScale } from '@utils/carousel';
 import { getCSSVariable } from '@utils/cssUtils';
+import { entryEase } from '@utils/easingFunctions';
 import { useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
-import './WorkCardMaterial';
+import '@canvas/materials/WorkCardMaterial';
 
 // Derive card size from carousel geometry: slightly less than one polygon side
 const chord = 2 * CAROUSEL_CONFIG.RADIUS * Math.sin(CAROUSEL_CONFIG.ANGLE_STEP / 2);
@@ -18,13 +19,14 @@ export const CARD_HEIGHT = CARD_WIDTH / CAROUSEL_CONFIG.CARD_ASPECT;
 
 const LGHT_COLOR = getCSSVariable('--c-LGHT') || '#eee';
 
-export default function WorkCard({ item, index, visible = true, onNavigate, centerednessRef }) {
+export default function WorkCard({ item, index, visible = true, onNavigate, centerednessRef, entryComplete = false, entryDelay = 0 }) {
     const groupRef = useRef();
     const cardRef = useRef();
     const materialRef = useRef();
     const { quality } = useQuality();
     const [hovered, setHovered] = useState(false);
     const hoverRef = useRef(0);
+    const entryTimeRef = useRef(null);
 
     const { data, key: pageKey } = item;
 
@@ -69,6 +71,22 @@ export default function WorkCard({ item, index, visible = true, onNavigate, cent
             return;
         }
 
+        // Entry reveal: stay at 0 until camera entry completes, then animate in with stagger
+        if (!entryComplete) {
+            groupRef.current.scale.setScalar(0);
+            scaleRef.current = 0;
+            return;
+        }
+
+        // Track entry animation start time per card (staggered)
+        if (entryTimeRef.current === null) {
+            entryTimeRef.current = state.clock.getElapsedTime() + entryDelay;
+        }
+
+        const entryElapsed = state.clock.getElapsedTime() - entryTimeRef.current;
+        const entryT = Math.min(1, Math.max(0, entryElapsed / CAROUSEL_CONFIG.ENTRY.CARD_DURATION));
+        const entryScale = entryEase(entryT);
+
         // Reset scale when becoming visible so it animates in
         if (visible && !wasVisibleRef.current) {
             scaleRef.current = 0;
@@ -83,7 +101,10 @@ export default function WorkCard({ item, index, visible = true, onNavigate, cent
         const targetScale = calculateCardScale(centeredness);
         const smoothing = 1 - Math.pow(0.001, delta);
         scaleRef.current += (targetScale - scaleRef.current) * smoothing;
-        groupRef.current.scale.setScalar(scaleRef.current);
+
+        // During entry, multiply by entry progress; after entry, use full scale
+        const finalScale = entryT < 1 ? scaleRef.current * entryScale : scaleRef.current;
+        groupRef.current.scale.setScalar(finalScale);
 
         // Animate hover uniform
         const target = hovered ? 1 : 0;

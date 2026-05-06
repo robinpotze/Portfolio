@@ -1,6 +1,6 @@
-import Rig from '@canvas/shared/camera/Rig';
-import BackgroundMesh from '@canvas/shared/meshes/BackgroundMesh';
-import LogoMesh from '@canvas/shared/meshes/LogoMesh';
+import Rig from '@canvas/camera/Rig';
+import BackgroundMesh from '@canvas/meshes/BackgroundMesh';
+import LogoMesh from '@canvas/meshes/LogoMesh';
 import { useQuality } from '@app/QualityContext';
 import { FLOAT_CONFIG, REVEAL, SCENE, TIMEOUT, BREAKPOINTS } from '@config/animation.config';
 import useCameraAnimation from '@hooks/useCameraAnimation';
@@ -9,7 +9,9 @@ import { Float, PerspectiveCamera, Text } from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
 import { Bloom, EffectComposer, N8AO } from '@react-three/postprocessing';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import LaserPlane from './LaserPlane';
+import LaserPlane from '@canvas/effects/LaserPlane';
+import { easeIn } from 'motion';
+import { Easing } from 'three/examples/jsm/libs/tween.module.js';
 
 export default function HomeScene({ scrollProgress = 0, startAnimations = true, laserParams = {}, onSceneReady = null }) {
     const logoRef = useRef();
@@ -82,12 +84,11 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true, 
     const logoAnimConfig = useMemo(
         () => ({
             duration: REVEAL.DURATION,
-            startPosition: [0, 0, 20],
-            endPosition: [0, 0, -5],
+            delay: REVEAL.DURATION,
             scrollEndPosition: [0, 0, -15],
-            startScale: [4 * viewportScale, 4 * viewportScale, 4 * viewportScale],
+            startScale: [2 * viewportScale, 2 * viewportScale, 2 * viewportScale],
             endScale: [2.5 * viewportScale, 2.5 * viewportScale, 2.5 * viewportScale],
-            scrollEndScale: [2 * viewportScale, 2 * viewportScale, 2 * viewportScale],
+            scrollEndScale: [4 * viewportScale, 4 * viewportScale, 4 * viewportScale],
             scrollProgress,
             enabled: startAnimations,
         }),
@@ -128,6 +129,7 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true, 
     const cameraAnimConfig = useMemo(
         () => ({
             duration: SCENE.CAMERA_DURATION,
+            delay: REVEAL.DURATION,
             startPosition: [0, 0, 30],
             endPosition: [0, 0, 20],
             scrollEndPosition: [0, 0, 10],

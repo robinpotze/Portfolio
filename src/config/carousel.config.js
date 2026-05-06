@@ -29,4 +29,11 @@ export const CAROUSEL_CONFIG = {
         BREAKPOINT: 768,
         SCALE_FACTOR: 0.7,
     },
+
+    ENTRY: {
+        CAMERA_START_Z: 15,
+        CAMERA_DURATION: 1.0,
+        CARD_STAGGER: 0.1,
+        CARD_DURATION: 0.6,
+    },
 };

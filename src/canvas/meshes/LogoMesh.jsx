@@ -1,6 +1,6 @@
 import { useQuality } from '@app/QualityContext';
-import '@canvas/shared/materials/GlassLogoMaterial';
-import '@canvas/shared/materials/PulseLogoMaterial';
+import '@canvas/materials/GlassLogoMaterial';
+import '@canvas/materials/PulseLogoMaterial';
 import { LOGO_BOOTSTRAP } from '@config/animation.config';
 import useNoiseTexture from '@hooks/useNoiseTexture';
 import { useFBO, useGLTF } from '@react-three/drei';

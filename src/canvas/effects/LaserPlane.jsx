@@ -1,5 +1,5 @@
 import { useQuality } from '@app/QualityContext';
-import '@canvas/shared/materials/LaserFlowMaterial';
+import '@canvas/materials/LaserFlowMaterial';
 import { useFrame, useThree } from '@react-three/fiber';
 import { getCSSColorRGBA } from '@utils/cssUtils';
 import { useEffect, useMemo, useRef } from 'react';
