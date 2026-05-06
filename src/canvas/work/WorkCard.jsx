@@ -1,5 +1,6 @@
 import { useQuality } from '@app/QualityContext';
 import '@canvas/materials/PixelOverlayMaterial';
+import '@canvas/materials/WorkCardMaterial';
 import { FLOAT_CONFIG } from '@config/animation.config';
 import { CAROUSEL_CONFIG } from '@config/carousel.config';
 import useNoiseTexture from '@hooks/useNoiseTexture';
@@ -10,7 +11,6 @@ import { getCSSVariable } from '@utils/cssUtils';
 import { entryEase } from '@utils/easingFunctions';
 import { useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
-import '@canvas/materials/WorkCardMaterial';
 
 // Derive card size from carousel geometry: slightly less than one polygon side
 const chord = 2 * CAROUSEL_CONFIG.RADIUS * Math.sin(CAROUSEL_CONFIG.ANGLE_STEP / 2);

@@ -5,7 +5,7 @@ import { LOGO_BOOTSTRAP } from '@config/animation.config';
 import useNoiseTexture from '@hooks/useNoiseTexture';
 import { useFBO, useGLTF } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
-import { memo, useRef, useEffect } from 'react';
+import { memo, useEffect, useRef } from 'react';
 import * as THREE from 'three';
 
 function LogoMesh({ enableFBO = true, ...props }) {

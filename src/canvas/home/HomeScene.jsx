@@ -1,17 +1,15 @@
+import { useQuality } from '@app/QualityContext';
 import Rig from '@canvas/camera/Rig';
+import LaserPlane from '@canvas/effects/LaserPlane';
 import BackgroundMesh from '@canvas/meshes/BackgroundMesh';
 import LogoMesh from '@canvas/meshes/LogoMesh';
-import { useQuality } from '@app/QualityContext';
-import { FLOAT_CONFIG, REVEAL, SCENE, TIMEOUT, BREAKPOINTS } from '@config/animation.config';
+import { BREAKPOINTS, FLOAT_CONFIG, REVEAL, SCENE, TIMEOUT } from '@config/animation.config';
 import useCameraAnimation from '@hooks/useCameraAnimation';
 import useObjectAnimation from '@hooks/useObjectAnimation';
 import { Float, PerspectiveCamera, Text } from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
 import { Bloom, EffectComposer, N8AO } from '@react-three/postprocessing';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import LaserPlane from '@canvas/effects/LaserPlane';
-import { easeIn } from 'motion';
-import { Easing } from 'three/examples/jsm/libs/tween.module.js';
 
 export default function HomeScene({ scrollProgress = 0, startAnimations = true, laserParams = {}, onSceneReady = null }) {
     const logoRef = useRef();
