@@ -178,7 +178,7 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true, 
             </group>
 
             <Float floatIntensity={FLOAT_CONFIG.INTENSITY} rotationIntensity={FLOAT_CONFIG.ROTATION_INTENSITY} speed={FLOAT_CONFIG.SPEED}>
-                <group ref={logoRef} scale={0.5}>
+                <group ref={logoRef} scale={0.3}>
                     <LogoMesh enableFBO={startAnimations && entryComplete && quality !== 'low'} />
                 </group>
             </Float>
