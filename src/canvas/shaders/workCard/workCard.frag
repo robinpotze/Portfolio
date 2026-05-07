@@ -97,12 +97,11 @@ void main() {
     color += color * F * 0.3;
 
     // Gentle brightness and cool tint
-    color *= 1.1;
     color *= vec3(1.0, 1.02, 1.05);
 
     // Vignette — darkens center where text sits for legibility
     vec2 vigUv = vUv - 0.5;
-    float vignette = dot(vigUv, vigUv) * 2.0;
+    float vignette = dot(vigUv, vigUv) * 1.5;
     color *= mix(0.55, 1.0, vignette);
 
     gl_FragColor = vec4(color, 1.0);

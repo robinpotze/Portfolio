@@ -30,7 +30,7 @@ export default function WorkCard({ item, index, visible = true, onNavigate, cent
 
     const { data, key: pageKey } = item;
 
-    const texture = useTexture(data.banner || '/assets/img/work/ld58/Wallpaper.png');
+    const texture = useTexture(data.banner || '/assets/img/logo/logo.png');
 
     const textureSize = useMemo(() => {
         const img = texture.image;
