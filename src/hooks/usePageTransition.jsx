@@ -36,11 +36,14 @@ export function PageTransitionProvider({ children }) {
 
     const onCoverComplete = useCallback(() => {
         if (pendingNavigation.current) {
-            const navState = { fromNavigation: true, ...pendingState.current };
-            navigate(pendingNavigation.current, { state: navState });
-            pendingNavigation.current = null;
-            pendingState.current = null;
-            setCurtainOpen(false);
+            // Yield a frame so the curtain fully paints before the heavy route mount
+            requestAnimationFrame(() => {
+                const navState = { fromNavigation: true, ...pendingState.current };
+                navigate(pendingNavigation.current, { state: navState });
+                pendingNavigation.current = null;
+                pendingState.current = null;
+                setCurtainOpen(false);
+            });
         }
     }, [navigate]);
 

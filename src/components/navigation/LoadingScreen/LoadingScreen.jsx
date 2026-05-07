@@ -5,25 +5,11 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import styles from './LoadingScreen.module.css';
 
-const CRYPTIC_MESSAGES = [
-    'INITIATING NEURAL HANDSHAKE',
-    'DECRYPTING VISUAL CORTEX',
-    'PARSING QUANTUM MANIFOLD',
-    'COMPILING VOID MATRICES',
-    'SYNCHRONIZING DARK ARRAYS',
-    'RESOLVING TEMPORAL DRIFT',
-    'CALIBRATING PHASE VECTORS',
-    'TRAVERSING DATA STREAMS',
-    'BOOTSTRAPPING SIGNAL MESH',
-    'INDEXING ENTROPY FIELDS',
-];
-
 const CYCLE_INTERVAL = 900;
 const BLOCK_SIZE = 6;
 const BLOCK_GAP = 2;
-const GLITCH_CHARS = '!@#$%^&*01<>{}[]';
 
-function BlockLogo({ logoSrc, cycleIndex }) {
+function BlockLogo({ logoSrc }) {
     const canvasRef = useRef(null);
     const blockDataRef = useRef(null);
     const animRef = useRef(null);
@@ -37,10 +23,6 @@ function BlockLogo({ logoSrc, cycleIndex }) {
             pulse: getCSSColorRGBA('--c-brnd_100'),
         };
     }, []);
-
-    useEffect(() => {
-        cycleStartRef.current = Date.now();
-    }, [cycleIndex]);
 
     // Load SVG and extract block positions
     useEffect(() => {
@@ -119,8 +101,8 @@ function BlockLogo({ logoSrc, cycleIndex }) {
             const { blocks, width, height } = data;
             ctx.clearRect(0, 0, width, height);
 
-            const elapsed = Date.now() - cycleStartRef.current;
-            const t = Math.min(elapsed / CYCLE_INTERVAL, 1);
+            const elapsed = (Date.now() - cycleStartRef.current) % CYCLE_INTERVAL;
+            const t = elapsed / CYCLE_INTERVAL;
 
             blocks.forEach((block) => {
                 // Scattered radial pulse from center
@@ -179,8 +161,6 @@ export default function LoadingScreen({ onComplete, onRevealStart, minDisplayTim
     const { progress: threeProgress } = useProgress();
     const [progress, setProgress] = useState(0);
     const [phase, setPhase] = useState('loading'); // 'loading' | 'revealing' | 'hidden'
-    const [messageIndex, setMessageIndex] = useState(0);
-    const [displayText, setDisplayText] = useState(CRYPTIC_MESSAGES[0]);
     const startTimeRef = useRef(Date.now());
     const hasCompletedRef = useRef(false);
     const timerRefs = useRef([]);
@@ -253,51 +233,6 @@ export default function LoadingScreen({ onComplete, onRevealStart, minDisplayTim
         return () => clearTimeout(forceCompleteTimer);
     }, [minDisplayTime, completeLoading]);
 
-    // Cycle messages
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setMessageIndex((prev) => (prev + 1) % CRYPTIC_MESSAGES.length);
-        }, CYCLE_INTERVAL);
-        return () => clearInterval(interval);
-    }, []);
-
-    // Glitch text decode effect
-    useEffect(() => {
-        const target = CRYPTIC_MESSAGES[messageIndex];
-        let frame = 0;
-        const totalFrames = 8;
-        let rafId;
-
-        const decode = () => {
-            frame++;
-            const ratio = frame / totalFrames;
-            const decoded = target
-                .split('')
-                .map((char, i) => {
-                    if (char === ' ') {
-                        return ' ';
-                    }
-                    if (ratio > i / target.length) {
-                        return char;
-                    }
-                    return GLITCH_CHARS[Math.floor(Math.random() * GLITCH_CHARS.length)];
-                })
-                .join('');
-            setDisplayText(decoded);
-
-            if (frame < totalFrames) {
-                rafId = requestAnimationFrame(decode);
-            }
-        };
-
-        decode();
-        return () => {
-            if (rafId) {
-                cancelAnimationFrame(rafId);
-            }
-        };
-    }, [messageIndex]);
-
     const isRevealing = phase === 'revealing';
 
     return (
@@ -341,17 +276,17 @@ export default function LoadingScreen({ onComplete, onRevealStart, minDisplayTim
                                     : { duration: 0 }
                             }
                         >
-                            <BlockLogo logoSrc={logoSrc} cycleIndex={messageIndex} />
+                            <BlockLogo logoSrc={logoSrc} />
                         </motion.div>
                     )}
 
                     {/* Text — fades out quickly */}
                     <motion.div
-                        className={`${styles.loadingText} deco-small`}
+                        className={`${styles.loadingText}`}
                         animate={{ opacity: isRevealing ? 0 : 1 }}
                         transition={{ duration: LOADING_REVEAL.TEXT_FADE_MS / 1000, ease: 'easeOut' }}
                     >
-                        {displayText} ::: {Math.floor(progress)}%
+                        {Math.floor(progress)}%
                     </motion.div>
                 </motion.div>
             )}

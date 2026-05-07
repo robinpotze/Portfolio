@@ -2,6 +2,7 @@ import { useWorkItems } from '@app/WorkContext';
 import ErrorBoundary from '@components/ErrorBoundary';
 import { SCROLL_THRESHOLDS } from '@config/animation.config';
 import { usePageTransition } from '@hooks/usePageTransition';
+import { prefetchEntryPages } from '@routes/Entry/pages/autogen';
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import styles from './Work.module.css';
 
@@ -12,6 +13,11 @@ export default function Work() {
     const items = useWorkItems();
     const hasNavigated = useRef(false);
     const [isTouchDevice] = useState(() => 'ontouchstart' in window);
+
+    // Prefetch entry page bundles so navigation is instant
+    useEffect(() => {
+        prefetchEntryPages();
+    }, []);
 
     const onCardNavigate = useCallback(
         (pageKey) => {

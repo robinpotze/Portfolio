@@ -28,10 +28,9 @@
 }
 
 .loadingText {
-    position: relative;
-    z-index: 1;
-    margin-top: 1rem;
+    position: absolute;
+    z-index: 1; 
+    background-color: var(--c-drk_100);
     font: var(--f-func-small);
-    color: var(--c-lght_100);
-    letter-spacing: 0.1em;
+    color: var(--c-brnd_100);
 }

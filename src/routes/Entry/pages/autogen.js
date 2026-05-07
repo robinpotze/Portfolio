@@ -52,4 +52,11 @@ if (import.meta.env.DEV) {
     }
 }
 
+/** Prefetch all entry page bundles so they're cached before navigation */
+export function prefetchEntryPages() {
+    for (const loader of Object.values(loaderByDir)) {
+        loader();
+    }
+}
+
 export { pages, pagesData };

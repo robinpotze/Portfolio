@@ -1,12 +1,12 @@
 import { animate, motion, useMotionValue, useTransform } from 'framer-motion';
 import { useEffect } from 'react';
 
-const texts = ['| VOID OF AMBITION |', '| VOID OF CREATION |', '| VOID OF PROGRESS |'];
+const defaultTexts = ['| VOID OF AMBITION |', '| VOID OF CREATION |', '| VOID OF PROGRESS |'];
 
-export default function RedoAnimText({ delay }) {
+export default function RedoAnimText({ delay, text = defaultTexts }) {
     const textIndex = useMotionValue(0);
 
-    const baseText = useTransform(textIndex, (latest) => texts[latest] || '');
+    const baseText = useTransform(textIndex, (latest) => text[latest] || '');
     const count = useMotionValue(0);
     const rounded = useTransform(count, (latest) => Math.round(latest));
     const displayText = useTransform(rounded, (latest) => baseText.get().slice(0, latest));
@@ -25,7 +25,7 @@ export default function RedoAnimText({ delay }) {
                 if (updatedThisRound.get() === true && latest > 0) {
                     updatedThisRound.set(false);
                 } else if (updatedThisRound.get() === false && latest === 0) {
-                    if (textIndex.get() === texts.length - 1) {
+                    if (textIndex.get() === text.length - 1) {
                         textIndex.set(0);
                     } else {
                         textIndex.set(textIndex.get() + 1);

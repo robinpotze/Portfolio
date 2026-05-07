@@ -1,5 +1,4 @@
 import { useQuality } from '@app/QualityContext';
-import Rig from '@canvas/camera/Rig';
 import { BREAKPOINTS } from '@config/animation.config';
 import { CAROUSEL_CONFIG } from '@config/carousel.config';
 import { useFrame, useThree } from '@react-three/fiber';
@@ -146,7 +145,6 @@ export default function WorkScene({
                 </group>
             </group>
             <ambientLight intensity={1} />
-            <Rig intensity={0.15} />
             <EffectComposer multisampling={postProcessingSettings.multisampling}>
                 <Bloom
                     mipmapBlur

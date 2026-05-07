@@ -91,7 +91,7 @@ export const LOADING_REVEAL = {
     BG_FADE_MS: 600,
     TEXT_FADE_MS: 300,
     LOGO_GROW_MS: 400,
-    LOGO_GROW_SCALE: 4,
+    LOGO_GROW_SCALE: 1.25,
     LOGO_FADE_MS: 400,
 };
 

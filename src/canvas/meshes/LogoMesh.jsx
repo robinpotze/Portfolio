@@ -98,11 +98,11 @@ function LogoMesh({ enableFBO = true, ...props }) {
                     transparent
                     depthWrite={false}
                     uNoiseTex={noiseTexture}
-                    uRoughness={0.2}
-                    uNoiseScale={2.0}
+                    uRoughness={0.1}
+                    uNoiseScale={1.0}
                     uRefractPower={0.1}
                     uChromaticAberration={0.02}
-                    toneMapped={false}
+                    toneMapped={true}
                 />
             </mesh>
         </group>

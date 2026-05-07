@@ -84,8 +84,6 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true, 
             duration: REVEAL.DURATION,
             delay: REVEAL.DURATION,
             scrollEndPosition: [0, 0, -15],
-            startScale: [2 * viewportScale, 2 * viewportScale, 2 * viewportScale],
-            endScale: [2.5 * viewportScale, 2.5 * viewportScale, 2.5 * viewportScale],
             scrollEndScale: [4 * viewportScale, 4 * viewportScale, 4 * viewportScale],
             scrollProgress,
             enabled: startAnimations,
@@ -182,7 +180,7 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true, 
             )}
 
             <Float floatIntensity={FLOAT_CONFIG.INTENSITY} rotationIntensity={FLOAT_CONFIG.ROTATION_INTENSITY} speed={FLOAT_CONFIG.SPEED}>
-                <group ref={logoRef} scale={2 * viewportScale}>
+                <group ref={logoRef} scale={1.5 * viewportScale}>
                     <LogoMesh enableFBO={entryComplete && quality !== 'low'} />
                 </group>
             </Float>
