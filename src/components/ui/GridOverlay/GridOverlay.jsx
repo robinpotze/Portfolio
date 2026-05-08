@@ -54,10 +54,10 @@ function buildStripeCells(rows, cols, activeSet, stripeWidth, stripeOpacity, blu
                     style={
                         active
                             ? {
-                                '--stripe-w': `${stripeWidth}%`,
-                                '--stripe-opacity': stripeOpacity,
-                                '--cell-blur': `${blurStrength}px`,
-                            }
+                                  '--stripe-w': `${stripeWidth}%`,
+                                  '--stripe-opacity': stripeOpacity,
+                                  '--cell-blur': `${blurStrength}px`,
+                              }
                             : undefined
                     }
                     variants={cellVariants}
@@ -81,7 +81,9 @@ function buildCrosshairs(rows, cols, activeSet, CrosshairIcon, crosshairSize, cr
                     }
                 }
             }
-            if (!touches) continue;
+            if (!touches) {
+                continue;
+            }
 
             items.push(
                 <motion.div

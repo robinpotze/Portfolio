@@ -19,16 +19,13 @@ export default function TextArea({ value, onChange, placeholder, disabled, icon:
             <CrsIcon className={styles.marker} aria-hidden="true" />
             <div className={styles.sidebar}>
                 <Icon className={styles.icon} aria-hidden="true" />
-                {decal && <span className={styles.decal} aria-hidden="true">{decal}</span>}
+                {decal && (
+                    <span className={styles.decal} aria-hidden="true">
+                        {decal}
+                    </span>
+                )}
             </div>
-            <textarea
-                className={styles.textarea}
-                placeholder={placeholder}
-                value={value}
-                onChange={onChange}
-                disabled={disabled}
-                {...props}
-            />
+            <textarea className={styles.textarea} placeholder={placeholder} value={value} onChange={onChange} disabled={disabled} {...props} />
             <PlsIcon className={styles.cornerBL} aria-hidden="true" />
             <PlsIcon className={styles.cornerBR} aria-hidden="true" />
         </div>

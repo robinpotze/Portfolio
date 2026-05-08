@@ -115,7 +115,12 @@ export default function Home() {
     return (
         <>
             {isLoading && (
-                <LoadingScreen onComplete={onLoadingComplete} onRevealStart={onRevealStart} minDisplayTime={TIMEOUT.LOADING_MIN_DISPLAY_MS} logoSrc="/assets/img/logo/logo.svg" />
+                <LoadingScreen
+                    onComplete={onLoadingComplete}
+                    onRevealStart={onRevealStart}
+                    minDisplayTime={TIMEOUT.LOADING_MIN_DISPLAY_MS}
+                    logoSrc="/assets/img/logo/logo.svg"
+                />
             )}
             <div
                 className={styles.page}

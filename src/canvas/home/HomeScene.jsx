@@ -148,11 +148,14 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true, 
             return;
         }
         lightRef.current.intensity = 0;
-        const timer = setTimeout(() => {
-            if (lightRef.current) {
-                lightRef.current.intensity = 1;
-            }
-        }, SCENE.FADE_DURATION * 1000 + 200);
+        const timer = setTimeout(
+            () => {
+                if (lightRef.current) {
+                    lightRef.current.intensity = 1;
+                }
+            },
+            SCENE.FADE_DURATION * 1000 + 200
+        );
         return () => clearTimeout(timer);
     }, [startAnimations]);
 

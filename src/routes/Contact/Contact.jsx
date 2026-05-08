@@ -264,10 +264,7 @@ export default function Contact() {
                 {/* Status Panel */}
                 <AnimatePresence>
                     {phase !== 'message' && (
-                        <StatusPanel
-                            className={styles.statusPanelArea}
-                            variant={phase === 'complete' ? 'success' : 'default'}
-                        >
+                        <StatusPanel className={styles.statusPanelArea} variant={phase === 'complete' ? 'success' : 'default'}>
                             {isIntercept && (
                                 <>
                                     <MsgIcon className={styles.panelIcon} aria-hidden="true" />
