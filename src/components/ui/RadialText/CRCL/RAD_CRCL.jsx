@@ -1,5 +1,5 @@
 import { SPRING_CONFIG } from '@config/animation.config';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 
 export default function RAD_CRCL({ value = 0 }) {
     const radius = 5;

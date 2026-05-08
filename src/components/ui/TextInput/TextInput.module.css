@@ -1,0 +1,135 @@
+/* ----------------------------------------------------------------
+   Field Container
+   ---------------------------------------------------------------- */
+
+.field {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    padding: var(--s-xs) var(--s-s);
+    gap: var(--s-s);
+    background-color: var(--c-lght_100);
+    color: var(--c-drk_100);
+    border: 1px solid var(--c-lght_100);
+    transition:
+        background-color 0.4s ease,
+        border-color 0.4s ease;
+}
+
+/* ----------------------------------------------------------------
+   Input
+   ---------------------------------------------------------------- */
+
+.input {
+    width: 100%;
+    padding-left: var(--s-s);
+    background: none;
+    border: none;
+    border-left: 1px solid var(--c-drk_40);
+    color: var(--c-drk_100);
+    font: var(--f-func);
+    transition:
+        border-color 0.2s ease,
+        color 0.2s ease;
+}
+
+.input::placeholder {
+    color: var(--c-drk_40);
+}
+
+.input:focus {
+    outline: none;
+    border-left: 1px solid var(--c-brnd_100);
+}
+
+/* ----------------------------------------------------------------
+   Icon
+   ---------------------------------------------------------------- */
+
+.icon {
+    width: 32px;
+    height: 32px;
+    color: var(--c-brnd_100);
+}
+
+/* ----------------------------------------------------------------
+   Corner Decorations
+   ---------------------------------------------------------------- */
+
+.corner {
+    width: 48px;
+    height: 48px;
+    position: absolute;
+    color: var(--c-lght_100);
+}
+
+.cornerTL {
+    composes: corner;
+    top: -24px;
+    left: -24px;
+}
+
+.cornerTR {
+    composes: corner;
+    top: -24px;
+    right: -24px;
+}
+
+.cornerBL {
+    composes: corner;
+    bottom: -24px;
+    left: -24px;
+}
+
+.cornerBR {
+    composes: corner;
+    bottom: -24px;
+    right: -24px;
+}
+
+.marker {
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    top: 20px;
+    left: -24px;
+    color: var(--c-lght_100);
+}
+
+/* ----------------------------------------------------------------
+   Intercept Variant
+   ---------------------------------------------------------------- */
+
+.fieldIntercept {
+    composes: field;
+    background-color: var(--c-error_100);
+    border-color: var(--c-error_100);
+}
+
+.fieldIntercept .input {
+    color: var(--c-drk_100);
+}
+
+.fieldIntercept .corner,
+.fieldIntercept .marker {
+    color: var(--c-brnd_-100);
+}
+
+.fieldIntercept .icon {
+    color: var(--c-blue);
+}
+
+/* ----------------------------------------------------------------
+   Responsive
+   ---------------------------------------------------------------- */
+
+@media (max-width: 768px) {
+    .input {
+        min-height: 44px;
+    }
+
+    .corner,
+    .marker {
+        display: none;
+    }
+}

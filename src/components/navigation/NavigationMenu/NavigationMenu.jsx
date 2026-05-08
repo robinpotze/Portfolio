@@ -1,6 +1,6 @@
 import { REVEAL, TIMEOUT } from '@config/animation.config';
 import { usePageTransition } from '@hooks/usePageTransition';
-import { animate } from 'framer-motion';
+import { animate } from 'motion/react';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import MenuBackgroundLayers from './MenuBackgroundLayers';
 import MenuButton from './MenuButton';

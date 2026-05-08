@@ -1,5 +1,5 @@
 import { EASING, REVEAL } from '@config/animation.config';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import styles from '../About.module.css';
 
 const headerVariants = {

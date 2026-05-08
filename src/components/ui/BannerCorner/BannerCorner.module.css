@@ -1,0 +1,80 @@
+/* ----------------------------------------------------------------
+   Wrapper
+   ---------------------------------------------------------------- */
+
+.wrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--s-s);
+    z-index: 1;
+}
+
+.wrapperTl {
+    composes: wrapper;
+    align-self: flex-end;
+}
+
+.wrapperTr {
+    composes: wrapper;
+    align-self: flex-end;
+    justify-content: flex-end;
+}
+
+.wrapperBl {
+    composes: wrapper;
+    align-self: flex-start;
+}
+
+.wrapperBr {
+    composes: wrapper;
+    align-self: flex-start;
+    justify-content: flex-end;
+}
+
+/* ----------------------------------------------------------------
+   Corner Block
+   ---------------------------------------------------------------- */
+
+.corner {
+    width: 64px;
+    height: 64px;
+    background-color: var(--c-brnd_-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.icon {
+    height: 64px;
+    width: 64px;
+    color: var(--c-drk_100);
+}
+
+/* ----------------------------------------------------------------
+   Content
+   ---------------------------------------------------------------- */
+
+.content {
+    font: var(--f-hdr_3);
+    text-transform: uppercase;
+    color: var(--c-brnd_-100);
+}
+
+.contentBl,
+.contentBr {
+    font: var(--f-deco-micro);
+    color: var(--c-brnd_-100);
+}
+
+/* ----------------------------------------------------------------
+   Responsive
+   ---------------------------------------------------------------- */
+
+@media (max-width: 768px) {
+    .wrapper,
+    .wrapperTr,
+    .wrapperBr {
+        display: none;
+    }
+}

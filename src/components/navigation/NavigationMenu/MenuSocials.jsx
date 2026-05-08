@@ -1,5 +1,5 @@
 import { REVEAL } from '@config/animation.config';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import styles from './NavigationMenu.module.css';
 
 const SOCIALS = [

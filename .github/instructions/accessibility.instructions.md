@@ -1,6 +1,6 @@
 ---
 description: "Use when adding interactive elements, keyboard handlers, aria attributes, focus management, or screen reader support to components."
-applyTo: "src/components/**"
+applyTo: "src/components/**, src/routes/**"
 ---
 # Accessibility
 

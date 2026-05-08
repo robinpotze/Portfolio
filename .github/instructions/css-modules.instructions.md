@@ -29,7 +29,15 @@ All design tokens are defined in `src/index.css` on `:root`. Always use these va
 | `--c-drk_100`  | `#0a0a0a`                | Dark background      |
 | `--c-drk_40`   | `rgba(17,17,17,0.4)`   | Translucent dark     |
 | `--c-lght_100` | `#eee`                   | Light text           |
+| `--c-lght_60`  | `rgba(238,238,238,0.6)`| Mid-opacity light    |
 | `--c-lght_40`  | `rgba(238,238,238,0.4)`| Translucent light    |
+| `--c-ok_100`   | `#69d52a`                | Success green        |
+| `--c-ok_40`    | `rgba(105,213,42,0.4)` | Translucent success  |
+| `--c-warn_100` | `#d5b32a`                | Warning yellow       |
+| `--c-warn_40`  | `rgba(213,179,42,0.4)` | Translucent warning  |
+| `--c-error_100`| `#d40322`                | Error red            |
+| `--c-error_40` | `rgba(212,3,34,0.4)`   | Translucent error    |
+| `--c-blue`     | `#3d06eb`                | Accent blue          |
 | `--c-0`        | `rgba(0,0,0,0)`        | Transparent          |
 
 ### Fonts

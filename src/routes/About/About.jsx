@@ -2,7 +2,7 @@ import ErrorBoundary from '@components/ErrorBoundary';
 import GridOverlay from '@components/ui/GridOverlay';
 import PixelCard from '@components/ui/PixelCard/PixelCard';
 import { EASING, REVEAL, SPRING_CONFIG, STAGGER } from '@config/animation.config';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'motion/react';
 import { useState } from 'react';
 import styles from './About.module.css';
 import { ABOUT_DATA, ABOUT_SECTIONS } from './about.data';
@@ -17,7 +17,7 @@ const SECTION_MAP = {
     EDU: { Component: EduSection, prop: 'data' },
 };
 
-/* ── Framer-motion variants ─────────────────────── */
+/* ── Motion variants ───────────────────────────── */
 
 const containerVariants = {
     hidden: { opacity: 0 },

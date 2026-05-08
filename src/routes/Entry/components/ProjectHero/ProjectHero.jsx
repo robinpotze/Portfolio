@@ -3,7 +3,7 @@ import PlsIcon from '@/assets/icons/PLS.svg?react';
 import GridOverlay from '@components/ui/GridOverlay';
 import ScrollDown from '@components/ui/ScrollDown';
 import { EASING, REVEAL, STAGGER } from '@config/animation.config';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import styles from './ProjectHero.module.css';
 
 export default function ProjectHero({ content }) {

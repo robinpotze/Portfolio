@@ -1,11 +1,11 @@
-import { motion, useTransform } from 'framer-motion';
+import { motion, useTransform } from 'motion/react';
 import styles from './NineSliceBorder.module.css';
 
 /**
  * A single viewport-level nine-slice border overlay.
  *
  * Uses CSS border-image to natively nine-slice MRKR.svg.
- * Position/size driven by framer-motion spring MotionValues
+ * Position/size driven by motion spring MotionValues
  * for smooth physics-based animation.
  */
 export default function NineSliceBorder({ x, y, w, h }) {

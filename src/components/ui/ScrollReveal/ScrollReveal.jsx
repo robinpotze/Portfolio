@@ -1,5 +1,5 @@
 import { REVEAL } from '@config/animation.config';
-import { motion, useInView } from 'framer-motion';
+import { motion, useInView } from 'motion/react';
 import { useMemo, useRef } from 'react';
 
 import styles from './ScrollReveal.module.css';

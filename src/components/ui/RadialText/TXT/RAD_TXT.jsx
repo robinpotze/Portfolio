@@ -1,5 +1,5 @@
-import { useRef, useEffect } from 'react';
-import { animate } from 'framer-motion';
+import { animate } from 'motion/react';
+import { useEffect, useRef } from 'react';
 
 export default function RAD_TXT({ value }) {
     const textRef = useRef(null);

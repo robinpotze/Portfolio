@@ -10,8 +10,8 @@ function manualChunks(id) {
     if (id.includes('/node_modules/react-router-dom/')) {
         return 'react-router';
     }
-    if (id.includes('/node_modules/framer-motion/')) {
-        return 'framer-motion';
+    if (id.includes('/node_modules/motion/')) {
+        return 'motion';
     }
     if (id.includes('/node_modules/@react-three/fiber/')) {
         return 'r3f-fiber';

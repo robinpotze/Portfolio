@@ -1,0 +1,154 @@
+/* ----------------------------------------------------------------
+   Field Container
+   ---------------------------------------------------------------- */
+
+.field {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    gap: var(--s-s);
+    padding: var(--s-s);
+    border: 1px solid var(--c-lght_100);
+    color: var(--c-lght_100);
+    transition:
+        background-color 0.4s ease,
+        border-color 0.4s ease;
+}
+
+/* ----------------------------------------------------------------
+   Sidebar
+   ---------------------------------------------------------------- */
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--s-xs);
+}
+
+.icon {
+    width: var(--s-m);
+    height: var(--s-m);
+    color: var(--c-brnd_100);
+}
+
+.decal {
+    height: var(--s-xl);
+    width: auto;
+    color: var(--c-brnd_100);
+}
+
+/* ----------------------------------------------------------------
+   Textarea
+   ---------------------------------------------------------------- */
+
+.textarea {
+    width: 100%;
+    padding: var(--s-s);
+    background: none;
+    border: none;
+    border-left: 1px solid var(--c-lght_40);
+    font: var(--f-func);
+    color: var(--c-lght_100);
+    resize: none;
+    transition:
+        border-color 0.2s ease,
+        color 0.2s ease;
+}
+
+.textarea::placeholder {
+    color: var(--c-lght_40);
+}
+
+.textarea:focus {
+    outline: none;
+    border-left: 1px solid var(--c-brnd_100);
+}
+
+/* ----------------------------------------------------------------
+   Corner Decorations
+   ---------------------------------------------------------------- */
+
+.corner {
+    width: 48px;
+    height: 48px;
+    position: absolute;
+    color: var(--c-lght_100);
+}
+
+.cornerTL {
+    composes: corner;
+    top: -24px;
+    left: -24px;
+}
+
+.cornerTR {
+    composes: corner;
+    top: -24px;
+    right: -24px;
+}
+
+.cornerBL {
+    composes: corner;
+    bottom: -24px;
+    left: -24px;
+}
+
+.cornerBR {
+    composes: corner;
+    bottom: -24px;
+    right: -24px;
+}
+
+.marker {
+    width: var(--s-s);
+    height: var(--s-s);
+    position: absolute;
+    top: 20px;
+    left: -24px;
+    color: var(--c-lght_100);
+}
+
+/* ----------------------------------------------------------------
+   Intercept Variant
+   ---------------------------------------------------------------- */
+
+.fieldIntercept {
+    composes: field;
+    border-color: var(--c-error_100);
+    background-color: var(--c-error_100);
+}
+
+.fieldIntercept .textarea {
+    color: var(--c-drk_100);
+    border-left-color: var(--c-drk_100);
+}
+
+.fieldIntercept .corner,
+.fieldIntercept .marker {
+    color: var(--c-brnd_-100);
+}
+
+.fieldIntercept .icon {
+    color: var(--c-blue);
+}
+
+.fieldIntercept .decal {
+    color: var(--c-blue);
+}
+
+/* ----------------------------------------------------------------
+   Responsive
+   ---------------------------------------------------------------- */
+
+@media (max-width: 768px) {
+    .textarea {
+        min-height: 44px;
+    }
+
+    .corner,
+    .marker {
+        display: none;
+    }
+}

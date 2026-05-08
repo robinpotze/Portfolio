@@ -1,8 +1,109 @@
 import PlsIcon from '@/assets/icons/PLS.svg?react';
 import { EASING, REVEAL, SPRING_CONFIG, STAGGER } from '@config/animation.config';
-import { motion, useMotionValue, useSpring } from 'framer-motion';
+import { motion, useMotionValue, useSpring } from 'motion/react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styles from './GridOverlay.module.css';
+
+/* ── Motion variants ──────────────────────────────── */
+
+const layerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.015,
+            delayChildren: STAGGER.DEFAULT,
+        },
+    },
+};
+
+const cellVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: {
+            duration: REVEAL.DURATION,
+            ease: EASING.HERO,
+        },
+    },
+};
+
+const crosshairVariants = (opacity) => ({
+    hidden: { opacity: 0, scale: 0.6 },
+    visible: {
+        opacity,
+        scale: 1,
+        transition: {
+            duration: REVEAL.DURATION,
+            ease: EASING.HERO,
+        },
+    },
+});
+
+/* ── Helpers ──────────────────────────────────────── */
+
+function buildStripeCells(rows, cols, activeSet, stripeWidth, stripeOpacity, blurStrength) {
+    const cells = [];
+    for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+            const active = activeSet.has(`${r}-${c}`);
+            cells.push(
+                <motion.div
+                    key={`cell-${r}-${c}`}
+                    className={active ? styles.stripeCell : styles.emptyCell}
+                    style={
+                        active
+                            ? {
+                                '--stripe-w': `${stripeWidth}%`,
+                                '--stripe-opacity': stripeOpacity,
+                                '--cell-blur': `${blurStrength}px`,
+                            }
+                            : undefined
+                    }
+                    variants={cellVariants}
+                />
+            );
+        }
+    }
+    return cells;
+}
+
+function buildCrosshairs(rows, cols, activeSet, CrosshairIcon, crosshairSize, crosshairOpacity) {
+    const variants = crosshairVariants(crosshairOpacity);
+    const items = [];
+    for (let r = 0; r <= rows; r++) {
+        for (let c = 0; c <= cols; c++) {
+            let touches = false;
+            for (let dr = -2; dr <= 1 && !touches; dr++) {
+                for (let dc = -2; dc <= 1 && !touches; dc++) {
+                    if (activeSet.has(`${r + dr}-${c + dc}`)) {
+                        touches = true;
+                    }
+                }
+            }
+            if (!touches) continue;
+
+            items.push(
+                <motion.div
+                    key={`cross-${r}-${c}`}
+                    className={styles.crosshair}
+                    style={{
+                        width: crosshairSize,
+                        height: crosshairSize,
+                        left: `${(c / cols) * 100}%`,
+                        top: `${(r / rows) * 100}%`,
+                        marginLeft: -crosshairSize / 2,
+                        marginTop: -crosshairSize / 2,
+                    }}
+                    variants={variants}
+                >
+                    <CrosshairIcon aria-hidden="true" />
+                </motion.div>
+            );
+        }
+    }
+    return items;
+}
 
 /**
  * GridOverlay — reusable decoration component.
@@ -112,105 +213,9 @@ export default function GridOverlay({
         return <div ref={containerRef} className={`${styles.container} ${className}`} style={style} />;
     }
 
-    // Animation variants
-    const layerVars = {
-        hidden: { opacity: 0 },
-        visible: {
-            opacity: 1,
-            transition: {
-                staggerChildren: 0.015,
-                delayChildren: STAGGER.DEFAULT,
-            },
-        },
-    };
-
-    const cellVars = {
-        hidden: { opacity: 0 },
-        visible: {
-            opacity: 1,
-            transition: {
-                duration: REVEAL.DURATION,
-                ease: EASING.HERO,
-            },
-        },
-    };
-
-    const crosshairVars = {
-        hidden: { opacity: 0, scale: 0.6 },
-        visible: {
-            opacity: crosshairOpacity,
-            scale: 1,
-            transition: {
-                duration: REVEAL.DURATION,
-                ease: EASING.HERO,
-            },
-        },
-    };
-
-    // Build stripe cells
-    const stripeCells = [];
-    // Stripe width as a percentage: each stripe pair (black+white) = 100%/stripeCount
     const stripeWidth = 100 / stripeCount;
-    for (let r = 0; r < rows; r++) {
-        for (let c = 0; c < cols; c++) {
-            const active = activeSet.has(`${r}-${c}`);
-            stripeCells.push(
-                <motion.div
-                    key={`cell-${r}-${c}`}
-                    className={active ? styles.stripeCell : styles.emptyCell}
-                    style={
-                        active
-                            ? {
-                                  '--stripe-w': `${stripeWidth}%`,
-                                  '--stripe-opacity': stripeOpacity,
-                                  '--cell-blur': `${blurStrength}px`,
-                              }
-                            : undefined
-                    }
-                    variants={cellVars}
-                />
-            );
-        }
-    }
-
-    // Build crosshair icons at corners that are within one cell of any striped cell
-    const crosshairs = [];
-    for (let r = 0; r <= rows; r++) {
-        for (let c = 0; c <= cols; c++) {
-            // Check all cells in a 2-ring around this corner point:
-            // The corner (r,c) sits between cells (r-1,c-1), (r-1,c), (r,c-1), (r,c).
-            // Expanding by one extra ring means checking r-2..r+1, c-2..c+1.
-            let touches = false;
-            for (let dr = -2; dr <= 1 && !touches; dr++) {
-                for (let dc = -2; dc <= 1 && !touches; dc++) {
-                    if (activeSet.has(`${r + dr}-${c + dc}`)) {
-                        touches = true;
-                    }
-                }
-            }
-            if (!touches) {
-                continue;
-            }
-
-            crosshairs.push(
-                <motion.div
-                    key={`cross-${r}-${c}`}
-                    className={styles.crosshair}
-                    style={{
-                        width: crosshairSize,
-                        height: crosshairSize,
-                        left: `${(c / cols) * 100}%`,
-                        top: `${(r / rows) * 100}%`,
-                        marginLeft: -crosshairSize / 2,
-                        marginTop: -crosshairSize / 2,
-                    }}
-                    variants={crosshairVars}
-                >
-                    <CrosshairIcon aria-hidden="true" />
-                </motion.div>
-            );
-        }
-    }
+    const stripeCells = buildStripeCells(rows, cols, activeSet, stripeWidth, stripeOpacity, blurStrength);
+    const crosshairs = buildCrosshairs(rows, cols, activeSet, CrosshairIcon, crosshairSize, crosshairOpacity);
 
     return (
         <div ref={containerRef} className={`${styles.container} ${className}`} style={style}>
@@ -218,14 +223,14 @@ export default function GridOverlay({
                 <motion.div
                     className={styles.stripeLayer}
                     style={{ '--cols': cols, '--rows': rows }}
-                    variants={layerVars}
+                    variants={layerVariants}
                     initial="hidden"
                     animate="visible"
                 >
                     {stripeCells}
                 </motion.div>
 
-                <motion.div className={styles.crosshairLayer} variants={layerVars} initial="hidden" animate="visible">
+                <motion.div className={styles.crosshairLayer} variants={layerVariants} initial="hidden" animate="visible">
                     {crosshairs}
                 </motion.div>
             </motion.div>

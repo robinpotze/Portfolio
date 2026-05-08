@@ -27,7 +27,7 @@ Read the relevant instruction files before reviewing. Cross-reference every item
 - [ ] Props destructured in function parameter with inline defaults
 - [ ] Hook ordering: router/context hooks → refs → state → memos → effects → callbacks
 - [ ] Event handlers prefixed with `on` (not `handle`) — `onClick`, `onScroll`, `onCardNavigate`
-- [ ] Framer Motion variants defined as module-level constants above the component, not inline in JSX
+- [ ] Motion variants defined as module-level constants above the component, not inline in JSX
 - [ ] Effects have complete dependency arrays and return cleanup functions for listeners/observers/timers/RAF
 
 ### Animation ([animation instructions](.github/instructions/animation.instructions.md))

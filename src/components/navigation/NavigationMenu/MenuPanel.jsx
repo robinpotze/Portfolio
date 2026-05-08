@@ -1,5 +1,5 @@
 import { EASING, REVEAL } from '@config/animation.config';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'motion/react';
 import MenuLinks from './MenuLinks';
 import MenuSocials from './MenuSocials';
 import styles from './NavigationMenu.module.css';

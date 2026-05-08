@@ -4,16 +4,57 @@ applyTo: "src/**"
 ---
 # Code Conventions
 
+## Code Quality Principles
+
+Write code the way a senior developer reads it — small, obvious, and reusable.
+
+### Keep units small
+- **Components**: one clear responsibility. If a component has multiple visual sections or behaviors, split into sub-components within the same directory.
+- **Functions/hooks**: ≤ 40 lines of logic (excluding JSX). If longer, extract a helper or custom hook.
+- **CSS modules**: group related rules together. If a module exceeds ~150 rules, the component it styles is probably too large — split both.
+
+### Don't repeat yourself
+- Before writing a new utility, component, or style pattern, **search the codebase** for existing implementations.
+- If two components share the same logic (event handler, derived value, data transform), extract it to:
+  - A shared hook in `src/hooks/` (for stateful/effect logic)
+  - A utility in `src/utils/` (for pure transforms)
+  - A shared UI component in `src/components/ui/` (for presentational patterns)
+- If two CSS modules share the same block of declarations, extract a shared component or use CSS composition via `composes`.
+
+### Write less to do the same
+- Prefer declarative patterns (`.map`, `.filter`, object lookups) over imperative if/else chains.
+- Replace verbose conditionals with early returns.
+- Use object maps for variant selection instead of switch/if ladders:
+  ```javascript
+  const ICON_MAP = { success: ChkIcon, error: ErrIcon, info: InfoIcon };
+  const Icon = ICON_MAP[status];
+  ```
+- Avoid wrapper functions that only forward arguments — call the target directly.
+
+### Architectural placement
+- **Shared across routes** → `src/components/` (ui, layout, effects, etc.)
+- **Used only within a route** → co-locate inside that route's directory (e.g., `src/routes/About/components/`)
+- **Used across canvas scenes** → `src/canvas/meshes/`, `src/canvas/materials/`, or `src/canvas/effects/`
+- **Used in one scene only** → co-locate inside that scene's directory
+- When a co-located component gains a second consumer, promote it to the shared directory.
+
+### Readability conventions
+- Name things for what they represent, not how they work. Prefer `errorMessage` over `str`, `visibleItems` over `filtered`.
+- Group related state declarations together with a brief comment if the grouping isn't obvious.
+- Separate logical sections within a component with a single blank line — no more.
+- Avoid nested ternaries. Use early returns or a lookup object instead.
+
+
 ## Import Ordering
 
 Group imports in this order, separated by blank lines:
 
-1. **External libraries** — `react`, `react-router-dom`, `framer-motion`, `three`, `@react-three/*`
+1. **External libraries** — `react`, `react-router-dom`, `motion/react`, `three`, `@react-three/*`
 2. **Path-aliased project imports** — `@app`, `@canvas`, `@components`, `@config`, `@hooks`, `@utils` (alphabetical by alias)
 3. **Relative imports** — CSS modules (`.module.css`), sibling data files, sub-components
 
 ```javascript
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'motion/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -106,33 +147,6 @@ const onClick = useCallback(() => { /* ... */ }, []);
 const onScroll = useCallback((e) => { /* ... */ }, []);
 const onCardNavigate = useCallback((path) => { /* ... */ }, [navigateWithTransition]);
 ```
-```
-
-### Framer Motion Variants
-
-Define variants as **module-level constants** above the component — never inline inside JSX:
-
-```javascript
-const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-        opacity: 1,
-        transition: { staggerChildren: STAGGER.DEFAULT, delayChildren: STAGGER.DELAY },
-    },
-};
-
-const itemVariants = {
-    hidden: { y: REVEAL.Y_OFFSET, opacity: 0 },
-    visible: { y: 0, opacity: 1, transition: { duration: REVEAL.DURATION, ease: EASING.EMPHASIZED } },
-};
-
-export default function MyPage() {
-    return (
-        <motion.div variants={containerVariants} initial="hidden" animate="visible">
-            <motion.p variants={itemVariants}>Content</motion.p>
-        </motion.div>
-    );
-}
 ```
 
 ## Custom Hook Patterns

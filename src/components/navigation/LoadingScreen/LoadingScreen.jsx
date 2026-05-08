@@ -1,7 +1,7 @@
 import { LOADING_REVEAL, TIMEOUT } from '@config/animation.config';
 import { useProgress } from '@react-three/drei';
 import { getCSSColorRGBA } from '@utils/cssUtils';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'motion/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import styles from './LoadingScreen.module.css';
 

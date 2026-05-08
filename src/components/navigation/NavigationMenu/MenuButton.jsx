@@ -1,7 +1,7 @@
 import CrsIcon from '@/assets/icons/CRS.svg?react';
 import PlsIcon from '@/assets/icons/PLS.svg?react';
 import { EASING, REVEAL } from '@config/animation.config';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import styles from './NavigationMenu.module.css';
 
 export default function MenuButton({ open, label, toggle, glitchRefs, ref }) {

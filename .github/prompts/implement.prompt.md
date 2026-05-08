@@ -27,7 +27,7 @@ You are a senior developer implementing code for this project. Every line you wr
 
 ```javascript
 // 1. External imports (grouped, alphabetical by package)
-import { motion } from 'framer-motion';
+import { motion } from 'motion';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 // 2. Path-aliased project imports (alphabetical by alias)
@@ -37,7 +37,7 @@ import { usePageTransition } from '@hooks/usePageTransition';
 // 3. Relative imports (CSS modules, sibling files)
 import styles from './MyComponent.module.css';
 
-// Framer Motion variants — module-level constants, never inline
+// Motion variants — module-level constants, never inline
 const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -128,7 +128,7 @@ export default function useMyHook(options = {}) {
 2. **No raw `navigate()`.** Always `navigateWithTransition(path, name, direction)`.
 3. **No class components.** React 19 functional components only.
 4. **No deep relative imports.** Max one level up (`../`). Use path aliases.
-5. **No inline Framer Motion variants.** Define as module-level constants.
+5. **No inline Motion variants.** Define as module-level constants.
 6. **No `handle` prefix.** Use `on` prefix for event callbacks.
 7. **No uncleaned effects.** Every `useEffect` with side effects returns a cleanup function.
 8. **No state libraries.** Context API only for cross-cutting state.

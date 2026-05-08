@@ -1,5 +1,103 @@
 export const CONTACT_FORM_URL = 'https://contact-form.robinpotze.workers.dev';
 
+export const SEND_ERROR_CONFIG = {
+    400: {
+        status: 'error',
+        message: (
+            <>
+                INVALID
+                <br />
+                IDENT
+            </>
+        ),
+    },
+    405: {
+        status: 'error',
+        message: (
+            <>
+                ROUTE
+                <br />
+                BLOCKED
+            </>
+        ),
+    },
+    500: {
+        status: 'error',
+        message: (
+            <>
+                SERVER
+                <br />
+                FAULT
+            </>
+        ),
+    },
+    502: {
+        status: 'error',
+        message: (
+            <>
+                MAIL
+                <br />
+                UNREACH
+            </>
+        ),
+    },
+    network: {
+        status: 'error',
+        message: (
+            <>
+                LINK
+                <br />
+                LOST
+            </>
+        ),
+    },
+    default: {
+        status: 'error',
+        message: (
+            <>
+                RELAY
+                <br />
+                FAILED
+            </>
+        ),
+    },
+};
+
+export function getSendErrorConfig(status) {
+    if (typeof status !== 'number') {
+        return SEND_ERROR_CONFIG.network;
+    }
+
+    return SEND_ERROR_CONFIG[status] ?? SEND_ERROR_CONFIG.default;
+}
+
+export const PHASE_CONFIG = {
+    message: {
+        statusType: null,
+        statusMessage: null,
+    },
+    intercept: {
+        statusType: 'error',
+        statusMessage: (
+            <>
+                INTERCEPT
+                <br />
+                DETECTED
+            </>
+        ),
+    },
+    complete: {
+        statusType: 'success',
+        statusMessage: (
+            <>
+                MESSAGE
+                <br />
+                RELAYED
+            </>
+        ),
+    },
+};
+
 export const ERROR_LOG_LINES = [
     '[SYSTEM] CARRIER_INTERCEPT_DAEMON v9.4.0',
     '[BOOT] WIDEBAND_FRONTEND: ACTIVE [RX_01..RX_08]',

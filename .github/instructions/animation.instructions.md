@@ -1,6 +1,5 @@
 ---
-description: "Use when implementing animations, transitions, scroll effects, Framer Motion variants, spring configs, or Lenis smooth scrolling."
-applyTo: "src/**"
+description: "Use when implementing animations, transitions, scroll effects, motion variants, spring configs, or Lenis smooth scrolling."
 ---
 # Animation Patterns
 
@@ -17,9 +16,36 @@ Key exports:
 - `ANIMATION_EASING` — cubic-bezier arrays `[x1, y1, x2, y2]`
 - `SCROLL_THRESHOLDS` — scroll progress trigger points (0–1)
 - `FLOAT_CONFIG` — parameters for drei `<Float>` and custom float math
-- `SPRING_CONFIG` — Framer Motion spring presets (`stiffness`, `damping`, `mass`)
+- `SPRING_CONFIG` — motion spring presets (`stiffness`, `damping`, `mass`)
 
-## Framer Motion (DOM)
+## Motion (DOM)
+
+### Variant Declarations
+
+Define variants as **module-level constants** above the component — never inline inside JSX:
+
+```javascript
+const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: { staggerChildren: STAGGER.DEFAULT, delayChildren: STAGGER.DELAY },
+    },
+};
+
+const itemVariants = {
+    hidden: { y: REVEAL.Y_OFFSET, opacity: 0 },
+    visible: { y: 0, opacity: 1, transition: { duration: REVEAL.DURATION, ease: EASING.EMPHASIZED } },
+};
+
+export default function MyPage() {
+    return (
+        <motion.div variants={containerVariants} initial="hidden" animate="visible">
+            <motion.p variants={itemVariants}>Content</motion.p>
+        </motion.div>
+    );
+}
+```
 
 ### Variants with Stagger
 
@@ -100,7 +126,7 @@ useFrame((state, delta) => {
 
 ### Smooth Interpolation
 
-Use Framer Motion's `useSpring` for smooth value transitions that feed into `useFrame`:
+Use Motion's `useSpring` for smooth value transitions that feed into `useFrame`:
 
 ```javascript
 const springValue = useSpring(0, { stiffness: 100, damping: 30 });

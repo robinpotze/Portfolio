@@ -1,5 +1,5 @@
 import { EASING, TIMEOUT } from '@config/animation.config';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { useEffect, useRef } from 'react';
 import styles from './CurtainTransition.module.css';
 

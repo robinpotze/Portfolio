@@ -1,5 +1,5 @@
 import { EASING, REVEAL, STAGGER } from '@config/animation.config';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import styles from './NavigationMenu.module.css';
 
 const BG_COLORS = ['var(--c-lght_100)', 'var(--c-brnd_100)'];

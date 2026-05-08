@@ -3,7 +3,7 @@ import GatIcon from '@/assets/icons/GAT.svg?react';
 import MrkIcon from '@/assets/icons/MRK.svg?react';
 import PlsIcon from '@/assets/icons/PLS.svg?react';
 import { EASING, REVEAL, STAGGER } from '@config/animation.config';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'motion/react';
 import styles from './StatusMessage.module.css';
 
 const STATUS_CONFIG = {

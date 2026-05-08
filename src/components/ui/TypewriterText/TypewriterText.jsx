@@ -1,5 +1,5 @@
 import { REVEAL, TYPEWRITER } from '@config/animation.config';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
 
 const rowVariants = {

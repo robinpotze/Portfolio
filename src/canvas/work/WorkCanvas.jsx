@@ -7,8 +7,8 @@ import useBorderProjection from '@hooks/useBorderProjection';
 import { PerspectiveCamera } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import styles from '@routes/Work/Work.module.css';
-import { useMotionValue, useSpring } from 'framer-motion';
 import Lenis from 'lenis';
+import { useMotionValue, useSpring } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
 import WorkScene from './WorkScene';
 

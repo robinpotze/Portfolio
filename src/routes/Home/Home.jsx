@@ -12,7 +12,7 @@ import { EASING, REVEAL, SCROLL_THRESHOLDS, STAGGER, TIMEOUT } from '@config/ani
 import { LASER_PARAMS } from '@config/laser.config';
 import useScrollNavigation from '@hooks/useScrollNavigation';
 import { useGLTF } from '@react-three/drei';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styles from './Home.module.css';

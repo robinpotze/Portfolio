@@ -1,0 +1,82 @@
+/* ----------------------------------------------------------------
+   Panel
+   ---------------------------------------------------------------- */
+
+.panel {
+    padding: var(--s-xl);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--c-brnd_-100);
+    color: var(--c-drk_100);
+    position: relative;
+    transform-origin: center center;
+    will-change: transform;
+    transition: background-color 0.5s ease;
+}
+
+.panel::after {
+    content: '';
+    position: absolute;
+    inset: -42px;
+    pointer-events: none;
+    border: 42px solid transparent;
+    border-image-source: url('../../../assets/decals/MRKR_BRND_-100.svg');
+    border-image-slice: 42 42 42 42;
+    border-image-width: 42px;
+    border-image-repeat: stretch;
+    box-sizing: border-box;
+}
+
+/* ----------------------------------------------------------------
+   Variants
+   ---------------------------------------------------------------- */
+
+.success {
+    composes: panel;
+    background-color: var(--c-ok_100);
+}
+
+.success::after {
+    border-image-source: url('../../../assets/decals/MRKR.svg');
+}
+
+.error {
+    composes: panel;
+}
+
+/* ----------------------------------------------------------------
+   Content
+   ---------------------------------------------------------------- */
+
+.content {
+    width: 100%;
+    display: flex;
+    gap: var(--s-l);
+    justify-content: center;
+    align-items: center;
+}
+
+/* ----------------------------------------------------------------
+   Responsive
+   ---------------------------------------------------------------- */
+
+@media (max-width: 768px) {
+    .panel,
+    .success,
+    .error {
+        flex: 1;
+        padding: var(--s-m);
+    }
+
+    .panel::after,
+    .success::after,
+    .error::after {
+        display: none;
+    }
+
+    .content {
+        flex-direction: column;
+        gap: var(--s-m);
+    }
+}
