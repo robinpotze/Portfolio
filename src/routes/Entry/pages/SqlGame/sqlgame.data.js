@@ -10,5 +10,5 @@ export const Data = {
     year: 2026,
     software: ['Figma', 'React'],
     skills: ['UX Design', 'Game Design', 'Front-End Development'],
-    banner: `${assetPath}FullPage.png`,
+    banner: `${assetPath}FullPage.webp`,
 };

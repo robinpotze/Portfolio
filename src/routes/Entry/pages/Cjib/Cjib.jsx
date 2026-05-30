@@ -56,10 +56,10 @@ export default function Cjib() {
                 <h2>REST couldn't match the data layer. GraphQL could. That story needed telling in sixty seconds.</h2>
             </StatementBlock>
 
-            <FullImage src={`${assetPath}GraphQLTransition.gif`} alt="Animated transition showing GraphQL query flow through the system." />
+            <FullImage src={`${assetPath}GraphQLTransition.webp`} alt="Animated transition showing GraphQL query flow through the system." />
 
             <FeatureSplit
-                src={`${assetPath}McDonalds_Logo.gif`}
+                src={`${assetPath}McDonalds_Logo.webp`}
                 alt="Animated logo sequence for internal presentation material."
                 label="MOTION LANGUAGE"
             >

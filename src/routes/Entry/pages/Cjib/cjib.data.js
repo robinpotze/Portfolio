@@ -10,5 +10,5 @@ export const Data = {
     year: 2025,
     software: ['Illustrator', 'AfterEffects', 'Figma', 'Angular', 'Java'],
     skills: ['UX Design', 'System Visualization', 'Technical Communication', 'Interaction Design'],
-    banner: `${assetPath}CJIBTransition.gif`,
+    banner: `${assetPath}CJIBTransition.webp`,
 };

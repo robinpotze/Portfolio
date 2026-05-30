@@ -19,7 +19,7 @@ export default function SqlGame() {
             {/* ── INTRO ── */}
 
             <CaseIntro
-                src={`${assetPath}FullPage.png`}
+                src={`${assetPath}FullPage.webp`}
                 kicker={`SOPRA STERIA / ${Data.year}`}
                 heading="Write queries. Explore worlds. Learn SQL."
                 subtitle="An interactive learning game built almost single-handedly — design, gameplay, and front-end development."
@@ -128,8 +128,8 @@ export default function SqlGame() {
 
             <DoubleImage
                 images={[
-                    { src: `${assetPath}LoginPage.png`, alt: 'Login page for SQL Game.' },
-                    { src: `${assetPath}RegisterPage.png`, alt: 'Registration page for new players.' },
+                    { src: `${assetPath}LoginPage.webp`, alt: 'Login page for SQL Game.' },
+                    { src: `${assetPath}RegisterPage.webp`, alt: 'Registration page for new players.' },
                 ]}
             />
 
@@ -146,7 +146,7 @@ export default function SqlGame() {
                 heading="From wireframe to final product."
                 items={[
                     { caption: 'WIREFRAMES', src: `${assetPath}WIP_Wireframes.png`, alt: 'Early wireframe explorations for the game interface.' },
-                    { caption: 'FIRST ITERATION', src: `${assetPath}WIP_Iterations.png`, alt: 'First visual iteration of the game.' },
+                    { caption: 'FIRST ITERATION', src: `${assetPath}WIP_Iterations.webp`, alt: 'First visual iteration of the game.' },
                 ]}
             />
 
@@ -154,7 +154,7 @@ export default function SqlGame() {
                 label="REFINEMENT"
                 heading="Stripped down, then built back up."
                 items={[
-                    { caption: 'SECOND ITERATION', src: `${assetPath}WIP_Iterations_Alt.png`, alt: 'Alternate iteration exploring layout.' },
+                    { caption: 'SECOND ITERATION', src: `${assetPath}WIP_Iterations_Alt.webp`, alt: 'Alternate iteration exploring layout.' },
                     { caption: 'FINAL VERSION', src: `${assetPath}WIP_Iterations_last.png`, alt: 'Final polished version of SQL Game.' },
                 ]}
             />
