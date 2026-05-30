@@ -1,6 +1,7 @@
 ---
-description: "Use when adding error handling, try/catch blocks, error boundaries, fetch calls, async operations, or user-facing error states."
+description: 'Use when adding error handling, try/catch blocks, error boundaries, fetch calls, async operations, or user-facing error states.'
 ---
+
 # Error Handling
 
 ## Principles
@@ -18,7 +19,7 @@ import ErrorBoundary from '@components/ErrorBoundary';
 
 <ErrorBoundary>
     <MyPage />
-</ErrorBoundary>
+</ErrorBoundary>;
 ```
 
 - Each route already wraps its content in an ErrorBoundary.
@@ -83,7 +84,9 @@ function getUserMessage(err) {
 ```javascript
 useEffect(() => {
     const canvas = gl.domElement;
-    const onLost = (e) => { e.preventDefault(); /* show fallback UI */ };
+    const onLost = (e) => {
+        e.preventDefault(); /* show fallback UI */
+    };
     canvas.addEventListener('webglcontextlost', onLost);
     return () => canvas.removeEventListener('webglcontextlost', onLost);
 }, [gl]);

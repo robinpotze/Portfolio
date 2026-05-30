@@ -1,7 +1,8 @@
 ---
-description: "Use when writing or editing React components, custom hooks, utility functions, config files, or context providers. Covers component structure, hook ordering, import conventions, state management, performance patterns, and file organization."
-applyTo: "src/**"
+description: 'Use when writing or editing React components, custom hooks, utility functions, config files, or context providers. Covers component structure, hook ordering, import conventions, state management, performance patterns, and file organization.'
+applyTo: 'src/**'
 ---
+
 # Code Conventions
 
 ## Code Quality Principles
@@ -9,29 +10,33 @@ applyTo: "src/**"
 Write code the way a senior developer reads it — small, obvious, and reusable.
 
 ### Keep units small
+
 - **Components**: one clear responsibility. If a component has multiple visual sections or behaviors, split into sub-components within the same directory.
 - **Functions/hooks**: ≤ 40 lines of logic (excluding JSX). If longer, extract a helper or custom hook.
 - **CSS modules**: group related rules together. If a module exceeds ~150 rules, the component it styles is probably too large — split both.
 
 ### Don't repeat yourself
+
 - Before writing a new utility, component, or style pattern, **search the codebase** for existing implementations.
 - If two components share the same logic (event handler, derived value, data transform), extract it to:
-  - A shared hook in `src/hooks/` (for stateful/effect logic)
-  - A utility in `src/utils/` (for pure transforms)
-  - A shared UI component in `src/components/ui/` (for presentational patterns)
+    - A shared hook in `src/hooks/` (for stateful/effect logic)
+    - A utility in `src/utils/` (for pure transforms)
+    - A shared UI component in `src/components/ui/` (for presentational patterns)
 - If two CSS modules share the same block of declarations, extract a shared component or use CSS composition via `composes`.
 
 ### Write less to do the same
+
 - Prefer declarative patterns (`.map`, `.filter`, object lookups) over imperative if/else chains.
 - Replace verbose conditionals with early returns.
 - Use object maps for variant selection instead of switch/if ladders:
-  ```javascript
-  const ICON_MAP = { success: ChkIcon, error: ErrIcon, info: InfoIcon };
-  const Icon = ICON_MAP[status];
-  ```
+    ```javascript
+    const ICON_MAP = { success: ChkIcon, error: ErrIcon, info: InfoIcon };
+    const Icon = ICON_MAP[status];
+    ```
 - Avoid wrapper functions that only forward arguments — call the target directly.
 
 ### Architectural placement
+
 - **Shared across routes** → `src/components/` (ui, layout, effects, etc.)
 - **Used only within a route** → co-locate inside that route's directory (e.g., `src/routes/About/components/`)
 - **Used across canvas scenes** → `src/canvas/meshes/`, `src/canvas/materials/`, or `src/canvas/effects/`
@@ -39,11 +44,11 @@ Write code the way a senior developer reads it — small, obvious, and reusable.
 - When a co-located component gains a second consumer, promote it to the shared directory.
 
 ### Readability conventions
+
 - Name things for what they represent, not how they work. Prefer `errorMessage` over `str`, `visibleItems` over `filtered`.
 - Group related state declarations together with a brief comment if the grouping isn't obvious.
 - Separate logical sections within a component with a single blank line — no more.
 - Avoid nested ternaries. Use early returns or a lookup object instead.
-
 
 ## Import Ordering
 
@@ -123,7 +128,12 @@ export default function MyComponent({ prop1, prop2 }) {
     const [value, setValue] = useState(initial);
 
     // 4. Derived / memoized values
-    const config = useMemo(() => ({ /* ... */ }), [deps]);
+    const config = useMemo(
+        () => ({
+            /* ... */
+        }),
+        [deps]
+    );
 
     // 5. Effects (each with full dependency array)
     useEffect(() => {
@@ -132,7 +142,9 @@ export default function MyComponent({ prop1, prop2 }) {
     }, [handler]);
 
     // 6. Callbacks
-    const onClick = useCallback(() => { /* ... */ }, [deps]);
+    const onClick = useCallback(() => {
+        /* ... */
+    }, [deps]);
 
     return <JSX />;
 }
@@ -143,11 +155,21 @@ export default function MyComponent({ prop1, prop2 }) {
 Prefix event handlers with `on` — not `handle`:
 
 ```javascript
-const onClick = useCallback(() => { /* ... */ }, []);
-const onScroll = useCallback((e) => { /* ... */ }, []);
-const onCardNavigate = useCallback((path) => { /* ... */ }, [navigateWithTransition]);
+const onClick = useCallback(() => {
+    /* ... */
+}, []);
+const onScroll = useCallback((e) => {
+    /* ... */
+}, []);
+const onCardNavigate = useCallback(
+    (path) => {
+        /* ... */
+    },
+    [navigateWithTransition]
+);
 ```
-```
+
+````
 
 ## Custom Hook Patterns
 
@@ -166,7 +188,7 @@ export default function useMyHook(options = {}) {
 
     return ref.current; // or { value, handler }
 }
-```
+````
 
 ### Conventions
 
@@ -185,7 +207,10 @@ useEffect(() => {
         requestAnimationFrame(raf);
     }
     requestAnimationFrame(raf);
-    return () => { mounted = false; instance.destroy(); };
+    return () => {
+        mounted = false;
+        instance.destroy();
+    };
 }, [deps]);
 ```
 
@@ -240,7 +265,9 @@ Always add and remove in the same effect. Use passive listeners where appropriat
 
 ```javascript
 useEffect(() => {
-    const handleWheel = (e) => { /* ... */ };
+    const handleWheel = (e) => {
+        /* ... */
+    };
     window.addEventListener('wheel', handleWheel, { passive: true });
     return () => window.removeEventListener('wheel', handleWheel);
 }, [deps]);
@@ -300,8 +327,12 @@ export const LASER_PARAMS = {
 - Named exports, no default export:
 
 ```javascript
-export function calculateCardPosition(index) { /* ... */ }
-export function calculateCardRotation(index) { /* ... */ }
+export function calculateCardPosition(index) {
+    /* ... */
+}
+export function calculateCardRotation(index) {
+    /* ... */
+}
 ```
 
 - Import config dependencies at the top:
@@ -384,9 +415,11 @@ canvas/
 - Conditional rendering for quality tiers:
 
 ```javascript
-{!isLowQuality && (
-    <mesh position={[0, 0, 0.002]}>
-        <pixelOverlayMaterial ref={materialRef} transparent depthWrite={false} />
-    </mesh>
-)}
+{
+    !isLowQuality && (
+        <mesh position={[0, 0, 0.002]}>
+            <pixelOverlayMaterial ref={materialRef} transparent depthWrite={false} />
+        </mesh>
+    );
+}
 ```

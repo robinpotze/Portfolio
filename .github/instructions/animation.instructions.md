@@ -1,6 +1,7 @@
 ---
-description: "Use when implementing animations, transitions, scroll effects, motion variants, spring configs, or Lenis smooth scrolling."
+description: 'Use when implementing animations, transitions, scroll effects, motion variants, spring configs, or Lenis smooth scrolling.'
 ---
+
 # Animation Patterns
 
 ## Centralized Configuration
@@ -12,6 +13,7 @@ import { ANIMATION_TIMING, ANIMATION_EASING, SCROLL_THRESHOLDS } from '@config/a
 ```
 
 Key exports:
+
 - `ANIMATION_TIMING` — durations in ms (DOM/CSS) or seconds (Three.js)
 - `ANIMATION_EASING` — cubic-bezier arrays `[x1, y1, x2, y2]`
 - `SCROLL_THRESHOLDS` — scroll progress trigger points (0–1)
@@ -118,9 +120,7 @@ Use `useFrame` from `@react-three/fiber` for per-frame interpolation:
 ```jsx
 useFrame((state, delta) => {
     meshRef.current.rotation.y += delta * 0.5;
-    meshRef.current.position.y = THREE.MathUtils.lerp(
-        meshRef.current.position.y, targetY, 0.1
-    );
+    meshRef.current.position.y = THREE.MathUtils.lerp(meshRef.current.position.y, targetY, 0.1);
 });
 ```
 

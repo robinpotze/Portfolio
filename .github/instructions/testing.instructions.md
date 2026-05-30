@@ -1,6 +1,7 @@
 ---
-description: "Use when writing tests, setting up test infrastructure, creating test utilities, or deciding what to test in this project."
+description: 'Use when writing tests, setting up test infrastructure, creating test utilities, or deciding what to test in this project.'
 ---
+
 # Testing
 
 ## Setup
@@ -13,6 +14,7 @@ src/utils/workUtils.test.js
 ```
 
 Run tests:
+
 ```bash
 npm test            # watch mode
 npm run test:ci     # single run (CI)
@@ -21,16 +23,19 @@ npm run test:ci     # single run (CI)
 ## What to Test
 
 ### Always test
+
 - **Utility functions** (`src/utils/`) — pure transforms, sorting, normalization
 - **Config derivations** — computed values from config constants
 - **Data validation** — schema checks, required fields, edge cases
 - **Custom hooks with logic** — scroll thresholds, navigation guards, state machines
 
 ### Test when complex
+
 - **Components with conditional rendering** — phase-based UIs, error states
 - **Async flows** — form submission, fetch error handling
 
 ### Don't test
+
 - Trivial pass-through components (a wrapper that just adds a className)
 - CSS module class names
 - Third-party library behavior (Three.js rendering, motion animation physics)

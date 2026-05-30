@@ -1,7 +1,8 @@
 ---
-description: "Use when writing or editing GLSL shaders, vertex shaders, fragment shaders, or shader uniforms for Three.js materials."
+description: 'Use when writing or editing GLSL shaders, vertex shaders, fragment shaders, or shader uniforms for Three.js materials.'
 applyTo: src/canvas/**/shaders/**
 ---
+
 # GLSL Shader Conventions
 
 ## File Extensions
@@ -30,11 +31,7 @@ Use drei's `shaderMaterial` factory + fiber's `extend` to register custom materi
 import { shaderMaterial } from '@react-three/drei';
 import { extend } from '@react-three/fiber';
 
-const MyMaterial = shaderMaterial(
-    { uTime: 0, uResolution: new THREE.Vector2() },
-    vertShader,
-    fragShader
-);
+const MyMaterial = shaderMaterial({ uTime: 0, uResolution: new THREE.Vector2() }, vertShader, fragShader);
 
 extend({ MyMaterial });
 // Then use <myMaterial /> in JSX (lowercase first letter)
