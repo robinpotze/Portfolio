@@ -23,7 +23,7 @@ const cellVariants = {
         opacity: 1,
         transition: {
             duration: REVEAL.DURATION,
-            ease: EASING.HERO,
+            ease: EASING.EMPHASIZED,
         },
     },
 };
@@ -35,7 +35,7 @@ const crosshairVariants = (opacity) => ({
         scale: 1,
         transition: {
             duration: REVEAL.DURATION,
-            ease: EASING.HERO,
+            ease: EASING.EMPHASIZED,
         },
     },
 });

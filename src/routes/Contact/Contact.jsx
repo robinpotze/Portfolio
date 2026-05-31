@@ -55,7 +55,7 @@ const formVariants = {
         scaleX: 1,
         transition: {
             delay: STAGGER.PAGE,
-            duration: REVEAL.SLOW_DURATION,
+            duration: REVEAL.DURATION,
             ease: EASING.EMPHASIZED,
             delayChildren: STAGGER.PAGE,
             staggerChildren: STAGGER.PAGE,
@@ -271,7 +271,7 @@ export default function Contact() {
                                     <PlsIcon className={styles.panelDeco} aria-hidden="true" />
                                     <input
                                         className={`${styles.panelInput} ${formData.email && !isValidEmail ? styles.panelInputInvalid : ''}`}
-                                        placeholder="IDENTIFY"
+                                        placeholder="IDENTIFY@DOMAIN.COM"
                                         type="email"
                                         value={formData.email}
                                         onChange={onInputChange('email')}

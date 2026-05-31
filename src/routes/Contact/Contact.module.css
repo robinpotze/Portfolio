@@ -19,10 +19,6 @@
     box-sizing: border-box;
 }
 
-.pageGlitch {
-    filter: url(#glitchDisplace);
-}
-
 /* ----------------------------------------------------------------
    Title
    ---------------------------------------------------------------- */
@@ -158,9 +154,9 @@
 }
 
 .panelInput {
-    font: var(--f-hdr_1);
+    font: var(--f-hdr_3);
     text-align: center;
-    padding: var(--s-s);
+    padding: var(--s-m);
     width: 100%;
     background-color: var(--c-drk_100);
     color: var(--c-brnd_-100);
@@ -169,7 +165,7 @@
 }
 
 .panelInput::placeholder {
-    color: var(--c-brnd_-20);
+    color: var(--c-lght_40);
 }
 
 .panelInput:focus {

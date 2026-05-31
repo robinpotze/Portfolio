@@ -3,8 +3,9 @@ import DashLine from '@components/ui/DashLine';
 import GradualBlur from '@components/ui/GradualBlur';
 import ScrollReveal from '@components/ui/ScrollReveal';
 import ProjectHero from '@routes/Entry/components/ProjectHero/ProjectHero';
-import { LENIS } from '@config/animation.config';
+import { EASING, LENIS, REVEAL } from '@config/animation.config';
 import useLenisScroll from '@hooks/useLenisScroll';
+import { motion } from 'motion/react';
 import { normalizeKey } from '@utils/stringUtils';
 import { Suspense } from 'react';
 import { useParams } from 'react-router-dom';
@@ -37,14 +38,20 @@ export default function Entry() {
             <ProjectHero content={data} />
             <section className={styles.section}>
                 <div className={styles.header}>
-                    <div className={styles.synopsis}>
+                    <motion.div
+                        className={styles.synopsis}
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, amount: 0.4 }}
+                        transition={{ duration: REVEAL.MEDIUM_DURATION, ease: EASING.EMPHASIZED }}
+                    >
                         <h2>Synopsis</h2>
                         <DashLine direction="Horizontal" />
                         <div className={styles.synopsisSubtitle}>
                             <CrsIcon aria-hidden="true" />
                             <p className="deco-small">{data.synopsis}</p>
                         </div>
-                    </div>
+                    </motion.div>
                     <ScrollReveal>{data.description}</ScrollReveal>
                 </div>
                 <div className={styles.content}>
