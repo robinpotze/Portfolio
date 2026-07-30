@@ -243,14 +243,24 @@ export default function LoadingScreen({ onComplete, onRevealStart, minDisplayTim
                     <motion.div
                         className={styles.loadingBackground}
                         animate={{ opacity: isRevealing ? 0 : 1 }}
-                        transition={{ duration: LOADING_REVEAL.BG_FADE_MS / 1000, ease: 'easeOut' }}
+                        transition={{
+                            duration: LOADING_REVEAL.BG_FADE_MS / 1000,
+                            ease: 'easeOut',
+                        }}
                     />
 
                     {/* Logo — grows then fades */}
                     {logoSrc && (
                         <motion.div
                             className={styles.logoWrapper}
-                            animate={isRevealing ? { scale: LOADING_REVEAL.LOGO_GROW_SCALE, opacity: [1, 1, 0] } : { scale: 1, opacity: 1 }}
+                            animate={
+                                isRevealing
+                                    ? {
+                                          scale: LOADING_REVEAL.LOGO_GROW_SCALE,
+                                          opacity: [1, 1, 0],
+                                      }
+                                    : { scale: 1, opacity: 1 }
+                            }
                             transition={
                                 isRevealing
                                     ? {

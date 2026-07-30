@@ -20,14 +20,20 @@ const BRAND_IMAGES = [
     { src: `${assetPath}Brands/BEPIS.png`, alt: 'Bepis beer label.' },
     { src: `${assetPath}Brands/BIGBESTIE.png`, alt: 'Big Bestie beer label.' },
     { src: `${assetPath}Brands/BOMBOCLART.png`, alt: 'Bomboclart beer label.' },
-    { src: `${assetPath}Brands/CLANKERGREASE.png`, alt: 'Clankergrease beer label.' },
+    {
+        src: `${assetPath}Brands/CLANKERGREASE.png`,
+        alt: 'Clankergrease beer label.',
+    },
     { src: `${assetPath}Brands/CYKACOLA.png`, alt: 'Cyka Cola beer label.' },
     { src: `${assetPath}Brands/GONSTER.png`, alt: 'Gonster beer label.' },
     { src: `${assetPath}Brands/HEIMLICH.png`, alt: 'Heimlich beer label.' },
     { src: `${assetPath}Brands/HUFFBEER.png`, alt: 'Huff Beer label.' },
     { src: `${assetPath}Brands/NOCAP.png`, alt: 'No Cap beer label.' },
     { src: `${assetPath}Brands/RADHOPS.png`, alt: 'Radhops beer label.' },
-    { src: `${assetPath}Brands/SASKIAZEELAND.png`, alt: 'Saskia Zeeland beer label.' },
+    {
+        src: `${assetPath}Brands/SASKIAZEELAND.png`,
+        alt: 'Saskia Zeeland beer label.',
+    },
     { src: `${assetPath}Brands/SYNTHALE.png`, alt: 'Synthale beer label.' },
     { src: `${assetPath}Brands/THEONEBEER.png`, alt: 'The One Beer label.' },
     { src: `${assetPath}Brands/VIGOR.png`, alt: 'Vigor beer label.' },
@@ -42,15 +48,33 @@ const TUTORIAL_IMAGES = [
         src: `${assetPath}Tutorial/TUT_02.png`,
         alt: 'Tutorial screen — crate collection instructions.',
     },
-    { src: `${assetPath}Tutorial/TUT_03.png`, alt: 'Tutorial screen — bottle and cap details.' },
-    { src: `${assetPath}Tutorial/TUT_04.png`, alt: 'Tutorial screen — collection overview.' },
+    {
+        src: `${assetPath}Tutorial/TUT_03.png`,
+        alt: 'Tutorial screen — bottle and cap details.',
+    },
+    {
+        src: `${assetPath}Tutorial/TUT_04.png`,
+        alt: 'Tutorial screen — collection overview.',
+    },
 ];
 
 const CHANNEL_IMAGES = [
-    { src: `${assetPath}Channels/DOOMED.png`, alt: 'DOOMED TV channel screen.' },
-    { src: `${assetPath}Channels/TEST.png`, alt: 'Test pattern TV channel screen.' },
-    { src: `${assetPath}Channels/STATIC.png`, alt: 'Static TV channel screen.' },
-    { src: `${assetPath}Channels/STATIC2.png`, alt: 'Second static TV channel screen.' },
+    {
+        src: `${assetPath}Channels/DOOMED.png`,
+        alt: 'DOOMED TV channel screen.',
+    },
+    {
+        src: `${assetPath}Channels/TEST.png`,
+        alt: 'Test pattern TV channel screen.',
+    },
+    {
+        src: `${assetPath}Channels/STATIC.png`,
+        alt: 'Static TV channel screen.',
+    },
+    {
+        src: `${assetPath}Channels/STATIC2.png`,
+        alt: 'Second static TV channel screen.',
+    },
 ];
 
 export default function Ld58() {

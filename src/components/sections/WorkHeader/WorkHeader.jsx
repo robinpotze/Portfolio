@@ -13,7 +13,10 @@ export default function WorkHeader({ title, subtitle, description }) {
                 initial={{ scaleX: 0 }}
                 whileInView={{ scaleX: 1 }}
                 viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: REVEAL.MEDIUM_DURATION, ease: EASING.EMPHASIZED }}
+                transition={{
+                    duration: REVEAL.MEDIUM_DURATION,
+                    ease: EASING.EMPHASIZED,
+                }}
             >
                 <div className={styles.barContent}>
                     <h3>{title}</h3>

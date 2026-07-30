@@ -122,7 +122,10 @@ export default function Pmot() {
 
             <DoubleImage
                 images={[
-                    { src: `${assetPath}Login Page.png`, alt: 'Login page for the PMOT webstore.' },
+                    {
+                        src: `${assetPath}Login Page.png`,
+                        alt: 'Login page for the PMOT webstore.',
+                    },
                     {
                         src: `${assetPath}Registration Page.png`,
                         alt: 'Registration page for new teachers.',
@@ -219,7 +222,10 @@ export default function Pmot() {
             <EvidenceRow
                 items={[
                     { label: 'PLATFORMS', value: 'Webstore + Learning' },
-                    { label: 'VALIDATION', value: 'Expert review + User testing' },
+                    {
+                        label: 'VALIDATION',
+                        value: 'Expert review + User testing',
+                    },
                     { label: 'METHODOLOGY', value: 'Full design cycle' },
                     { label: 'TOOLS', value: 'Blender, Illustrator, Axure RP' },
                 ]}

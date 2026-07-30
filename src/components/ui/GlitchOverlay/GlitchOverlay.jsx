@@ -63,7 +63,11 @@ const plusGridTransition = {
 
 const GLITCH_TIMES = [0, 0.04, 0.07, 0.1, 0.13, 0.16, 0.22, 0.35, 0.38, 0.55, 0.62, 0.72, 0.78, 1];
 const GLITCH_EASE = Array(GLITCH_TIMES.length - 1).fill(stepEnd);
-const glitchTransition = { duration: 0.4, times: GLITCH_TIMES, ease: GLITCH_EASE };
+const glitchTransition = {
+    duration: 0.4,
+    times: GLITCH_TIMES,
+    ease: GLITCH_EASE,
+};
 
 const CYAN_CLIP = [
     'inset(0)',
@@ -148,7 +152,9 @@ export default function GlitchOverlay({ active, warningText = 'INTERCEPT' }) {
                         <motion.div
                             className={styles.plusGrid}
                             initial={{ opacity: 0 }}
-                            animate={{ opacity: [0, 0, 0.22, 0.22, 0, 0, 0.18, 0.18] }}
+                            animate={{
+                                opacity: [0, 0, 0.22, 0.22, 0, 0, 0.18, 0.18],
+                            }}
                             transition={plusGridTransition}
                         />
 

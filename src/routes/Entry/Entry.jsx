@@ -43,7 +43,10 @@ export default function Entry() {
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true, amount: 0.4 }}
-                        transition={{ duration: REVEAL.MEDIUM_DURATION, ease: EASING.EMPHASIZED }}
+                        transition={{
+                            duration: REVEAL.MEDIUM_DURATION,
+                            ease: EASING.EMPHASIZED,
+                        }}
                     >
                         <h2>Synopsis</h2>
                         <DashLine direction="Horizontal" />

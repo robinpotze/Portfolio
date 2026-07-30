@@ -52,11 +52,23 @@ export default function WorkCard({ item, index, visible = true, onNavigate, cent
     const cardUniforms = useMemo(() => {
         switch (quality) {
             case 'low':
-                return { uRoughness: 0, uRefractPower: 0, uChromaticAberration: 0 };
+                return {
+                    uRoughness: 0,
+                    uRefractPower: 0,
+                    uChromaticAberration: 0,
+                };
             case 'medium':
-                return { uRoughness: 0.05, uRefractPower: 0.003, uChromaticAberration: 0.4 };
+                return {
+                    uRoughness: 0.05,
+                    uRefractPower: 0.003,
+                    uChromaticAberration: 0.4,
+                };
             default:
-                return { uRoughness: 0.1, uRefractPower: 0.006, uChromaticAberration: 0.8 };
+                return {
+                    uRoughness: 0.1,
+                    uRefractPower: 0.006,
+                    uChromaticAberration: 0.8,
+                };
         }
     }, [quality]);
 

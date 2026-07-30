@@ -40,7 +40,10 @@ export default function Cjib() {
                     { label: 'SCOPE', value: '3 product teams' },
                     { label: 'DURATION', value: '12 months' },
                     { label: 'ROLE', value: 'Sole designer' },
-                    { label: 'OUTPUT', value: 'Motion, documentation, product UX' },
+                    {
+                        label: 'OUTPUT',
+                        value: 'Motion, documentation, product UX',
+                    },
                 ]}
             />
 
@@ -188,7 +191,10 @@ export default function Cjib() {
                         label: 'SKILLS',
                         value: 'Motion Design, Infographics, Documentation, UX Design',
                     },
-                    { label: 'IMPLEMENTATION', value: 'Angular, Antora, SpectaQl, AfterEffects' },
+                    {
+                        label: 'IMPLEMENTATION',
+                        value: 'Angular, Antora, SpectaQl, AfterEffects',
+                    },
                 ]}
             />
         </>

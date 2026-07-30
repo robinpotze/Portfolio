@@ -36,7 +36,9 @@ try {
     const payload = await res.json().catch(() => null);
 
     if (!res.ok) {
-        throw Object.assign(new Error(payload?.error ?? 'Request failed'), { status: res.status });
+        throw Object.assign(new Error(payload?.error ?? 'Request failed'), {
+            status: res.status,
+        });
     }
     return payload;
 } catch (err) {

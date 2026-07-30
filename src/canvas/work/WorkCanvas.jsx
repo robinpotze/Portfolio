@@ -85,7 +85,9 @@ export default function WorkCanvas({ items, onCardNavigate, onScrollChange, star
                     const itemHeight = lenis.limit / (items.length - 1);
                     const nearest = Math.round(lenis.scroll / itemHeight) * itemHeight;
                     if (Math.abs(lenis.scroll - nearest) > 1) {
-                        lenis.scrollTo(nearest, { duration: CAROUSEL_CONFIG.SNAP_DURATION });
+                        lenis.scrollTo(nearest, {
+                            duration: CAROUSEL_CONFIG.SNAP_DURATION,
+                        });
                     }
                 }
             } else {
@@ -114,10 +116,20 @@ export default function WorkCanvas({ items, onCardNavigate, onScrollChange, star
               touchAction: 'pan-x',
               flexShrink: 0,
           }
-        : { position: 'sticky', top: 0, width: '100%', height: '100dvh', touchAction: 'pan-y' };
+        : {
+              position: 'sticky',
+              top: 0,
+              width: '100%',
+              height: '100dvh',
+              touchAction: 'pan-y',
+          };
 
     const scrollStyle = isMobile
-        ? { width: `${(items.length - 1) * 100}vw`, height: '100%', flexShrink: 0 }
+        ? {
+              width: `${(items.length - 1) * 100}vw`,
+              height: '100%',
+              flexShrink: 0,
+          }
         : { height: `${(items.length - 1) * 100}vh` };
 
     return (

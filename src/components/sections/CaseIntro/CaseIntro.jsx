@@ -19,7 +19,10 @@ const kickerVars = {
     visible: {
         opacity: 1,
         x: 0,
-        transition: { duration: REVEAL.QUICK_DURATION, ease: EASING.EMPHASIZED },
+        transition: {
+            duration: REVEAL.QUICK_DURATION,
+            ease: EASING.EMPHASIZED,
+        },
     },
 };
 
@@ -37,7 +40,10 @@ const subtitleVars = {
     visible: {
         opacity: 1,
         y: 0,
-        transition: { duration: REVEAL.MEDIUM_DURATION, ease: EASING.EMPHASIZED },
+        transition: {
+            duration: REVEAL.MEDIUM_DURATION,
+            ease: EASING.EMPHASIZED,
+        },
     },
 };
 

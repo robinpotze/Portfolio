@@ -10,7 +10,10 @@ export default function WorkSubHeader({ label, title, description }) {
             initial={{ opacity: 0, y: 18 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: REVEAL.MEDIUM_DURATION, ease: EASING.EMPHASIZED }}
+            transition={{
+                duration: REVEAL.MEDIUM_DURATION,
+                ease: EASING.EMPHASIZED,
+            }}
         >
             <div className={styles.section}>
                 <span className={styles.label}>{label}</span>

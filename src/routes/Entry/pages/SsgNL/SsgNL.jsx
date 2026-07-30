@@ -221,8 +221,14 @@ export default function SsgNL() {
 
             <EvidenceRow
                 items={[
-                    { label: 'PRODUCTS', value: 'Auto|Q, CyberSec, Agile, Chatbot' },
-                    { label: 'DISCIPLINES', value: 'UX, Game Design, Branding' },
+                    {
+                        label: 'PRODUCTS',
+                        value: 'Auto|Q, CyberSec, Agile, Chatbot',
+                    },
+                    {
+                        label: 'DISCIPLINES',
+                        value: 'UX, Game Design, Branding',
+                    },
                     { label: 'IMPLEMENTATION', value: 'Figma, Blender, Print' },
                 ]}
             />

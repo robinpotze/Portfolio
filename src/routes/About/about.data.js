@@ -79,7 +79,10 @@ export const ABOUT_DATA = {
     ],
     SFT: [
         { text: 'Illustrator', icon: '/assets/img/software/Illustrator.svg' },
-        { text: 'After Effects', icon: '/assets/img/software/AfterEffects.svg' },
+        {
+            text: 'After Effects',
+            icon: '/assets/img/software/AfterEffects.svg',
+        },
         { text: 'Figma', icon: '/assets/img/software/Figma.svg' },
         { text: 'Blender', icon: '/assets/img/software/Blender.svg' },
         { text: 'Unity', icon: '/assets/img/software/Unity.svg' },

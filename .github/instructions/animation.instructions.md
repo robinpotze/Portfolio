@@ -31,13 +31,20 @@ const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
         opacity: 1,
-        transition: { staggerChildren: STAGGER.DEFAULT, delayChildren: STAGGER.DELAY },
+        transition: {
+            staggerChildren: STAGGER.DEFAULT,
+            delayChildren: STAGGER.DELAY,
+        },
     },
 };
 
 const itemVariants = {
     hidden: { y: REVEAL.Y_OFFSET, opacity: 0 },
-    visible: { y: 0, opacity: 1, transition: { duration: REVEAL.DURATION, ease: EASING.EMPHASIZED } },
+    visible: {
+        y: 0,
+        opacity: 1,
+        transition: { duration: REVEAL.DURATION, ease: EASING.EMPHASIZED },
+    },
 };
 
 export default function MyPage() {
@@ -62,7 +69,11 @@ const container = {
 
 const item = {
     hidden: { y: 20, opacity: 0 },
-    visible: { y: 0, opacity: 1, transition: { duration: ANIMATION_TIMING.ENTRY_DURATION } },
+    visible: {
+        y: 0,
+        opacity: 1,
+        transition: { duration: ANIMATION_TIMING.ENTRY_DURATION },
+    },
 };
 ```
 

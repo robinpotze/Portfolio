@@ -129,7 +129,10 @@ export default function SqlGame() {
                         src: `${assetPath}BookPage_Inventory.png`,
                         alt: 'Inventory page showing collected items.',
                     },
-                    { src: `${assetPath}Components_Book.png`, alt: 'Book component breakdown.' },
+                    {
+                        src: `${assetPath}Components_Book.png`,
+                        alt: 'Book component breakdown.',
+                    },
                 ]}
             />
 
@@ -137,7 +140,10 @@ export default function SqlGame() {
 
             <DoubleImage
                 images={[
-                    { src: `${assetPath}LoginPage.webp`, alt: 'Login page for SQL Game.' },
+                    {
+                        src: `${assetPath}LoginPage.webp`,
+                        alt: 'Login page for SQL Game.',
+                    },
                     {
                         src: `${assetPath}RegisterPage.webp`,
                         alt: 'Registration page for new players.',
@@ -199,8 +205,14 @@ export default function SqlGame() {
 
             <EvidenceRow
                 items={[
-                    { label: 'SCREENS', value: 'Query tool, map, quests, reference, auth' },
-                    { label: 'DISCIPLINES', value: 'UX, Game Design, Front-End Dev' },
+                    {
+                        label: 'SCREENS',
+                        value: 'Query tool, map, quests, reference, auth',
+                    },
+                    {
+                        label: 'DISCIPLINES',
+                        value: 'UX, Game Design, Front-End Dev',
+                    },
                     { label: 'IMPLEMENTATION', value: 'React' },
                 ]}
             />

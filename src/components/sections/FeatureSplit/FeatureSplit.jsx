@@ -10,7 +10,10 @@ export default function FeatureSplit({ src, alt, reverse = false, label, childre
                 initial={{ opacity: 0, scale: 1.04 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true, amount: 0.1 }}
-                transition={{ duration: REVEAL.DURATION, ease: EASING.EMPHASIZED }}
+                transition={{
+                    duration: REVEAL.DURATION,
+                    ease: EASING.EMPHASIZED,
+                }}
             >
                 <img src={src} alt={alt} />
             </motion.div>

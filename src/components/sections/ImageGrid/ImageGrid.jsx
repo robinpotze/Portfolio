@@ -7,7 +7,10 @@ const introVars = {
     visible: {
         opacity: 1,
         y: 0,
-        transition: { duration: REVEAL.MEDIUM_DURATION, ease: EASING.EMPHASIZED },
+        transition: {
+            duration: REVEAL.MEDIUM_DURATION,
+            ease: EASING.EMPHASIZED,
+        },
     },
 };
 
@@ -23,7 +26,10 @@ const cellVars = {
     visible: {
         opacity: 1,
         y: 0,
-        transition: { duration: REVEAL.MEDIUM_DURATION, ease: EASING.EMPHASIZED },
+        transition: {
+            duration: REVEAL.MEDIUM_DURATION,
+            ease: EASING.EMPHASIZED,
+        },
     },
 };
 

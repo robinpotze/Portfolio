@@ -42,7 +42,10 @@ const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
         opacity: 1,
-        transition: { staggerChildren: STAGGER.DEFAULT, delayChildren: STAGGER.DELAY },
+        transition: {
+            staggerChildren: STAGGER.DEFAULT,
+            delayChildren: STAGGER.DELAY,
+        },
     },
 };
 

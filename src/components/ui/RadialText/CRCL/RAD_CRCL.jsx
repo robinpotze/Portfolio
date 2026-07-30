@@ -12,7 +12,10 @@ export default function RAD_CRCL({ value = 0 }) {
             <circle cx="6" cy="6" r={radius} fill="none" stroke="var(--c_0)" strokeWidth={width} />
             <motion.circle
                 animate={{ strokeDashoffset: circumference - progress }}
-                transition={{ type: 'spring', ...SPRING_CONFIG.SMOOTH_PROGRESS }}
+                transition={{
+                    type: 'spring',
+                    ...SPRING_CONFIG.SMOOTH_PROGRESS,
+                }}
                 cx="6"
                 cy="6"
                 r={radius}

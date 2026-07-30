@@ -27,7 +27,11 @@ Quality is managed globally via `QualityContext` with three tiers:
 `useAdaptiveQuality` monitors FPS inside the R3F render loop and adjusts tiers:
 
 ```javascript
-const { quality, fps } = useAdaptiveQuality({ targetFps: 55, checkInterval: 1000, enabled: true });
+const { quality, fps } = useAdaptiveQuality({
+    targetFps: 55,
+    checkInterval: 1000,
+    enabled: true,
+});
 ```
 
 **Switching thresholds (with targetFps = 55):**
@@ -53,7 +57,12 @@ Memoize settings based on quality — recalculate only when tier changes:
 const ppSettings = useMemo(() => {
     switch (quality) {
         case 'low':
-            return { enableAO: false, bloomIntensity: 0.3, bloomLevels: 2, multisampling: 0 };
+            return {
+                enableAO: false,
+                bloomIntensity: 0.3,
+                bloomLevels: 2,
+                multisampling: 0,
+            };
         case 'medium':
             return {
                 enableAO: true,

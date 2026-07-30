@@ -74,7 +74,11 @@ const formVariants = {
 export default function Contact() {
     // State
     const [phase, setPhase] = useState('message');
-    const [formData, setFormData] = useState({ name: '', message: '', email: '' });
+    const [formData, setFormData] = useState({
+        name: '',
+        message: '',
+        email: '',
+    });
     const [glitching, setGlitching] = useState(false);
     const [sendError, setSendError] = useState(null);
     const [statusMessageKey, setStatusMessageKey] = useState(0);
