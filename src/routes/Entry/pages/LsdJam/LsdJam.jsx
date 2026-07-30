@@ -56,8 +56,14 @@ export default function LsdJam() {
 
             <DoubleImage
                 images={[
-                    { src: `${assetPath}hibernation close up.png`, alt: 'Close-up of cryosleep pod with retro-futurist details.' },
-                    { src: `${assetPath}hibernation close up 2.png`, alt: 'Close-up of hibernation chamber control panel.' },
+                    {
+                        src: `${assetPath}hibernation close up.png`,
+                        alt: 'Close-up of cryosleep pod with retro-futurist details.',
+                    },
+                    {
+                        src: `${assetPath}hibernation close up 2.png`,
+                        alt: 'Close-up of hibernation chamber control panel.',
+                    },
                 ]}
             />
 
@@ -83,8 +89,16 @@ export default function LsdJam() {
                 label="PROCESS"
                 heading="From wireframe to final render."
                 items={[
-                    { caption: 'WIREFRAME', src: `${assetPath}SpaceShipWire.png`, alt: 'Wireframe render of the spaceship bridge.' },
-                    { caption: 'FINAL RENDER', src: `${assetPath}SpaceShip2.png`, alt: 'Final rendered spaceship bridge with lighting.' },
+                    {
+                        caption: 'WIREFRAME',
+                        src: `${assetPath}SpaceShipWire.png`,
+                        alt: 'Wireframe render of the spaceship bridge.',
+                    },
+                    {
+                        caption: 'FINAL RENDER',
+                        src: `${assetPath}SpaceShip2.png`,
+                        alt: 'Final rendered spaceship bridge with lighting.',
+                    },
                 ]}
             />
 
@@ -98,8 +112,14 @@ export default function LsdJam() {
 
             <DoubleImage
                 images={[
-                    { src: `${assetPath}CasetteWire.png`, alt: 'Wireframe render of the cassette room scene.' },
-                    { src: `${assetPath}CassetteRoom.png`, alt: 'Final render of a retro-futurist room with a VR setup.' },
+                    {
+                        src: `${assetPath}CasetteWire.png`,
+                        alt: 'Wireframe render of the cassette room scene.',
+                    },
+                    {
+                        src: `${assetPath}CassetteRoom.png`,
+                        alt: 'Final render of a retro-futurist room with a VR setup.',
+                    },
                 ]}
             />
 

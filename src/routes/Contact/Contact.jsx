@@ -111,7 +111,9 @@ export default function Contact() {
             const payload = await res.json().catch(() => null);
 
             if (!res.ok) {
-                throw Object.assign(new Error(payload?.error ?? 'SEND_FAILED'), { status: res.status });
+                throw Object.assign(new Error(payload?.error ?? 'SEND_FAILED'), {
+                    status: res.status,
+                });
             }
             setPhase('complete');
         } catch (err) {
@@ -193,7 +195,13 @@ export default function Contact() {
                                 className={styles.errorArea}
                                 initial={{ opacity: 1 }}
                                 animate={{ opacity: 1 }}
-                                exit={{ opacity: 0, transition: { duration: REVEAL.EXIT_DURATION, ease: EASING.EXIT } }}
+                                exit={{
+                                    opacity: 0,
+                                    transition: {
+                                        duration: REVEAL.EXIT_DURATION,
+                                        ease: EASING.EXIT,
+                                    },
+                                }}
                             >
                                 <StatusMessage
                                     key={sendError ? `send-error-${statusMessageKey}` : 'status'}
@@ -212,7 +220,13 @@ export default function Contact() {
                                                 ease: EASING.EMPHASIZED,
                                             },
                                         }}
-                                        exit={{ opacity: 0, transition: { duration: REVEAL.EXIT_DURATION, ease: EASING.EXIT } }}
+                                        exit={{
+                                            opacity: 0,
+                                            transition: {
+                                                duration: REVEAL.EXIT_DURATION,
+                                                ease: EASING.EXIT,
+                                            },
+                                        }}
                                     >
                                         <TypewriterText
                                             lines={ERROR_LOG_LINES}
@@ -246,7 +260,13 @@ export default function Contact() {
                                                 ease: EASING.EMPHASIZED,
                                             },
                                         }}
-                                        exit={{ opacity: 0, transition: { duration: REVEAL.EXIT_DURATION, ease: EASING.EXIT } }}
+                                        exit={{
+                                            opacity: 0,
+                                            transition: {
+                                                duration: REVEAL.EXIT_DURATION,
+                                                ease: EASING.EXIT,
+                                            },
+                                        }}
                                     >
                                         <TypewriterText
                                             lines={STATUS_GRID_LINES}

@@ -55,10 +55,22 @@ const ppSettings = useMemo(() => {
         case 'low':
             return { enableAO: false, bloomIntensity: 0.3, bloomLevels: 2, multisampling: 0 };
         case 'medium':
-            return { enableAO: true, aoSamples: 4, bloomIntensity: 0.45, bloomLevels: 4, multisampling: 0 };
+            return {
+                enableAO: true,
+                aoSamples: 4,
+                bloomIntensity: 0.45,
+                bloomLevels: 4,
+                multisampling: 0,
+            };
         case 'high':
         default:
-            return { enableAO: true, aoSamples: 8, bloomIntensity: 0.55, bloomLevels: 6, multisampling: 0 };
+            return {
+                enableAO: true,
+                aoSamples: 8,
+                bloomIntensity: 0.55,
+                bloomLevels: 6,
+                multisampling: 0,
+            };
     }
 }, [quality]);
 ```

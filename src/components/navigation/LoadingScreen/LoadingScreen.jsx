@@ -279,7 +279,10 @@ export default function LoadingScreen({ onComplete, onRevealStart, minDisplayTim
                     <motion.div
                         className={`${styles.loadingText}`}
                         animate={{ opacity: isRevealing ? 0 : 1 }}
-                        transition={{ duration: LOADING_REVEAL.TEXT_FADE_MS / 1000, ease: 'easeOut' }}
+                        transition={{
+                            duration: LOADING_REVEAL.TEXT_FADE_MS / 1000,
+                            ease: 'easeOut',
+                        }}
                     >
                         {Math.floor(progress)}%
                     </motion.div>

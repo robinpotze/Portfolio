@@ -34,8 +34,14 @@ const BRAND_IMAGES = [
 ];
 
 const TUTORIAL_IMAGES = [
-    { src: `${assetPath}Tutorial/TUT_01.png`, alt: 'Tutorial screen — controls and basic mechanics.' },
-    { src: `${assetPath}Tutorial/TUT_02.png`, alt: 'Tutorial screen — crate collection instructions.' },
+    {
+        src: `${assetPath}Tutorial/TUT_01.png`,
+        alt: 'Tutorial screen — controls and basic mechanics.',
+    },
+    {
+        src: `${assetPath}Tutorial/TUT_02.png`,
+        alt: 'Tutorial screen — crate collection instructions.',
+    },
     { src: `${assetPath}Tutorial/TUT_03.png`, alt: 'Tutorial screen — bottle and cap details.' },
     { src: `${assetPath}Tutorial/TUT_04.png`, alt: 'Tutorial screen — collection overview.' },
 ];
@@ -112,8 +118,16 @@ export default function Ld58() {
                 label="THE TV CORNER"
                 heading="Every surface modeled. Every screen functional."
                 items={[
-                    { caption: 'WIREFRAME', src: `${assetPath}Environment/ENV_TV_WireFrame.png`, alt: 'Wireframe render of the TV setup.' },
-                    { caption: 'FINAL RENDER', src: `${assetPath}Environment/ENV_TV.png`, alt: 'Final rendered TV corner with glowing screen.' },
+                    {
+                        caption: 'WIREFRAME',
+                        src: `${assetPath}Environment/ENV_TV_WireFrame.png`,
+                        alt: 'Wireframe render of the TV setup.',
+                    },
+                    {
+                        caption: 'FINAL RENDER',
+                        src: `${assetPath}Environment/ENV_TV.png`,
+                        alt: 'Final rendered TV corner with glowing screen.',
+                    },
                 ]}
             />
 
@@ -139,8 +153,14 @@ export default function Ld58() {
 
             <DoubleImage
                 images={[
-                    { src: `${assetPath}Marketing/MARKET_Logo.png`, alt: 'Logo design for the LD58 game jam entry.' },
-                    { src: `${assetPath}Marketing/MARKET_Thumbnail.png`, alt: 'Thumbnail for the LD58 game jam entry.' },
+                    {
+                        src: `${assetPath}Marketing/MARKET_Logo.png`,
+                        alt: 'Logo design for the LD58 game jam entry.',
+                    },
+                    {
+                        src: `${assetPath}Marketing/MARKET_Thumbnail.png`,
+                        alt: 'Thumbnail for the LD58 game jam entry.',
+                    },
                 ]}
             />
 

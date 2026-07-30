@@ -92,8 +92,14 @@ export default function Pmot() {
 
             <DoubleImage
                 images={[
-                    { src: `${assetPath}Shopping Cart Page.png`, alt: 'Shopping cart page with order summary.' },
-                    { src: `${assetPath}Wishlist Page.png`, alt: 'Wishlist page for saving products.' },
+                    {
+                        src: `${assetPath}Shopping Cart Page.png`,
+                        alt: 'Shopping cart page with order summary.',
+                    },
+                    {
+                        src: `${assetPath}Wishlist Page.png`,
+                        alt: 'Wishlist page for saving products.',
+                    },
                 ]}
             />
 
@@ -117,7 +123,10 @@ export default function Pmot() {
             <DoubleImage
                 images={[
                     { src: `${assetPath}Login Page.png`, alt: 'Login page for the PMOT webstore.' },
-                    { src: `${assetPath}Registration Page.png`, alt: 'Registration page for new teachers.' },
+                    {
+                        src: `${assetPath}Registration Page.png`,
+                        alt: 'Registration page for new teachers.',
+                    },
                 ]}
             />
 
@@ -162,8 +171,14 @@ export default function Pmot() {
 
             <DoubleImage
                 images={[
-                    { src: `${assetPath}Learning Blog Page.png`, alt: 'Blog section for teacher experiences and research.' },
-                    { src: `${assetPath}Learning Leermiddelen Page.png`, alt: 'Learning resources page connecting to store products.' },
+                    {
+                        src: `${assetPath}Learning Blog Page.png`,
+                        alt: 'Blog section for teacher experiences and research.',
+                    },
+                    {
+                        src: `${assetPath}Learning Leermiddelen Page.png`,
+                        alt: 'Learning resources page connecting to store products.',
+                    },
                 ]}
             />
 
@@ -179,8 +194,14 @@ export default function Pmot() {
 
             <DoubleImage
                 images={[
-                    { src: `${assetPath}BTS Design Overview.png`, alt: 'Design overview showing the full page inventory in Axure.' },
-                    { src: `${assetPath}BTS Axure Variables.png`, alt: 'Axure RP variable setup for interactive prototype states.' },
+                    {
+                        src: `${assetPath}BTS Design Overview.png`,
+                        alt: 'Design overview showing the full page inventory in Axure.',
+                    },
+                    {
+                        src: `${assetPath}BTS Axure Variables.png`,
+                        alt: 'Axure RP variable setup for interactive prototype states.',
+                    },
                 ]}
             />
 

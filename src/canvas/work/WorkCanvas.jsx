@@ -106,7 +106,14 @@ export default function WorkCanvas({ items, onCardNavigate, onScrollChange, star
     }, [isMobile, items.length]);
 
     const canvasStyle = isMobile
-        ? { position: 'sticky', left: 0, width: '100vw', height: '100dvh', touchAction: 'pan-x', flexShrink: 0 }
+        ? {
+              position: 'sticky',
+              left: 0,
+              width: '100vw',
+              height: '100dvh',
+              touchAction: 'pan-x',
+              flexShrink: 0,
+          }
         : { position: 'sticky', top: 0, width: '100%', height: '100dvh', touchAction: 'pan-y' };
 
     const scrollStyle = isMobile

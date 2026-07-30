@@ -54,15 +54,27 @@ export default function SsgNL() {
 
             <DoubleImage
                 images={[
-                    { src: `${assetPath}autoq/FAST-low.png`, alt: 'FAST training module card design for Auto|Q.' },
-                    { src: `${assetPath}autoq/Achterkant.png`, alt: 'Back of Auto|Q training card.' },
+                    {
+                        src: `${assetPath}autoq/FAST-low.png`,
+                        alt: 'FAST training module card design for Auto|Q.',
+                    },
+                    {
+                        src: `${assetPath}autoq/Achterkant.png`,
+                        alt: 'Back of Auto|Q training card.',
+                    },
                 ]}
             />
 
             <DoubleImage
                 images={[
-                    { src: `${assetPath}autoq/TMMi-low.png`, alt: 'TMMi training module card design.' },
-                    { src: `${assetPath}autoq/Trainingen-low.png`, alt: 'Training overview card design.' },
+                    {
+                        src: `${assetPath}autoq/TMMi-low.png`,
+                        alt: 'TMMi training module card design.',
+                    },
+                    {
+                        src: `${assetPath}autoq/Trainingen-low.png`,
+                        alt: 'Training overview card design.',
+                    },
                 ]}
             />
 
@@ -86,8 +98,14 @@ export default function SsgNL() {
 
             <DoubleImage
                 images={[
-                    { src: `${assetPath}cybersec/CyberSec_Rulebook.png`, alt: 'Rulebook design for the Cybersecurity game.' },
-                    { src: `${assetPath}cybersec/CyberSec_SkillCard.png`, alt: 'Skill card design for the Cybersecurity game.' },
+                    {
+                        src: `${assetPath}cybersec/CyberSec_Rulebook.png`,
+                        alt: 'Rulebook design for the Cybersecurity game.',
+                    },
+                    {
+                        src: `${assetPath}cybersec/CyberSec_SkillCard.png`,
+                        alt: 'Skill card design for the Cybersecurity game.',
+                    },
                 ]}
             />
 
@@ -103,8 +121,14 @@ export default function SsgNL() {
 
             <DoubleImage
                 images={[
-                    { src: `${assetPath}agilegame/BOARD.png`, alt: 'Board layout for the Agile Maturity game.' },
-                    { src: `${assetPath}agilegame/QUESTION CARDS.png`, alt: 'Question cards for the Agile Maturity game.' },
+                    {
+                        src: `${assetPath}agilegame/BOARD.png`,
+                        alt: 'Board layout for the Agile Maturity game.',
+                    },
+                    {
+                        src: `${assetPath}agilegame/QUESTION CARDS.png`,
+                        alt: 'Question cards for the Agile Maturity game.',
+                    },
                 ]}
             />
 
@@ -119,8 +143,14 @@ export default function SsgNL() {
 
             <DoubleImage
                 images={[
-                    { src: `${assetPath}agilegame/SCORECARD.png`, alt: 'Scorecard front for the Agile Maturity game.' },
-                    { src: `${assetPath}agilegame/SCORECARD_BACK.png`, alt: 'Scorecard back for the Agile Maturity game.' },
+                    {
+                        src: `${assetPath}agilegame/SCORECARD.png`,
+                        alt: 'Scorecard front for the Agile Maturity game.',
+                    },
+                    {
+                        src: `${assetPath}agilegame/SCORECARD_BACK.png`,
+                        alt: 'Scorecard back for the Agile Maturity game.',
+                    },
                 ]}
             />
 
@@ -128,15 +158,29 @@ export default function SsgNL() {
                 label="EVENT CARDS"
                 heading="Front and back of every card type."
                 items={[
-                    { caption: 'FRONT', src: `${assetPath}agilegame/AFTERHITWORK.png`, alt: 'Front of the After Hit Work event card.' },
-                    { caption: 'BACK', src: `${assetPath}agilegame/AFTERHITWORK_BACK.png`, alt: 'Back of the After Hit Work event card.' },
+                    {
+                        caption: 'FRONT',
+                        src: `${assetPath}agilegame/AFTERHITWORK.png`,
+                        alt: 'Front of the After Hit Work event card.',
+                    },
+                    {
+                        caption: 'BACK',
+                        src: `${assetPath}agilegame/AFTERHITWORK_BACK.png`,
+                        alt: 'Back of the After Hit Work event card.',
+                    },
                 ]}
             />
 
             <DoubleImage
                 images={[
-                    { src: `${assetPath}agilegame/GLOBAL EVENT CARD.png`, alt: 'Global event card for the Agile Maturity game.' },
-                    { src: `${assetPath}agilegame/RULEBOOK.png`, alt: 'Rulebook front cover for the Agile Maturity game.' },
+                    {
+                        src: `${assetPath}agilegame/GLOBAL EVENT CARD.png`,
+                        alt: 'Global event card for the Agile Maturity game.',
+                    },
+                    {
+                        src: `${assetPath}agilegame/RULEBOOK.png`,
+                        alt: 'Rulebook front cover for the Agile Maturity game.',
+                    },
                 ]}
             />
 
@@ -152,8 +196,16 @@ export default function SsgNL() {
                 label="THEME"
                 heading="Two modes. Same clarity."
                 items={[
-                    { caption: 'DARK MODE', src: `${assetPath}chatbot/V1_Dark.png`, alt: 'Chatbot interface in dark mode.' },
-                    { caption: 'LIGHT MODE', src: `${assetPath}chatbot/V1_Light.png`, alt: 'Chatbot interface in light mode.' },
+                    {
+                        caption: 'DARK MODE',
+                        src: `${assetPath}chatbot/V1_Dark.png`,
+                        alt: 'Chatbot interface in dark mode.',
+                    },
+                    {
+                        caption: 'LIGHT MODE',
+                        src: `${assetPath}chatbot/V1_Light.png`,
+                        alt: 'Chatbot interface in light mode.',
+                    },
                 ]}
             />
 

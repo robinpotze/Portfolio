@@ -154,7 +154,11 @@ export default function Cjib() {
                 label="ITERATION"
                 heading="Stripped for scanability."
                 items={[
-                    { caption: 'EARLY STRUCTURE', src: `${assetPath}V1.png`, alt: 'Early iteration establishing information architecture.' },
+                    {
+                        caption: 'EARLY STRUCTURE',
+                        src: `${assetPath}V1.png`,
+                        alt: 'Early iteration establishing information architecture.',
+                    },
                     {
                         caption: 'REFINED HIERARCHY',
                         src: `${assetPath}V2.png`,
@@ -180,7 +184,10 @@ export default function Cjib() {
             <EvidenceRow
                 items={[
                     { label: 'SYSTEMS', value: 'PBS, ABE, BSP' },
-                    { label: 'SKILLS', value: 'Motion Design, Infographics, Documentation, UX Design' },
+                    {
+                        label: 'SKILLS',
+                        value: 'Motion Design, Infographics, Documentation, UX Design',
+                    },
                     { label: 'IMPLEMENTATION', value: 'Angular, Antora, SpectaQl, AfterEffects' },
                 ]}
             />

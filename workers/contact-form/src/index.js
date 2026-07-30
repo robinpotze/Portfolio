@@ -56,8 +56,7 @@ export default {
 
             if (!res.ok) {
                 const error = await res.text();
-                console.error('Resend API error:', error);
-                return new Response(JSON.stringify({ error: 'Failed to send email' }), {
+                return new Error(JSON.stringify({ error: 'Failed to send email', details: error }), {
                     status: 502,
                     headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
                 });
@@ -68,8 +67,7 @@ export default {
                 headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
             });
         } catch (err) {
-            console.error('Worker error:', err);
-            return new Response(JSON.stringify({ error: 'Internal server error' }), {
+            return new Error(JSON.stringify({ error: 'Internal server error', details: err }), {
                 status: 500,
                 headers: { ...CORS_HEADERS, 'Content-Type': 'application/json' },
             });

@@ -2,7 +2,6 @@ import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import glsl from 'vite-plugin-glsl';
 import svgr from 'vite-plugin-svgr';
-import tsconfigPaths from 'vite-tsconfig-paths';
 
 function manualChunks(id) {
     if (id.includes('/node_modules/react/') || id.includes('/node_modules/react-dom/')) {
@@ -56,7 +55,10 @@ export default defineConfig({
             },
         },
     },
-    plugins: [react(), glsl(), svgr(), tsconfigPaths()],
+    resolve: {
+        tsconfigPaths: true,
+    },
+    plugins: [react(), glsl(), svgr()],
     server: {
         port: 3000,
     },

@@ -128,12 +128,7 @@ export default function MyComponent({ prop1, prop2 }) {
     const [value, setValue] = useState(initial);
 
     // 4. Derived / memoized values
-    const config = useMemo(
-        () => ({
-            /* ... */
-        }),
-        [deps]
-    );
+    const config = useMemo(() => ({/* ... */}), [deps]);
 
     // 5. Effects (each with full dependency array)
     useEffect(() => {

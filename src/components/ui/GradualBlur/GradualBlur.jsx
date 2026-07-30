@@ -47,7 +47,12 @@ function GradualBlur({
                 gradient += `, transparent ${p4}%`;
             }
 
-            const directions = { top: 'to top', bottom: 'to bottom', left: 'to left', right: 'to right' };
+            const directions = {
+                top: 'to top',
+                bottom: 'to bottom',
+                left: 'to left',
+                right: 'to right',
+            };
             const direction = directions[position] || 'to bottom';
 
             divs.push(
