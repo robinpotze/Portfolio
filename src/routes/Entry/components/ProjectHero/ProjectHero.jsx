@@ -12,7 +12,7 @@ export default function ProjectHero({ content }) {
         visible: {
             opacity: 1,
             scale: 1,
-            transition: { duration: REVEAL.DURATION, ease: EASING.HERO },
+            transition: { duration: REVEAL.DURATION, ease: EASING.EMPHASIZED },
         },
     };
 
@@ -24,7 +24,7 @@ export default function ProjectHero({ content }) {
             transition: {
                 duration: REVEAL.DURATION,
                 delay: STAGGER.DEFAULT + i * STAGGER.MICRO,
-                ease: EASING.HERO,
+                ease: EASING.EMPHASIZED,
             },
         }),
     };
@@ -57,7 +57,7 @@ export default function ProjectHero({ content }) {
             x: 0,
             transition: {
                 duration: REVEAL.QUICK_DURATION,
-                ease: EASING.HERO,
+                ease: EASING.EMPHASIZED,
             },
         },
     };
@@ -70,7 +70,7 @@ export default function ProjectHero({ content }) {
             transition: {
                 duration: REVEAL.DURATION,
                 delay: STAGGER.DEFAULT + STAGGER.SLOW,
-                ease: EASING.HERO,
+                ease: EASING.EMPHASIZED,
             },
         },
     };

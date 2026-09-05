@@ -55,7 +55,7 @@ const formVariants = {
         scaleX: 1,
         transition: {
             delay: STAGGER.PAGE,
-            duration: REVEAL.SLOW_DURATION,
+            duration: REVEAL.DURATION,
             ease: EASING.EMPHASIZED,
             delayChildren: STAGGER.PAGE,
             staggerChildren: STAGGER.PAGE,
@@ -74,7 +74,11 @@ const formVariants = {
 export default function Contact() {
     // State
     const [phase, setPhase] = useState('message');
-    const [formData, setFormData] = useState({ name: '', message: '', email: '' });
+    const [formData, setFormData] = useState({
+        name: '',
+        message: '',
+        email: '',
+    });
     const [glitching, setGlitching] = useState(false);
     const [sendError, setSendError] = useState(null);
     const [statusMessageKey, setStatusMessageKey] = useState(0);
@@ -111,7 +115,9 @@ export default function Contact() {
             const payload = await res.json().catch(() => null);
 
             if (!res.ok) {
-                throw Object.assign(new Error(payload?.error ?? 'SEND_FAILED'), { status: res.status });
+                throw Object.assign(new Error(payload?.error ?? 'SEND_FAILED'), {
+                    status: res.status,
+                });
             }
             setPhase('complete');
         } catch (err) {
@@ -193,7 +199,13 @@ export default function Contact() {
                                 className={styles.errorArea}
                                 initial={{ opacity: 1 }}
                                 animate={{ opacity: 1 }}
-                                exit={{ opacity: 0, transition: { duration: REVEAL.EXIT_DURATION, ease: EASING.EXIT } }}
+                                exit={{
+                                    opacity: 0,
+                                    transition: {
+                                        duration: REVEAL.EXIT_DURATION,
+                                        ease: EASING.EXIT,
+                                    },
+                                }}
                             >
                                 <StatusMessage
                                     key={sendError ? `send-error-${statusMessageKey}` : 'status'}
@@ -212,7 +224,13 @@ export default function Contact() {
                                                 ease: EASING.EMPHASIZED,
                                             },
                                         }}
-                                        exit={{ opacity: 0, transition: { duration: REVEAL.EXIT_DURATION, ease: EASING.EXIT } }}
+                                        exit={{
+                                            opacity: 0,
+                                            transition: {
+                                                duration: REVEAL.EXIT_DURATION,
+                                                ease: EASING.EXIT,
+                                            },
+                                        }}
                                     >
                                         <TypewriterText
                                             lines={ERROR_LOG_LINES}
@@ -246,7 +264,13 @@ export default function Contact() {
                                                 ease: EASING.EMPHASIZED,
                                             },
                                         }}
-                                        exit={{ opacity: 0, transition: { duration: REVEAL.EXIT_DURATION, ease: EASING.EXIT } }}
+                                        exit={{
+                                            opacity: 0,
+                                            transition: {
+                                                duration: REVEAL.EXIT_DURATION,
+                                                ease: EASING.EXIT,
+                                            },
+                                        }}
                                     >
                                         <TypewriterText
                                             lines={STATUS_GRID_LINES}
@@ -264,17 +288,14 @@ export default function Contact() {
                 {/* Status Panel */}
                 <AnimatePresence>
                     {phase !== 'message' && (
-                        <StatusPanel
-                            className={styles.statusPanelArea}
-                            variant={phase === 'complete' ? 'success' : 'default'}
-                        >
+                        <StatusPanel className={styles.statusPanelArea} variant={phase === 'complete' ? 'success' : 'default'}>
                             {isIntercept && (
                                 <>
                                     <MsgIcon className={styles.panelIcon} aria-hidden="true" />
                                     <PlsIcon className={styles.panelDeco} aria-hidden="true" />
                                     <input
                                         className={`${styles.panelInput} ${formData.email && !isValidEmail ? styles.panelInputInvalid : ''}`}
-                                        placeholder="IDENTIFY"
+                                        placeholder="IDENTIFY@DOMAIN.COM"
                                         type="email"
                                         value={formData.email}
                                         onChange={onInputChange('email')}

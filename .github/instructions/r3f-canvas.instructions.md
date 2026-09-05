@@ -1,7 +1,8 @@
 ---
-description: "Use when writing or editing React Three Fiber scenes, canvas components, 3D meshes, camera rigs, or post-processing effects in the canvas directory."
-applyTo: "src/canvas/**"
+description: 'Use when writing or editing React Three Fiber scenes, canvas components, 3D meshes, camera rigs, or post-processing effects in the canvas directory.'
+applyTo: 'src/canvas/**'
 ---
+
 # R3F & Three.js Canvas Patterns
 
 ## Canvas Setup
@@ -32,10 +33,10 @@ Wrap each page's 3D scene in a Canvas component with these standard options:
 - **Canvas wrapper** (`HomeCanvas`, `WorkCanvas`) — configures WebGL renderer, passes scroll/animation props to scene
 - **Scene component** (`HomeScene`, `WorkScene`) — orchestrates camera, meshes, lights, and post-processing
 - **Shared resources** live in `src/canvas/shared/`:
-  - `camera/Rig.jsx` — reusable camera rig
-  - `materials/` — custom shader materials (e.g. `GlassLogoMaterial`)
-  - `meshes/` — reusable mesh components (`LogoMesh`, `BackgroundMesh`)
-  - `shaders/` — GLSL source files
+    - `camera/Rig.jsx` — reusable camera rig
+    - `materials/` — custom shader materials (e.g. `GlassLogoMaterial`)
+    - `meshes/` — reusable mesh components (`LogoMesh`, `BackgroundMesh`)
+    - `shaders/` — GLSL source files
 
 ## Scroll-Driven Animation
 
@@ -62,10 +63,13 @@ const { quality } = useAdaptiveQuality({ targetFps: 55, enabled: true });
 
 const ppSettings = useMemo(() => {
     switch (quality) {
-        case 'low':    return { aoSamples: 4, bloomLevels: 4 };
-        case 'medium': return { aoSamples: 6, bloomLevels: 5 };
+        case 'low':
+            return { aoSamples: 4, bloomLevels: 4 };
+        case 'medium':
+            return { aoSamples: 6, bloomLevels: 5 };
         case 'high':
-        default:       return { aoSamples: 8, bloomLevels: 6 };
+        default:
+            return { aoSamples: 8, bloomLevels: 6 };
     }
 }, [quality]);
 ```
@@ -80,11 +84,7 @@ import { extend } from '@react-three/fiber';
 import fragShader from '../shaders/MyFrag.glsl?raw';
 import vertShader from '../shaders/MyVert.glsl?raw';
 
-const MyMaterial = shaderMaterial(
-    { uTime: 0, uResolution: new THREE.Vector2() },
-    vertShader,
-    fragShader
-);
+const MyMaterial = shaderMaterial({ uTime: 0, uResolution: new THREE.Vector2() }, vertShader, fragShader);
 
 extend({ MyMaterial });
 ```

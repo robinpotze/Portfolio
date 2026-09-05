@@ -19,14 +19,20 @@ export default function MenuButton({ open, label, toggle, glitchRefs, ref }) {
                 >
                     <motion.div
                         className={styles.iconImg}
-                        animate={{ opacity: open ? 0 : 1, scale: open ? 0.6 : 1 }}
+                        animate={{
+                            opacity: open ? 0 : 1,
+                            scale: open ? 0.6 : 1,
+                        }}
                         transition={{ duration: REVEAL.QUICK_DURATION }}
                     >
                         <PlsIcon />
                     </motion.div>
                     <motion.div
                         className={styles.iconImg}
-                        animate={{ opacity: open ? 1 : 0, scale: open ? 1 : 0.6 }}
+                        animate={{
+                            opacity: open ? 1 : 0,
+                            scale: open ? 1 : 0.6,
+                        }}
                         transition={{ duration: REVEAL.QUICK_DURATION }}
                     >
                         <CrsIcon />

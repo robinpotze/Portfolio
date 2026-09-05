@@ -1,0 +1,11 @@
+{
+    "$schema": "./node_modules/oxfmt/configuration_schema.json",
+    "singleQuote": true,
+    "printWidth": 150,
+    "trailingComma": "es5",
+    "semi": true,
+    "arrowParens": "always",
+    "tabWidth": 4,
+    "sortPackageJson": false,
+    "ignorePatterns": ["**/*.glsl", "**/*.frag", "**/*.vert", "**/*.wgsl", "dist", "build", ".vite", "node_modules"]
+}

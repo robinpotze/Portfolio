@@ -55,19 +55,10 @@ export default defineConfig({
             },
         },
     },
-    plugins: [react(), glsl(), svgr()],
     resolve: {
-        alias: {
-            '@': '/src',
-            '@app': '/src/app',
-            '@canvas': '/src/canvas',
-            '@components': '/src/components',
-            '@config': '/src/config',
-            '@hooks': '/src/hooks',
-            '@routes': '/src/routes',
-            '@utils': '/src/utils',
-        },
+        tsconfigPaths: true,
     },
+    plugins: [react(), glsl(), svgr()],
     server: {
         port: 3000,
     },

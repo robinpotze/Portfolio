@@ -31,12 +31,24 @@ export default function WorkScene({
     const postProcessingSettings = useMemo(() => {
         switch (quality) {
             case 'low':
-                return { bloomIntensity: 0.2, bloomLevels: 2, multisampling: 0 };
+                return {
+                    bloomIntensity: 0.2,
+                    bloomLevels: 2,
+                    multisampling: 0,
+                };
             case 'medium':
-                return { bloomIntensity: 0.3, bloomLevels: 3, multisampling: 0 };
+                return {
+                    bloomIntensity: 0.3,
+                    bloomLevels: 3,
+                    multisampling: 0,
+                };
             case 'high':
             default:
-                return { bloomIntensity: 0.4, bloomLevels: 4, multisampling: 0 };
+                return {
+                    bloomIntensity: 0.4,
+                    bloomLevels: 4,
+                    multisampling: 0,
+                };
         }
     }, [quality]);
 

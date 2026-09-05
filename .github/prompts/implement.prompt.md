@@ -1,6 +1,6 @@
 ---
-description: "Scaffold or implement code that strictly follows project conventions — components, hooks, utils, canvas scenes, or CSS modules."
-agent: "agent"
+description: 'Scaffold or implement code that strictly follows project conventions — components, hooks, utils, canvas scenes, or CSS modules.'
+agent: 'agent'
 argument-hint: "what to build (e.g., 'carousel hook', 'project detail page', 'glass shader')"
 ---
 
@@ -9,15 +9,15 @@ You are a senior developer implementing code for this project. Every line you wr
 ## Before writing any code
 
 1. Read the relevant instruction files for the type of code you're creating:
-   - Components/hooks/utils → [code conventions](.github/instructions/code-conventions.instructions.md)
-   - Animations/transitions → [animation instructions](.github/instructions/animation.instructions.md)
-   - CSS Modules → [CSS instructions](.github/instructions/css-modules.instructions.md)
-   - Canvas/R3F scenes → [R3F instructions](.github/instructions/r3f-canvas.instructions.md)
-   - Shaders → [GLSL instructions](.github/instructions/glsl-shaders.instructions.md)
-   - Routing/navigation → [routing instructions](.github/instructions/routing.instructions.md)
-   - Performance/quality → [performance instructions](.github/instructions/performance.instructions.md)
-   - Accessibility → [accessibility instructions](.github/instructions/accessibility.instructions.md)
-   - Data/content → [data instructions](.github/instructions/data-content.instructions.md)
+    - Components/hooks/utils → [code conventions](.github/instructions/code-conventions.instructions.md)
+    - Animations/transitions → [animation instructions](.github/instructions/animation.instructions.md)
+    - CSS Modules → [CSS instructions](.github/instructions/css-modules.instructions.md)
+    - Canvas/R3F scenes → [R3F instructions](.github/instructions/r3f-canvas.instructions.md)
+    - Shaders → [GLSL instructions](.github/instructions/glsl-shaders.instructions.md)
+    - Routing/navigation → [routing instructions](.github/instructions/routing.instructions.md)
+    - Performance/quality → [performance instructions](.github/instructions/performance.instructions.md)
+    - Accessibility → [accessibility instructions](.github/instructions/accessibility.instructions.md)
+    - Data/content → [data instructions](.github/instructions/data-content.instructions.md)
 
 2. Find the closest existing example in the codebase and use it as a structural template. Match its patterns exactly — import ordering, hook ordering, export style, naming, everything.
 
@@ -42,7 +42,10 @@ const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
         opacity: 1,
-        transition: { staggerChildren: STAGGER.DEFAULT, delayChildren: STAGGER.DELAY },
+        transition: {
+            staggerChildren: STAGGER.DEFAULT,
+            delayChildren: STAGGER.DELAY,
+        },
     },
 };
 
@@ -62,22 +65,20 @@ export default function MyComponent({ prop1, prop2 = 'default' }) {
 
     // 5. Effects — always with cleanup
     useEffect(() => {
-        const handler = () => { /* ... */ };
+        const handler = () => {
+            /* ... */
+        };
         window.addEventListener('resize', handler);
         return () => window.removeEventListener('resize', handler);
     }, []);
 
     // 6. Callbacks — prefixed with `on`, not `handle`
-    const onClick = useCallback(() => { /* ... */ }, []);
+    const onClick = useCallback(() => {
+        /* ... */
+    }, []);
 
     return (
-        <motion.div
-            ref={containerRef}
-            className={styles.container}
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-        >
+        <motion.div ref={containerRef} className={styles.container} variants={containerVariants} initial="hidden" animate="visible">
             {/* ... */}
         </motion.div>
     );
@@ -99,7 +100,9 @@ export default function useMyHook(options = {}) {
     useEffect(() => {
         let mounted = true;
         // setup — check `mounted` before state updates
-        return () => { mounted = false; /* teardown */ };
+        return () => {
+            mounted = false; /* teardown */
+        };
     }, [param]);
 
     return ref; // single value: return directly; multiple: return object

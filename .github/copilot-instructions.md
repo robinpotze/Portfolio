@@ -29,16 +29,16 @@ workers/
 
 Always use path aliases for imports — never traverse more than one level up:
 
-| Alias | Path |
-|-------|------|
-| `@` | `/src` |
-| `@app` | `/src/app` |
-| `@canvas` | `/src/canvas` |
+| Alias         | Path              |
+| ------------- | ----------------- |
+| `@`           | `/src`            |
+| `@app`        | `/src/app`        |
+| `@canvas`     | `/src/canvas`     |
 | `@components` | `/src/components` |
-| `@config` | `/src/config` |
-| `@hooks` | `/src/hooks` |
-| `@routes` | `/src/routes` |
-| `@utils` | `/src/utils` |
+| `@config`     | `/src/config`     |
+| `@hooks`      | `/src/hooks`      |
+| `@routes`     | `/src/routes`     |
+| `@utils`      | `/src/utils`      |
 
 ## Key Conventions (details in instruction files)
 

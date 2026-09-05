@@ -6,10 +6,26 @@ import { EASING, REVEAL, STAGGER } from '@config/animation.config';
 import styles from './BannerCorner.module.css';
 
 const POSITION_CONFIG = {
-    tl: { wrapperClass: styles.wrapperTl, contentClass: styles.content, customY: STAGGER.DEFAULT * 200 },
-    tr: { wrapperClass: styles.wrapperTr, contentClass: styles.content, customY: STAGGER.DEFAULT * 200 },
-    bl: { wrapperClass: styles.wrapperBl, contentClass: styles.contentBl, customY: -STAGGER.DEFAULT * 200 },
-    br: { wrapperClass: styles.wrapperBr, contentClass: styles.contentBr, customY: -STAGGER.DEFAULT * 200 },
+    tl: {
+        wrapperClass: styles.wrapperTl,
+        contentClass: styles.content,
+        customY: STAGGER.DEFAULT * 200,
+    },
+    tr: {
+        wrapperClass: styles.wrapperTr,
+        contentClass: styles.content,
+        customY: STAGGER.DEFAULT * 200,
+    },
+    bl: {
+        wrapperClass: styles.wrapperBl,
+        contentClass: styles.contentBl,
+        customY: -STAGGER.DEFAULT * 200,
+    },
+    br: {
+        wrapperClass: styles.wrapperBr,
+        contentClass: styles.contentBr,
+        customY: -STAGGER.DEFAULT * 200,
+    },
 };
 
 const cornerVariants = {

@@ -29,7 +29,7 @@
 
 .loadingText {
     position: absolute;
-    z-index: 1; 
+    z-index: 1;
     background-color: var(--c-drk_100);
     font: var(--f-func-small);
     color: var(--c-brnd_100);

@@ -19,7 +19,7 @@ export default function SqlGame() {
             {/* ── INTRO ── */}
 
             <CaseIntro
-                src={`${assetPath}FullPage.png`}
+                src={`${assetPath}FullPage.webp`}
                 kicker={`SOPRA STERIA / ${Data.year}`}
                 heading="Write queries. Explore worlds. Learn SQL."
                 subtitle="An interactive learning game built almost single-handedly — design, gameplay, and front-end development."
@@ -112,15 +112,27 @@ export default function SqlGame() {
 
             <DoubleImage
                 images={[
-                    { src: `${assetPath}BookPage_SQL.png`, alt: 'SQL reference page with syntax examples.' },
-                    { src: `${assetPath}BookPage_Database.png`, alt: 'Database schema reference page.' },
+                    {
+                        src: `${assetPath}BookPage_SQL.png`,
+                        alt: 'SQL reference page with syntax examples.',
+                    },
+                    {
+                        src: `${assetPath}BookPage_Database.png`,
+                        alt: 'Database schema reference page.',
+                    },
                 ]}
             />
 
             <DoubleImage
                 images={[
-                    { src: `${assetPath}BookPage_Inventory.png`, alt: 'Inventory page showing collected items.' },
-                    { src: `${assetPath}Components_Book.png`, alt: 'Book component breakdown.' },
+                    {
+                        src: `${assetPath}BookPage_Inventory.png`,
+                        alt: 'Inventory page showing collected items.',
+                    },
+                    {
+                        src: `${assetPath}Components_Book.png`,
+                        alt: 'Book component breakdown.',
+                    },
                 ]}
             />
 
@@ -128,8 +140,14 @@ export default function SqlGame() {
 
             <DoubleImage
                 images={[
-                    { src: `${assetPath}LoginPage.png`, alt: 'Login page for SQL Game.' },
-                    { src: `${assetPath}RegisterPage.png`, alt: 'Registration page for new players.' },
+                    {
+                        src: `${assetPath}LoginPage.webp`,
+                        alt: 'Login page for SQL Game.',
+                    },
+                    {
+                        src: `${assetPath}RegisterPage.webp`,
+                        alt: 'Registration page for new players.',
+                    },
                 ]}
             />
 
@@ -145,8 +163,16 @@ export default function SqlGame() {
                 label="EVOLUTION"
                 heading="From wireframe to final product."
                 items={[
-                    { caption: 'WIREFRAMES', src: `${assetPath}WIP_Wireframes.png`, alt: 'Early wireframe explorations for the game interface.' },
-                    { caption: 'FIRST ITERATION', src: `${assetPath}WIP_Iterations.png`, alt: 'First visual iteration of the game.' },
+                    {
+                        caption: 'WIREFRAMES',
+                        src: `${assetPath}WIP_Wireframes.png`,
+                        alt: 'Early wireframe explorations for the game interface.',
+                    },
+                    {
+                        caption: 'FIRST ITERATION',
+                        src: `${assetPath}WIP_Iterations.webp`,
+                        alt: 'First visual iteration of the game.',
+                    },
                 ]}
             />
 
@@ -154,8 +180,16 @@ export default function SqlGame() {
                 label="REFINEMENT"
                 heading="Stripped down, then built back up."
                 items={[
-                    { caption: 'SECOND ITERATION', src: `${assetPath}WIP_Iterations_Alt.png`, alt: 'Alternate iteration exploring layout.' },
-                    { caption: 'FINAL VERSION', src: `${assetPath}WIP_Iterations_last.png`, alt: 'Final polished version of SQL Game.' },
+                    {
+                        caption: 'SECOND ITERATION',
+                        src: `${assetPath}WIP_Iterations_Alt.webp`,
+                        alt: 'Alternate iteration exploring layout.',
+                    },
+                    {
+                        caption: 'FINAL VERSION',
+                        src: `${assetPath}WIP_Iterations_last.png`,
+                        alt: 'Final polished version of SQL Game.',
+                    },
                 ]}
             />
 
@@ -171,8 +205,14 @@ export default function SqlGame() {
 
             <EvidenceRow
                 items={[
-                    { label: 'SCREENS', value: 'Query tool, map, quests, reference, auth' },
-                    { label: 'DISCIPLINES', value: 'UX, Game Design, Front-End Dev' },
+                    {
+                        label: 'SCREENS',
+                        value: 'Query tool, map, quests, reference, auth',
+                    },
+                    {
+                        label: 'DISCIPLINES',
+                        value: 'UX, Game Design, Front-End Dev',
+                    },
                     { label: 'IMPLEMENTATION', value: 'React' },
                 ]}
             />

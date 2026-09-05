@@ -40,7 +40,10 @@ export default function Cjib() {
                     { label: 'SCOPE', value: '3 product teams' },
                     { label: 'DURATION', value: '12 months' },
                     { label: 'ROLE', value: 'Sole designer' },
-                    { label: 'OUTPUT', value: 'Motion, documentation, product UX' },
+                    {
+                        label: 'OUTPUT',
+                        value: 'Motion, documentation, product UX',
+                    },
                 ]}
             />
 
@@ -56,10 +59,10 @@ export default function Cjib() {
                 <h2>REST couldn't match the data layer. GraphQL could. That story needed telling in sixty seconds.</h2>
             </StatementBlock>
 
-            <FullImage src={`${assetPath}GraphQLTransition.gif`} alt="Animated transition showing GraphQL query flow through the system." />
+            <FullImage src={`${assetPath}GraphQLTransition.webp`} alt="Animated transition showing GraphQL query flow through the system." />
 
             <FeatureSplit
-                src={`${assetPath}McDonalds_Logo.gif`}
+                src={`${assetPath}McDonalds_Logo.webp`}
                 alt="Animated logo sequence for internal presentation material."
                 label="MOTION LANGUAGE"
             >
@@ -154,7 +157,11 @@ export default function Cjib() {
                 label="ITERATION"
                 heading="Stripped for scanability."
                 items={[
-                    { caption: 'EARLY STRUCTURE', src: `${assetPath}V1.png`, alt: 'Early iteration establishing information architecture.' },
+                    {
+                        caption: 'EARLY STRUCTURE',
+                        src: `${assetPath}V1.png`,
+                        alt: 'Early iteration establishing information architecture.',
+                    },
                     {
                         caption: 'REFINED HIERARCHY',
                         src: `${assetPath}V2.png`,
@@ -180,8 +187,14 @@ export default function Cjib() {
             <EvidenceRow
                 items={[
                     { label: 'SYSTEMS', value: 'PBS, ABE, BSP' },
-                    { label: 'SKILLS', value: 'Motion Design, Infographics, Documentation, UX Design' },
-                    { label: 'IMPLEMENTATION', value: 'Angular, Antora, SpectaQl, AfterEffects' },
+                    {
+                        label: 'SKILLS',
+                        value: 'Motion Design, Infographics, Documentation, UX Design',
+                    },
+                    {
+                        label: 'IMPLEMENTATION',
+                        value: 'Angular, Antora, SpectaQl, AfterEffects',
+                    },
                 ]}
             />
         </>

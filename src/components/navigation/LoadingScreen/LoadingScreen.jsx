@@ -238,17 +238,15 @@ export default function LoadingScreen({ onComplete, onRevealStart, minDisplayTim
     return (
         <AnimatePresence>
             {phase !== 'hidden' && (
-                <motion.div
-                    className={styles.loadingScreen}
-                    initial={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0 }}
-                >
+                <motion.div className={styles.loadingScreen} initial={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0 }}>
                     {/* Background — fades independently */}
                     <motion.div
                         className={styles.loadingBackground}
                         animate={{ opacity: isRevealing ? 0 : 1 }}
-                        transition={{ duration: LOADING_REVEAL.BG_FADE_MS / 1000, ease: 'easeOut' }}
+                        transition={{
+                            duration: LOADING_REVEAL.BG_FADE_MS / 1000,
+                            ease: 'easeOut',
+                        }}
                     />
 
                     {/* Logo — grows then fades */}
@@ -257,22 +255,29 @@ export default function LoadingScreen({ onComplete, onRevealStart, minDisplayTim
                             className={styles.logoWrapper}
                             animate={
                                 isRevealing
-                                    ? { scale: LOADING_REVEAL.LOGO_GROW_SCALE, opacity: [1, 1, 0] }
+                                    ? {
+                                          scale: LOADING_REVEAL.LOGO_GROW_SCALE,
+                                          opacity: [1, 1, 0],
+                                      }
                                     : { scale: 1, opacity: 1 }
                             }
                             transition={
                                 isRevealing
                                     ? {
-                                        scale: {
-                                            duration: LOADING_REVEAL.LOGO_GROW_MS / 1000,
-                                            ease: 'easeOut',
-                                        },
-                                        opacity: {
-                                            duration: (LOADING_REVEAL.LOGO_GROW_MS + LOADING_REVEAL.LOGO_FADE_MS) / 1000,
-                                            times: [0, LOADING_REVEAL.LOGO_GROW_MS / (LOADING_REVEAL.LOGO_GROW_MS + LOADING_REVEAL.LOGO_FADE_MS), 1],
-                                            ease: 'easeOut',
-                                        },
-                                    }
+                                          scale: {
+                                              duration: LOADING_REVEAL.LOGO_GROW_MS / 1000,
+                                              ease: 'easeOut',
+                                          },
+                                          opacity: {
+                                              duration: (LOADING_REVEAL.LOGO_GROW_MS + LOADING_REVEAL.LOGO_FADE_MS) / 1000,
+                                              times: [
+                                                  0,
+                                                  LOADING_REVEAL.LOGO_GROW_MS / (LOADING_REVEAL.LOGO_GROW_MS + LOADING_REVEAL.LOGO_FADE_MS),
+                                                  1,
+                                              ],
+                                              ease: 'easeOut',
+                                          },
+                                      }
                                     : { duration: 0 }
                             }
                         >
@@ -284,7 +289,10 @@ export default function LoadingScreen({ onComplete, onRevealStart, minDisplayTim
                     <motion.div
                         className={`${styles.loadingText}`}
                         animate={{ opacity: isRevealing ? 0 : 1 }}
-                        transition={{ duration: LOADING_REVEAL.TEXT_FADE_MS / 1000, ease: 'easeOut' }}
+                        transition={{
+                            duration: LOADING_REVEAL.TEXT_FADE_MS / 1000,
+                            ease: 'easeOut',
+                        }}
                     >
                         {Math.floor(progress)}%
                     </motion.div>

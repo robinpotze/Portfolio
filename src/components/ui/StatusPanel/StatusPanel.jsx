@@ -20,7 +20,7 @@ const panelVariants = {
         opacity: 1,
         transition: {
             delay: REVEAL.MEDIUM_DURATION,
-            duration: REVEAL.SLOW_DURATION,
+            duration: REVEAL.DURATION,
             ease: EASING.EMPHASIZED,
         },
     },

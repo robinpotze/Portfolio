@@ -115,12 +115,21 @@ export default function Home() {
     return (
         <>
             {isLoading && (
-                <LoadingScreen onComplete={onLoadingComplete} onRevealStart={onRevealStart} minDisplayTime={TIMEOUT.LOADING_MIN_DISPLAY_MS} logoSrc="/assets/img/logo/logo.svg" />
+                <LoadingScreen
+                    onComplete={onLoadingComplete}
+                    onRevealStart={onRevealStart}
+                    minDisplayTime={TIMEOUT.LOADING_MIN_DISPLAY_MS}
+                    logoSrc="/assets/img/logo/logo.svg"
+                />
             )}
             <div
                 className={styles.page}
                 ref={containerRef}
-                style={{ opacity: showContent ? 1 : 0, transition: 'opacity 0.6s ease-out', pointerEvents: showContent ? 'auto' : 'none' }}
+                style={{
+                    opacity: showContent ? 1 : 0,
+                    transition: 'opacity 0.6s ease-out',
+                    pointerEvents: showContent ? 'auto' : 'none',
+                }}
             >
                 <div className={styles.section}>
                     <div className={styles.content}>
@@ -128,10 +137,8 @@ export default function Home() {
                             ROBIN <br /> POTZE
                         </p>
                         <p className={`deco-tiny ${styles.quote}`}>
-                            | THOSE WHO DOUBT |<br />
-                            | CAST THEMSELVES|
-                            <br />
-                            | INTO A VOID |<br />
+                            | THOSE WHO DOUBT |<br />| CAST THEMSELVES|
+                            <br />| INTO A VOID |<br />
                             <RedoAnimText delay={0.5} />
                             <br />| AMBIGUOUS AMBIVALENCE |
                         </p>{' '}

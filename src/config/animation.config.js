@@ -13,7 +13,6 @@ export const BREAKPOINTS = {
 export const EASING = {
     EMPHASIZED: [0.22, 1, 0.36, 1],
     EXIT: [0.55, 0.06, 0.68, 0.19],
-    HERO: [0.2, 0.9, 0.2, 1],
 };
 
 export const REVEAL = {
@@ -21,7 +20,6 @@ export const REVEAL = {
     QUICK_DURATION: 0.3,
     MEDIUM_DURATION: 0.4,
     DURATION: 0.6,
-    SLOW_DURATION: 0.65,
     LONG_DURATION: 0.9,
     DELAY: 0.1,
     X_OFFSET: 8,
@@ -37,8 +35,8 @@ export const STAGGER = {
 };
 
 export const TYPEWRITER = {
-    CHAR_SPEED: 12,
-    ROW_PAUSE: 80,
+    CHAR_SPEED: 6,
+    ROW_PAUSE: 40,
     CURSOR: '▌',
 };
 

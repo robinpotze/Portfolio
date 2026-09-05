@@ -1,17 +1,18 @@
 ---
-description: "Use when working with Cloudflare Workers, the contact form backend, deployment, wrangler, environment secrets, or build/deploy pipelines."
-applyTo: "workers/**"
+description: 'Use when working with Cloudflare Workers, the contact form backend, deployment, wrangler, environment secrets, or build/deploy pipelines.'
+applyTo: 'workers/**'
 ---
+
 # Workers & Deployment
 
 ## Architecture
 
 The project has two deployable artifacts:
 
-| Artifact | Stack | Hosting | Directory |
-|----------|-------|---------|-----------|
-| Frontend (SPA) | Vite + React | Cloudflare Pages (or any static host) | `/` (root) |
-| Contact Form API | Cloudflare Worker | Cloudflare Workers | `workers/contact-form/` |
+| Artifact         | Stack             | Hosting                               | Directory               |
+| ---------------- | ----------------- | ------------------------------------- | ----------------------- |
+| Frontend (SPA)   | Vite + React      | Cloudflare Pages (or any static host) | `/` (root)              |
+| Contact Form API | Cloudflare Worker | Cloudflare Workers                    | `workers/contact-form/` |
 
 These are independent — they have separate `package.json` files and deploy separately.
 
@@ -49,11 +50,11 @@ compatibility_date = "2024-12-01"
 
 The worker uses three secrets (set via `npx wrangler secret put <NAME>`):
 
-| Secret | Purpose |
-|--------|---------|
-| `RESEND_API_KEY` | API key for Resend email service |
-| `FROM_EMAIL` | Sender address (must be verified in Resend) |
-| `TO_EMAIL` | Recipient address for contact form submissions |
+| Secret           | Purpose                                        |
+| ---------------- | ---------------------------------------------- |
+| `RESEND_API_KEY` | API key for Resend email service               |
+| `FROM_EMAIL`     | Sender address (must be verified in Resend)    |
+| `TO_EMAIL`       | Recipient address for contact form submissions |
 
 **Never commit secrets.** They exist only in Cloudflare's encrypted secret store.
 

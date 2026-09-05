@@ -1,18 +1,19 @@
 ---
-description: "Use when optimizing render performance, configuring quality tiers, implementing adaptive quality, frame skipping, Canvas renderer settings, or conditional rendering based on device capability."
-applyTo: "src/canvas/**, src/app/QualityContext.jsx, src/hooks/useAdaptiveQuality.js, src/utils/deviceCapability.js"
+description: 'Use when optimizing render performance, configuring quality tiers, implementing adaptive quality, frame skipping, Canvas renderer settings, or conditional rendering based on device capability.'
+applyTo: 'src/canvas/**, src/app/QualityContext.jsx, src/hooks/useAdaptiveQuality.js, src/utils/deviceCapability.js'
 ---
+
 # Performance & Quality Tiers
 
 ## Three-Tier Quality System
 
 Quality is managed globally via `QualityContext` with three tiers:
 
-| Tier | When | Visual impact |
-|------|------|---------------|
-| `'low'` | Integrated GPU, ≤4 cores, or FPS drops below threshold | AO disabled, minimal bloom, no FBO, no shader overlays, no float motion |
-| `'medium'` | FPS recovery from low, or moderate dip from high | AO with 4 samples, moderate bloom, reduced effects |
-| `'high'` | Discrete GPU with good sustained FPS | Full AO (8 samples + 4 denoise), full bloom (6 levels), all effects |
+| Tier       | When                                                   | Visual impact                                                           |
+| ---------- | ------------------------------------------------------ | ----------------------------------------------------------------------- |
+| `'low'`    | Integrated GPU, ≤4 cores, or FPS drops below threshold | AO disabled, minimal bloom, no FBO, no shader overlays, no float motion |
+| `'medium'` | FPS recovery from low, or moderate dip from high       | AO with 4 samples, moderate bloom, reduced effects                      |
+| `'high'`   | Discrete GPU with good sustained FPS                   | Full AO (8 samples + 4 denoise), full bloom (6 levels), all effects     |
 
 ### Initial Detection
 
@@ -26,10 +27,15 @@ Quality is managed globally via `QualityContext` with three tiers:
 `useAdaptiveQuality` monitors FPS inside the R3F render loop and adjusts tiers:
 
 ```javascript
-const { quality, fps } = useAdaptiveQuality({ targetFps: 55, checkInterval: 1000, enabled: true });
+const { quality, fps } = useAdaptiveQuality({
+    targetFps: 55,
+    checkInterval: 1000,
+    enabled: true,
+});
 ```
 
 **Switching thresholds (with targetFps = 55):**
+
 - `avgFps < 45` → degrade one tier
 - `avgFps < 50` → degrade from high to medium only
 - `avgFps > 60` → upgrade one tier
@@ -51,12 +57,29 @@ Memoize settings based on quality — recalculate only when tier changes:
 const ppSettings = useMemo(() => {
     switch (quality) {
         case 'low':
-            return { enableAO: false, bloomIntensity: 0.3, bloomLevels: 2, multisampling: 0 };
+            return {
+                enableAO: false,
+                bloomIntensity: 0.3,
+                bloomLevels: 2,
+                multisampling: 0,
+            };
         case 'medium':
-            return { enableAO: true, aoSamples: 4, bloomIntensity: 0.45, bloomLevels: 4, multisampling: 0 };
+            return {
+                enableAO: true,
+                aoSamples: 4,
+                bloomIntensity: 0.45,
+                bloomLevels: 4,
+                multisampling: 0,
+            };
         case 'high':
         default:
-            return { enableAO: true, aoSamples: 8, bloomIntensity: 0.55, bloomLevels: 6, multisampling: 0 };
+            return {
+                enableAO: true,
+                aoSamples: 8,
+                bloomIntensity: 0.55,
+                bloomLevels: 6,
+                multisampling: 0,
+            };
     }
 }, [quality]);
 ```
@@ -75,20 +98,19 @@ Conditionally render expensive effects:
 Skip entire meshes and shader overlays on low quality:
 
 ```javascript
-{!isLowQuality && (
-    <mesh position={[0, 0, 0.002]}>
-        <pixelOverlayMaterial ref={materialRef} transparent depthWrite={false} />
-    </mesh>
-)}
+{
+    !isLowQuality && (
+        <mesh position={[0, 0, 0.002]}>
+            <pixelOverlayMaterial ref={materialRef} transparent depthWrite={false} />
+        </mesh>
+    );
+}
 ```
 
 Disable Float motion on low quality:
 
 ```javascript
-<Float
-    floatIntensity={quality !== 'low' ? FLOAT_CONFIG.INTENSITY : 0}
-    rotationIntensity={quality !== 'low' ? FLOAT_CONFIG.ROTATION_INTENSITY : 0}
-/>
+<Float floatIntensity={quality !== 'low' ? FLOAT_CONFIG.INTENSITY : 0} rotationIntensity={quality !== 'low' ? FLOAT_CONFIG.ROTATION_INTENSITY : 0} />
 ```
 
 ## Frame Skipping
@@ -131,12 +153,12 @@ Standard Canvas configuration:
 >
 ```
 
-| Setting | Purpose |
-|---------|---------|
-| `dpr={[1, 1.5]}` | Clamp pixel ratio between 1x and 1.5x (prevents 2x/3x on high-DPI) |
-| `performance={{ min: 0.5 }}` | R3F can dynamically scale resolution down to 50% |
-| `antialias: false` | Disable on carousel/card scenes where post-processing handles edges |
-| `alpha: false, stencil: false` | Skip unused GPU buffers |
+| Setting                        | Purpose                                                             |
+| ------------------------------ | ------------------------------------------------------------------- |
+| `dpr={[1, 1.5]}`               | Clamp pixel ratio between 1x and 1.5x (prevents 2x/3x on high-DPI)  |
+| `performance={{ min: 0.5 }}`   | R3F can dynamically scale resolution down to 50%                    |
+| `antialias: false`             | Disable on carousel/card scenes where post-processing handles edges |
+| `alpha: false, stencil: false` | Skip unused GPU buffers                                             |
 
 ## Adding a New Quality-Sensitive Feature
 
