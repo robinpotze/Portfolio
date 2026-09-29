@@ -1,14 +1,16 @@
-name: CI
+name: CI (contact-form Worker)
 
 on:
     push:
         branches:
             - master
-        paths-ignore:
-            - 'workers/**'
+        paths:
+            - 'workers/contact-form/**'
+            - '.github/workflows/deploy-worker.yml'
     pull_request:
-        paths-ignore:
-            - 'workers/**'
+        paths:
+            - 'workers/contact-form/**'
+            - '.github/workflows/deploy-worker.yml'
     workflow_dispatch:
 
 permissions:
@@ -40,8 +42,9 @@ jobs:
             - name: Format check
               run: npm run fmt:check
 
-            - name: Build
-              run: npm run build
+            - name: Validate Worker (dry run)
+              if: github.event_name == 'pull_request'
+              run: npx wrangler deploy --dry-run -c workers/contact-form/wrangler.toml
 
             - name: Deploy
               if: github.event_name != 'pull_request'
@@ -49,4 +52,4 @@ jobs:
               with:
                   apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
                   accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-                  command: deploy
+                  command: deploy -c workers/contact-form/wrangler.toml
