@@ -1,3 +1,4 @@
+import { cloudflare } from '@cloudflare/vite-plugin';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import glsl from 'vite-plugin-glsl';
@@ -9,7 +10,6 @@ export default defineConfig({
         outDir: 'dist',
     },
     resolve: {
-        // No path.resolve needed. Just use root-relative paths starting with '/'
         alias: {
             '@': '/src',
             '@app': '/src/app',
@@ -21,7 +21,7 @@ export default defineConfig({
             '@utils': '/src/utils',
         },
     },
-    plugins: [react(), glsl(), svgr()],
+    plugins: [react(), glsl(), svgr(), cloudflare()],
     server: {
         port: 3000,
     },

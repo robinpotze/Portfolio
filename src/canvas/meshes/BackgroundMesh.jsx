@@ -1,6 +1,7 @@
-import { useGLTF, useVideoTexture } from '@react-three/drei';
-import { Suspense, memo, useEffect } from 'react';
+import { useGLTF } from '@react-three/drei';
+import { memo, useEffect } from 'react';
 import * as THREE from 'three';
+import useVideoTexture from '@hooks/useVideoTexture.js';
 
 function BackgroundMeshInner({ paused = false, ...props }) {
     const video = useVideoTexture('/assets/video/blackwall.mp4', {
@@ -33,6 +34,10 @@ function BackgroundMeshInner({ paused = false, ...props }) {
         }
     }, [paused, video]);
 
+    if (!video) {
+        return <FallbackMesh {...props} />;
+    }
+
     return (
         <mesh geometry={nodes.Wall.geometry} {...props}>
             <meshStandardMaterial
@@ -58,11 +63,7 @@ function FallbackMesh(props) {
 }
 
 function BackgroundMesh(props) {
-    return (
-        <Suspense fallback={<FallbackMesh {...props} />}>
-            <BackgroundMeshInner {...props} />
-        </Suspense>
-    );
+    return <BackgroundMeshInner {...props} />;
 }
 
 export default memo(BackgroundMesh);

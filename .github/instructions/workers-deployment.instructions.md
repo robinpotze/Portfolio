@@ -9,33 +9,31 @@ applyTo: 'workers/**'
 
 The project has two deployable artifacts:
 
-| Artifact         | Stack             | Hosting                               | Directory               |
-| ---------------- | ----------------- | ------------------------------------- | ----------------------- |
-| Frontend (SPA)   | Vite + React      | Cloudflare Pages (or any static host) | `/` (root)              |
-| Contact Form API | Cloudflare Worker | Cloudflare Workers                    | `workers/contact-form/` |
+| Artifact         | Stack             | Hosting                            | Directory               |
+| ---------------- | ----------------- | ---------------------------------- | ----------------------- |
+| Frontend (SPA)   | Vite + React      | Cloudflare Workers (static assets) | `/` (root)              |
+| Contact Form API | Cloudflare Worker | Cloudflare Workers                 | `workers/contact-form/` |
 
-These are independent — they have separate `package.json` files and deploy separately.
+They deploy separately (separate Worker names, routes and secrets) but share the repo's single `package.json`, lockfile and wrangler version. The worker directory holds only `wrangler.toml` and `src/`.
 
 ## Frontend Build & Deploy
 
-```bash
-# Build
-npm run build          # outputs to dist/
+The frontend is an assets-only Worker configured in the root `wrangler.jsonc` (`not_found_handling: "single-page-application"` serves `index.html` for client routes). `@cloudflare/vite-plugin` runs dev and preview inside the Workers runtime and writes the deploy config to `dist/`.
 
-# Preview locally
-npm run start          # vite preview on built output
+```bash
+npm run build          # outputs to dist/
+npm run start          # vite preview (Workers runtime) on built output
+npm run deploy         # build + wrangler deploy
 ```
 
-The Vite config splits vendor chunks aggressively (React, Three.js, R3F, Motion each get their own chunk). Keep `chunkSizeWarningLimit: 600` — if a chunk exceeds this, refactor the import rather than raising the limit.
+CI (`.github/workflows/deploy.yml`) lints, format-checks, builds and deploys on every push to `master` via `cloudflare/wrangler-action`. It needs the `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` repository secrets.
 
 ## Contact Form Worker
 
 ### Local Development
 
 ```bash
-cd workers/contact-form
-npm install
-npm run dev            # wrangler dev — runs locally on port 8787
+npm run worker:dev     # wrangler dev -c workers/contact-form/wrangler.toml — port 8787
 ```
 
 ### Configuration (`wrangler.toml`)
@@ -61,9 +59,10 @@ The worker uses three secrets (set via `npx wrangler secret put <NAME>`):
 ### Deploy
 
 ```bash
-cd workers/contact-form
-npm run deploy         # wrangler deploy
+npm run worker:deploy  # wrangler deploy -c workers/contact-form/wrangler.toml
 ```
+
+CI deploys it from `.github/workflows/deploy-worker.yml` on pushes to `master` that touch `workers/contact-form/**`. It uses the same `CLOUDFLARE_API_TOKEN` / `CLOUDFLARE_ACCOUNT_ID` secrets as the frontend.
 
 ### Worker Code Conventions
 
@@ -76,8 +75,8 @@ npm run deploy         # wrangler deploy
 
 ### Adding a New Worker
 
-1. Create `workers/<name>/` with its own `package.json` and `wrangler.toml`
-2. Add `dev` and `deploy` scripts to the worker's `package.json`
+1. Create `workers/<name>/` with a `wrangler.toml` and `src/` — no separate `package.json`
+2. Add `<name>:dev` and `<name>:deploy` scripts to the root `package.json` passing `-c workers/<name>/wrangler.toml`
 3. Set `compatibility_date` to the current date
 4. Add secrets via `npx wrangler secret put`
 5. Document the worker's purpose and secrets in this instruction file
