@@ -64,20 +64,14 @@ export default {
             });
 
             if (!res.ok) {
-                const error = await res.text();
-                return new Error(
-                    JSON.stringify({
-                        error: 'Failed to send email',
-                        details: error,
-                    }),
-                    {
-                        status: 502,
-                        headers: {
-                            ...CORS_HEADERS,
-                            'Content-Type': 'application/json',
-                        },
-                    }
-                );
+                console.error('Resend request failed', res.status, await res.text());
+                return new Response(JSON.stringify({ error: 'Failed to send email' }), {
+                    status: 502,
+                    headers: {
+                        ...CORS_HEADERS,
+                        'Content-Type': 'application/json',
+                    },
+                });
             }
 
             return new Response(JSON.stringify({ success: true }), {
@@ -88,19 +82,14 @@ export default {
                 },
             });
         } catch (err) {
-            return new Error(
-                JSON.stringify({
-                    error: 'Internal server error',
-                    details: err,
-                }),
-                {
-                    status: 500,
-                    headers: {
-                        ...CORS_HEADERS,
-                        'Content-Type': 'application/json',
-                    },
-                }
-            );
+            console.error('Contact form error', err);
+            return new Response(JSON.stringify({ error: 'Internal server error' }), {
+                status: 500,
+                headers: {
+                    ...CORS_HEADERS,
+                    'Content-Type': 'application/json',
+                },
+            });
         }
     },
 };
