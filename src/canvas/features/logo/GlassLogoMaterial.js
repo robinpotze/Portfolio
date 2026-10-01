@@ -1,7 +1,7 @@
 import { shaderMaterial } from '@react-three/drei';
 import { extend } from '@react-three/fiber';
-import glassFragmentShader from '../shaders/glass/GlassFrag.glsl?raw';
-import glassVertexShader from '../shaders/glass/GlassVert.glsl?raw';
+import glassFragmentShader from './glass.frag.glsl?raw';
+import glassVertexShader from './glass.vert.glsl?raw';
 import * as THREE from 'three';
 
 export const GlassLogoMaterial = shaderMaterial(

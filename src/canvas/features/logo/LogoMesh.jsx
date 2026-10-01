@@ -1,10 +1,10 @@
 import { useQuality } from '@app/QualityContext';
 import useNoiseTexture from '@canvas/core/textures/useNoiseTexture';
-import '@canvas/materials/GlassLogoMaterial';
 import { useFBO, useGLTF } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { memo, useEffect, useRef } from 'react';
 import * as THREE from 'three';
+import './GlassLogoMaterial';
 
 function LogoMesh({ enableFBO = true, ...props }) {
     const groupRef = useRef();
