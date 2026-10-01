@@ -1,9 +1,9 @@
 import { useQuality } from '@app/QualityContext';
+import useNoiseTexture from '@canvas/core/textures/useNoiseTexture';
 import '@canvas/materials/PixelOverlayMaterial';
 import '@canvas/materials/WorkCardMaterial';
 import { FLOAT_CONFIG } from '@config/animation.config';
 import { CAROUSEL_CONFIG } from '@config/carousel.config';
-import useNoiseTexture from '@hooks/useNoiseTexture';
 import { Float, Text, useTexture } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { calculateCardPosition, calculateCardRotation, calculateCardScale } from '@utils/carousel';

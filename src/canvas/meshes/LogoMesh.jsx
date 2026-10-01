@@ -1,6 +1,6 @@
 import { useQuality } from '@app/QualityContext';
+import useNoiseTexture from '@canvas/core/textures/useNoiseTexture';
 import '@canvas/materials/GlassLogoMaterial';
-import useNoiseTexture from '@hooks/useNoiseTexture';
 import { useFBO, useGLTF } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { memo, useEffect, useRef } from 'react';

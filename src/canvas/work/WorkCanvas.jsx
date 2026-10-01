@@ -1,21 +1,14 @@
+import CanvasRoot from '@canvas/core/CanvasRoot';
 import NineSliceBorder from '@components/ui/NineSliceBorder';
 import { SPRING_CONFIG } from '@config/animation.config';
-import { CANVAS_DPR, CANVAS_GL_DEFAULTS } from '@config/canvas.config';
 import { CAROUSEL_CONFIG } from '@config/carousel.config';
-import useAdaptiveQuality from '@hooks/useAdaptiveQuality';
 import useBorderProjection from '@hooks/useBorderProjection';
 import { PerspectiveCamera } from '@react-three/drei';
-import { Canvas } from '@react-three/fiber';
 import styles from '@routes/Work/Work.module.css';
 import Lenis from 'lenis';
 import { useMotionValue, useSpring } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
 import WorkScene from './WorkScene';
-
-function AdaptiveQualityMonitor({ enabled = true }) {
-    useAdaptiveQuality({ enabled });
-    return null;
-}
 
 export default function WorkCanvas({ items, onCardNavigate, onScrollChange, startAnimations = true }) {
     const scrollProgressRef = useRef(0);
@@ -134,16 +127,7 @@ export default function WorkCanvas({ items, onCardNavigate, onScrollChange, star
 
     return (
         <div ref={containerRef} className={styles.canvasContainer}>
-            <Canvas
-                dpr={CANVAS_DPR}
-                performance={{ min: 0.5 }}
-                gl={{
-                    ...CANVAS_GL_DEFAULTS,
-                    antialias: false,
-                }}
-                style={canvasStyle}
-            >
-                <AdaptiveQualityMonitor enabled={startAnimations} />
+            <CanvasRoot adaptiveQuality={startAnimations} performance={{ min: 0.5 }} gl={{ antialias: false }} style={canvasStyle}>
                 <PerspectiveCamera ref={cameraRef} makeDefault position={CAROUSEL_CONFIG.CAMERA.POSITION} fov={CAROUSEL_CONFIG.CAMERA.FOV} />
                 <WorkScene
                     items={items}
@@ -155,7 +139,7 @@ export default function WorkCanvas({ items, onCardNavigate, onScrollChange, star
                     isMobile={isMobile}
                     startAnimations={startAnimations}
                 />
-            </Canvas>
+            </CanvasRoot>
             <div className={styles.scrollContent} style={scrollStyle} />
             <NineSliceBorder x={x} y={y} w={w} h={h} />
         </div>

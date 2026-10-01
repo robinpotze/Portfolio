@@ -1,11 +1,11 @@
 import { useQuality } from '@app/QualityContext';
-import Rig from '@canvas/camera/Rig';
+import useCameraAnimation from '@canvas/core/animation/useCameraAnimation';
+import useObjectAnimation from '@canvas/core/animation/useObjectAnimation';
+import Rig from '@canvas/core/camera/Rig';
 import LaserPlane from '@canvas/effects/LaserPlane';
 import BackgroundMesh from '@canvas/meshes/BackgroundMesh';
 import LogoMesh from '@canvas/meshes/LogoMesh';
 import { BREAKPOINTS, FLOAT_CONFIG, REVEAL, SCENE, TIMEOUT } from '@config/animation.config';
-import useCameraAnimation from '@hooks/useCameraAnimation';
-import useObjectAnimation from '@hooks/useObjectAnimation';
 import { Float, PerspectiveCamera, Text } from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
 import { Bloom, EffectComposer, N8AO } from '@react-three/postprocessing';

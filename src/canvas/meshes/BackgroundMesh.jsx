@@ -1,7 +1,7 @@
+import useVideoTexture from '@canvas/core/textures/useVideoTexture';
 import { useGLTF } from '@react-three/drei';
 import { memo, useEffect } from 'react';
 import * as THREE from 'three';
-import useVideoTexture from '@hooks/useVideoTexture.js';
 
 function BackgroundMeshInner({ paused = false, ...props }) {
     const video = useVideoTexture('/assets/video/blackwall.mp4', {
