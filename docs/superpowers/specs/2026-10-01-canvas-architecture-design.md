@@ -16,13 +16,13 @@ This is sub-project 1 of 3:
 
 - **Type-based folders separate things that change together.** A material in `canvas/materials/` imports its shaders from `canvas/shaders/<name>/`, and the component that uses it lives in `canvas/meshes/`, `canvas/effects/` or `canvas/work/`. One visual effect is spread over three folders.
 - **Dependencies point the wrong way.**
-  - `canvas/home/HomeCanvas.jsx` imports `@routes/Home/Home.module.css`.
-  - `canvas/work/WorkCanvas.jsx` imports `@routes/Work/Work.module.css`.
-  - `hooks/useBorderProjection.js` imports `CARD_WIDTH` and `CARD_HEIGHT` from the `canvas/work/WorkCard.jsx` component.
+    - `canvas/home/HomeCanvas.jsx` imports `@routes/Home/Home.module.css`.
+    - `canvas/work/WorkCanvas.jsx` imports `@routes/Work/Work.module.css`.
+    - `hooks/useBorderProjection.js` imports `CARD_WIDTH` and `CARD_HEIGHT` from the `canvas/work/WorkCard.jsx` component.
 - **Canvas-only code sits in app-wide folders.**
-  - `src/hooks`: useAdaptiveQuality, useBorderProjection, useCameraAnimation, useObjectAnimation, useNoiseTexture, useVideoTexture.
-  - `src/config`: canvas.config, carousel.config, laser.config.
-  - `src/utils`: carousel.js.
+    - `src/hooks`: useAdaptiveQuality, useBorderProjection, useCameraAnimation, useObjectAnimation, useNoiseTexture, useVideoTexture.
+    - `src/config`: canvas.config, carousel.config, laser.config.
+    - `src/utils`: carousel.js.
 - **Duplication.** `AdaptiveQualityMonitor` and the `<Canvas>` setup (DPR, gl defaults) are copy-pasted in HomeCanvas and WorkCanvas.
 - **Naming drift.** Shader files use `.glsl`, `.frag` and `.vert` inconsistently. Material files use `.jsx` but contain no JSX.
 - **Orphans.** `shaders/Flame.glsl` is imported nowhere. `shaders/transition/*` is unused and work in progress (`Transition.glsl` has uncommitted edits).
@@ -165,14 +165,14 @@ The canvas container styles move from the route CSS modules into the scene CSS m
 - Move every file with `git mv` so history is preserved. `Transition.glsl` has uncommitted user edits. `git mv` carries the working-tree changes along, and those edits must **not** be committed as part of this work: stage only the rename, or leave the file unstaged.
 - Shader imports keep the `?raw` suffix and only their paths change.
 - Commit in slices. Each commit must build on its own:
-  1. core (hooks, config, Rig, CanvasRoot)
-  2. logo
-  3. laser (including the param relocation)
-  4. background
-  5. carousel (including cardGeometry)
-  6. transition + lab
-  7. scenes (including the CSS move and CanvasRoot adoption)
-  8. cleanup (empty folders, stale references)
+    1. core (hooks, config, Rig, CanvasRoot)
+    2. logo
+    3. laser (including the param relocation)
+    4. background
+    5. carousel (including cardGeometry)
+    6. transition + lab
+    7. scenes (including the CSS move and CanvasRoot adoption)
+    8. cleanup (empty folders, stale references)
 
 ## Verification
 
@@ -182,9 +182,9 @@ The repo has no test runner. Every slice is verified with:
 2. `npm run lint` and `npm run fmt:check` pass.
 3. No stale paths: `grep -rnE "@canvas/(camera|effects|home|materials|meshes|shaders|work)/|@hooks/(useAdaptiveQuality|useBorderProjection|useCameraAnimation|useObjectAnimation|useNoiseTexture|useVideoTexture)|@config/(canvas|carousel|laser)\.config|@utils/carousel" src` returns nothing.
 4. Layer rules hold:
-   - `grep -rn "@routes/" src/canvas` returns nothing.
-   - No file under `src/canvas/features/<a>/` imports `@canvas/features/<b>` or `@canvas/scenes`.
-   - No file under `src/canvas/core/` imports `@canvas/features` or `@canvas/scenes`.
+    - `grep -rn "@routes/" src/canvas` returns nothing.
+    - No file under `src/canvas/features/<a>/` imports `@canvas/features/<b>` or `@canvas/scenes`.
+    - No file under `src/canvas/core/` imports `@canvas/features` or `@canvas/scenes`.
 
 After the last slice, do a manual behavior check in the dev server against `master`:
 
