@@ -3,10 +3,10 @@ import { CAROUSEL_CONFIG, useBorderProjection } from '@canvas/features/carousel'
 import NineSliceBorder from '@components/ui/NineSliceBorder';
 import { SPRING_CONFIG } from '@config/animation.config';
 import { PerspectiveCamera } from '@react-three/drei';
-import styles from '@routes/Work/Work.module.css';
 import Lenis from 'lenis';
 import { useMotionValue, useSpring } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
+import styles from './WorkCanvas.module.css';
 import WorkScene from './WorkScene';
 
 export default function WorkCanvas({ items, onCardNavigate, onScrollChange, startAnimations = true }) {

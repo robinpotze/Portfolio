@@ -1,5 +1,5 @@
 import CanvasRoot from '@canvas/core/CanvasRoot';
-import styles from '@routes/Home/Home.module.css';
+import styles from './HomeCanvas.module.css';
 import HomeScene from './HomeScene';
 
 export default function HomeCanvas({ scrollProgress, startAnimations, onSceneReady }) {

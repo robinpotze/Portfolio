@@ -16,7 +16,7 @@ import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
 import styles from './Home.module.css';
 
-const HomeCanvas = lazy(() => import('@canvas/home/HomeCanvas'));
+const HomeCanvas = lazy(() => import('@canvas/scenes/home/HomeCanvas'));
 
 const sideContainerVariants = {
     hidden: {
