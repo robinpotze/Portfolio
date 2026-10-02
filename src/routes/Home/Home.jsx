@@ -9,11 +9,10 @@ import RadialGrid from '@components/ui/RadialText/RadialGrid';
 import RedoAnimText from '@components/ui/RandomText/RedoAnimText';
 import ScrollDown from '@components/ui/ScrollDown';
 import { EASING, REVEAL, SCROLL_THRESHOLDS, STAGGER, TIMEOUT } from '@config/animation.config';
-import { LASER_PARAMS } from '@config/laser.config';
 import useScrollNavigation from '@hooks/useScrollNavigation';
 import { useGLTF } from '@react-three/drei';
 import { motion } from 'motion/react';
-import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styles from './Home.module.css';
 
@@ -103,15 +102,6 @@ export default function Home() {
         []
     );
 
-    const laserProgress = sceneStarted ? scrollProgress : 0;
-    const laserParams = useMemo(() => {
-        const params = {};
-        for (const [key, { base, scale }] of Object.entries(LASER_PARAMS)) {
-            params[key] = base + laserProgress * scale;
-        }
-        return params;
-    }, [laserProgress]);
-
     return (
         <>
             {isLoading && (
@@ -181,7 +171,7 @@ export default function Home() {
             </div>
             <ErrorBoundary>
                 <Suspense fallback={null}>
-                    <HomeCanvas scrollProgress={scrollProgress} startAnimations={sceneStarted} laserParams={laserParams} />
+                    <HomeCanvas scrollProgress={scrollProgress} startAnimations={sceneStarted} />
                 </Suspense>
             </ErrorBoundary>
         </>

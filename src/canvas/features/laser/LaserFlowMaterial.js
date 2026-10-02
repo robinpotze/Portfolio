@@ -1,7 +1,7 @@
 import { extend } from '@react-three/fiber';
 import * as THREE from 'three';
-import laserFragmentShader from '../shaders/laser/laser.frag?raw';
-import laserVertexShader from '../shaders/laser/laser.vert?raw';
+import laserFragmentShader from './laser.frag.glsl?raw';
+import laserVertexShader from './laser.vert.glsl?raw';
 
 class LaserFlowMaterial extends THREE.RawShaderMaterial {
     constructor() {

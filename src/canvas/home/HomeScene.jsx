@@ -2,8 +2,8 @@ import { useQuality } from '@app/QualityContext';
 import useCameraAnimation from '@canvas/core/animation/useCameraAnimation';
 import useObjectAnimation from '@canvas/core/animation/useObjectAnimation';
 import Rig from '@canvas/core/camera/Rig';
+import { LaserPlane } from '@canvas/features/laser';
 import { LogoMesh } from '@canvas/features/logo';
-import LaserPlane from '@canvas/effects/LaserPlane';
 import BackgroundMesh from '@canvas/meshes/BackgroundMesh';
 import { BREAKPOINTS, FLOAT_CONFIG, REVEAL, SCENE, TIMEOUT } from '@config/animation.config';
 import { Float, PerspectiveCamera, Text } from '@react-three/drei';
@@ -11,7 +11,7 @@ import { useThree } from '@react-three/fiber';
 import { Bloom, EffectComposer, N8AO } from '@react-three/postprocessing';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-export default function HomeScene({ scrollProgress = 0, startAnimations = true, laserParams = {}, onSceneReady = null }) {
+export default function HomeScene({ scrollProgress = 0, startAnimations = true, onSceneReady = null }) {
     const logoRef = useRef();
     const backgroundRef = useRef();
     const subtitleRef = useRef();
@@ -161,7 +161,7 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true, 
 
     return (
         <>
-            {startAnimations && <LaserPlane {...laserParams} />}
+            {startAnimations && <LaserPlane progress={scrollProgress} />}
             <PerspectiveCamera ref={cameraRef} makeDefault position={[0, 0, 30]} fov={70} />
             <ambientLight ref={lightRef} intensity={0} />
 

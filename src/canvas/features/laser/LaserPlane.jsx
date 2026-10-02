@@ -1,16 +1,17 @@
 import { useQuality } from '@app/QualityContext';
-import '@canvas/materials/LaserFlowMaterial';
 import { useFrame, useThree } from '@react-three/fiber';
 import { getCSSColorRGBA } from '@utils/cssUtils';
 import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
+import { LASER_PARAMS } from './laser.config';
+import './LaserFlowMaterial';
 
 const FOG_QUALITY_BY_QUALITY = { low: 0, medium: 0.3, high: 1 };
 
 const geometry = new THREE.BufferGeometry();
 geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array([-1, -1, 0, 3, -1, 0, -1, 3, 0]), 3));
 
-export default function LaserPlane({
+function LaserFlow({
     horizontalSizing = 0.5,
     verticalSizing = 2.0,
     horizontalBeamOffset = 0.0,
@@ -132,4 +133,19 @@ export default function LaserPlane({
             <laserFlowMaterial ref={matRef} />
         </mesh>
     );
+}
+
+/**
+ * Scroll-driven laser. Maps `progress` (0–1) to LaserFlow params: base + progress * scale per LASER_PARAMS key.
+ */
+export default function LaserPlane({ progress = 0 }) {
+    const params = useMemo(() => {
+        const mapped = {};
+        for (const [key, { base, scale }] of Object.entries(LASER_PARAMS)) {
+            mapped[key] = base + progress * scale;
+        }
+        return mapped;
+    }, [progress]);
+
+    return <LaserFlow {...params} />;
 }
