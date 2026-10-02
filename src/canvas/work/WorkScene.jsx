@@ -1,12 +1,10 @@
 import { useQuality } from '@app/QualityContext';
+import { CAROUSEL_CONFIG, calculateCardCenteredness, WorkCard } from '@canvas/features/carousel';
 import { BREAKPOINTS } from '@config/animation.config';
-import { CAROUSEL_CONFIG } from '@config/carousel.config';
 import { useFrame, useThree } from '@react-three/fiber';
 import { Bloom, EffectComposer } from '@react-three/postprocessing';
-import { calculateCardCenteredness } from '@utils/carousel';
 import { entryEase } from '@utils/easingFunctions';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import WorkCard from './WorkCard';
 
 export default function WorkScene({
     items = [],

@@ -1,8 +1,8 @@
 import { shaderMaterial } from '@react-three/drei';
 import { extend } from '@react-three/fiber';
 import * as THREE from 'three';
-import fragShader from '../shaders/pixelOverlay/pixelOverlay.frag?raw';
-import vertShader from '../shaders/pixelOverlay/pixelOverlay.vert?raw';
+import fragShader from './pixelOverlay.frag.glsl?raw';
+import vertShader from './pixelOverlay.vert.glsl?raw';
 
 const PixelOverlayMaterial = shaderMaterial(
     {

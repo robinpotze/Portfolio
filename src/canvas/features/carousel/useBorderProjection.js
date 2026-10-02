@@ -1,8 +1,8 @@
-import { CARD_HEIGHT, CARD_WIDTH } from '@canvas/work/WorkCard';
-import { CAROUSEL_CONFIG } from '@config/carousel.config';
-import { calculateCardPosition, calculateCardScale } from '@utils/carousel';
 import { useCallback, useRef } from 'react';
 import * as THREE from 'three';
+import { CARD_HEIGHT, CARD_WIDTH } from './cardGeometry';
+import { calculateCardPosition, calculateCardScale } from './carousel';
+import { CAROUSEL_CONFIG } from './carousel.config';
 
 // Reusable vectors to avoid allocation per frame
 const _cardLocal = new THREE.Vector3();

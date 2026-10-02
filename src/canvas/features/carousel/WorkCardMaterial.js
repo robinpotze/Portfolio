@@ -1,8 +1,8 @@
 import { shaderMaterial } from '@react-three/drei';
 import { extend } from '@react-three/fiber';
 import * as THREE from 'three';
-import fragShader from '../shaders/workCard/workCard.frag?raw';
-import vertShader from '../shaders/workCard/workCard.vert?raw';
+import fragShader from './workCard.frag.glsl?raw';
+import vertShader from './workCard.vert.glsl?raw';
 
 const WorkCardMaterial = shaderMaterial(
     {

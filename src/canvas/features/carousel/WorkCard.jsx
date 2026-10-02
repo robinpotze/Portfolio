@@ -1,21 +1,17 @@
 import { useQuality } from '@app/QualityContext';
 import useNoiseTexture from '@canvas/core/textures/useNoiseTexture';
-import '@canvas/materials/PixelOverlayMaterial';
-import '@canvas/materials/WorkCardMaterial';
 import { FLOAT_CONFIG } from '@config/animation.config';
-import { CAROUSEL_CONFIG } from '@config/carousel.config';
 import { Float, Text, useTexture } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
-import { calculateCardPosition, calculateCardRotation, calculateCardScale } from '@utils/carousel';
 import { getCSSVariable } from '@utils/cssUtils';
 import { entryEase } from '@utils/easingFunctions';
 import { useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
-
-// Derive card size from carousel geometry: slightly less than one polygon side
-const chord = 2 * CAROUSEL_CONFIG.RADIUS * Math.sin(CAROUSEL_CONFIG.ANGLE_STEP / 2);
-export const CARD_WIDTH = chord * CAROUSEL_CONFIG.CARD_GAP_FACTOR;
-export const CARD_HEIGHT = CARD_WIDTH / CAROUSEL_CONFIG.CARD_ASPECT;
+import { CARD_HEIGHT, CARD_WIDTH } from './cardGeometry';
+import { calculateCardPosition, calculateCardRotation, calculateCardScale } from './carousel';
+import { CAROUSEL_CONFIG } from './carousel.config';
+import './PixelOverlayMaterial';
+import './WorkCardMaterial';
 
 const LGHT_COLOR = getCSSVariable('--c-LGHT') || '#eee';
 

@@ -1,4 +1,4 @@
-import { CAROUSEL_CONFIG } from '@config/carousel.config';
+import { CAROUSEL_CONFIG } from './carousel.config';
 
 export function calculateCardPosition(index) {
     const angle = index * CAROUSEL_CONFIG.ANGLE_STEP;

@@ -1,8 +1,7 @@
 import CanvasRoot from '@canvas/core/CanvasRoot';
+import { CAROUSEL_CONFIG, useBorderProjection } from '@canvas/features/carousel';
 import NineSliceBorder from '@components/ui/NineSliceBorder';
 import { SPRING_CONFIG } from '@config/animation.config';
-import { CAROUSEL_CONFIG } from '@config/carousel.config';
-import useBorderProjection from '@hooks/useBorderProjection';
 import { PerspectiveCamera } from '@react-three/drei';
 import styles from '@routes/Work/Work.module.css';
 import Lenis from 'lenis';
