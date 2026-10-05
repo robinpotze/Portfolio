@@ -19,6 +19,7 @@
     - [5.4 — Sections](#54--sections)
     - [5.5 — Layout](#55--layout)
 - [6 — Canvas & Scene Components](#6--canvas--scene-components)
+    - [6.0 — Canvas Architecture](#60--canvas-architecture)
     - [6.1 — Home Scene](#61--home-scene)
     - [6.2 — Work Scene](#62--work-scene)
     - [6.3 — Shared Scene Nodes](#63--shared-scene-nodes)
@@ -108,17 +109,16 @@ Simple context that holds the sorted project items array. Exposes `useWorkItems(
 
 > **`src/routes/Home/Home.jsx`** — Landing page
 
-Combines the loading sequence, hero copy, decorative overlays, and the home 3D scene. Uses `useScrollNavigation` to turn downward scroll progress into both route-transition intent and laser-scene parameter changes.
+Combines the loading sequence, hero copy, decorative overlays, and the home 3D scene. Uses `useScrollNavigation` to turn downward scroll progress into route-transition intent.
 
 - Skips the loading screen when arriving via internal navigation (`location.state.fromNavigation`).
 - Preloads GLB assets (`Logo.glb`, `Wall.glb`) on mount.
 - Resets scroll position and clears navigation state on entry.
-- Derives `laserParams` by scaling each `LASER_PARAMS` value with scroll progress.
 - `HomeCanvas` renders behind the DOM content; interaction enabled only after loading completes.
 
-| Hooks                                                                   | Context | Config                                                                        | Children                                                                  |
-| ----------------------------------------------------------------------- | ------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| `useState`, `useEffect`, `useMemo`, `useRef`, **`useScrollNavigation`** | —       | `EASING`, `REVEAL`, `SCROLL_THRESHOLDS`, `STAGGER`, `TIMEOUT`, `LASER_PARAMS` | `HomeCanvas`, `LoadingScreen`, `ScrollDown`, `RadialGrid`, `RedoAnimText` |
+| Hooks                                                        | Context | Config                                                        | Children                                                                  |
+| ------------------------------------------------------------ | ------- | ------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `useState`, `useEffect`, `useRef`, **`useScrollNavigation`** | —       | `EASING`, `REVEAL`, `SCROLL_THRESHOLDS`, `STAGGER`, `TIMEOUT` | `HomeCanvas`, `LoadingScreen`, `ScrollDown`, `RadialGrid`, `RedoAnimText` |
 
 ---
 
@@ -513,10 +513,10 @@ Standard hero section for every case-study page. Renders project banner, overlay
 `src/canvas` is split into three layers. Imports flow one way only: `scenes → features → core`.
 
 - **`core/`**: generic 3D infrastructure (`CanvasRoot`, quality, animation and texture hooks, camera `Rig`). Never imports features or scenes.
-- **`features/<name>/`**: one folder per visual unit, with its component, material, shaders and config colocated. `index.js` is the public API. Features never import other features or scenes.
+- **`features/<name>/`**: one folder per visual unit, with its component, material, shaders and config colocated. `index.js` is the public API (shader-only folders such as `transition/` and `lab/` have none until a component consumes them). Features never import other features or scenes.
 - **`scenes/<route>/`**: composition roots (`HomeCanvas`/`HomeScene`, `WorkCanvas`/`WorkScene`). The only canvas modules routes import.
 
-Nothing in `src/canvas` imports `@routes/*`. Shaders are named `<name>.vert.glsl` / `<name>.frag.glsl`.
+Nothing in `src/canvas` imports `@routes/*`. Shaders are named `<name>.vert.glsl` / `<name>.frag.glsl` (a single-file shader stays `<name>.glsl`).
 
 ---
 
