@@ -80,6 +80,7 @@ export default function Contact() {
         email: '',
     });
     const [glitching, setGlitching] = useState(false);
+    const [sending, setSending] = useState(false);
     const [sendError, setSendError] = useState(null);
     const [statusMessageKey, setStatusMessageKey] = useState(0);
 
@@ -105,6 +106,7 @@ export default function Contact() {
 
     const onIdentify = useCallback(async () => {
         setSendError(null);
+        setSending(true);
         try {
             const res = await fetch(CONTACT_FORM_URL, {
                 method: 'POST',
@@ -123,6 +125,8 @@ export default function Contact() {
         } catch (err) {
             setSendError(getSendErrorConfig(err.status));
             setStatusMessageKey((prev) => prev + 1);
+        } finally {
+            setSending(false);
         }
     }, [formData]);
 
@@ -133,18 +137,18 @@ export default function Contact() {
                 setPhase('intercept');
                 setGlitching(false);
             }, TIMEOUT.GLITCH_DURATION_MS);
-        } else if (isIntercept && !glitching && isValidEmail) {
+        } else if (isIntercept && !glitching && !sending && isValidEmail) {
             onIdentify();
         }
-    }, [isIntercept, glitching, canSend, isValidEmail, onIdentify]);
+    }, [isIntercept, glitching, sending, canSend, isValidEmail, onIdentify]);
 
     const onEmailKeyDown = useCallback(
         (e) => {
             if (e.key === 'Enter') {
-                onIdentify();
+                onSend();
             }
         },
-        [onIdentify]
+        [onSend]
     );
 
     return (
@@ -182,7 +186,7 @@ export default function Contact() {
                             />
                             <ActionButton
                                 onClick={onSend}
-                                disabled={!canSend || glitching || (isIntercept && !isValidEmail)}
+                                disabled={!canSend || glitching || sending || (isIntercept && !isValidEmail)}
                                 icon="format_text_overflow"
                             >
                                 MSG.SEND
