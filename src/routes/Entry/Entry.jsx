@@ -4,6 +4,7 @@ import GradualBlur from '@components/ui/GradualBlur';
 import PageTitle from '@components/ui/PageTitle/PageTitle';
 import ScrollReveal from '@components/ui/ScrollReveal';
 import ProjectHero from '@routes/Entry/components/ProjectHero/ProjectHero';
+import NotFound from '@routes/NotFound/NotFound';
 import { EASING, LENIS, REVEAL } from '@config/animation.config';
 import useLenisScroll from '@hooks/useLenisScroll';
 import { motion } from 'motion/react';
@@ -27,11 +28,7 @@ export default function Entry() {
     const { Component: PageComponent, data } = pages[normalizedTitle] || {};
 
     if (!PageComponent || !data) {
-        return (
-            <div className={styles.page} id="work-overview">
-                404 - Project Not Found
-            </div>
-        );
+        return <NotFound message="This project does not exist." />;
     }
 
     return (
