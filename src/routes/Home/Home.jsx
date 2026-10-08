@@ -5,6 +5,7 @@ import SndDecal from '@/assets/decals/SND.svg?react';
 import CrsIcon from '@/assets/icons/CRS.svg?react';
 import ErrorBoundary from '@components/ErrorBoundary';
 import LoadingScreen from '@components/navigation/LoadingScreen';
+import PageTitle from '@components/ui/PageTitle/PageTitle';
 import RadialGrid from '@components/ui/RadialText/RadialGrid';
 import RedoAnimText from '@components/ui/RandomText/RedoAnimText';
 import ScrollDown from '@components/ui/ScrollDown';
@@ -104,6 +105,7 @@ export default function Home() {
 
     return (
         <>
+            <PageTitle />
             {isLoading && (
                 <LoadingScreen
                     onComplete={onLoadingComplete}

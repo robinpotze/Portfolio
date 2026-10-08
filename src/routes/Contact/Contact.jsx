@@ -9,6 +9,7 @@ import ErrorBoundary from '@components/ErrorBoundary';
 import ActionButton from '@components/ui/ActionButton/ActionButton';
 import BannerCorner from '@components/ui/BannerCorner/BannerCorner';
 import GlitchOverlay from '@components/ui/GlitchOverlay/GlitchOverlay';
+import PageTitle from '@components/ui/PageTitle/PageTitle';
 import RadGridTxt from '@components/ui/RadialText/TXT/RAD_GRID_TXT';
 import StatusMessage from '@components/ui/StatusMessage/StatusMessage';
 import StatusPanel from '@components/ui/StatusPanel/StatusPanel';
@@ -154,6 +155,7 @@ export default function Contact() {
     return (
         <ErrorBoundary>
             <div className={`${styles.page} ${glitching ? styles.pageGlitch : ''}`}>
+                <PageTitle name="Contact" />
                 <GlitchOverlay active={glitching} />
 
                 {/* Title */}

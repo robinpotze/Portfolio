@@ -1,6 +1,7 @@
 import CrsIcon from '@/assets/icons/CRS.svg?react';
 import DashLine from '@components/ui/DashLine';
 import GradualBlur from '@components/ui/GradualBlur';
+import PageTitle from '@components/ui/PageTitle/PageTitle';
 import ScrollReveal from '@components/ui/ScrollReveal';
 import ProjectHero from '@routes/Entry/components/ProjectHero/ProjectHero';
 import { EASING, LENIS, REVEAL } from '@config/animation.config';
@@ -35,6 +36,7 @@ export default function Entry() {
 
     return (
         <div className={styles.page} id={data.title.replaceAll(/\s+/g, '-') + '-page'}>
+            <PageTitle name={data.title} />
             <ProjectHero content={data} />
             <section className={styles.section}>
                 <div className={styles.header}>

@@ -1,5 +1,6 @@
 import ErrorBoundary from '@components/ErrorBoundary';
 import GridOverlay from '@components/ui/GridOverlay';
+import PageTitle from '@components/ui/PageTitle/PageTitle';
 import PixelCard from '@components/ui/PixelCard/PixelCard';
 import { EASING, REVEAL, SPRING_CONFIG, STAGGER } from '@config/animation.config';
 import { AnimatePresence, motion } from 'motion/react';
@@ -67,6 +68,7 @@ export default function About() {
     return (
         <ErrorBoundary>
             <div className={styles.page}>
+                <PageTitle name="About" />
                 <GridOverlay
                     className={styles.gridOverlay}
                     cellMinSize={100}
