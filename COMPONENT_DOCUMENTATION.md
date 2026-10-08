@@ -19,6 +19,7 @@
     - [5.4 — Sections](#54--sections)
     - [5.5 — Layout](#55--layout)
 - [6 — Canvas & Scene Components](#6--canvas--scene-components)
+    - [6.0 — Canvas Architecture](#60--canvas-architecture)
     - [6.1 — Home Scene](#61--home-scene)
     - [6.2 — Work Scene](#62--work-scene)
     - [6.3 — Shared Scene Nodes](#63--shared-scene-nodes)
@@ -108,17 +109,16 @@ Simple context that holds the sorted project items array. Exposes `useWorkItems(
 
 > **`src/routes/Home/Home.jsx`** — Landing page
 
-Combines the loading sequence, hero copy, decorative overlays, and the home 3D scene. Uses `useScrollNavigation` to turn downward scroll progress into both route-transition intent and laser-scene parameter changes.
+Combines the loading sequence, hero copy, decorative overlays, and the home 3D scene. Uses `useScrollNavigation` to turn downward scroll progress into route-transition intent.
 
 - Skips the loading screen when arriving via internal navigation (`location.state.fromNavigation`).
 - Preloads GLB assets (`Logo.glb`, `Wall.glb`) on mount.
 - Resets scroll position and clears navigation state on entry.
-- Derives `laserParams` by scaling each `LASER_PARAMS` value with scroll progress.
 - `HomeCanvas` renders behind the DOM content; interaction enabled only after loading completes.
 
-| Hooks                                                                   | Context | Config                                                                        | Children                                                                  |
-| ----------------------------------------------------------------------- | ------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| `useState`, `useEffect`, `useMemo`, `useRef`, **`useScrollNavigation`** | —       | `EASING`, `REVEAL`, `SCROLL_THRESHOLDS`, `STAGGER`, `TIMEOUT`, `LASER_PARAMS` | `HomeCanvas`, `LoadingScreen`, `ScrollDown`, `RadialGrid`, `RedoAnimText` |
+| Hooks                                                        | Context | Config                                                        | Children                                                                  |
+| ------------------------------------------------------------ | ------- | ------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `useState`, `useEffect`, `useRef`, **`useScrollNavigation`** | —       | `EASING`, `REVEAL`, `SCROLL_THRESHOLDS`, `STAGGER`, `TIMEOUT` | `HomeCanvas`, `LoadingScreen`, `ScrollDown`, `RadialGrid`, `RedoAnimText` |
 
 ---
 
@@ -508,23 +508,35 @@ Standard hero section for every case-study page. Renders project banner, overlay
 
 ## 6 — Canvas & Scene Components
 
+### 6.0 — Canvas Architecture
+
+`src/canvas` is split into three layers. Imports flow one way only: `scenes → features → core`.
+
+- **`core/`**: generic 3D infrastructure (`CanvasRoot`, quality, animation and texture hooks, camera `Rig`). Never imports features or scenes.
+- **`features/<name>/`**: one folder per visual unit, with its component, material, shaders and config colocated. `index.js` is the public API (shader-only folders such as `transition/` and `lab/` have none until a component consumes them). Features never import other features or scenes.
+- **`scenes/<route>/`**: composition roots (`HomeCanvas`/`HomeScene`, `WorkCanvas`/`WorkScene`). The only canvas modules routes import.
+
+Nothing in `src/canvas` imports `@routes/*`. Shaders are named `<name>.vert.glsl` / `<name>.frag.glsl` (a single-file shader stays `<name>.glsl`).
+
+---
+
 ### 6.1 — Home Scene
 
 #### `HomeCanvas`
 
-> **`src/canvas/home/HomeCanvas.jsx`** — Canvas wrapper for home route
+> **`src/canvas/scenes/home/HomeCanvas.jsx`** — Canvas wrapper for home route
 
-Creates the R3F `<Canvas>` with project-preferred WebGL settings and passes scroll/animation props to `HomeScene`. Contains an internal `AdaptiveQualityMonitor` component that runs the quality monitoring loop.
+Renders `CanvasRoot` (shared `<Canvas>` with project DPR/GL defaults and the adaptive quality monitor) inside a fixed container styled by `HomeCanvas.module.css`, and passes scroll/animation props to `HomeScene`.
 
-| Hooks                                                  | Config                             | Children    |
-| ------------------------------------------------------ | ---------------------------------- | ----------- |
-| **`useAdaptiveQuality`** (in `AdaptiveQualityMonitor`) | `CANVAS_DPR`, `CANVAS_GL_DEFAULTS` | `HomeScene` |
+| Hooks | Config | Children                  |
+| ----- | ------ | ------------------------- |
+| —     | —      | `CanvasRoot`, `HomeScene` |
 
 ---
 
 #### `HomeScene`
 
-> **`src/canvas/home/HomeScene.jsx`** — Home 3D scene orchestrator
+> **`src/canvas/scenes/home/HomeScene.jsx`** — Home 3D scene orchestrator
 
 Combines background mesh, animated logo, subtitle text, laser plane, camera, post-processing, and mouse-reactive rig into one scroll-aware scene.
 
@@ -546,18 +558,18 @@ Combines background mesh, animated logo, subtitle text, laser plane, camera, pos
 
 #### `LaserPlane`
 
-> **`src/canvas/home/LaserPlane.jsx`** — Procedural laser/fog effect
+> **`src/canvas/features/laser/LaserPlane.jsx`** — Procedural laser/fog effect
 
 Procedural laser/fog layer driven by shader uniforms. Scales behavior by quality tier.
 
-- Props: `flowSpeed`, `wispSpeed`, `wispDensity`, `wispIntensity`, `fogIntensity`, `fogScale`, `decay`, `falloffStart`, `color`, etc.
+- Prop: `progress` (0–1 scroll progress). For each key of `LASER_PARAMS` (colocated `laser.config.js`) it computes `base + progress * scale` and passes the result to the internal `LaserFlow` component.
 - Updates time, mouse, resolution, quality uniforms every frame.
 - Skips frames on low quality (every 2nd frame).
 - Render order 1000, ignores frustum culling — effectively a full-screen post effect.
 
-| Hooks                                                    | Context          | Config | Children            |
-| -------------------------------------------------------- | ---------------- | ------ | ------------------- |
-| `useRef`, `useMemo`, `useEffect`, `useFrame`, `useThree` | **`useQuality`** | —      | `LaserFlowMaterial` |
+| Hooks                                                    | Context          | Config         | Children            |
+| -------------------------------------------------------- | ---------------- | -------------- | ------------------- |
+| `useRef`, `useMemo`, `useEffect`, `useFrame`, `useThree` | **`useQuality`** | `LASER_PARAMS` | `LaserFlowMaterial` |
 
 ---
 
@@ -565,7 +577,7 @@ Procedural laser/fog layer driven by shader uniforms. Scales behavior by quality
 
 #### `WorkCanvas`
 
-> **`src/canvas/work/WorkCanvas.jsx`** — Canvas wrapper + scroll orchestration
+> **`src/canvas/scenes/work/WorkCanvas.jsx`** — Canvas wrapper + scroll orchestration
 
 Fixed-position canvas paired with a scroll container. Runs Lenis smooth scrolling and feeds normalized scroll progress into the carousel scene.
 
@@ -574,15 +586,15 @@ Fixed-position canvas paired with a scroll container. Runs Lenis smooth scrollin
 - Snaps to nearest project once scrolling settles (idle frames ≥ 30, snap duration 400ms).
 - `useBorderProjection` projects 3D card bounds into 2D for the border overlay.
 
-| Hooks                                                                                          | Context | Config                                                                 | Children                                       |
-| ---------------------------------------------------------------------------------------------- | ------- | ---------------------------------------------------------------------- | ---------------------------------------------- |
-| `useRef`, `useEffect`, `useState`, FM `useMotionValue`, `useSpring`, **`useBorderProjection`** | —       | `SPRING_CONFIG`, `CANVAS_DPR`, `CANVAS_GL_DEFAULTS`, `CAROUSEL_CONFIG` | `WorkScene`, `NineSliceBorder`, Lenis instance |
+| Hooks                                                                                          | Context | Config                             | Children                                                     |
+| ---------------------------------------------------------------------------------------------- | ------- | ---------------------------------- | ------------------------------------------------------------ |
+| `useRef`, `useEffect`, `useState`, FM `useMotionValue`, `useSpring`, **`useBorderProjection`** | —       | `SPRING_CONFIG`, `CAROUSEL_CONFIG` | `CanvasRoot`, `WorkScene`, `NineSliceBorder`, Lenis instance |
 
 ---
 
 #### `WorkScene`
 
-> **`src/canvas/work/WorkScene.jsx`** — Carousel rotation and centeredness manager
+> **`src/canvas/scenes/work/WorkScene.jsx`** — Carousel rotation and centeredness manager
 
 Rotates the rig per scroll position, moves camera along the spiral, computes which card is most centered, culls distant cards.
 
@@ -600,7 +612,7 @@ Rotates the rig per scroll position, moves camera along the spiral, computes whi
 
 #### `WorkCard`
 
-> **`src/canvas/work/WorkCard.jsx`** — Individual 3D project card
+> **`src/canvas/features/carousel/WorkCard.jsx`** — Individual 3D project card
 
 Single project card in the 3D carousel. Combines refractive banner shader, optional pixel-overlay hover, floating motion, and text labels.
 
@@ -622,7 +634,7 @@ Single project card in the 3D carousel. Combines refractive banner shader, optio
 
 #### `Rig`
 
-> **`src/canvas/shared/camera/Rig.jsx`** — Mouse-driven camera parallax
+> **`src/canvas/core/camera/Rig.jsx`** — Mouse-driven camera parallax
 
 Applies smoothed camera offset based on pointer position and reorients camera toward origin. Frame-skips based on quality tier.
 
@@ -634,7 +646,7 @@ Applies smoothed camera offset based on pointer position and reorients camera to
 
 #### `BackgroundMesh`
 
-> **`src/canvas/shared/meshes/BackgroundMesh.jsx`** — Video-textured background
+> **`src/canvas/features/background/BackgroundMesh.jsx`** — Video-textured background
 
 Renders GLB wall asset with looping video texture. `paused` prop stops playback to save resources. `React.memo`-wrapped with Suspense boundary.
 
@@ -646,7 +658,7 @@ Renders GLB wall asset with looping video texture. `paused` prop stops playback 
 
 #### `LogoMesh`
 
-> **`src/canvas/shared/meshes/LogoMesh.jsx`** — Refractive logo with FBO
+> **`src/canvas/features/logo/LogoMesh.jsx`** — Refractive logo with FBO
 
 3D logo mesh with glass/refraction material. Manages a small FBO (off-screen render target) for transition texture data. Applies pointer-driven rotational motion. `React.memo`-wrapped, FBO renders every 2nd frame.
 
@@ -662,10 +674,10 @@ These register custom JSX elements via `shaderMaterial` + `extend()` (or `RawSha
 
 | Primitive                  | File                                                   | Material Type       | Key Uniforms                                                                                                                                                                   | Used By      |
 | -------------------------- | ------------------------------------------------------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------ |
-| **`WorkCardMaterial`**     | `src/canvas/work/WorkCardMaterial.jsx`                 | `shaderMaterial`    | `uTexture`, `uNoiseTex`, `uTextureSize`, `uPlaneSize`, `uTime`, `uRoughness`, `uRefractPower`, `uChromaticAberration`                                                          | `WorkCard`   |
-| **`GlassLogoMaterial`**    | `src/canvas/shared/materials/GlassLogoMaterial.jsx`    | `shaderMaterial`    | `uTrnsTex`, `uNoiseTex`, `uEnvMap`, `uResolution`, `uTime`, `uRoughness`, `uNoiseScale`, `uRefractPower`, `uChromaticAberration`                                               | `LogoMesh`   |
-| **`LaserFlowMaterial`**    | `src/canvas/shared/materials/LaserFlowMaterial.jsx`    | `RawShaderMaterial` | `iTime`, `iResolution`, `iMouse`, `uFlowSpeed`, `uFogIntensity`, `uFogScale`, `uWispDensity`, `uWSpeed`, `uWIntensity`, `uDecay`, `uColor`, `uFade`, `uFogQuality` (25+ total) | `LaserPlane` |
-| **`PixelOverlayMaterial`** | `src/canvas/shared/materials/PixelOverlayMaterial.jsx` | `shaderMaterial`    | `uTime`, `uHover`, `uResolution`, `uColor1`, `uColor2`                                                                                                                         | `WorkCard`   |
+| **`WorkCardMaterial`**     | `src/canvas/features/carousel/WorkCardMaterial.js`     | `shaderMaterial`    | `uTexture`, `uNoiseTex`, `uTextureSize`, `uPlaneSize`, `uTime`, `uRoughness`, `uRefractPower`, `uChromaticAberration`                                                          | `WorkCard`   |
+| **`GlassLogoMaterial`**    | `src/canvas/features/logo/GlassLogoMaterial.js`        | `shaderMaterial`    | `uTrnsTex`, `uNoiseTex`, `uEnvMap`, `uResolution`, `uTime`, `uRoughness`, `uNoiseScale`, `uRefractPower`, `uChromaticAberration`                                               | `LogoMesh`   |
+| **`LaserFlowMaterial`**    | `src/canvas/features/laser/LaserFlowMaterial.js`       | `RawShaderMaterial` | `iTime`, `iResolution`, `iMouse`, `uFlowSpeed`, `uFogIntensity`, `uFogScale`, `uWispDensity`, `uWSpeed`, `uWIntensity`, `uDecay`, `uColor`, `uFade`, `uFogQuality` (25+ total) | `LaserPlane` |
+| **`PixelOverlayMaterial`** | `src/canvas/features/carousel/PixelOverlayMaterial.js` | `shaderMaterial`    | `uTime`, `uHover`, `uResolution`, `uColor1`, `uColor2`                                                                                                                         | `WorkCard`   |
 
 ---
 
@@ -675,7 +687,7 @@ These register custom JSX elements via `shaderMaterial` + `extend()` (or `RawSha
 
 | Hook                  | Consumers                                                             |
 | --------------------- | --------------------------------------------------------------------- |
-| `useAdaptiveQuality`  | `HomeCanvas` (via `AdaptiveQualityMonitor`)                           |
+| `useAdaptiveQuality`  | `CanvasRoot` (via `AdaptiveQualityMonitor`)                           |
 | `useBorderProjection` | `WorkCanvas`                                                          |
 | `useCameraAnimation`  | `HomeScene`                                                           |
 | `useLenisScroll`      | `Entry`                                                               |
@@ -696,12 +708,12 @@ These register custom JSX elements via `shaderMaterial` + `extend()` (or `RawSha
 
 ### Config File → Consumer Map
 
-| Config Module         | Key Exports                                                                                                                                                                        | Consumers                                                                         |
-| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| `animation.config.js` | `EASING`, `REVEAL`, `STAGGER`, `TIMEOUT`, `LENIS`, `SCROLL_THRESHOLDS`, `FLOAT_CONFIG`, `SCENE`, `SPRING_CONFIG`, `TYPEWRITER`, `BREAKPOINTS`, `LOGO_BOOTSTRAP`, `CAMERA_DEFAULTS` | Most components — see individual tables                                           |
-| `canvas.config.js`    | `CANVAS_GL_DEFAULTS`, `CANVAS_DPR`                                                                                                                                                 | `HomeCanvas`, `WorkCanvas`                                                        |
-| `carousel.config.js`  | `CAROUSEL_CONFIG`                                                                                                                                                                  | `WorkCanvas`, `WorkScene`, `WorkCard`, `useBorderProjection`, `carousel.js` utils |
-| `laser.config.js`     | `LASER_PARAMS`                                                                                                                                                                     | `Home`                                                                            |
+| Config Module                                 | Key Exports                                                                                                                                                                        | Consumers                                                                                      |
+| --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `animation.config.js`                         | `EASING`, `REVEAL`, `STAGGER`, `TIMEOUT`, `LENIS`, `SCROLL_THRESHOLDS`, `FLOAT_CONFIG`, `SCENE`, `SPRING_CONFIG`, `TYPEWRITER`, `BREAKPOINTS`, `LOGO_BOOTSTRAP`, `CAMERA_DEFAULTS` | Most components — see individual tables                                                        |
+| `canvas/core/canvas.config.js`                | `CANVAS_GL_DEFAULTS`, `CANVAS_DPR`                                                                                                                                                 | `CanvasRoot`                                                                                   |
+| `canvas/features/carousel/carousel.config.js` | `CAROUSEL_CONFIG`                                                                                                                                                                  | `WorkCanvas`, `WorkScene`, `WorkCard`, `useBorderProjection`, `carousel.js`, `cardGeometry.js` |
+| `canvas/features/laser/laser.config.js`       | `LASER_PARAMS`                                                                                                                                                                     | `LaserPlane`                                                                                   |
 
 ---
 
