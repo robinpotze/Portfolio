@@ -29,14 +29,16 @@ The particle simulation runs on the GPU (GPGPU). Each particle's position is one
 
 ## Building blocks already available
 
-| Need                                                       | Use                      | Source                                                           |
-| ---------------------------------------------------------- | ------------------------ | ---------------------------------------------------------------- |
-| Ping-pong simulation, starting textures, half-float switch | `GPUComputationRenderer` | `three/examples/jsm/misc/GPUComputationRenderer.js`              |
-| Area-weighted points on the logo surface                   | `MeshSurfaceSampler`     | `three/examples/jsm/math/MeshSurfaceSampler.js`                  |
-| Shared GLSL chunks                                         | `#include`               | `vite-plugin-glsl` (already configured in `vite.config.mjs`)     |
-| Video texture                                              | `useVideoTexture`        | `src/canvas/core/textures/useVideoTexture.js`                    |
-| Quality tier                                               | `useQuality`             | `src/app/QualityContext.jsx`                                     |
-| Reveal timing and easing                                   | `REVEAL`, `entryEase`    | `src/config/animation.config.js`, `src/utils/easingFunctions.js` |
+| Need                                                       | Use                                                                                          | Source                                                           |
+| ---------------------------------------------------------- | -------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| Ping-pong simulation, starting textures, half-float switch | `GPUComputationRenderer`                                                                     | `three/examples/jsm/misc/GPUComputationRenderer.js`              |
+| Area-weighted points on the logo surface                   | `MeshSurfaceSampler`                                                                         | `three/examples/jsm/math/MeshSurfaceSampler.js`                  |
+| Shared GLSL chunks                                         | `#include`                                                                                   | `vite-plugin-glsl` (already configured in `vite.config.mjs`)     |
+| Video texture                                              | `useVideoTexture`                                                                            | `src/canvas/core/textures/useVideoTexture.js`                    |
+| Quality tier                                               | `useQuality`                                                                                 | `src/app/QualityContext.jsx`                                     |
+| Reveal timing and easing                                   | `REVEAL.DURATION`, `SCENE.CAMERA_DURATION`, `SCROLL_THRESHOLDS.HOME_TRANSITION`, `entryEase` | `src/config/animation.config.js`, `src/utils/easingFunctions.js` |
+
+**Config split:** timing (delays, durations, easing, scroll ranges) comes only from the shared `animation.config.js`, and this spec adds **no new values** to it. `logoParticles.config.js` holds only the effect's own physics and look: particle count per tier, spring, curl, cloud radius, fluid strength and point size.
 
 Shaders that use `#include` are imported **without** `?raw`, so that `vite-plugin-glsl` resolves the includes. Existing shaders keep their `?raw` imports.
 
@@ -60,7 +62,7 @@ src/canvas/features/logoParticles/
   position.frag.glsl       simulation: spring to goal + curl drift + fluid push (#include curl)
   particles.vert.glsl      reads position from the sim texture; point size by depth and random
   particles.frag.glsl      round sprite; video color + matcap soft-light; sparkle
-  logoParticles.config.js  per-tier sizes, strengths, intro duration
+  logoParticles.config.js  per-tier sizes and physics/look constants (no timing)
 ```
 
 ### Changed
@@ -139,8 +141,8 @@ pos  += uScreenToLocal * vec3(texture(tFluid, uv).xy, 0.0) * uFluidStrength * uD
 ### `uDisperse` timeline (0 = logo, 1 = cloud)
 
 - Before the reveal starts it is 1, so the particles sit as a cloud behind the loading screen.
-- Intro: `REVEAL.DURATION` after `startAnimations` turns true (the same delay the logo reveal uses), `intro` eases from 1 to 0 over `INTRO_DURATION = 1.5 s` with `entryEase`.
-- From then on: `uDisperse = max(intro, smoothstep(0.0, 0.6, scrollProgress))`.
+- Intro: `REVEAL.DURATION` after `startAnimations` turns true (the delay the logo and camera reveals already use), `intro` eases from 1 to 0 over `SCENE.CAMERA_DURATION` (1.5 s) with `entryEase`, so the logo finishes forming when the camera finishes moving in.
+- From then on: `uDisperse = max(intro, smoothstep(0.0, SCROLL_THRESHOLDS.HOME_TRANSITION, scrollProgress))`, so the logo is fully scattered when the page transition fires.
 
 The logo group's existing scroll push-back and 4× scale still apply on top.
 
