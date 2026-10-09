@@ -11,28 +11,18 @@ import { useThree } from '@react-three/fiber';
 import { Bloom, EffectComposer, N8AO } from '@react-three/postprocessing';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-export default function HomeScene({ scrollProgress = 0, startAnimations = true, onSceneReady = null }) {
+export default function HomeScene({ scrollProgress = 0, startAnimations = true }) {
     const logoRef = useRef();
     const backgroundRef = useRef();
     const subtitleRef = useRef();
     const lightRef = useRef();
     const cameraRef = useRef();
     const [entryComplete, setEntryComplete] = useState(false);
-    const sceneReadyRef = useRef(false);
     const { quality } = useQuality();
 
     const { size } = useThree();
 
     const viewportScale = useMemo(() => Math.max(0.3, Math.min(1, size.width / BREAKPOINTS.REFERENCE_WIDTH)), [size.width]);
-
-    useEffect(() => {
-        if (entryComplete && !sceneReadyRef.current) {
-            sceneReadyRef.current = true;
-            if (onSceneReady) {
-                onSceneReady();
-            }
-        }
-    }, [entryComplete, onSceneReady]);
 
     // Memoize quality-based post-processing settings
     const postProcessingSettings = useMemo(() => {

@@ -116,9 +116,9 @@ Combines the loading sequence, hero copy, decorative overlays, and the home 3D s
 - Resets scroll position and clears navigation state on entry.
 - `HomeCanvas` renders behind the DOM content; interaction enabled only after loading completes.
 
-| Hooks                                                        | Context | Config                                                        | Children                                                                  |
-| ------------------------------------------------------------ | ------- | ------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| `useState`, `useEffect`, `useRef`, **`useScrollNavigation`** | —       | `EASING`, `REVEAL`, `SCROLL_THRESHOLDS`, `STAGGER`, `TIMEOUT` | `HomeCanvas`, `LoadingScreen`, `ScrollDown`, `RadialGrid`, `RedoAnimText` |
+| Hooks                                                                                                     | Context | Config                                                        | Children                                                                  |
+| --------------------------------------------------------------------------------------------------------- | ------- | ------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `useState`, `useEffect`, `useRef`, `useCallback`, `useNavigate`, `useLocation`, **`useScrollNavigation`** | —       | `EASING`, `REVEAL`, `SCROLL_THRESHOLDS`, `STAGGER`, `TIMEOUT` | `HomeCanvas`, `LoadingScreen`, `ScrollDown`, `RadialGrid`, `RedoAnimText` |
 
 ---
 

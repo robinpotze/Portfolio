@@ -7,10 +7,3 @@
     z-index: -1;
     pointer-events: none;
 }
-
-/* Mobile */
-@media (max-width: 768px) {
-    .canvasContainer {
-        width: 100%;
-    }
-}
