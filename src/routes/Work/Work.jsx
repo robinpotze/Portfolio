@@ -6,7 +6,7 @@ import { prefetchEntryPages } from '@routes/Entry/pages/autogen';
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import styles from './Work.module.css';
 
-const WorkCanvas = lazy(() => import('@canvas/work/WorkCanvas'));
+const WorkCanvas = lazy(() => import('@canvas/scenes/work/WorkCanvas'));
 
 export default function Work() {
     const { navigateWithTransition } = usePageTransition();
