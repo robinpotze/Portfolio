@@ -1,7 +1,7 @@
 const assetPath = '/assets/img/work/lsdjam/';
 
 export const Data = {
-    id: 1,
+    id: 2,
     title: 'LSD JAM',
     synopsis: 'Where games meet drugs',
     description:
@@ -9,6 +9,6 @@ export const Data = {
     client: 'TRIPADVISORS',
     year: 2024,
     software: ['Illustrator', 'Unity', 'Blender'],
-    skills: ['Adobe Illustrator', 'Figma', 'Unity', 'Blender'],
-    banner: `${assetPath}Corridor.png`,
+    skills: ['3D Art', 'Level Design', 'Lighting'],
+    banner: `${assetPath}banner.webp`,
 };

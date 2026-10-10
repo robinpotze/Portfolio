@@ -1,7 +1,7 @@
 const assetPath = '/assets/img/work/ssgnl/sqlgame/';
 
 export const Data = {
-    id: 4,
+    id: 6,
     title: 'SQL GAME',
     synopsis: 'Learn SQL by playing it.',
     description:
@@ -10,5 +10,5 @@ export const Data = {
     year: 2026,
     software: ['Figma', 'React'],
     skills: ['UX Design', 'Game Design', 'Front-End Development'],
-    banner: `${assetPath}FullPage.webp`,
+    banner: `${assetPath}banner.webp`,
 };
