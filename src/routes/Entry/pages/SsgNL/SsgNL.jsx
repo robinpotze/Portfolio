@@ -214,8 +214,8 @@ export default function SsgNL() {
             <HeroStatement label="OUTCOME">
                 <h2>In use at trainings and events.</h2>
                 <ScrollReveal>
-                    Both board games are played at Sopra Steria trainings and events, each session led by a game leader. The Auto|Q brand carries the
-                    department's training cards and marketing, which was published on LinkedIn.
+                    Both board games are played at Sopra Steria trainings and events. The Auto|Q brand carries the department's training cards and
+                    marketing, which was published on LinkedIn.
                 </ScrollReveal>
             </HeroStatement>
 
