@@ -144,10 +144,11 @@ Tabbed profile page swapping between experience, education, skills, and software
 - Local `currentPage` state selects one of `EXP`, `EDU`, `SKL`, `SFT` components.
 - `PixelCard` used as animated accent inside each selector button.
 - `GridOverlay` provides full-page decorative background.
+- Header shows email, LinkedIn and `CvDownload`, then the `ABOUT_BIO` paragraph from `about.data.js`.
 
-| Hooks      | Context | Config                                         | Children                                                              |
-| ---------- | ------- | ---------------------------------------------- | --------------------------------------------------------------------- |
-| `useState` | —       | `EASING`, `REVEAL`, `SPRING_CONFIG`, `STAGGER` | `GridOverlay`, `PixelCard`, `ExpSection`, `EduSection`, `ListSection` |
+| Hooks      | Context | Config                                         | Children                                                                            |
+| ---------- | ------- | ---------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `useState` | —       | `EASING`, `REVEAL`, `SPRING_CONFIG`, `STAGGER` | `GridOverlay`, `PixelCard`, `ExpSection`, `EduSection`, `ListSection`, `CvDownload` |
 
 ---
 
@@ -202,12 +203,21 @@ Catch-all route (`path: '*'`) and the fallback `Entry` renders for unknown proje
 
 Small isolated tree used exclusively inside the About page.
 
-| Component         | File                                          | Description                                                                            | Hooks | Config             | Children    |
-| ----------------- | --------------------------------------------- | -------------------------------------------------------------------------------------- | ----- | ------------------ | ----------- |
-| **`ExpSection`**  | `src/routes/About/components/ExpSection.jsx`  | Experience timeline. Maps items into company, role, date, details.                     | —     | `EASING`, `REVEAL` | `AboutItem` |
-| **`EduSection`**  | `src/routes/About/components/EduSection.jsx`  | Education list. Formats school, course, date.                                          | —     | `EASING`, `REVEAL` | —           |
-| **`ListSection`** | `src/routes/About/components/ListSection.jsx` | Generic list for skills and software tabs.                                             | —     | —                  | `AboutItem` |
-| **`AboutItem`**   | `src/routes/About/components/AboutItem.jsx`   | Single line with optional icon and metadata. Handles SVG components and image sources. | —     | `EASING`, `REVEAL` | —           |
+| Component         | File                                          | Description                                                                                                                      | Hooks      | Config             | Children    |
+| ----------------- | --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ---------- | ------------------ | ----------- |
+| **`ExpSection`**  | `src/routes/About/components/ExpSection.jsx`  | Experience timeline. Maps items into company, role, date, details.                                                               | —          | `EASING`, `REVEAL` | `AboutItem` |
+| **`EduSection`**  | `src/routes/About/components/EduSection.jsx`  | Education list. Formats school, course, date.                                                                                    | —          | `EASING`, `REVEAL` | —           |
+| **`ListSection`** | `src/routes/About/components/ListSection.jsx` | Generic list for skills and software tabs.                                                                                       | —          | —                  | `AboutItem` |
+| **`AboutItem`**   | `src/routes/About/components/AboutItem.jsx`   | Single line with optional icon and metadata. Handles SVG components and image sources.                                           | —          | `EASING`, `REVEAL` | —           |
+| **`CvDownload`**  | `src/routes/About/components/CvDownload.jsx`  | "Download CV" button. Lazy-loads `cv/CvDocument.jsx` on hover/focus, builds the PDF on click and downloads `Robin-Potze-CV.pdf`. | `useState` | —                  | —           |
+
+#### CV (`src/routes/About/cv/`)
+
+The CV is generated in the browser with `@react-pdf/renderer`, so it never goes out of date:
+
+- **`cvContent.js`** — `getCvContent()` gathers everything from existing data: `SITE` and `SOCIALS` (header and links), `ABOUT_BIO` (profile), `ABOUT_DATA` (experience, skills, education), and every project's data file (selected work uses `title`, `subtitle`, `year` and `summary`; tools are the About software list plus each project's `software`).
+- **`CvDocument.jsx`** — A4 layout (Orbitron and Kode Mono from `public/assets/fonts`, Helvetica body). Page 1 is a standard CV; page 2 lists the work, newest first, with links to each case. `renderCvBlob()` returns the PDF.
+- The renderer is about 440 kB gzipped and only loads when someone hovers, focuses or clicks the button.
 
 ---
 
@@ -496,6 +506,8 @@ Class-based React error boundary — the one deliberate exception to functional-
 
 Standard hero section for every case-study page. Renders project banner, overlays `GridOverlay`, reveals title (plus `subtitle` when the project data has one) and metadata with staggered motion.
 
+- When the project data has `summary: { project, role, result }`, a PROJECT / ROLE / RESULT block sits beside the title (below it on phones). The CV reuses the same lines.
+
 | Hooks | Config                        | Children                    |
 | ----- | ----------------------------- | --------------------------- |
 | —     | `EASING`, `REVEAL`, `STAGGER` | `GridOverlay`, `ScrollDown` |
@@ -723,7 +735,7 @@ These register custom JSX elements via `shaderMaterial` + `extend()` (or `RawSha
 | `canvas/core/canvas.config.js`                | `CANVAS_GL_DEFAULTS`, `CANVAS_DPR`                                                                                                                                                 | `CanvasRoot`                                                                                   |
 | `canvas/features/carousel/carousel.config.js` | `CAROUSEL_CONFIG`                                                                                                                                                                  | `WorkCanvas`, `WorkScene`, `WorkCard`, `useBorderProjection`, `carousel.js`, `cardGeometry.js` |
 | `canvas/features/laser/laser.config.js`       | `LASER_PARAMS`                                                                                                                                                                     | `LaserPlane`                                                                                   |
-| `site.config.js`                              | `SITE` (name, role line, email), `SOCIALS`, `LINKEDIN`                                                                                                                             | `HomeScene`, `LoadingScreen`, `MenuSocials`, `About`, `Contact`                                |
+| `site.config.js`                              | `SITE` (name, role line, email, URL), `SOCIALS`, `LINKEDIN`                                                                                                                        | `HomeScene`, `LoadingScreen`, `MenuSocials`, `About`, `Contact`, CV                            |
 
 ---
 
