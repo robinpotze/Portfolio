@@ -16,7 +16,7 @@ import styles from './HomeCanvas.module.css';
 // Logo is fixed-size while the name scales with viewportScale: lift the logo by its own half height,
 // a gap, and the name's half height projected onto the logo's plane, so the two never overlap.
 const LOGO_HALF_HEIGHT = 2.2;
-const LOGO_NAME_GAP = 0.5;
+const LOGO_NAME_GAP = 0.9;
 const NAME_HALF_HEIGHT_AT_LOGO = 0.86;
 
 export default function HomeScene({ scrollProgress = 0, startAnimations = true, onSceneReady = null }) {

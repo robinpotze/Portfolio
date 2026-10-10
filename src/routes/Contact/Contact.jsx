@@ -328,7 +328,7 @@ export default function Contact() {
                                     <input
                                         id="contact-email"
                                         className={`${styles.panelInput} ${formData.email && !isValidEmail ? styles.panelInputInvalid : ''}`}
-                                        placeholder="RETURN@ADDRESS.COM"
+                                        placeholder="YOU@DOMAIN.COM"
                                         type="email"
                                         value={formData.email}
                                         onChange={onInputChange('email')}
