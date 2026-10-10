@@ -17,13 +17,23 @@ import TextArea from '@components/ui/TextArea/TextArea';
 import TextInput from '@components/ui/TextInput/TextInput';
 import TypewriterText from '@components/ui/TypewriterText';
 import { EASING, REVEAL, STAGGER, TIMEOUT } from '@config/animation.config';
+import { LINKEDIN, SITE } from '@config/site.config';
 
-import { CONTACT_FORM_URL, CORNER_BL_LINES, ERROR_LOG_LINES, getSendErrorConfig, PHASE_CONFIG, STATUS_GRID_LINES } from './contact.data.jsx';
+import {
+    AVAILABILITY_LINES,
+    CONTACT_FORM_URL,
+    CORNER_BL_LINES,
+    ERROR_LOG_LINES,
+    getSendErrorConfig,
+    PHASE_CONFIG,
+    REPLY_ETA,
+    STATUS_GRID_LINES,
+} from './contact.data.jsx';
 import styles from './Contact.module.css';
 
 const TITLE_LABELS = {
     message: 'CNTCT-FRM',
-    intercept: 'WDBND-PKT_DE-ENCAP',
+    intercept: 'PKT_VALIDATION',
 };
 
 const titleVariants = {
@@ -156,7 +166,7 @@ export default function Contact() {
         <ErrorBoundary>
             <div className={`${styles.page} ${glitching ? styles.pageGlitch : ''}`}>
                 <PageTitle name="Contact" />
-                <GlitchOverlay active={glitching} />
+                <GlitchOverlay active={glitching} warningText="PACKET INCOMPLETE" />
 
                 {/* Title */}
                 <AnimatePresence>
@@ -171,7 +181,13 @@ export default function Contact() {
                 <AnimatePresence>
                     {phase !== 'complete' && (
                         <motion.div className={formClass} variants={formVariants} initial="hidden" animate="visible" exit="exit">
+                            <p className={`deco-tiny ${styles.availability}`}>
+                                {AVAILABILITY_LINES.map((line) => (
+                                    <span key={line}>{line}</span>
+                                ))}
+                            </p>
                             <TextInput
+                                label="NAME"
                                 placeholder="USR.NAME"
                                 value={formData.name}
                                 onChange={onInputChange('name')}
@@ -179,6 +195,7 @@ export default function Contact() {
                                 variant={showIntercept ? 'intercept' : 'default'}
                             />
                             <TextArea
+                                label="MESSAGE"
                                 placeholder="MSG.PAYLOAD"
                                 value={formData.message}
                                 onChange={onInputChange('message')}
@@ -191,8 +208,15 @@ export default function Contact() {
                                 disabled={!canSend || glitching || sending || (isIntercept && !isValidEmail)}
                                 icon="format_text_overflow"
                             >
-                                MSG.SEND
+                                SEND
                             </ActionButton>
+                            <p className={`deco-tiny ${styles.direct}`}>
+                                OR WRITE DIRECTLY: <a href={`mailto:${SITE.EMAIL}`}>{SITE.EMAIL}</a>
+                                <span aria-hidden="true">/</span>
+                                <a href={LINKEDIN.link} target="_blank" rel="noopener noreferrer">
+                                    LINKEDIN
+                                </a>
+                            </p>
                         </motion.div>
                     )}
                 </AnimatePresence>
@@ -251,7 +275,7 @@ export default function Contact() {
                             {isIntercept && (
                                 <>
                                     <BannerCorner position="tl" icon={PlsIcon} className={styles.cornerTlArea}>
-                                        <h3>USR.EMAIL</h3>
+                                        <h3>RTN_ADDR</h3>
                                     </BannerCorner>
                                     <BannerCorner position="tr" icon={PlsIcon} className={styles.cornerTrArea} />
                                     <BannerCorner position="bl" icon={PlsIcon} className={styles.cornerBlArea}>
@@ -298,10 +322,13 @@ export default function Contact() {
                             {isIntercept && (
                                 <>
                                     <MsgIcon className={styles.panelIcon} aria-hidden="true" />
-                                    <PlsIcon className={styles.panelDeco} aria-hidden="true" />
+                                    <label htmlFor="contact-email" className={styles.panelLabel}>
+                                        EMAIL
+                                    </label>
                                     <input
+                                        id="contact-email"
                                         className={`${styles.panelInput} ${formData.email && !isValidEmail ? styles.panelInputInvalid : ''}`}
-                                        placeholder="IDENTIFY@DOMAIN.COM"
+                                        placeholder="RETURN@ADDRESS.COM"
                                         type="email"
                                         value={formData.email}
                                         onChange={onInputChange('email')}
@@ -315,7 +342,12 @@ export default function Contact() {
                             {phase === 'complete' && (
                                 <>
                                     <ChkIcon className={styles.panelIcon} aria-hidden="true" />
-                                    <span className={styles.completeMessage}>MSG.RELAYED</span>
+                                    <div className={styles.completeText}>
+                                        <span className={styles.completeMessage}>QUEUED FOR EVALUATION</span>
+                                        <span className={styles.completeEta}>
+                                            {REPLY_ETA} → {formData.email}
+                                        </span>
+                                    </div>
                                 </>
                             )}
                         </StatusPanel>

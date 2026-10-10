@@ -1,6 +1,7 @@
 import CrsIcon from '@/assets/icons/CRS.svg?react';
 import MsgIcon from '@/assets/icons/MSG.svg?react';
 import PlsIcon from '@/assets/icons/PLS.svg?react';
+import { useId } from 'react';
 
 import styles from './TextInput.module.css';
 
@@ -13,6 +14,7 @@ export default function TextInput({
     value,
     onChange,
     placeholder,
+    label,
     disabled,
     icon: Icon = MsgIcon,
     type = 'text',
@@ -21,6 +23,7 @@ export default function TextInput({
     ...props
 }) {
     const fieldClass = VARIANT_CLASS[variant] ?? VARIANT_CLASS.default;
+    const inputId = useId();
 
     return (
         <div className={`${fieldClass} ${className ?? ''}`}>
@@ -28,7 +31,21 @@ export default function TextInput({
             <PlsIcon className={styles.cornerTR} aria-hidden="true" />
             <CrsIcon className={styles.marker} aria-hidden="true" />
             <Icon className={styles.icon} aria-hidden="true" />
-            <input className={styles.input} type={type} placeholder={placeholder} value={value} onChange={onChange} disabled={disabled} {...props} />
+            {label && (
+                <label htmlFor={inputId} className={styles.label}>
+                    {label}
+                </label>
+            )}
+            <input
+                id={inputId}
+                className={styles.input}
+                type={type}
+                placeholder={placeholder}
+                value={value}
+                onChange={onChange}
+                disabled={disabled}
+                {...props}
+            />
             <PlsIcon className={styles.cornerBL} aria-hidden="true" />
             <PlsIcon className={styles.cornerBR} aria-hidden="true" />
         </div>
