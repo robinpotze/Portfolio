@@ -6,8 +6,10 @@
 .content {
     flex: 1;
     display: flex;
-    justify-content: start;
+    justify-content: space-between;
     align-items: end;
+    gap: var(--s-m);
+    min-width: 0;
 }
 
 .bannerWrapper {
@@ -121,6 +123,45 @@
     color: var(--c-lght_100);
 }
 
+/* ── Summary: what it is, what I did, what happened ── */
+
+.summary {
+    /* Above the page-bottom GradualBlur, which would otherwise smear the last line */
+    position: relative;
+    z-index: 1101;
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-xs);
+    max-width: 28rem;
+    margin: 0 var(--s-m) var(--s-xl) 0;
+    padding: var(--s-s);
+    border-left: 1px solid var(--c-brnd_100);
+    background: rgba(10, 10, 10, 0.72);
+    backdrop-filter: blur(8px);
+}
+
+.summaryRow {
+    display: grid;
+    grid-template-columns: 4.5rem 1fr;
+    gap: var(--s-xs);
+    align-items: baseline;
+}
+
+.summaryRow dt {
+    font: var(--f-func-tiny);
+    font-size: 0.625rem;
+    color: var(--c-brnd_100);
+    letter-spacing: 0.2em;
+}
+
+.summaryRow dd {
+    margin: 0;
+    font: var(--f-paragraph);
+    font-size: 0.9375rem;
+    line-height: 1.4;
+    color: var(--c-lght_100);
+}
+
 .sideTag {
     color: var(--c-drk_100);
     background-color: var(--c-brnd_100);
@@ -132,7 +173,30 @@
         display: none;
     }
 
+    .content {
+        flex-direction: column;
+        justify-content: end;
+        align-items: stretch;
+        gap: var(--s-s);
+        padding-bottom: var(--s-m);
+    }
+
     .titleBlock {
-        margin: 0 var(--s-m) var(--s-m) 0;
+        margin: 0 var(--s-m) 0 0;
+    }
+
+    .summary {
+        max-width: none;
+        margin: 0 var(--s-s);
+        padding: var(--s-s) var(--s-s) var(--s-s) var(--s-s);
+    }
+
+    .summaryRow {
+        grid-template-columns: 1fr;
+        gap: 2px;
+    }
+
+    .summaryRow dd {
+        font-size: 0.875rem;
     }
 }

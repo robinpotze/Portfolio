@@ -28,12 +28,13 @@ export default function Pmot() {
             {/* ── CHALLENGE ── */}
 
             <StatementBlock label="CHALLENGE">
-                <h2>Low clickthrough, hard navigation, no reason to return.</h2>
+                <h2>No reason to come back.</h2>
                 <ScrollReveal>
                     PMOT sells technical learning materials for children aged 2–17, but their existing website struggled with usability and visual
                     appeal. Teachers — the primary audience — needed translated manuals, custom lesson plans, and a reason to come back after
                     purchasing. The objective was to redesign the store while introducing a community learning platform that connects products to
-                    educational content.
+                    educational content. Seven interviews with past customers and an analysis of three of the largest Dutch webstores set the
+                    requirements.
                 </ScrollReveal>
             </StatementBlock>
 
@@ -42,12 +43,12 @@ export default function Pmot() {
                     { label: 'CLIENT', value: 'PMOT' },
                     { label: 'AUDIENCE', value: 'Teachers (Benelux)' },
                     { label: 'SCOPE', value: 'Webstore + Learning Platform' },
-                    { label: 'PROCESS', value: 'Full design cycle' },
+                    { label: 'TYPE', value: 'Graduation project' },
                 ]}
             />
 
             <StatementBlock label="DESIGN CHALLENGE">
-                <h2>Visually child-friendly while remaining professional enough for teachers to trust.</h2>
+                <h2>Made for kids, bought by teachers.</h2>
                 <ScrollReveal>
                     The products are made for children, but the buyers are educators. The interface had to bridge that gap — approachable enough to
                     signal the right category, structured enough for teachers to navigate efficiently. On top of that, every product needed a
@@ -70,10 +71,10 @@ export default function Pmot() {
                 alt="Product browser with filtering and category navigation."
                 label="PRODUCT BROWSING"
             >
-                <h3>Find materials fast, even without knowing the exact name.</h3>
+                <h3>Find it without the exact name.</h3>
                 <ScrollReveal>
                     Category-driven navigation with expanded filtering lets teachers browse by age group, material type, or subject area. The layout
-                    was informed by card sorting exercises with users and benchmarked against the most-used Dutch retail platforms.
+                    came from a card sort with twelve teachers and was benchmarked against three of the largest Dutch webstores.
                 </ScrollReveal>
             </FeatureSplit>
 
@@ -83,7 +84,7 @@ export default function Pmot() {
                 reverse
                 label="CATEGORIES"
             >
-                <h3>Structured around how teachers think, not how suppliers ship.</h3>
+                <h3>Sorted the way teachers think.</h3>
                 <ScrollReveal>
                     Product categories were reorganized based on educational context rather than manufacturer groupings — making it intuitive to find
                     materials that fit a lesson plan rather than a stock code.
@@ -105,7 +106,7 @@ export default function Pmot() {
 
             <ComparisonBlock
                 label="ACCOUNT EXPERIENCE"
-                heading="Everything in one place — orders, details, access."
+                heading="Orders and details in one place."
                 items={[
                     {
                         caption: 'ACCOUNT OVERVIEW',
@@ -144,15 +145,16 @@ export default function Pmot() {
             <FullImage src={`${assetPath}Learning Landing Page.png`} alt="Learning platform landing page." />
 
             <HeroStatement label="INTEGRATION">
-                <h2>Products and lessons, connected by design.</h2>
+                <h2>Products and lessons, linked both ways.</h2>
                 <ScrollReveal>
-                    Every product in the store has a counterpart on the learning platform — manuals, tasks, and full lesson programs created by the
-                    community. Teachers find materials for what they bought; the platform references back to the store. Two sites, one ecosystem.
+                    In testing, teachers often missed the learning platform until someone pointed it out, and wanted to get from a product to its
+                    lessons, and back, more easily. So every product now links to its manuals, tasks and lesson programs, every lesson links to the
+                    products it uses, and both sites sit in the header of each.
                 </ScrollReveal>
             </HeroStatement>
 
             <FeatureSplit src={`${assetPath}Learning Lesmaterialen Page.png`} alt="Lesson materials overview page." label="LESSON MATERIALS">
-                <h3>Browse, filter, and discover lessons built by other teachers.</h3>
+                <h3>Lessons built by other teachers.</h3>
                 <ScrollReveal>
                     Community-created lesson programs organized by subject, age group, and associated product. Teachers can publish their own courses
                     and share experiences — turning the platform into a living resource rather than a static repository.
@@ -167,8 +169,8 @@ export default function Pmot() {
             >
                 <h3>Complex information, digestible format.</h3>
                 <ScrollReveal>
-                    Each lesson page structures content for quick scanning — objectives, required materials, step-by-step instructions, and direct
-                    links to purchase the products used. Designed so teachers can evaluate a lesson plan in under a minute.
+                    Each lesson page shows the author, subject, date and objectives up front, then the required materials, step-by-step instructions,
+                    and direct links to buy the products used, so teachers can judge a lesson at a glance.
                 </ScrollReveal>
             </FeatureSplit>
 
@@ -211,23 +213,30 @@ export default function Pmot() {
             {/* ── OUTCOME ── */}
 
             <HeroStatement label="OUTCOME">
-                <h2>A validated proof of concept, ready for production.</h2>
+                <h2>Rated higher on every scale.</h2>
                 <ScrollReveal>
-                    The project delivered a complete front-end concept for two integrated websites — validated through expert reviews and
-                    thinking-aloud usability tests with the target audience. Design decisions were backed by UX experts consulted across every phase,
-                    and the prototype is directly exportable to a functioning front end.
+                    Fourteen teachers rated the old site and then the prototype in an AttrakDiff survey. The prototype scored higher on every scale.
+                    Attractiveness rose the most, from about −1.5 to almost 2 on a scale of −3 to 3. Novelty rose the least, which was the goal: the
+                    store was meant to feel familiar. Expert reviews and think-aloud tests with teachers shaped the version they rated.
                 </ScrollReveal>
             </HeroStatement>
 
+            <StatementBlock label="NEXT TIME">
+                <h2>Make contributing easy.</h2>
+                <ScrollReveal>
+                    Teachers saw the learning platform as a much-needed tool but worried about the effort of writing lessons for it. A next version
+                    would make contributing easier, and add the multiple wishlists and clearer cart feedback that teachers asked for.
+                </ScrollReveal>
+            </StatementBlock>
+
             <EvidenceRow
                 items={[
-                    { label: 'PLATFORMS', value: 'Webstore + Learning' },
+                    { label: 'RESEARCH', value: '7 interviews, card sort with 12 teachers' },
                     {
                         label: 'VALIDATION',
-                        value: 'Expert review + User testing',
+                        value: 'Expert reviews, think-aloud tests, AttrakDiff with 14 teachers',
                     },
-                    { label: 'METHODOLOGY', value: 'Full design cycle' },
-                    { label: 'TOOLS', value: 'Blender, Illustrator, Axure RP' },
+                    { label: 'TOOLS', value: 'Figma, Adobe XD, Axure RP, Illustrator, Blender' },
                 ]}
             />
         </>

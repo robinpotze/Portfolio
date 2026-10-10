@@ -6,7 +6,12 @@ export const Data = {
     subtitle: 'Day Drinking',
     synopsis: '3D environments, branding, and audio for a 72-hour game jam.',
     description:
-        'A satirical cap-collecting simulator built in 72 hours for Ludum Dare 58 with one developer. I handled all visuals — 3D-modeled interiors, textures, lighting, effects, animated TV content, tutorial material, and knock-off beer branding — plus recorded and edited the audio and music.',
+        'A satirical cap-collecting simulator built in 72 hours for Ludum Dare 58 with developer Kirill Ojoga (MnemosyneVL). I handled all visuals — 3D-modeled interiors, textures, lighting, effects, animated TV content, tutorial material, and knock-off beer branding — plus recorded and edited the audio and music.',
+    summary: {
+        project: 'Day Drinking, a satirical cap-collecting game made in 72 hours for Ludum Dare 58.',
+        role: 'Everything you see and hear: 3D rooms, sixteen beer brands, TV channels, UI and audio.',
+        result: 'Delivered inside the 72 hours as a duo with developer Kirill Ojoga.',
+    },
     client: 'LUDUM DRUNKS',
     year: 2025,
     software: ['Figma', 'Unity', 'Blender'],

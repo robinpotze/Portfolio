@@ -22,25 +22,29 @@ export default function LsdJam() {
                 src={`${assetPath}Animation.mp4`}
                 kicker={`LSD JAM / ${Data.year}`}
                 heading="Which reality is yours?"
-                subtitle="I participated as a 3D artist and level designer for a reality-bending game jam."
+                subtitle="3D art and level design for a reality-bending game jam."
             />
 
             {/* ── ROLE ── */}
 
             <StatementBlock label="ROLE">
-                <h2>Every environment. Every surface. Every light source.</h2>
+                <h2>Every room, every light.</h2>
                 <ScrollReveal>
-                    Partnered with Kirill Ojoga for the LSD Jam — a game jam themed around altered perception. All 3D art, textures, level layouts,
-                    and lighting rigs were mine. Unity for the build, Blender and After Effects for the assets.
+                    Partnered with{' '}
+                    <a href="https://mnemosynevl.itch.io/" target="_blank" rel="noopener noreferrer">
+                        Kirill Ojoga
+                    </a>{' '}
+                    for the LSD Jam — a game jam themed around altered perception. All 3D art, textures, level layouts, and lighting rigs were mine.
+                    Built in Unity, with assets made in Blender, Illustrator and After Effects.
                 </ScrollReveal>
             </StatementBlock>
 
             <EvidenceRow
                 items={[
                     { label: 'EVENT', value: 'LSD Jam 2024' },
-                    { label: 'TEAM', value: '2 developers' },
+                    { label: 'TEAM', value: 'Duo, with Kirill Ojoga' },
                     { label: 'ROLE', value: '3D Art, Level Design' },
-                    { label: 'TOOLS', value: 'Unity, Blender, Illustrator' },
+                    { label: 'TOOLS', value: 'Unity, Blender, Illustrator, After Effects' },
                 ]}
             />
 
@@ -129,16 +133,16 @@ export default function LsdJam() {
             {/* ── CLOSING ── */}
 
             <HeroStatement label="OUTCOME">
-                <h2>Every reality different. Every reality yours.</h2>
+                <h2>Two worlds that shouldn't fit.</h2>
                 <ScrollReveal>
-                    A game jam entry built on the premise that nothing is stable — handcrafted 3D environments where each level questions what's real.
-                    The visual language holds it together. The disorientation is designed.
+                    The job was to make each reality solid enough to believe and different enough to doubt: a cold, failing spaceship, and a warm
+                    cassette room that shouldn't exist inside it. Every environment, prop and light in the game was handmade for the jam.
                 </ScrollReveal>
             </HeroStatement>
 
             <EvidenceRow
                 items={[
-                    { label: 'LEVELS', value: 'Multiple reality shifts' },
+                    { label: 'LEVELS', value: 'Cryo hall, bridge, cassette room' },
                     { label: '3D ART', value: 'Environments, props, lighting' },
                     { label: 'PROMOTION', value: 'Key art, branding' },
                 ]}

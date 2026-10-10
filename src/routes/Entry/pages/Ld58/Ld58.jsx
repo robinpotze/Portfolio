@@ -85,17 +85,21 @@ export default function Ld58() {
             <CaseIntro
                 src={`${assetPath}Marketing/MARKET_Wallpaper.png`}
                 kicker={`LUDUM DARE / ${Data.year}`}
-                heading="72 hours to build a world worth cracking open."
-                subtitle="3D environments, branding, TV content, and audio for a satirical cap-collecting simulator."
+                heading="A world worth cracking open."
+                subtitle="3D environments, branding, TV content and audio for Day Drinking, a cap-collecting satire made in 72 hours."
             />
 
             {/* ── ROLE ── */}
 
             <StatementBlock label="ROLE">
-                <h2>Every surface, every label, every pixel — in three days.</h2>
+                <h2>All visuals and audio, in three days.</h2>
                 <ScrollReveal>
-                    The full visual layer for a satirical cap-collecting simulator. Hand-modeled interiors, sixteen knock-off beer brands, animated TV
-                    channels, tutorial graphics, and a cohesive brand identity — all under the Ludum Dare 58 clock.
+                    Made as a duo with developer{' '}
+                    <a href="https://mnemosynevl.itch.io/" target="_blank" rel="noopener noreferrer">
+                        Kirill Ojoga (MnemosyneVL)
+                    </a>
+                    , who programmed the game. I made everything you see and hear: hand-modeled interiors, sixteen knock-off beer brands, animated TV
+                    channels, tutorial graphics, the brand identity and the audio — all under the Ludum Dare 58 clock.
                 </ScrollReveal>
             </StatementBlock>
 
@@ -103,6 +107,7 @@ export default function Ld58() {
                 items={[
                     { label: 'EVENT', value: 'Ludum Dare 58' },
                     { label: 'DURATION', value: '72 hours' },
+                    { label: 'TEAM', value: 'Duo, with Kirill Ojoga' },
                     { label: 'ROLE', value: '3D Art, UI, Branding, Audio' },
                     { label: 'TOOLS', value: 'Unity, Blender, Figma' },
                 ]}
@@ -140,7 +145,7 @@ export default function Ld58() {
 
             <ComparisonBlock
                 label="THE TV CORNER"
-                heading="Every surface modeled. Every screen functional."
+                heading="Every surface modeled."
                 items={[
                     {
                         caption: 'WIREFRAME',
@@ -189,21 +194,21 @@ export default function Ld58() {
             />
 
             <FeatureSplit src={`${assetPath}Marketing/MARKET_Logotype.png`} alt="Logotype design for the LD58 entry." reverse label="LOGOTYPE">
-                <h3>Type that sells the premise at a glance.</h3>
+                <h3>Sells the joke at a glance.</h3>
                 <ScrollReveal>
                     Bold, unapologetic, slightly absurd. Designed to carry the tone across promotional material and in-game screens.
                 </ScrollReveal>
             </FeatureSplit>
 
-            <ImageGrid images={BRAND_IMAGES} columns={4} label="BEER LABELS" heading="Sixteen knock-off brands. All fictional. Mostly drinkable." />
+            <ImageGrid images={BRAND_IMAGES} columns={4} label="BEER LABELS" heading="Sixteen knock-off brands. Mostly drinkable." />
 
             {/* ── CLOSING ── */}
 
             <HeroStatement label="OUTCOME">
-                <h2>Built in 72 hours. Plays like it wasn't.</h2>
+                <h2>Built in 72 hours.</h2>
                 <ScrollReveal>
-                    Handcrafted 3D environments, sixteen beer brands, four TV channels, polished UI, cohesive branding, original audio, and a gameplay
-                    loop that makes cap collecting genuinely satisfying — all delivered within a single weekend.
+                    Day Drinking was delivered inside the Ludum Dare 58 deadline: one furnished 3D interior, sixteen beer brands, four TV channels, a
+                    tutorial, a logo and thumbnail, and original audio, wrapped around a cap-collecting loop.
                 </ScrollReveal>
             </HeroStatement>
 

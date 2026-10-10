@@ -28,10 +28,10 @@ export default function Cjib() {
             {/* ── ROLE ── */}
 
             <StatementBlock label="ROLE">
-                <h2>Nobody had visualized these systems before. That was the job.</h2>
+                <h2>Drawing systems nobody had drawn.</h2>
                 <ScrollReveal>
-                    Three product teams running parallel workstreams — motion design, developer documentation, and seizure-management UX. No
-                    templates. No precedent. Every deliverable built from zero.
+                    Three product teams ran in parallel: motion design for presentations, developer documentation for PBS, and UX for the seized-goods
+                    portal. There were no templates to start from, so every deliverable was built from zero.
                 </ScrollReveal>
             </StatementBlock>
 
@@ -56,7 +56,7 @@ export default function Cjib() {
             />
 
             <StatementBlock label="DECISION">
-                <h2>REST couldn't match the data layer. GraphQL could. That story needed telling in sixty seconds.</h2>
+                <h2>Why GraphQL, in sixty seconds.</h2>
             </StatementBlock>
 
             <FullImage src={`${assetPath}GraphQLTransition.webp`} alt="Animated transition showing GraphQL query flow through the system." />
@@ -81,7 +81,7 @@ export default function Cjib() {
             <FullImage src={`${assetPath}LANDING TMI.png`} alt="Landing page for the PBS documentation website." />
 
             <HeroStatement label="SYSTEM OVERVIEW">
-                <h2>One identity layer across every government source.</h2>
+                <h2>One profile from many registries.</h2>
                 <ScrollReveal>
                     PBS pulls from multiple registries to construct a single profile model. The documentation accounts for every connection state and
                     failure path — no ambiguity, no guesswork. Developers know what breaks before they write a line of code.
@@ -93,7 +93,7 @@ export default function Cjib() {
             </div>
 
             <StatementBlock label="API STATES">
-                <h3>Every state documented. Every failure explained.</h3>
+                <h3>Every failure explained.</h3>
                 <ScrollReveal>
                     Success paths and error states on dedicated reference pages — cause, resolution, and code samples. No hunting through changelogs.
                 </ScrollReveal>
@@ -103,7 +103,7 @@ export default function Cjib() {
 
             <ComparisonBlock
                 label="API DOCUMENTATION"
-                heading="Stripped back until only the useful parts remained."
+                heading="Stripped back to what's useful."
                 items={[
                     {
                         caption: 'ORIGINAL DESIGN',
@@ -124,25 +124,26 @@ export default function Cjib() {
                 title="BESLAGPORTAAL"
                 subtitle="003:::UX_DESIGN"
                 note="SCREENS USE PLACEHOLDER DATA FOR CONFIDENTIALITY"
-                description="Search, case records, and seized-item management in one application. Officers were reconstructing context across three disconnected tools for every case. That workflow ended here."
+                description="Beslagportaal (seizure portal) brings search, case records and seized-item management into one application. Officers were reconstructing context across three disconnected tools for every case."
             />
 
             <StatementBlock label="PROBLEM">
-                <h2>Every case meant rebuilding context from scratch.</h2>
+                <h2>Three tools for every case.</h2>
                 <ScrollReveal>
                     What was seized, where it was stored, what its legal status was — all scattered across disconnected systems. Officers spent more
-                    time navigating tools than doing their jobs.
+                    time navigating tools than doing their jobs. I learned this by interviewing officers, watching them work through cases, and
+                    working with the product owner and stakeholders.
                 </ScrollReveal>
             </StatementBlock>
 
             <StatementBlock label="CASE OVERVIEW">
-                <h2>One screen. Full context. No reconstruction.</h2>
+                <h2>The whole case on one screen.</h2>
             </StatementBlock>
 
             <FullImage src={`${assetPath}Zaakoverzicht-v1.png`} alt="Case overview screen of the Beslagportaal application." />
 
             <StatementBlock label="SEARCH">
-                <h2>Partial numbers. Uncertain descriptions. Still finds the record.</h2>
+                <h2>Search that works with fragments.</h2>
                 <ScrollReveal>
                     Officers work with incomplete information — a fragment of a case number, a vague item description. The search was built for that
                     ambiguity. Flexible filters, fast results, thousands of records.
@@ -169,21 +170,23 @@ export default function Cjib() {
             />
 
             <FeatureSplit src={`${assetPath}Beslagvoorwerp.png`} alt="Detail view for an individual seized item." reverse label="DETAIL VIEW">
-                <h3>Every seized item, fully contextualized.</h3>
+                <h3>Every item in context.</h3>
             </FeatureSplit>
 
             {/* ── CLOSING ── */}
 
             <HeroStatement label="OUTCOME">
-                <h2>Systems that explain themselves.</h2>
+                <h2>Built with the people who use it.</h2>
                 <ScrollReveal>
-                    A documentation layer that made PBS integration predictable. An item-management application that replaced fragmented tools with a
-                    single workflow. Motion design that turned invisible infrastructure into something stakeholders could finally point at.
+                    Beslagportaal was shaped by interviews with officers, sessions watching them work through cases, and regular reviews with the
+                    product owner. PBS got a documentation site that covers every connection state and failure path. And the GraphQL presentation gave
+                    stakeholders a picture of a system they had never seen drawn.
                 </ScrollReveal>
             </HeroStatement>
 
             <EvidenceRow
                 items={[
+                    { label: 'RESEARCH', value: 'Interviews, observation, PO reviews' },
                     { label: 'SYSTEMS', value: 'PBS, ABE, BSP' },
                     {
                         label: 'SKILLS',

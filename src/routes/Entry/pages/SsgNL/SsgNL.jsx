@@ -21,14 +21,14 @@ export default function SsgNL() {
             <CaseIntro
                 src={`${assetPath}autoq/MAIN.mp4`}
                 kicker={`SOPRA STERIA / ${Data.year}`}
-                heading="Four products. No templates. No repeats."
+                heading="Four products. No repeats."
                 subtitle="Design, development, and game design at Sopra Steria."
             />
 
             {/* ── ROLE ── */}
 
             <StatementBlock label="ROLE">
-                <h2>Every product needed everything from scratch.</h2>
+                <h2>Each one built from scratch.</h2>
                 <ScrollReveal>
                     Brand systems, educational board games, conversational interfaces. Each project demanded a different discipline but the same
                     standard — clear design that earns attention from both engineers and executives.
@@ -212,15 +212,16 @@ export default function SsgNL() {
             {/* ── CLOSING ── */}
 
             <HeroStatement label="OUTCOME">
-                <h2>Four products. Four systems. Zero shortcuts.</h2>
+                <h2>In use at trainings and events.</h2>
                 <ScrollReveal>
-                    Corporate training, cybersecurity awareness, agile methodology, and knowledge management — each product built for its audience,
-                    each visually distinct. The board games are in active use at the office, and the marketing materials shipped on LinkedIn.
+                    Both board games are played at Sopra Steria trainings and events, each session led by a game leader. The Auto|Q brand carries the
+                    department's training cards and marketing, which was published on LinkedIn.
                 </ScrollReveal>
             </HeroStatement>
 
             <EvidenceRow
                 items={[
+                    { label: 'IN USE', value: 'Trainings and events' },
                     {
                         label: 'PRODUCTS',
                         value: 'Auto|Q, CyberSec, Agile, Chatbot',

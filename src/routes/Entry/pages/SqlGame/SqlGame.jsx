@@ -28,7 +28,7 @@ export default function SqlGame() {
             {/* ── ROLE ── */}
 
             <StatementBlock label="ROLE">
-                <h2>One designer. One developer. One game.</h2>
+                <h2>Mine from concept to code.</h2>
                 <ScrollReveal>
                     SQL Game was mine from concept to implementation. I designed every screen, defined the gameplay loop, and built the front end.
                     Players write real SQL queries to progress through a world — no multiple choice, no hand-holding.
@@ -54,7 +54,7 @@ export default function SqlGame() {
             />
 
             <FeatureSplit src={`${assetPath}Components_Query.png`} alt="Query editor component breakdown." label="QUERY EDITOR">
-                <h3>Real queries. Real feedback. Real learning.</h3>
+                <h3>A real query editor.</h3>
                 <ScrollReveal>
                     A sandbox where players write actual SQL statements and see immediate results. No drag-and-drop, no templates — just a query
                     editor, a result set, and a database that responds.
@@ -62,7 +62,7 @@ export default function SqlGame() {
             </FeatureSplit>
 
             <FeatureSplit src={`${assetPath}Components_Interactive.png`} alt="Global interactive components" label="INTERACTIVE" reverse={true}>
-                <h3>Every element directs something.</h3>
+                <h3>Every element gives feedback.</h3>
                 <ScrollReveal>
                     Apart from the query editor, every component is designed to provide feedback and guide players. Buttons, tooltips, result sets —
                     all built to make the learning feel intuitive and responsive.
@@ -96,10 +96,10 @@ export default function SqlGame() {
             </FeatureSplit>
 
             <FeatureSplit src={`${assetPath}Components_Quests.png`} alt="Quest component breakdown." label="QUEST COMPONENTS" reverse={true}>
-                <h3>Quests guide learning.</h3>
+                <h3>One step at a time.</h3>
                 <ScrollReveal>
-                    Each quest is designed to teach a specific SQL concept. Players complete tasks that require writing queries, reinforcing their
-                    understanding through practical application.
+                    A quest is a stack of steps. Each step holds the task, a help button and one or more answer fields. Finished steps collapse behind
+                    a check mark, so players always see what's next, and help stays hidden until they ask for it.
                 </ScrollReveal>
             </FeatureSplit>
 
@@ -197,15 +197,16 @@ export default function SqlGame() {
             {/* ── CLOSING ── */}
 
             <HeroStatement label="OUTCOME">
-                <h2>A game that teaches without lecturing.</h2>
+                <h2>Made for internal training.</h2>
                 <ScrollReveal>
-                    SQL Game turns database education into exploration. Players write real queries, navigate a world, and build skills through play —
-                    no slides, no quizzes, just a query editor and a reason to use it.
+                    SQL Game was made for Sopra Steria's internal SQL training. Instead of slides and quizzes, colleagues learn by writing real
+                    queries to move through the world, take on quests and manage their inventory.
                 </ScrollReveal>
             </HeroStatement>
 
             <EvidenceRow
                 items={[
+                    { label: 'USE', value: 'Internal SQL training' },
                     {
                         label: 'SCREENS',
                         value: 'Query tool, map, quests, reference, auth',

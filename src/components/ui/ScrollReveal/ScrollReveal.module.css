@@ -7,3 +7,13 @@
     text-transform: none;
     margin: 0;
 }
+
+.scrollRevealText a {
+    color: var(--c-brnd_100);
+    text-underline-offset: 0.2em;
+}
+
+.scrollRevealText a:hover,
+.scrollRevealText a:focus-visible {
+    color: var(--c-lght_100);
+}
