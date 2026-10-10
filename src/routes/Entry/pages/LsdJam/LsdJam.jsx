@@ -52,7 +52,10 @@ export default function LsdJam() {
                 description="You wake in cryosleep aboard an unknown ship. Narrow hallways lead to storage bays. Storage bays lead to the bridge. A system error pulled you out early — the sun is burning through the hull, and you're headed straight for it."
             />
 
-            <FullImage src={`${assetPath}hibernation.png`} alt="A retro-futurist room with a VR setup in the middle." />
+            <FullImage
+                src={`${assetPath}hibernation.png`}
+                alt="The hibernation room: a dark spaceship hall lined with glowing green monitors, stairs leading up to a sealed door."
+            />
 
             <DoubleImage
                 images={[
@@ -118,7 +121,7 @@ export default function LsdJam() {
                     },
                     {
                         src: `${assetPath}CassetteRoom.png`,
-                        alt: 'Final render of a retro-futurist room with a VR setup.',
+                        alt: 'Final render of the cassette room: a warm cabin with shelves of tapes and books and a large blue capsule in the middle.',
                     },
                 ]}
             />

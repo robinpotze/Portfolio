@@ -49,6 +49,7 @@ export default function SqlGame() {
             <WorkHeader
                 title="QUERY TOOL"
                 subtitle="001:::CORE_MECHANIC"
+                note="SCREENS USE PLACEHOLDER DATA FOR CONFIDENTIALITY"
                 description="The central interface. Players type actual SQL statements into a query editor and see immediate visual results. Abstract database operations become concrete the moment the query runs — SELECT, JOIN, WHERE, all of it."
             />
 

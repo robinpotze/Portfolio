@@ -3,13 +3,14 @@ import DashLine from '@components/ui/DashLine';
 import GradualBlur from '@components/ui/GradualBlur';
 import PageTitle from '@components/ui/PageTitle/PageTitle';
 import ScrollReveal from '@components/ui/ScrollReveal';
+import CaseFooter from '@routes/Entry/components/CaseFooter/CaseFooter';
 import ProjectHero from '@routes/Entry/components/ProjectHero/ProjectHero';
 import NotFound from '@routes/NotFound/NotFound';
 import { EASING, LENIS, REVEAL } from '@config/animation.config';
 import useLenisScroll from '@hooks/useLenisScroll';
 import { motion } from 'motion/react';
 import { normalizeKey } from '@utils/stringUtils';
-import { Suspense } from 'react';
+import { Suspense, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import styles from './Entry.module.css';
 import { pages } from './pages/autogen';
@@ -27,12 +28,18 @@ export default function Entry() {
     const normalizedTitle = normalizeKey(title);
     const { Component: PageComponent, data } = pages[normalizedTitle] || {};
 
+    // "Next project" reuses this route: start each project at the top
+    useEffect(() => {
+        globalThis.lenis?.scrollTo(0, { immediate: true, force: true });
+        window.scrollTo(0, 0);
+    }, [normalizedTitle]);
+
     if (!PageComponent || !data) {
         return <NotFound message="This project does not exist." />;
     }
 
     return (
-        <div className={styles.page} id={data.title.replaceAll(/\s+/g, '-') + '-page'}>
+        <div className={styles.page} key={normalizedTitle} id={data.title.replaceAll(/\s+/g, '-') + '-page'}>
             <PageTitle name={data.title} />
             <ProjectHero content={data} />
             <section className={styles.section}>
@@ -61,6 +68,7 @@ export default function Entry() {
                         <PageComponent />
                     </Suspense>
                 </div>
+                <CaseFooter currentKey={normalizedTitle} />
             </section>
 
             <GradualBlur target="page" position="bottom" height="6rem" strength={2} divCount={5} curve="bezier" exponential={true} opacity={1} />
