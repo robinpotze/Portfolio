@@ -101,10 +101,13 @@ export default function ProjectHero({ content }) {
             </div>
 
             <motion.div className={styles.content} id="work-hero-content" variants={sideVars} custom={1} initial="hidden" animate={'visible'}>
-                <motion.div className={styles.titleWrapper} id="work-hero-title-wrapper" variants={titleVars} initial="hidden" animate={'visible'}>
-                    <PlsIcon className={styles.titleDecal} id="work-hero-decal-start" aria-hidden="true" />
-                    <h1 id="work-hero-title">{content.title.replaceAll(/\s+/g, '_')}</h1>
-                    <PlsIcon className={styles.titleDecal} id="work-hero-decal-end" aria-hidden="true" />
+                <motion.div className={styles.titleBlock} variants={titleVars} initial="hidden" animate={'visible'}>
+                    <div className={styles.titleWrapper} id="work-hero-title-wrapper">
+                        <PlsIcon className={styles.titleDecal} id="work-hero-decal-start" aria-hidden="true" />
+                        <h1 id="work-hero-title">{content.title.replaceAll(/\s+/g, '_')}</h1>
+                        <PlsIcon className={styles.titleDecal} id="work-hero-decal-end" aria-hidden="true" />
+                    </div>
+                    {content.subtitle && <p className={`deco ${styles.titleSub}`}>{content.subtitle.toUpperCase()}</p>}
                 </motion.div>
             </motion.div>
 

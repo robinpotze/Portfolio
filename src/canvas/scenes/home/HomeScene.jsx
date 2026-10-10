@@ -6,10 +6,18 @@ import { BackgroundMesh } from '@canvas/features/background';
 import { LaserPlane } from '@canvas/features/laser';
 import { LogoMesh } from '@canvas/features/logo';
 import { BREAKPOINTS, FLOAT_CONFIG, REVEAL, SCENE, TIMEOUT } from '@config/animation.config';
-import { Float, PerspectiveCamera, Text } from '@react-three/drei';
+import { SITE } from '@config/site.config';
+import { Float, Html, PerspectiveCamera, Text } from '@react-three/drei';
 import { useThree } from '@react-three/fiber';
 import { Bloom, EffectComposer, N8AO } from '@react-three/postprocessing';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import styles from './HomeCanvas.module.css';
+
+// Logo is fixed-size while the name scales with viewportScale: lift the logo by its own half height,
+// a gap, and the name's half height projected onto the logo's plane, so the two never overlap.
+const LOGO_HALF_HEIGHT = 2.2;
+const LOGO_NAME_GAP = 0.9;
+const NAME_HALF_HEIGHT_AT_LOGO = 0.86;
 
 export default function HomeScene({ scrollProgress = 0, startAnimations = true, onSceneReady = null }) {
     const logoRef = useRef();
@@ -83,6 +91,7 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true, 
         () => ({
             duration: REVEAL.DURATION,
             delay: REVEAL.DURATION,
+            endPosition: [0, LOGO_HALF_HEIGHT + LOGO_NAME_GAP + NAME_HALF_HEIGHT_AT_LOGO * viewportScale, 0],
             scrollEndPosition: [0, 0, -15],
             scrollEndScale: [4 * viewportScale, 4 * viewportScale, 4 * viewportScale],
             scrollProgress,
@@ -171,6 +180,14 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true, 
                     <Text font="/assets/fonts/Orbitron/static/Orbitron-Medium.ttf" color="#EEE">
                         ROBIN POTZE
                     </Text>
+                    <Html
+                        position={[0, -(0.75 + 0.1 / viewportScale), 0]}
+                        center
+                        className={styles.roleLine}
+                        style={{ opacity: Math.max(0, 1 - scrollProgress * 4) }}
+                    >
+                        {SITE.ROLE_LINE}
+                    </Html>
                 </group>
             )}
 
@@ -184,7 +201,7 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true, 
 
             <Float floatIntensity={FLOAT_CONFIG.INTENSITY} rotationIntensity={FLOAT_CONFIG.ROTATION_INTENSITY} speed={FLOAT_CONFIG.SPEED}>
                 <group ref={logoRef} scale={1.5 * viewportScale}>
-                    <LogoMesh enableFBO={entryComplete && quality !== 'low'} />
+                    <LogoMesh enableFBO={entryComplete} />
                 </group>
             </Float>
 

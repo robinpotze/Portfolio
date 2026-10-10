@@ -9,6 +9,7 @@ uniform float uRoughness;
 uniform float uNoiseScale;
 uniform float uRefractPower;
 uniform float uChromaticAberration;
+uniform float uBannerLuma;
 
 varying vec2 vUv;
 varying vec3 vNormal;
@@ -99,10 +100,13 @@ void main() {
     // Gentle brightness and cool tint
     color *= vec3(1.0, 1.02, 1.05);
 
-    // Vignette — darkens center where text sits for legibility
+    // Vignette — darkens center where text sits for legibility; bright banners get a deeper, wider center.
+    // Shading is in linear space, so 0.1 reads as roughly 35% brightness on screen.
     vec2 vigUv = vUv - 0.5;
-    float vignette = dot(vigUv, vigUv) * 1.5;
-    color *= mix(0.55, 1.0, vignette);
+    float brightBanner = smoothstep(0.35, 0.75, uBannerLuma);
+    float vignette = dot(vigUv, vigUv) * mix(1.5, 0.9, brightBanner);
+    float centerShade = mix(0.55, 0.1, brightBanner);
+    color *= mix(centerShade, 1.0, vignette);
 
     gl_FragColor = vec4(color, 1.0);
 }

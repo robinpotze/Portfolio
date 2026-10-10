@@ -5,6 +5,7 @@ import { Float, Text, useTexture } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { getCSSVariable } from '@utils/cssUtils';
 import { entryEase } from '@utils/easingFunctions';
+import { averageLuminance } from '@utils/imageUtils';
 import { useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { CARD_HEIGHT, CARD_WIDTH } from './cardGeometry';
@@ -33,7 +34,11 @@ export default function WorkCard({ item, index, visible = true, onNavigate, cent
         return img ? new THREE.Vector2(img.width, img.height) : new THREE.Vector2(1, 1);
     }, [texture]);
 
+    const bannerLuma = useMemo(() => averageLuminance(texture.image), [texture]);
+
     const planeSize = useMemo(() => new THREE.Vector2(CARD_WIDTH, CARD_HEIGHT), []);
+
+    const tags = (data.skills || []).join('  ·  ').toUpperCase();
 
     const isLowQuality = quality === 'low';
 
@@ -165,6 +170,7 @@ export default function WorkCard({ item, index, visible = true, onNavigate, cent
                         uRoughness={cardUniforms.uRoughness}
                         uRefractPower={cardUniforms.uRefractPower}
                         uChromaticAberration={cardUniforms.uChromaticAberration}
+                        uBannerLuma={bannerLuma}
                         toneMapped={false}
                     />
                 </mesh>
@@ -199,15 +205,31 @@ export default function WorkCard({ item, index, visible = true, onNavigate, cent
                     >
                         {data?.title || pageKey}
                     </Text>
+                    {data.subtitle && (
+                        <Text
+                            fontSize={CARD_HEIGHT * 0.05}
+                            font="/assets/fonts/Kode_Mono/static/KodeMono-Regular.ttf"
+                            color={LGHT_COLOR}
+                            anchorX="center"
+                            anchorY="middle"
+                            position={[0, -CARD_HEIGHT * 0.1, 0.1]}
+                        >
+                            {data.subtitle.toUpperCase()}
+                        </Text>
+                    )}
                     <Text
-                        fontSize={CARD_HEIGHT * 0.045}
+                        fontSize={CARD_HEIGHT * 0.032}
                         font="/assets/fonts/Kode_Mono/static/KodeMono-Regular.ttf"
                         color={LGHT_COLOR}
+                        fillOpacity={0.8}
+                        maxWidth={CARD_WIDTH * 0.8}
+                        lineHeight={1.5}
+                        textAlign="center"
                         anchorX="center"
-                        anchorY="middle"
-                        position={[0, -CARD_HEIGHT * 0.1, 0.1]}
+                        anchorY="top"
+                        position={[0, -CARD_HEIGHT * (data.subtitle ? 0.17 : 0.09), 0.1]}
                     >
-                        {data?.client || ''}
+                        {tags}
                     </Text>
                 </group>
             </group>

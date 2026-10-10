@@ -1,7 +1,7 @@
 const assetPath = '/assets/img/work/pmot/';
 
 export const Data = {
-    id: 4,
+    id: 1,
     title: 'PMOT',
     synopsis: 'Webstore meets learning platform.',
     description:
@@ -10,5 +10,5 @@ export const Data = {
     year: 2022,
     software: ['Figma', 'Adobe XD', 'Axure RP', 'Illustrator'],
     skills: ['UX Design', 'User Research', 'Prototyping', 'Information Architecture'],
-    banner: `${assetPath}PMOT Banner.png`,
+    banner: `${assetPath}banner.webp`,
 };

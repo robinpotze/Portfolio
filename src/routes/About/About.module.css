@@ -97,17 +97,39 @@
 
 .header {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
+    column-gap: var(--s-s);
 }
 
 .name {
     font: var(--f-title);
+    font-size: clamp(2rem, 3.6vw, 3.5rem);
     text-transform: uppercase;
     color: var(--c-lght_100);
     text-shadow: 0 0 20px var(--c-lght_40);
     margin-bottom: 0.5rem;
-    flex-shrink: 0;
+    min-width: 0;
+}
+
+.contactLine {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-xs);
+    margin-bottom: var(--s-s);
+    font: var(--f-func-small);
+    color: var(--c-lght_40);
+}
+
+.contactLine a {
+    color: var(--c-brnd_100);
+    text-decoration: none;
+}
+
+.contactLine a:hover,
+.contactLine a:focus-visible {
+    text-decoration: underline;
 }
 
 .title {

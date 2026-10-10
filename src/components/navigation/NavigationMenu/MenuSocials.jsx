@@ -1,12 +1,7 @@
 import { REVEAL } from '@config/animation.config';
+import { SOCIALS } from '@config/site.config';
 import { motion } from 'motion/react';
 import styles from './NavigationMenu.module.css';
-
-const SOCIALS = [
-    { label: 'Artstation', link: 'https://artstation.com/living_ipod' },
-    { label: 'GitHub', link: 'https://github.com/robinpotze' },
-    { label: 'LinkedIn', link: 'https://linkedin.com/in/robinpotze' },
-];
 
 export default function MenuSocials({ open }) {
     return (

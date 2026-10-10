@@ -61,15 +61,11 @@ export default function Cjib() {
 
             <FullImage src={`${assetPath}GraphQLTransition.webp`} alt="Animated transition showing GraphQL query flow through the system." />
 
-            <FeatureSplit
-                src={`${assetPath}McDonalds_Logo.webp`}
-                alt="Animated logo sequence for internal presentation material."
-                label="MOTION LANGUAGE"
-            >
-                <h3>Identity sequences for teams that never had one.</h3>
+            <FeatureSplit src={`${assetPath}McDonalds_Logo.webp`} alt="McDonald's logo reveal from the GraphQL presentation." label="MOTION LANGUAGE">
+                <h3>GraphQL, explained as a menu.</h3>
                 <ScrollReveal>
-                    Animated transitions and motion graphics that replaced generic slide decks with deliberate visual storytelling. Each team got a
-                    recognizable visual language — not a template, a system.
+                    To show why GraphQL fit, the presentation framed it as ordering from a McDonald's menu: ask for exactly what you want, get nothing
+                    extra. This logo reveal opened that part of the talk.
                 </ScrollReveal>
             </FeatureSplit>
 
@@ -78,6 +74,7 @@ export default function Cjib() {
             <WorkHeader
                 title="PBS"
                 subtitle="002:::DOCUMENTATION"
+                note="SCREENS USE PLACEHOLDER DATA FOR CONFIDENTIALITY"
                 description="The system that merges fragmented government identity data into unified person profiles. Dozens of integration states. Hundreds of edge cases. I designed the documentation site that maps it all for the developers building against it."
             />
 
@@ -126,6 +123,7 @@ export default function Cjib() {
             <WorkHeader
                 title="BESLAGPORTAAL"
                 subtitle="003:::UX_DESIGN"
+                note="SCREENS USE PLACEHOLDER DATA FOR CONFIDENTIALITY"
                 description="Search, case records, and seized-item management in one application. Officers were reconstructing context across three disconnected tools for every case. That workflow ended here."
             />
 

@@ -1,5 +1,9 @@
 export const CONTACT_FORM_URL = 'https://contact-form.robinpotze.workers.dev';
 
+export const AVAILABILITY_LINES = ['STATUS: AVAILABLE', 'TYPE: FULL-TIME / FREELANCE'];
+
+export const REPLY_ETA = 'REPLY ETA: 2–3 WORKING DAYS';
+
 export const SEND_ERROR_CONFIG = {
     400: {
         status: 'error',
@@ -80,9 +84,9 @@ export const PHASE_CONFIG = {
         statusType: 'error',
         statusMessage: (
             <>
-                INTERCEPT
+                RETURN ADDRESS
                 <br />
-                DETECTED
+                MISSING
             </>
         ),
     },
@@ -90,55 +94,34 @@ export const PHASE_CONFIG = {
         statusType: 'success',
         statusMessage: (
             <>
-                MESSAGE
+                TRANSMISSION
                 <br />
-                RELAYED
+                RECEIVED
             </>
         ),
     },
 };
 
 export const ERROR_LOG_LINES = [
-    '[SYSTEM] CARRIER_INTERCEPT_DAEMON v9.4.0',
-    '[BOOT] WIDEBAND_FRONTEND: ACTIVE [RX_01..RX_08]',
-    '[SCAN] SPECTRUM_SWEEP: 5725MHz - 5875MHz',
-    '[SYNC] CARRIER_LOCKED: 5.821GHz [UPLINK_SIG]',
-    '[LINK] RSSI: -38dBm | SNR: 34.2dB | BER: <1e-12',
+    '[SYSTEM] PACKET_VALIDATOR v2.1.0',
+    '[RECV] INBOUND MESSAGE FROM CNTCT-FRM',
+    '[RECV] ROUTE: PUBLIC_UPLINK -> RELAY_01',
     '\n',
-    '[LAYER_1] BITSTREAM_EXTRACTION...',
-    '0x001: [████████████████] 100% PHASE_LOCK',
-    '0x002: [████████████████] 100% CLOCK_REC',
-    '0x003: [████████████████] 100% FRAME_SYNC',
+    '[CHECK] HEADER ............ OK',
+    '[CHECK] SENDER_ID ......... OK',
+    '[CHECK] PAYLOAD ........... OK',
+    '[CHECK] CHECKSUM .......... OK',
+    '[CHECK] RETURN_ADDRESS .... MISSING',
     '\n',
-    '[LAYER_2] DE-ENCAPSULATION_ROUTINE',
-    '[PROC] REMOVING_ETHERNET_PREAMBLE... [DONE]',
-    '[PROC] STRIPPING_VLAN_TAGS (ID: 402)... [DONE]',
-    '[PROC] MAC_SPOOF_VALIDATION: BYPASSED',
+    '[ROUTE] RESOLVING REPLY PATH...',
+    '[ROUTE] NO RETURN_ADDRESS ON FILE',
+    '[HALT] CANNOT ROUTE REPLY',
     '\n',
-    '[LAYER_3] PACKET_RECONSTRUCTION',
-    '[RECV] IPV4_DATAGRAM_TOTAL: 4096 BYTES',
-    '[RECV] SOURCE: 172.16.254.1',
-    '[RECV] DESTINATION: [PROTECTED_INTERNAL_SRV]',
-    '[FRAG] REASSEMBLING_FRAGMENTED_PAYLOAD...',
-    '[FRAG] SEGMENT_01..08 [LOCKED]',
+    '[REQ] SUPPLY RETURN_ADDRESS TO CONTINUE',
+    '[REQ] FORMAT: USER@DOMAIN.TLD',
     '\n',
-    '[LAYER_4] TLS_INTERCEPT_ACTIVE',
-    '[AUTH] SESSION_ID: 0xFD291A_XFS',
-    '[AUTH] HANDSHAKE_STRATEGY: MAN_IN_THE_MIDDLE',
-    '[AUTH] RSA_KEY_INJECTION: SUCCESS',
-    '[AUTH] MASTER_SECRET_EXTRACTED: [0x...FF2E]',
-    '\n',
-    '[L7_DATA] DECRYPTED_STREAM_OUTPUT:',
-    '{',
-    '  "protocol": "TCP/JSON",',
-    '  "endpoint": "/api/v1/secure_contact",',
-    '  "payload_size": "2.4kb",',
-    '  "intercept": "COMMIT_SUCCESS"',
-    '}',
-    '\n',
-    '[STATUS] SIGNAL_BARRIER: PERMEATED',
-    '[STATUS] DATA_FLOW: UNRESTRICTED',
-    '[SYSTEM] STANDBY for NEXT_FRAME...',
+    '[STATUS] PACKET HELD IN BUFFER',
+    '[SYSTEM] AWAITING INPUT...',
 ];
 
 export const STATUS_GRID_LINES = [

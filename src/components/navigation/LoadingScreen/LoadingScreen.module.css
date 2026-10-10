@@ -34,3 +34,29 @@
     font: var(--f-func-small);
     color: var(--c-brnd_100);
 }
+
+/* Below the centred logo, so the logo and progress text keep their original position */
+.intro {
+    position: absolute;
+    top: calc(50% + 7.5rem);
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--s-xs);
+    max-width: min(86vw, 34rem);
+    text-align: center;
+}
+
+.introName {
+    font: var(--f-hdr_3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--c-lght_100);
+}
+
+.introRole {
+    font: var(--f-paragraph);
+    line-height: 1.5;
+    color: var(--c-lght_60);
+}
