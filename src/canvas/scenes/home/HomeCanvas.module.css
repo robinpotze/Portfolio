@@ -8,6 +8,18 @@
     pointer-events: none;
 }
 
+.roleLine {
+    width: min(86vw, 34rem);
+    font: var(--f-paragraph);
+    font-size: clamp(0.95rem, 1.3vw, 1.2rem);
+    line-height: 1.5;
+    text-align: center;
+    color: var(--c-lght_100);
+    text-shadow: 0 0 12px var(--c-drk_100);
+    pointer-events: none;
+    user-select: none;
+}
+
 /* Mobile */
 @media (max-width: 768px) {
     .canvasContainer {

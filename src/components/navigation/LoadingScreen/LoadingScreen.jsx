@@ -1,4 +1,5 @@
 import { LOADING_REVEAL, TIMEOUT } from '@config/animation.config';
+import { SITE } from '@config/site.config';
 import { useProgress } from '@react-three/drei';
 import { getCSSColorRGBA } from '@utils/cssUtils';
 import { AnimatePresence, motion } from 'motion/react';
@@ -284,6 +285,19 @@ export default function LoadingScreen({ onComplete, onRevealStart, minDisplayTim
                             <BlockLogo logoSrc={logoSrc} />
                         </motion.div>
                     )}
+
+                    {/* Name and role line — fade out with the progress text */}
+                    <motion.div
+                        className={styles.intro}
+                        animate={{ opacity: isRevealing ? 0 : 1 }}
+                        transition={{
+                            duration: LOADING_REVEAL.TEXT_FADE_MS / 1000,
+                            ease: 'easeOut',
+                        }}
+                    >
+                        <p className={styles.introName}>{SITE.NAME}</p>
+                        <p className={styles.introRole}>{SITE.ROLE_LINE}</p>
+                    </motion.div>
 
                     {/* Text — fades out quickly */}
                     <motion.div

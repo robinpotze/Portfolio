@@ -10,6 +10,7 @@ import RadialGrid from '@components/ui/RadialText/RadialGrid';
 import RedoAnimText from '@components/ui/RandomText/RedoAnimText';
 import ScrollDown from '@components/ui/ScrollDown';
 import { EASING, REVEAL, SCROLL_THRESHOLDS, STAGGER, TIMEOUT } from '@config/animation.config';
+import { usePageTransition } from '@hooks/usePageTransition';
 import useScrollNavigation from '@hooks/useScrollNavigation';
 import { useGLTF } from '@react-three/drei';
 import { motion } from 'motion/react';
@@ -50,6 +51,7 @@ const sideItemVariants = {
 export default function Home() {
     const navigate = useNavigate();
     const location = useLocation();
+    const { navigateWithTransition } = usePageTransition();
     const containerRef = useRef(null);
 
     const skipLoading = !!location.state?.fromNavigation;
@@ -82,6 +84,11 @@ export default function Home() {
             navigate('.', { replace: true, state: {} });
         }
     }, [location.state?.fromNavigation, resetNavigation, navigate]);
+
+    const onViewWork = (e) => {
+        e.preventDefault();
+        navigateWithTransition('/work', 'Work', 'up');
+    };
 
     const onRevealStart = useCallback(() => {
         setSceneStarted(true);
@@ -140,6 +147,9 @@ export default function Home() {
                         </div>
                         <div className={styles.scrollBottom}>
                             <ScrollDown />
+                            <a className={`deco-tiny ${styles.viewWork}`} href="/work" onClick={onViewWork}>
+                                VIEW WORK
+                            </a>
                         </div>
                     </div>
                     <motion.div
