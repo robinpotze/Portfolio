@@ -30,8 +30,8 @@ export default function LsdJam() {
             <StatementBlock label="ROLE">
                 <h2>Every environment. Every surface. Every light source.</h2>
                 <ScrollReveal>
-                    Partnered with Kiril Ojoga for the LSD Jam — a game jam themed around altered perception. All 3D art, textures, level layouts, and
-                    lighting rigs were mine. Unity for the build, Blender and After Effects for the assets.
+                    Partnered with Kirill Ojoga for the LSD Jam — a game jam themed around altered perception. All 3D art, textures, level layouts,
+                    and lighting rigs were mine. Unity for the build, Blender and After Effects for the assets.
                 </ScrollReveal>
             </StatementBlock>
 
