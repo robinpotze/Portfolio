@@ -3,6 +3,7 @@ import GridOverlay from '@components/ui/GridOverlay';
 import PageTitle from '@components/ui/PageTitle/PageTitle';
 import PixelCard from '@components/ui/PixelCard/PixelCard';
 import { EASING, REVEAL, SPRING_CONFIG, STAGGER } from '@config/animation.config';
+import { LINKEDIN, SITE } from '@config/site.config';
 import { AnimatePresence, motion } from 'motion/react';
 import { useState } from 'react';
 import styles from './About.module.css';
@@ -111,6 +112,13 @@ export default function About() {
                             Digital Artist <br></br> Creative Developer
                         </span>
                     </div>
+                    <p className={styles.contactLine}>
+                        <a href={`mailto:${SITE.EMAIL}`}>{SITE.EMAIL}</a>
+                        <span aria-hidden="true">/</span>
+                        <a href={LINKEDIN.link} target="_blank" rel="noopener noreferrer">
+                            LinkedIn
+                        </a>
+                    </p>
                     <h2 className={styles.title}>{currentPage}</h2>
 
                     <div className={styles.contentScroll}>
