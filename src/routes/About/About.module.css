@@ -128,8 +128,28 @@
 }
 
 .contactLine a:hover,
-.contactLine a:focus-visible {
+.contactLine a:focus-visible,
+.cvButton:hover,
+.cvButton:focus-visible {
     text-decoration: underline;
+}
+
+.cvButton {
+    font: inherit;
+    color: var(--c-brnd_100);
+}
+
+.cvButton[aria-busy='true'] {
+    color: var(--c-lght_60);
+    cursor: progress;
+}
+
+.bio {
+    font: var(--f-paragraph);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--c-lght_100);
+    margin-bottom: var(--s-s);
 }
 
 .title {

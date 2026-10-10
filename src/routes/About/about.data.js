@@ -10,6 +10,10 @@ import MrkIcon from '@/assets/icons/MRK.svg?react';
 
 export const ABOUT_SECTIONS = ['EXP', 'SKL', 'SFT', 'EDU'];
 
+// Shown on the About page and at the top of the CV
+export const ABOUT_BIO =
+    "I'm a designer who builds. Since 2020 I've designed interfaces, serious games and 3D worlds: government systems at CJIB, internal products at Sopra Steria, and game jams on the side. I build what I design in React and Unity, and I'm open to full-time roles and freelance projects.";
+
 export const ABOUT_DATA = {
     EXP: [
         {
@@ -37,7 +41,7 @@ export const ABOUT_DATA = {
             date: '2021-2022',
             details: [
                 {
-                    text: 'Designed a new webstore and introduced a mascot. Redesigned the logo, revamped brand colouring and adhered to industry standard UX practices',
+                    text: 'Designed a new webstore and introduced a mascot. Redesigned the logo, revamped brand colouring and adhered to industry standard UX practices.',
                     icon: ArtIcon,
                 },
                 {
@@ -45,7 +49,7 @@ export const ABOUT_DATA = {
                     icon: GatIcon,
                 },
                 {
-                    text: 'Created a link between the products and the learning materials to create a USP',
+                    text: 'Created a link between the products and the learning materials to create a USP.',
                     icon: ArwIcon,
                 },
             ],
@@ -92,7 +96,7 @@ export const ABOUT_DATA = {
         {
             school: 'Hanze',
             icon: GatIcon,
-            course: 'Communication & Multimedia Design - Game Design, Bsc.',
+            course: 'Communication & Multimedia Design - Game Design, BSc',
             date: '2017-2022',
         },
     ],

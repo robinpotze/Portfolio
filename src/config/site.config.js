@@ -6,6 +6,7 @@ export const SITE = {
     NAME: 'Robin Potze',
     ROLE_LINE: 'Designer who builds. UX, game design and 3D, from government systems to game jams.',
     EMAIL: 'contact@robinpotze.com',
+    URL: 'https://robinpotze.com',
 };
 
 export const SOCIALS = [

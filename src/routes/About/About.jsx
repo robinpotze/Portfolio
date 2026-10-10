@@ -7,7 +7,8 @@ import { LINKEDIN, SITE } from '@config/site.config';
 import { AnimatePresence, motion } from 'motion/react';
 import { useState } from 'react';
 import styles from './About.module.css';
-import { ABOUT_DATA, ABOUT_SECTIONS } from './about.data';
+import { ABOUT_BIO, ABOUT_DATA, ABOUT_SECTIONS } from './about.data';
+import CvDownload from './components/CvDownload';
 import EduSection from './components/EduSection';
 import ExpSection from './components/ExpSection';
 import ListSection from './components/ListSection';
@@ -118,7 +119,10 @@ export default function About() {
                         <a href={LINKEDIN.link} target="_blank" rel="noopener noreferrer">
                             LinkedIn
                         </a>
+                        <span aria-hidden="true">/</span>
+                        <CvDownload className={styles.cvButton} />
                     </p>
+                    <p className={styles.bio}>{ABOUT_BIO}</p>
                     <h2 className={styles.title}>{currentPage}</h2>
 
                     <div className={styles.contentScroll}>
