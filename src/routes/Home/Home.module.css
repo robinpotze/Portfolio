@@ -13,6 +13,10 @@
     box-sizing: border-box;
     padding: 64px 0 0 64px;
     position: fixed;
+    /* Above the scroll spacer (.transitionSection) but click-through, so wheel and touch still
+       scroll the page; only the View work link takes pointer events. */
+    z-index: 1;
+    pointer-events: none;
 }
 
 .content {
@@ -76,6 +80,7 @@
 /* Sits beside the scroll cue without moving it off-centre */
 .viewWork {
     position: absolute;
+    pointer-events: auto;
     left: calc(50% + var(--s-m));
     white-space: nowrap;
     padding: var(--s-xxs) var(--s-xs);
