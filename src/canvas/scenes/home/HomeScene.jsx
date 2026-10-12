@@ -5,11 +5,11 @@ import Rig from '@canvas/core/camera/Rig';
 import { BackgroundMesh } from '@canvas/features/background';
 import { LaserPlane } from '@canvas/features/laser';
 import { LogoMesh } from '@canvas/features/logo';
-import { BREAKPOINTS, FLOAT_CONFIG, REVEAL, SCENE, TIMEOUT } from '@config/animation.config';
+import { BREAKPOINTS, FLOAT_CONFIG, REVEAL, SCENE } from '@config/animation.config';
 import { Float, PerspectiveCamera, Text } from '@react-three/drei';
-import { useThree } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import { Bloom, EffectComposer, N8AO } from '@react-three/postprocessing';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 
 export default function HomeScene({ scrollProgress = 0, startAnimations = true }) {
     const logoRef = useRef();
@@ -17,7 +17,6 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
     const subtitleRef = useRef();
     const lightRef = useRef();
     const cameraRef = useRef();
-    const [entryComplete, setEntryComplete] = useState(false);
     const { quality } = useQuality();
 
     const { size } = useThree();
@@ -57,16 +56,6 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
                 };
         }
     }, [quality]);
-
-    useEffect(() => {
-        if (!startAnimations) {
-            return;
-        }
-        const timer = setTimeout(() => {
-            setEntryComplete(true);
-        }, TIMEOUT.ENTRY_COMPLETE_MS);
-        return () => clearTimeout(timer);
-    }, [startAnimations]);
 
     // Memoize animation configs to prevent recreation
     const logoAnimConfig = useMemo(
@@ -133,6 +122,17 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
     useObjectAnimation(subtitleRef, 'home', subtitleAnimConfig);
     useCameraAnimation(cameraRef, 'home', cameraAnimConfig);
 
+    // Ease the logo group toward the pointer (moved here from the old glass LogoMesh)
+    useFrame((state, delta) => {
+        const logo = logoRef.current;
+        if (!logo) {
+            return;
+        }
+        const smoothing = Math.min(1, 1 - Math.pow(0.001, delta));
+        logo.rotation.y += (state.pointer.x * Math.PI * 0.1 - logo.rotation.y) * smoothing;
+        logo.rotation.x += (-state.pointer.y * Math.PI * 0.1 - logo.rotation.x) * smoothing;
+    });
+
     useEffect(() => {
         if (!startAnimations || !lightRef.current) {
             return;
@@ -174,7 +174,7 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
 
             <Float floatIntensity={FLOAT_CONFIG.INTENSITY} rotationIntensity={FLOAT_CONFIG.ROTATION_INTENSITY} speed={FLOAT_CONFIG.SPEED}>
                 <group ref={logoRef} scale={1.5 * viewportScale}>
-                    <LogoMesh enableFBO={entryComplete && quality !== 'low'} />
+                    <LogoMesh />
                 </group>
             </Float>
 
