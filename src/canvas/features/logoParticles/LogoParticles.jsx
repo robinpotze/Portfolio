@@ -1,4 +1,5 @@
 import { useQuality } from '@app/QualityContext';
+import createMatcapTexture from '@canvas/core/textures/createMatcapTexture';
 import { REVEAL, SCENE, SCROLL_THRESHOLDS } from '@config/animation.config';
 import { useGLTF } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
@@ -93,7 +94,7 @@ function createSimulation(gl, size, halfFloat, { origins, randoms }, disperse) {
     };
 }
 
-export default function LogoParticles({ startAnimations, scrollProgress }) {
+export default function LogoParticles({ video, startAnimations, scrollProgress }) {
     const gl = useThree((state) => state.gl);
     const { quality } = useQuality();
     const { nodes } = useGLTF('/assets/3d/Logo.glb');
@@ -101,6 +102,7 @@ export default function LogoParticles({ startAnimations, scrollProgress }) {
     const [sim, setSim] = useState(null);
     const simRef = useRef(null);
     const introStart = useRef(null);
+    const matcap = useMemo(() => createMatcapTexture(), []);
     const disperseRef = useRef(1);
 
     const { size } = TIERS[quality];
@@ -116,12 +118,23 @@ export default function LogoParticles({ startAnimations, scrollProgress }) {
                     tPosition: { value: null },
                     uPointSize: { value: LOGO_PARTICLES.POINT_SIZE },
                     uDpr: { value: 1 },
+                    tVideo: { value: null },
+                    uHasVideo: { value: 0 },
+                    tMatcap: { value: matcap },
+                    uResolution: { value: new THREE.Vector2() },
+                    uTime: { value: 0 },
                 },
             }),
-        []
+        [matcap]
     );
 
-    useEffect(() => () => material.dispose(), [material]);
+    useEffect(
+        () => () => {
+            material.dispose();
+            matcap.dispose();
+        },
+        [material, matcap]
+    );
 
     useEffect(() => {
         const next = createSimulation(gl, size, halfFloat, samples, disperseRef.current);
@@ -160,8 +173,13 @@ export default function LogoParticles({ startAnimations, scrollProgress }) {
         u.uDisperse.value = disperseRef.current;
         current.gpu.compute();
 
-        material.uniforms.tPosition.value = current.gpu.getCurrentRenderTarget(current.variable).texture;
-        material.uniforms.uDpr.value = state.viewport.dpr;
+        const m = material.uniforms;
+        m.tPosition.value = current.gpu.getCurrentRenderTarget(current.variable).texture;
+        m.uDpr.value = state.viewport.dpr;
+        m.tVideo.value = video;
+        m.uHasVideo.value = video ? 1 : 0;
+        m.uTime.value = state.clock.elapsedTime;
+        state.gl.getDrawingBufferSize(m.uResolution.value);
     });
 
     if (!sim || sim.error) {

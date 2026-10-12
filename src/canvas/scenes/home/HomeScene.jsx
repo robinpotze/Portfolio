@@ -201,7 +201,7 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
 
             <Float floatIntensity={FLOAT_CONFIG.INTENSITY} rotationIntensity={FLOAT_CONFIG.ROTATION_INTENSITY} speed={FLOAT_CONFIG.SPEED}>
                 <group ref={logoRef} scale={1.5 * viewportScale}>
-                    {canSimulate ? <LogoParticles startAnimations={startAnimations} scrollProgress={scrollProgress} /> : <LogoMesh />}
+                    {canSimulate ? <LogoParticles video={video} startAnimations={startAnimations} scrollProgress={scrollProgress} /> : <LogoMesh />}
                 </group>
             </Float>
 
