@@ -7,9 +7,9 @@ export const Data = {
     description:
         'At CJIB, I worked as the embedded designer across development teams, shaping technical communication, product identity, and UX for internal systems — including an application for managing seized goods.',
     summary: {
-        project: 'Internal systems at CJIB, the Dutch Central Judicial Collection Agency.',
-        role: 'Embedded designer for three teams: a seized-goods app, API docs and motion.',
-        result: 'Seized-goods casework moved into one app, shaped by interviews and observation.',
+        project: 'Several internal projects at CJIB, the Dutch Central Judicial Collection Agency.',
+        role: 'Embedded designer across teams: app UX, API documentation and motion design.',
+        result: 'Docs PBS developers build against, a GraphQL talk for stakeholders, and an app shaped by officer interviews.',
     },
     client: 'CJIB',
     year: 2025,
