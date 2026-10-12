@@ -6,6 +6,7 @@ import useVideoTexture from '@canvas/core/textures/useVideoTexture';
 import { BackgroundMesh } from '@canvas/features/background';
 import { LaserPlane } from '@canvas/features/laser';
 import { LogoMesh } from '@canvas/features/logo';
+import { LogoParticles } from '@canvas/features/logoParticles';
 import { BREAKPOINTS, FLOAT_CONFIG, REVEAL, SCENE } from '@config/animation.config';
 import { Float, PerspectiveCamera, Text } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
@@ -21,7 +22,7 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
     const cameraRef = useRef();
     const { quality } = useQuality();
 
-    const { size } = useThree();
+    const { gl, size } = useThree();
 
     // One <video> shared by the background wall and the logo particles.
     const video = useVideoTexture('/assets/video/blackwall.mp4', {
@@ -38,6 +39,14 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
         video.generateMipmaps = false;
         video.flipY = false;
     }
+
+    // Particles need float or half-float render targets and vertex texture reads; otherwise show the metallic logo.
+    const canSimulate = useMemo(
+        () =>
+            gl.capabilities.maxVertexTextures > 0 &&
+            (gl.extensions.has('EXT_color_buffer_float') || gl.extensions.has('EXT_color_buffer_half_float')),
+        [gl]
+    );
 
     const viewportScale = useMemo(() => Math.max(0.3, Math.min(1, size.width / BREAKPOINTS.REFERENCE_WIDTH)), [size.width]);
 
@@ -192,7 +201,7 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
 
             <Float floatIntensity={FLOAT_CONFIG.INTENSITY} rotationIntensity={FLOAT_CONFIG.ROTATION_INTENSITY} speed={FLOAT_CONFIG.SPEED}>
                 <group ref={logoRef} scale={1.5 * viewportScale}>
-                    <LogoMesh />
+                    {canSimulate ? <LogoParticles startAnimations={startAnimations} scrollProgress={scrollProgress} /> : <LogoMesh />}
                 </group>
             </Float>
 
