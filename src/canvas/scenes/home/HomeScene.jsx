@@ -2,6 +2,7 @@ import { useQuality } from '@app/QualityContext';
 import useCameraAnimation from '@canvas/core/animation/useCameraAnimation';
 import useObjectAnimation from '@canvas/core/animation/useObjectAnimation';
 import Rig from '@canvas/core/camera/Rig';
+import useVideoTexture from '@canvas/core/textures/useVideoTexture';
 import { BackgroundMesh } from '@canvas/features/background';
 import { LaserPlane } from '@canvas/features/laser';
 import { LogoMesh } from '@canvas/features/logo';
@@ -10,6 +11,7 @@ import { Float, PerspectiveCamera, Text } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
 import { Bloom, EffectComposer, N8AO } from '@react-three/postprocessing';
 import { useEffect, useMemo, useRef } from 'react';
+import * as THREE from 'three';
 
 export default function HomeScene({ scrollProgress = 0, startAnimations = true }) {
     const logoRef = useRef();
@@ -20,6 +22,22 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
     const { quality } = useQuality();
 
     const { size } = useThree();
+
+    // One <video> shared by the background wall and the logo particles.
+    const video = useVideoTexture('/assets/video/blackwall.mp4', {
+        unsuspend: 'canplaythrough',
+        start: true,
+        crossOrigin: 'anonymous',
+        muted: true,
+        loop: true,
+        playsInline: true,
+    });
+    if (video) {
+        video.minFilter = THREE.LinearFilter;
+        video.magFilter = THREE.LinearFilter;
+        video.generateMipmaps = false;
+        video.flipY = false;
+    }
 
     const viewportScale = useMemo(() => Math.max(0.3, Math.min(1, size.width / BREAKPOINTS.REFERENCE_WIDTH)), [size.width]);
 
@@ -157,7 +175,7 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
 
             {startAnimations && (
                 <group ref={backgroundRef} scale={8}>
-                    <BackgroundMesh paused={scrollProgress > 0.4} />
+                    <BackgroundMesh video={video} paused={scrollProgress > 0.4} />
                     <Text font="/assets/fonts/Orbitron/static/Orbitron-Medium.ttf" color="#EEE">
                         ROBIN POTZE
                     </Text>

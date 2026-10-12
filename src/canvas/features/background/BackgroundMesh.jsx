@@ -1,26 +1,8 @@
-import useVideoTexture from '@canvas/core/textures/useVideoTexture';
 import { useGLTF } from '@react-three/drei';
 import { memo, useEffect } from 'react';
-import * as THREE from 'three';
 
-function BackgroundMeshInner({ paused = false, ...props }) {
-    const video = useVideoTexture('/assets/video/blackwall.mp4', {
-        unsuspend: 'canplaythrough',
-        start: true,
-        crossOrigin: 'anonymous',
-        muted: true,
-        loop: true,
-        playsInline: true,
-    });
-
+function BackgroundMeshInner({ video, paused = false, ...props }) {
     const { nodes } = useGLTF('/assets/3d/Wall.glb');
-
-    // Set video texture to update less frequently for performance
-    if (video) {
-        video.minFilter = THREE.LinearFilter;
-        video.magFilter = THREE.LinearFilter;
-        video.generateMipmaps = false;
-    }
 
     useEffect(() => {
         const el = video?.image;
