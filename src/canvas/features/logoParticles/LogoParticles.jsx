@@ -33,7 +33,7 @@ function samplePoints(geometry) {
     return { origins, randoms };
 }
 
-function createSimulation(gl, size, halfFloat, { origins, randoms }) {
+function createSimulation(gl, size, halfFloat, { origins, randoms }, disperse) {
     const count = size * size;
     const originTexture = new THREE.DataTexture(origins.subarray(0, count * 4), size, size, THREE.RGBAFormat, THREE.FloatType);
     originTexture.needsUpdate = true;
@@ -45,7 +45,14 @@ function createSimulation(gl, size, halfFloat, { origins, randoms }) {
         gpu.setDataType(THREE.HalfFloatType);
     }
     const start = gpu.createTexture();
-    start.image.data.set(origins.subarray(0, count * 4));
+    // Seed where particles would rest for the current disperse (1 = cloud on first mount), so rebuilds don't jump.
+    const seed = start.image.data;
+    for (let i = 0; i < count * 4; i += 4) {
+        for (let j = 0; j < 3; j++) {
+            seed[i + j] = origins[i + j] + (randoms[i + j] - 0.5) * LOGO_PARTICLES.CLOUD_RADIUS * disperse;
+        }
+        seed[i + 3] = 1;
+    }
     const variable = gpu.addVariable('texturePosition', positionFrag, start);
     gpu.setVariableDependencies(variable, [variable]);
     Object.assign(variable.material.uniforms, {
@@ -94,6 +101,7 @@ export default function LogoParticles({ startAnimations, scrollProgress }) {
     const [sim, setSim] = useState(null);
     const simRef = useRef(null);
     const introStart = useRef(null);
+    const disperseRef = useRef(1);
 
     const { size } = TIERS[quality];
     // Low tier, or devices that can only render half floats, simulate at half precision.
@@ -116,7 +124,7 @@ export default function LogoParticles({ startAnimations, scrollProgress }) {
     useEffect(() => () => material.dispose(), [material]);
 
     useEffect(() => {
-        const next = createSimulation(gl, size, halfFloat, samples);
+        const next = createSimulation(gl, size, halfFloat, samples, disperseRef.current);
         if (next.error) {
             console.error('LogoParticles:', next.error);
         }
@@ -148,7 +156,8 @@ export default function LogoParticles({ startAnimations, scrollProgress }) {
         const u = current.variable.material.uniforms;
         u.uTime.value = state.clock.elapsedTime;
         u.uDelta.value = Math.min(delta * 60, 2);
-        u.uDisperse.value = Math.max(intro, scatter);
+        disperseRef.current = Math.max(intro, scatter);
+        u.uDisperse.value = disperseRef.current;
         current.gpu.compute();
 
         material.uniforms.tPosition.value = current.gpu.getCurrentRenderTarget(current.variable).texture;
