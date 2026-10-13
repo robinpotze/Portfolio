@@ -117,7 +117,8 @@ export default class FluidSim {
         const u = this.materials.splat.uniforms;
         u.uTarget.value = this.velocityTargets.read.texture;
         u.point.value.set(x, y);
-        u.color.value.set(dx * SPLAT_FORCE, dy * SPLAT_FORCE, 0);
+        // Equal force per screen pixel in x and y (velocity is in texels; a UV step is width texels in x, height in y).
+        u.color.value.set(dx * SPLAT_FORCE * Math.min(this.aspect, 1), (dy * SPLAT_FORCE) / Math.max(this.aspect, 1), 0);
         this.render(this.materials.splat, this.velocityTargets.write);
         this.velocityTargets.swap();
         this.renderer.setRenderTarget(previous);
@@ -126,6 +127,9 @@ export default class FluidSim {
     step(dt) {
         const previous = this.renderer.getRenderTarget();
         const { velocityTargets: velocity, pressureTargets: pressure, materials: m } = this;
+        // Dissipation constants are per 60 Hz frame; scale them by the real step so 120 Hz fades at the same speed.
+        m.clear.uniforms.value.value = Math.pow(PRESSURE_DISSIPATION, dt * 60);
+        m.advect.uniforms.dissipation.value = Math.pow(VELOCITY_DISSIPATION, dt * 60);
 
         m.curl.uniforms.uVelocity.value = velocity.read.texture;
         this.render(m.curl, this.curlTarget);

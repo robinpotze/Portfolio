@@ -31,7 +31,8 @@ export default function useFluidSim(iterations) {
             // Pointer is in [-1, 1]; the fluid works in [0, 1] UV space.
             const dx = (pointer.x - lastPointer.current.x) / 2;
             const dy = (pointer.y - lastPointer.current.y) / 2;
-            if (dx !== 0 || dy !== 0) {
+            // ponytail: deltas over 0.1 UV in one frame are pointer jumps (first move, re-entry, touch tap), not motion; raise if fast flicks get dropped.
+            if ((dx !== 0 || dy !== 0) && Math.hypot(dx, dy) < 0.1) {
                 fluid.splat((pointer.x + 1) / 2, (pointer.y + 1) / 2, dx, dy);
             }
         }
