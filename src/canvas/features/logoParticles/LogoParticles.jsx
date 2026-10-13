@@ -1,9 +1,8 @@
 import { useQuality } from '@app/QualityContext';
 import createMatcapTexture from '@canvas/core/textures/createMatcapTexture';
-import { REVEAL, SCENE, SCROLL_THRESHOLDS } from '@config/animation.config';
+import { SCROLL_THRESHOLDS } from '@config/animation.config';
 import { useGLTF } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
-import { entryEase } from '@utils/easingFunctions';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { MeshSurfaceSampler } from 'three/addons/math/MeshSurfaceSampler.js';
@@ -15,11 +14,14 @@ import positionFrag from './position.frag.glsl';
 
 const MAX_COUNT = TIERS.high.size ** 2;
 
-// ponytail: samples the largest tier once on the main thread (~tens of ms); smaller tiers reuse the first N (random order).
-function samplePoints(geometry) {
+// ponytail: builds the largest tier once on the main thread (~tens of ms); smaller tiers reuse the first N entries.
+function buildTargets(geometry) {
     const sampler = new MeshSurfaceSampler(new THREE.Mesh(geometry)).build();
     const origins = new Float32Array(MAX_COUNT * 4);
+    const grids = new Float32Array(MAX_COUNT * 4);
     const randoms = new Float32Array(MAX_COUNT * 4);
+    const { GRID_COLUMNS: columns, GRID_ROWS: rows, GRID_WIDTH: width, GRID_Z: z } = LOGO_PARTICLES;
+    const spacing = width / columns;
     const point = new THREE.Vector3();
     for (let i = 0; i < MAX_COUNT; i++) {
         sampler.sample(point);
@@ -27,30 +29,43 @@ function samplePoints(geometry) {
         origins[i * 4 + 1] = point.y;
         origins[i * 4 + 2] = point.z;
         origins[i * 4 + 3] = 1;
+
+        // Dot-matrix cell, row 0 at the top. Samples come out in random order, so the grid ↔ logo pairing is random.
+        const cell = i % (columns * rows);
+        grids[i * 4] = ((cell % columns) - (columns - 1) / 2) * spacing;
+        grids[i * 4 + 1] = ((rows - 1) / 2 - Math.floor(cell / columns)) * spacing;
+        grids[i * 4 + 2] = z;
+        grids[i * 4 + 3] = 1;
+
         for (let j = 0; j < 4; j++) {
             randoms[i * 4 + j] = Math.random();
         }
     }
-    return { origins, randoms };
+    return { origins, grids, randoms };
 }
 
-function createSimulation(gl, size, halfFloat, { origins, randoms }, disperse) {
+function createDataTexture(data, size) {
+    const texture = new THREE.DataTexture(data.subarray(0, size * size * 4), size, size, THREE.RGBAFormat, THREE.FloatType);
+    texture.needsUpdate = true;
+    return texture;
+}
+
+function createSimulation(gl, size, halfFloat, { origins, grids, randoms }, morph) {
     const count = size * size;
-    const originTexture = new THREE.DataTexture(origins.subarray(0, count * 4), size, size, THREE.RGBAFormat, THREE.FloatType);
-    originTexture.needsUpdate = true;
-    const randomTexture = new THREE.DataTexture(randoms.subarray(0, count * 4), size, size, THREE.RGBAFormat, THREE.FloatType);
-    randomTexture.needsUpdate = true;
+    const originTexture = createDataTexture(origins, size);
+    const gridTexture = createDataTexture(grids, size);
+    const randomTexture = createDataTexture(randoms, size);
 
     const gpu = new GPUComputationRenderer(size, size, gl);
     if (halfFloat) {
         gpu.setDataType(THREE.HalfFloatType);
     }
     const start = gpu.createTexture();
-    // Seed where particles would rest for the current disperse (1 = cloud on first mount), so rebuilds don't jump.
+    // Seed where particles would rest for the current morph (0 = grid on first mount), so rebuilds don't jump.
     const seed = start.image.data;
     for (let i = 0; i < count * 4; i += 4) {
         for (let j = 0; j < 3; j++) {
-            seed[i + j] = origins[i + j] + (randoms[i + j] - 0.5) * LOGO_PARTICLES.CLOUD_RADIUS * disperse;
+            seed[i + j] = grids[i + j] + (origins[i + j] - grids[i + j]) * morph;
         }
         seed[i + 3] = 1;
     }
@@ -58,12 +73,13 @@ function createSimulation(gl, size, halfFloat, { origins, randoms }, disperse) {
     gpu.setVariableDependencies(variable, [variable]);
     Object.assign(variable.material.uniforms, {
         tOrigin: { value: originTexture },
+        tGrid: { value: gridTexture },
         tRandom: { value: randomTexture },
         uTime: { value: 0 },
         uDelta: { value: 1 },
-        uDisperse: { value: 1 },
+        uMorph: { value: morph },
+        uMorphStagger: { value: LOGO_PARTICLES.MORPH_STAGGER },
         uSpring: { value: LOGO_PARTICLES.SPRING },
-        uCloudRadius: { value: LOGO_PARTICLES.CLOUD_RADIUS },
         uCurlScale: { value: LOGO_PARTICLES.CURL_SCALE },
         uCurlSpeed: { value: LOGO_PARTICLES.CURL_SPEED },
         uCurlStrength: { value: LOGO_PARTICLES.CURL_STRENGTH },
@@ -89,21 +105,22 @@ function createSimulation(gl, size, halfFloat, { origins, randoms }, disperse) {
             gpu.dispose();
             geometry.dispose();
             originTexture.dispose();
+            gridTexture.dispose();
             randomTexture.dispose();
         },
     };
 }
 
-export default function LogoParticles({ video, startAnimations, scrollProgress }) {
+export default function LogoParticles({ video, scrollProgress }) {
     const gl = useThree((state) => state.gl);
     const { quality } = useQuality();
     const { nodes } = useGLTF('/assets/3d/Logo.glb');
-    const samples = useMemo(() => samplePoints(nodes.Logo.geometry), [nodes]);
+    const targets = useMemo(() => buildTargets(nodes.Logo.geometry), [nodes]);
     const [sim, setSim] = useState(null);
     const simRef = useRef(null);
-    const introStart = useRef(null);
+    const pointsRef = useRef(null);
+    const morphRef = useRef(0);
     const matcap = useMemo(() => createMatcapTexture(), []);
-    const disperseRef = useRef(1);
 
     const { size } = TIERS[quality];
     // Low tier, or devices that can only render half floats, simulate at half precision.
@@ -137,7 +154,7 @@ export default function LogoParticles({ video, startAnimations, scrollProgress }
     );
 
     useEffect(() => {
-        const next = createSimulation(gl, size, halfFloat, samples, disperseRef.current);
+        const next = createSimulation(gl, size, halfFloat, targets, morphRef.current);
         if (next.error) {
             console.error('LogoParticles:', next.error);
         }
@@ -147,30 +164,25 @@ export default function LogoParticles({ video, startAnimations, scrollProgress }
             simRef.current = null;
             next.dispose();
         };
-    }, [gl, size, halfFloat, samples]);
+    }, [gl, size, halfFloat, targets]);
 
     useFrame((state, delta) => {
         const current = simRef.current;
         if (!current || current.error) {
             return;
         }
-
-        // uDisperse: 1 = cloud, 0 = logo. The intro assembles the logo; scrolling scatters it again.
-        if (startAnimations && introStart.current === null) {
-            introStart.current = state.clock.elapsedTime;
+        // Skip the one frame where <points> still holds the previous tier's (disposed) geometry.
+        const points = pointsRef.current;
+        if (points) {
+            points.visible = points.geometry === current.geometry;
         }
-        let intro = 1;
-        if (introStart.current !== null) {
-            const t = (state.clock.elapsedTime - introStart.current - REVEAL.DURATION) / SCENE.CAMERA_DURATION;
-            intro = 1 - entryEase(THREE.MathUtils.clamp(t, 0, 1));
-        }
-        const scatter = THREE.MathUtils.smoothstep(scrollProgress, 0, SCROLL_THRESHOLDS.HOME_TRANSITION);
 
+        // uMorph: 0 = dot-matrix grid, 1 = logo. The logo is formed when the page moves to Work.
+        morphRef.current = THREE.MathUtils.smoothstep(scrollProgress, 0, SCROLL_THRESHOLDS.HOME_TRANSITION);
         const u = current.variable.material.uniforms;
         u.uTime.value = state.clock.elapsedTime;
         u.uDelta.value = Math.min(delta * 60, 2);
-        disperseRef.current = Math.max(intro, scatter);
-        u.uDisperse.value = disperseRef.current;
+        u.uMorph.value = morphRef.current;
         current.gpu.compute();
 
         const m = material.uniforms;
@@ -185,5 +197,5 @@ export default function LogoParticles({ video, startAnimations, scrollProgress }
     if (!sim || sim.error) {
         return null;
     }
-    return <points geometry={sim.geometry} material={material} frustumCulled={false} />;
+    return <points ref={pointsRef} geometry={sim.geometry} material={material} frustumCulled={false} />;
 }
