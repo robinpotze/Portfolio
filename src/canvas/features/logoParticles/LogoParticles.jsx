@@ -1,8 +1,10 @@
 import { useQuality } from '@app/QualityContext';
 import createMatcapTexture from '@canvas/core/textures/createMatcapTexture';
-import { SCROLL_THRESHOLDS } from '@config/animation.config';
+import { REVEAL, SCENE, SCROLL_THRESHOLDS } from '@config/animation.config';
 import { useGLTF } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
+import { getCSSColorRGBA } from '@utils/cssUtils';
+import { entryEase } from '@utils/easingFunctions';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { MeshSurfaceSampler } from 'three/addons/math/MeshSurfaceSampler.js';
@@ -111,7 +113,7 @@ function createSimulation(gl, size, halfFloat, { origins, grids, randoms }, morp
     };
 }
 
-export default function LogoParticles({ video, scrollProgress }) {
+export default function LogoParticles({ startAnimations, scrollProgress }) {
     const gl = useThree((state) => state.gl);
     const { quality } = useQuality();
     const { nodes } = useGLTF('/assets/3d/Logo.glb');
@@ -120,30 +122,32 @@ export default function LogoParticles({ video, scrollProgress }) {
     const simRef = useRef(null);
     const pointsRef = useRef(null);
     const morphRef = useRef(0);
+    const introStart = useRef(null);
     const matcap = useMemo(() => createMatcapTexture(), []);
 
     const { size } = TIERS[quality];
     // Low tier, or devices that can only render half floats, simulate at half precision.
     const halfFloat = quality === 'low' || !gl.extensions.has('EXT_color_buffer_float');
 
-    const material = useMemo(
-        () =>
-            new THREE.ShaderMaterial({
-                vertexShader: particlesVert,
-                fragmentShader: particlesFrag,
-                uniforms: {
-                    tPosition: { value: null },
-                    uPointSize: { value: LOGO_PARTICLES.POINT_SIZE },
-                    uDpr: { value: 1 },
-                    tVideo: { value: null },
-                    uHasVideo: { value: 0 },
-                    tMatcap: { value: matcap },
-                    uResolution: { value: new THREE.Vector2() },
-                    uTime: { value: 0 },
-                },
-            }),
-        [matcap]
-    );
+    const material = useMemo(() => {
+        const { r, g, b } = getCSSColorRGBA('--c-brnd_100');
+        const { GRID_COLUMNS, GRID_ROWS, GRID_WIDTH, POINT_SIZE } = LOGO_PARTICLES;
+        return new THREE.ShaderMaterial({
+            vertexShader: particlesVert,
+            fragmentShader: particlesFrag,
+            uniforms: {
+                tPosition: { value: null },
+                uPointSize: { value: POINT_SIZE },
+                uDpr: { value: 1 },
+                uIntro: { value: 0 },
+                uGridSize: { value: new THREE.Vector2(GRID_WIDTH, (GRID_WIDTH * GRID_ROWS) / GRID_COLUMNS) },
+                // CSS colors are sRGB; the shader works in linear space.
+                uColor: { value: new THREE.Color().setRGB(r / 255, g / 255, b / 255, THREE.SRGBColorSpace) },
+                tMatcap: { value: matcap },
+                uTime: { value: 0 },
+            },
+        });
+    }, [matcap]);
 
     useEffect(
         () => () => {
@@ -176,22 +180,27 @@ export default function LogoParticles({ video, scrollProgress }) {
         if (points) {
             points.visible = points.geometry === current.geometry;
         }
+        const time = state.clock.elapsedTime;
 
         // uMorph: 0 = dot-matrix grid, 1 = logo. The logo is formed when the page moves to Work.
         morphRef.current = THREE.MathUtils.smoothstep(scrollProgress, 0, SCROLL_THRESHOLDS.HOME_TRANSITION);
         const u = current.variable.material.uniforms;
-        u.uTime.value = state.clock.elapsedTime;
+        u.uTime.value = time;
         u.uDelta.value = Math.min(delta * 60, 2);
         u.uMorph.value = morphRef.current;
         current.gpu.compute();
 
+        // uIntro: the panel powers on over the reveal, in sync with the camera.
+        if (startAnimations && introStart.current === null) {
+            introStart.current = time;
+        }
+        const introT = introStart.current === null ? 0 : (time - introStart.current - REVEAL.DURATION) / SCENE.CAMERA_DURATION;
+
         const m = material.uniforms;
         m.tPosition.value = current.gpu.getCurrentRenderTarget(current.variable).texture;
         m.uDpr.value = state.viewport.dpr;
-        m.tVideo.value = video;
-        m.uHasVideo.value = video ? 1 : 0;
-        m.uTime.value = state.clock.elapsedTime;
-        state.gl.getDrawingBufferSize(m.uResolution.value);
+        m.uIntro.value = entryEase(THREE.MathUtils.clamp(introT, 0, 1));
+        m.uTime.value = time;
     });
 
     if (!sim || sim.error) {

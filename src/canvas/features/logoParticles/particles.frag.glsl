@@ -1,7 +1,5 @@
-uniform sampler2D tVideo;
 uniform sampler2D tMatcap;
-uniform float uHasVideo;
-uniform vec2 uResolution;
+uniform vec3 uColor;
 uniform float uTime;
 varying vec4 vRandom;
 
@@ -17,14 +15,10 @@ void main() {
         discard;
     }
 
-    // The shared video texture has flipY = false, so texture row 0 is the top of the video.
-    vec2 screenUv = gl_FragCoord.xy / uResolution;
-    vec3 color = mix(vec3(0.933), texture2D(tVideo, vec2(screenUv.x, 1.0 - screenUv.y)).rgb, uHasVideo);
-
-    // Glossy highlight: the matcap, rotated per particle over time.
+    // Glossy highlight: the matcap, rotated per particle over time, over the brand color.
     float angle = uTime + vRandom.z * 6.2831853;
     vec2 matcapUv = mat2(cos(angle), -sin(angle), sin(angle), cos(angle)) * c + 0.5;
-    color = softLight(color, texture2D(tMatcap, matcapUv).rgb);
+    vec3 color = softLight(uColor, texture2D(tMatcap, matcapUv).rgb);
 
     // A few particles sparkle above the bloom threshold.
     color *= 1.0 + pow(vRandom.y, 20.0) * 2.0;
