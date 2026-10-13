@@ -26,7 +26,7 @@ The particle simulation runs on the GPU (GPGPU). Each particle's position is one
 Built on `feat/gpgpu-particles` from the original design, and still valid:
 
 - metallic matcap fallback logo, with the pointer tilt moved into `HomeScene` (718b399);
-- one shared video texture owned by `HomeScene` (3a8f285);
+- one shared video texture owned by `HomeScene`(3a8f285). This was reverted once the particles became brand-colored:`BackgroundMesh` loads its own video again;
 - GPU simulation, the float-support switch, and seeding each particle at its resting position (7056c45, 0667633);
 - matcap highlight and sparkle shading (8e41366).
 
@@ -100,11 +100,11 @@ src/canvas/features/logoParticles/
 ### Changed
 
 - `src/canvas/scenes/home/HomeScene.jsx`:
-    - owns the video texture for `BackgroundMesh` (built);
+    - no longer owns a video texture (the shared-video step was reverted);
     - does the float-support check and renders `LogoParticles` or `LogoMesh` (built);
     - applies the pointer tilt to the logo group (built);
     - **new:** wraps the "ROBIN POTZE" `<Text>` in a group whose `y` rises with the scroll curve.
-- `src/canvas/features/background/BackgroundMesh.jsx`: takes a `video` prop (built).
+- `src/canvas/features/background/BackgroundMesh.jsx`: unchanged from `master` (loads its own video).
 - `src/canvas/features/logo/LogoMesh.jsx`: the metallic matcap fallback (built).
 - `COMPONENT_DOCUMENTATION.md`: document the new feature, the fluid core, the changed `BackgroundMesh` and `LogoMesh`, and the 6.0 architecture tree.
 
@@ -117,7 +117,7 @@ src/canvas/features/logoParticles/
 - `LogoParticles({ startAnimations, scrollProgress })`:
     - it takes no `video` prop any more, because the particles are brand-colored;
     - it reads `quality` from `useQuality()`.
-- `BackgroundMesh({ video, paused })`.
+- `BackgroundMesh({ paused })` (unchanged).
 - `LogoMesh()`: no props.
 - `useFluidSim(iterations)` returns a ref. Its `.current` is the `FluidSim`, or `null` when `iterations` is 0. Read `.current.velocity` every frame, because the velocity buffer swaps on every step.
 
@@ -160,12 +160,12 @@ Per frame:
 morph = clamp((uMorph - random.w * MORPH_STAGGER) / (1 - MORPH_STAGGER), 0, 1)   // per-particle lag
 goal  = mix(grid, origin, morph)
 pos  += (goal - pos) * SPRING * uDelta
-pos  += curlNoise(pos * CURL_SCALE + uTime * CURL_SPEED) * CURL_STRENGTH * (0.1 + sin(π · morph)) * uDelta
+pos  += curlNoise(pos * CURL_SCALE + uTime * CURL_SPEED) * CURL_STRENGTH * (0.02 + sin(π · morph)) * uDelta
 uv    = screen position of pos (via uModelViewProjection)
 pos  += uScreenToLocal * vec3(texture(tFluid, uv).xy, 0.0) * uFluidStrength * uDelta
 ```
 
-The curl swirl is faint on the finished grid and on the finished logo, and peaks halfway through the transition.
+The curl swirl is barely there on the finished grid and logo (0.02, so the panel stays crisp), and peaks halfway through the transition.
 
 `uScreenToLocal` is the inverse of the rotation part of the logo group's model-view matrix. It is computed on the CPU each frame, so a push in screen space moves particles the matching way on screen whatever the group's rotation.
 
