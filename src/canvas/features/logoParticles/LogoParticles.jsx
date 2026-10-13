@@ -1,4 +1,5 @@
 import { useQuality } from '@app/QualityContext';
+import useFluidSim from '@canvas/core/fluid/useFluidSim';
 import createMatcapTexture from '@canvas/core/textures/createMatcapTexture';
 import { REVEAL, SCENE, SCROLL_THRESHOLDS } from '@config/animation.config';
 import { useGLTF } from '@react-three/drei';
@@ -77,6 +78,7 @@ function createSimulation(gl, size, halfFloat, { origins, grids, randoms }, morp
         tOrigin: { value: originTexture },
         tGrid: { value: gridTexture },
         tRandom: { value: randomTexture },
+        tFluid: { value: null },
         uTime: { value: 0 },
         uDelta: { value: 1 },
         uMorph: { value: morph },
@@ -85,6 +87,9 @@ function createSimulation(gl, size, halfFloat, { origins, grids, randoms }, morp
         uCurlScale: { value: LOGO_PARTICLES.CURL_SCALE },
         uCurlSpeed: { value: LOGO_PARTICLES.CURL_SPEED },
         uCurlStrength: { value: LOGO_PARTICLES.CURL_STRENGTH },
+        uFluidStrength: { value: 0 },
+        uModelViewProjection: { value: new THREE.Matrix4() },
+        uScreenToLocal: { value: new THREE.Matrix3() },
     });
     const error = gpu.init();
 
@@ -125,7 +130,10 @@ export default function LogoParticles({ startAnimations, scrollProgress }) {
     const introStart = useRef(null);
     const matcap = useMemo(() => createMatcapTexture(), []);
 
-    const { size } = TIERS[quality];
+    const { size, fluidIterations } = TIERS[quality];
+    // Must run before this component's own useFrame: R3F runs same-priority callbacks in subscription order.
+    const fluidRef = useFluidSim(fluidIterations);
+    const modelView = useMemo(() => new THREE.Matrix4(), []);
     // Low tier, or devices that can only render half floats, simulate at half precision.
     const halfFloat = quality === 'low' || !gl.extensions.has('EXT_color_buffer_float');
 
@@ -188,6 +196,16 @@ export default function LogoParticles({ startAnimations, scrollProgress }) {
         u.uTime.value = time;
         u.uDelta.value = Math.min(delta * 60, 2);
         u.uMorph.value = morphRef.current;
+
+        // Fluid velocity is in screen space; map it into the logo's local space (a null sampler reads as black).
+        const fluid = fluidRef.current;
+        u.tFluid.value = fluid ? fluid.velocity : null;
+        u.uFluidStrength.value = fluid ? LOGO_PARTICLES.FLUID_STRENGTH : 0;
+        if (points) {
+            modelView.multiplyMatrices(state.camera.matrixWorldInverse, points.matrixWorld);
+            u.uModelViewProjection.value.multiplyMatrices(state.camera.projectionMatrix, modelView);
+            u.uScreenToLocal.value.setFromMatrix4(modelView).invert();
+        }
         current.gpu.compute();
 
         // uIntro: the panel powers on over the reveal, in sync with the camera.
