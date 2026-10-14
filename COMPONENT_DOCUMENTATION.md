@@ -578,14 +578,14 @@ Procedural laser/fog layer driven by shader uniforms. Scales behavior by quality
 
 > **`src/canvas/features/logoParticles/LogoParticles.jsx`** — GPU-simulated particle logo
 
-Simulates particles with `GPUComputationRenderer` between two targets: a 160 × 90 dot-matrix panel and points on the `Logo.glb` surface (`MeshSurfaceSampler`). Scroll drives `uMorph` (0 = panel, 1 = logo, formed at `SCROLL_THRESHOLDS.HOME_TRANSITION`), with a random per-particle lag and a curl-noise swirl mid-transition. The panel powers on diagonally during the reveal (`REVEAL.DURATION` delay, `SCENE.CAMERA_DURATION` length). Medium/high tiers add a mouse fluid push (`useFluidSim`). Points are brand-colored (`--c-brnd_100`) with a matcap soft-light highlight and a few sparkles for bloom.
+Simulates particles with `GPUComputationRenderer` between two targets: a viewport-filling dot-matrix panel (about 14,400 square cells, sized by `HomeScene` through `gridSize`) and points on the `Logo.glb` surface (`MeshSurfaceSampler`). Scroll drives `uMorph` (0 = panel, 1 = logo, formed at `SCROLL_THRESHOLDS.HOME_TRANSITION`), with a random per-particle lag and a curl-noise swirl mid-transition. The panel powers on diagonally during the reveal, over `SCENE.CAMERA_DURATION` together with the camera. Medium/high tiers add a mouse fluid push (`useFluidSim`). Points are brand-colored (`--c-brnd_100`) with a matcap soft-light highlight and a few sparkles for bloom.
 
-- Props: `startAnimations`, `scrollProgress`.
+- Props: `startAnimations`, `scrollProgress`, `gridSize`.
 - Particle budget per tier from `TIERS`: 16k (low, half-float, no fluid), 65k (medium), 262k (high).
 
-| Hooks                                                                                              | Context          | Config                                                            | Children |
-| -------------------------------------------------------------------------------------------------- | ---------------- | ----------------------------------------------------------------- | -------- |
-| `useState`, `useRef`, `useMemo`, `useEffect`, `useFrame`, `useThree`, `useGLTF`, **`useFluidSim`** | **`useQuality`** | `TIERS`, `LOGO_PARTICLES`, `REVEAL`, `SCENE`, `SCROLL_THRESHOLDS` | `points` |
+| Hooks                                                                                              | Context          | Config                                                  | Children |
+| -------------------------------------------------------------------------------------------------- | ---------------- | ------------------------------------------------------- | -------- |
+| `useState`, `useRef`, `useMemo`, `useEffect`, `useFrame`, `useThree`, `useGLTF`, **`useFluidSim`** | **`useQuality`** | `TIERS`, `LOGO_PARTICLES`, `SCENE`, `SCROLL_THRESHOLDS` | `points` |
 
 ---
 

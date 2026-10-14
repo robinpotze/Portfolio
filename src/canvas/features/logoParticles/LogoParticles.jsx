@@ -23,10 +23,7 @@ const targetsCache = new WeakMap();
 function buildTargets(geometry) {
     const sampler = new MeshSurfaceSampler(new THREE.Mesh(geometry)).build();
     const origins = new Float32Array(MAX_COUNT * 4);
-    const grids = new Float32Array(MAX_COUNT * 4);
     const randoms = new Float32Array(MAX_COUNT * 4);
-    const { GRID_COLUMNS: columns, GRID_ROWS: rows, GRID_WIDTH: width, GRID_Z: z } = LOGO_PARTICLES;
-    const spacing = width / columns;
     const point = new THREE.Vector3();
     for (let i = 0; i < MAX_COUNT; i++) {
         sampler.sample(point);
@@ -34,19 +31,11 @@ function buildTargets(geometry) {
         origins[i * 4 + 1] = point.y;
         origins[i * 4 + 2] = point.z;
         origins[i * 4 + 3] = 1;
-
-        // Dot-matrix cell, row 0 at the top. Samples come out in random order, so the grid ↔ logo pairing is random.
-        const cell = i % (columns * rows);
-        grids[i * 4] = ((cell % columns) - (columns - 1) / 2) * spacing;
-        grids[i * 4 + 1] = ((rows - 1) / 2 - Math.floor(cell / columns)) * spacing;
-        grids[i * 4 + 2] = z;
-        grids[i * 4 + 3] = 1;
-
         for (let j = 0; j < 4; j++) {
             randoms[i * 4 + j] = Math.random();
         }
     }
-    return { origins, grids, randoms };
+    return { origins, randoms };
 }
 
 function createDataTexture(data, size) {
@@ -55,10 +44,16 @@ function createDataTexture(data, size) {
     return texture;
 }
 
-function createSimulation(gl, size, halfFloat, { origins, grids, randoms }, morph) {
+// ~GRID_CELLS square cells across a panel of the given size (logo-local units), whatever its aspect.
+function gridLayout([width, height]) {
+    const columns = Math.max(1, Math.round(Math.sqrt((LOGO_PARTICLES.GRID_CELLS * width) / height)));
+    const rows = Math.max(1, Math.round(LOGO_PARTICLES.GRID_CELLS / columns));
+    return { columns, rows, width, height };
+}
+
+function createSimulation(gl, size, halfFloat, { origins, randoms }, morph, grid) {
     const count = size * size;
     const originTexture = createDataTexture(origins, size);
-    const gridTexture = createDataTexture(grids, size);
     const randomTexture = createDataTexture(randoms, size);
 
     const gpu = new GPUComputationRenderer(size, size, gl);
@@ -69,25 +64,35 @@ function createSimulation(gl, size, halfFloat, { origins, grids, randoms }, morp
     // Seed where particles would rest for the current morph (0 = grid on first mount), so rebuilds don't jump.
     const seed = start.image.data;
     const stagger = LOGO_PARTICLES.MORPH_STAGGER;
-    for (let i = 0; i < count * 4; i += 4) {
+    const { columns, rows, width, height } = grid;
+    const gridZ = LOGO_PARTICLES.GRID_Z;
+    for (let i = 0; i < count; i++) {
+        const k = i * 4;
+        // Dot-matrix cell, row 0 at the top (must match gridPoint() in position.frag.glsl).
+        const cell = i % (columns * rows);
+        const gridX = ((cell % columns) - (columns - 1) / 2) * (width / columns);
+        const gridY = ((rows - 1) / 2 - Math.floor(cell / columns)) * (height / rows);
         // Same per-particle lag as position.frag.glsl, so the seed is exactly where each particle would rest.
-        const particleMorph = THREE.MathUtils.clamp((morph - randoms[i + 3] * stagger) / (1 - stagger), 0, 1);
-        for (let j = 0; j < 3; j++) {
-            seed[i + j] = grids[i + j] + (origins[i + j] - grids[i + j]) * particleMorph;
-        }
-        seed[i + 3] = 1;
+        const particleMorph = THREE.MathUtils.clamp((morph - randoms[k + 3] * stagger) / (1 - stagger), 0, 1);
+        seed[k] = gridX + (origins[k] - gridX) * particleMorph;
+        seed[k + 1] = gridY + (origins[k + 1] - gridY) * particleMorph;
+        seed[k + 2] = gridZ + (origins[k + 2] - gridZ) * particleMorph;
+        seed[k + 3] = 1;
     }
     const variable = gpu.addVariable('texturePosition', positionFrag, start);
     gpu.setVariableDependencies(variable, [variable]);
     Object.assign(variable.material.uniforms, {
         tOrigin: { value: originTexture },
-        tGrid: { value: gridTexture },
         tRandom: { value: randomTexture },
         tFluid: { value: null },
         uTime: { value: 0 },
         uDelta: { value: 1 },
         uMorph: { value: morph },
         uMorphStagger: { value: LOGO_PARTICLES.MORPH_STAGGER },
+        uGridColumns: { value: columns },
+        uGridRows: { value: rows },
+        uGridSize: { value: new THREE.Vector2(width, height) },
+        uGridZ: { value: gridZ },
         uSpring: { value: LOGO_PARTICLES.SPRING },
         uCurlScale: { value: LOGO_PARTICLES.CURL_SCALE },
         uCurlSpeed: { value: LOGO_PARTICLES.CURL_SPEED },
@@ -119,13 +124,12 @@ function createSimulation(gl, size, halfFloat, { origins, grids, randoms }, morp
             gpu.dispose();
             geometry.dispose();
             originTexture.dispose();
-            gridTexture.dispose();
             randomTexture.dispose();
         },
     };
 }
 
-export default function LogoParticles({ startAnimations, scrollProgress }) {
+export default function LogoParticles({ startAnimations, scrollProgress, gridSize }) {
     const gl = useThree((state) => state.gl);
     const { quality } = useQuality();
     const { nodes } = useGLTF('/assets/3d/Logo.glb');
@@ -142,6 +146,10 @@ export default function LogoParticles({ startAnimations, scrollProgress }) {
     const morphRef = useRef(0);
     const introStart = useRef(null);
     const matcap = useMemo(() => createMatcapTexture(), []);
+    // The panel follows the viewport live (uniforms only); a rebuild reads the latest layout for its seed.
+    const grid = useMemo(() => gridLayout(gridSize), [gridSize]);
+    const gridRef = useRef(grid);
+    gridRef.current = grid;
 
     const { size, fluidIterations } = TIERS[quality];
     // Must run before this component's own useFrame: R3F runs same-priority callbacks in subscription order.
@@ -152,16 +160,15 @@ export default function LogoParticles({ startAnimations, scrollProgress }) {
 
     const material = useMemo(() => {
         const { r, g, b } = getCSSColorRGBA('--c-brnd_100');
-        const { GRID_COLUMNS, GRID_ROWS, GRID_WIDTH, POINT_SIZE } = LOGO_PARTICLES;
         return new THREE.ShaderMaterial({
             vertexShader: particlesVert,
             fragmentShader: particlesFrag,
             uniforms: {
                 tPosition: { value: null },
-                uPointSize: { value: POINT_SIZE },
+                uPointSize: { value: LOGO_PARTICLES.POINT_SIZE },
                 uDpr: { value: 1 },
                 uIntro: { value: 0 },
-                uGridSize: { value: new THREE.Vector2(GRID_WIDTH, (GRID_WIDTH * GRID_ROWS) / GRID_COLUMNS) },
+                uGridSize: { value: new THREE.Vector2() },
                 // CSS colors are sRGB; the shader works in linear space.
                 uColor: { value: new THREE.Color().setRGB(r / 255, g / 255, b / 255, THREE.SRGBColorSpace) },
                 tMatcap: { value: matcap },
@@ -179,7 +186,7 @@ export default function LogoParticles({ startAnimations, scrollProgress }) {
     );
 
     useEffect(() => {
-        const next = createSimulation(gl, size, halfFloat, targets, morphRef.current);
+        const next = createSimulation(gl, size, halfFloat, targets, morphRef.current, gridRef.current);
         if (next.error) {
             console.error('LogoParticles:', next.error);
         }
@@ -209,6 +216,10 @@ export default function LogoParticles({ startAnimations, scrollProgress }) {
         u.uTime.value = time;
         u.uDelta.value = Math.min(delta * 60, 2);
         u.uMorph.value = morphRef.current;
+        const { columns, rows, width, height } = gridRef.current;
+        u.uGridColumns.value = columns;
+        u.uGridRows.value = rows;
+        u.uGridSize.value.set(width, height);
 
         // Fluid velocity is in screen space; map it into the logo's local space (a null sampler reads as black).
         const fluid = fluidRef.current;
@@ -231,6 +242,7 @@ export default function LogoParticles({ startAnimations, scrollProgress }) {
         m.tPosition.value = current.gpu.getCurrentRenderTarget(current.variable).texture;
         m.uDpr.value = state.viewport.dpr;
         m.uIntro.value = entryEase(THREE.MathUtils.clamp(introT, 0, 1));
+        m.uGridSize.value.set(width, height);
         m.uTime.value = time;
     });
 

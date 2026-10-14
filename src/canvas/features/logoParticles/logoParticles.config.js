@@ -7,10 +7,8 @@ export const TIERS = {
 
 // Physics and look only — timing comes from @config/animation.config. Starting values, tuned by eye.
 export const LOGO_PARTICLES = {
-    // Dot-matrix panel in the logo's local space (the logo is about 6.8 × 4.4 units); 160 × 90 keeps 16:9 square cells.
-    GRID_COLUMNS: 160,
-    GRID_ROWS: 90,
-    GRID_WIDTH: 17,
+    // Dot-matrix panel: ~this many square cells across the viewport-filling panel (HomeScene sizes it); ≤ 16,384 keeps every dot filled on the low tier.
+    GRID_CELLS: 14400,
     GRID_Z: -0.5,
     MORPH_STAGGER: 0.3,
     SPRING: 0.06,

@@ -35,7 +35,7 @@ Built from this amendment (plan `docs/superpowers/plans/2026-10-13-particle-chor
 ## Goals
 
 - The home logo is made of particles sampled from the surface of `public/assets/3d/Logo.glb`.
-- **Start:** the particles form a flat 16:9 dot-matrix panel behind the logo's position. Several particles share each dot.
+- **Start:** the particles form a flat dot-matrix panel that fills the view where the camera settles after the reveal (15% overscan), just behind the logo's position. Several particles share each dot.
 - **Intro:** during the reveal the panel "powers on": each dot grows from size 0 to full, staggered diagonally across the panel.
 - **Scroll:** as `scrollProgress` rises, the dots split apart and assimilate into the logo. They swirl in transit, and each particle lags by a small random amount. The logo is fully formed at `SCROLL_THRESHOLDS.HOME_TRANSITION`, which is when the page moves to Work.
 - **Title:** the "ROBIN POTZE" text rises out of frame on the same scroll curve, so that only the logo pops out.
@@ -108,7 +108,8 @@ src/canvas/features/logoParticles/
 
 ### Component interfaces
 
-- `LogoParticles({ startAnimations, scrollProgress })`:
+- `LogoParticles({ startAnimations, scrollProgress, gridSize })`:
+    - `gridSize` is `[width, height]` of the dot panel in the logo group's local units, from `HomeScene`;
     - it takes no `video` prop any more, because the particles are brand-colored;
     - it reads `quality` from `useQuality()`.
 - `BackgroundMesh({ paused })` (unchanged).
@@ -133,18 +134,20 @@ Points (ShaderMaterial) reads the position texture        → drawn inside the l
 
 ### Targets
 
-There are two target textures, built once on the CPU at the largest tier's size. Smaller tiers use the first N entries.
+There are two targets. The logo target is a texture built once on the CPU at the largest tier's size (smaller tiers use the first N entries); the grid target is computed in the shader.
 
 - **`tOrigin`:** the logo surface points from `MeshSurfaceSampler`. The samples come out in random order.
-- **`tGrid`:** the dot-matrix cell for particle i, which is cell `i mod (GRID_COLUMNS × GRID_ROWS)`. The cell centers are laid out on a `GRID_WIDTH × GRID_WIDTH·9/16` panel, centered at x = y = 0 and at `z = GRID_Z`.
+- **Grid (`gridPoint()` in `position.frag.glsl`):** the dot-matrix cell for particle i, which is cell `i mod (columns × rows)`, centered at x = y = 0 and at `z = GRID_Z`.
+    - `HomeScene` passes `gridSize`: the view's width and height at the logo plane where the camera settles after the reveal (`CAMERA_Z[1]` + parallax, `CAMERA_FOV[1]`), times `GRID_OVERSCAN` (1.15), in the logo group's local units. It recomputes on resize.
+    - `LogoParticles` lays out about `GRID_CELLS` (14,400) square cells for that size: 160 × 90 on 16:9, about 82 × 176 on a portrait phone. Columns, rows and size are uniforms, so a resize only updates numbers; the seed loop in `createSimulation` mirrors the same formula.
     - Because the logo samples are in random order, the grid ↔ logo pairing is effectively random. Paths cross, and the transition reads as a swarm.
-    - Every tier has at least 16,384 particles and there are 14,400 cells, so every dot is filled. On higher tiers several particles stack on each dot and split apart as they leave.
+    - Every tier has at least 16,384 particles and there are about 14,400 cells, so every dot is filled. On higher tiers several particles stack on each dot and split apart as they leave.
 
 ### Simulation (`position.frag.glsl`)
 
 Each texel holds one particle's position in the logo's local space. The inputs are:
 
-- `tOrigin` (logo point) and `tGrid` (grid cell);
+- `tOrigin` (logo point) and the grid cell from `gridPoint()`;
 - `tRandom`: four random values in 0–1;
 - the previous position, which `GPUComputationRenderer` supplies.
 

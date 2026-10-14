@@ -30,6 +30,9 @@ const LOGO_TILT = Math.PI * 0.1;
 const CAMERA_DAMPING = 3.5;
 const TILT_DAMPING = 7;
 
+// The dot panel covers the view where the camera settles after the reveal, with overscan for the tilt and parallax.
+const GRID_OVERSCAN = 1.15;
+
 // How far the "ROBIN POTZE" title rises by the end of the home scroll, in background-group units at viewportScale 1.
 const TITLE_RISE = 6;
 
@@ -58,6 +61,14 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
     );
 
     const viewportScale = useMemo(() => Math.max(0.3, Math.min(1, size.width / BREAKPOINTS.REFERENCE_WIDTH)), [size.width]);
+
+    // Panel size in the logo group's local units at rest (camera at CAMERA_Z[1] + parallax, fov CAMERA_FOV[1]).
+    const gridSize = useMemo(() => {
+        const distance = CAMERA_Z[1] - LOGO_Z[1] + CAMERA_PARALLAX;
+        const height = 2 * distance * Math.tan(THREE.MathUtils.degToRad(CAMERA_FOV[1]) / 2) * GRID_OVERSCAN;
+        const restScale = LOGO_SCALE[1] * viewportScale;
+        return [(height * size.width) / size.height / restScale, height / restScale];
+    }, [size.width, size.height, viewportScale]);
 
     // The title rises out of frame on the same curve the particles assimilate on, so only the logo is left.
     const titleRise = smoothstep(scrollProgress, 0, SCROLL_THRESHOLDS.HOME_TRANSITION) * TITLE_RISE;
@@ -184,7 +195,11 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
 
             <Float floatIntensity={FLOAT_CONFIG.INTENSITY} rotationIntensity={FLOAT_CONFIG.ROTATION_INTENSITY} speed={FLOAT_CONFIG.SPEED}>
                 <group ref={logoRef}>
-                    {canSimulate ? <LogoParticles startAnimations={startAnimations} scrollProgress={scrollProgress} /> : <LogoMesh />}
+                    {canSimulate ? (
+                        <LogoParticles startAnimations={startAnimations} scrollProgress={scrollProgress} gridSize={gridSize} />
+                    ) : (
+                        <LogoMesh />
+                    )}
                 </group>
             </Float>
 
