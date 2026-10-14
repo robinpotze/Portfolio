@@ -24,22 +24,22 @@ export default function useFluidSim(iterations) {
         };
     }, [gl, size.width, size.height, iterations]);
 
-    useFrame((state, delta) => {
+    useFrame(({ pointer }, delta) => {
+        // Pointer is in [-1, 1]; the fluid works in [0, 1] UV space. Track it even while the fluid is off.
+        const last = (lastPointer.current ??= pointer.clone());
+        const dx = (pointer.x - last.x) / 2;
+        const dy = (pointer.y - last.y) / 2;
+        last.copy(pointer);
+
         const fluid = fluidRef.current;
-        const pointer = state.pointer;
-        if (fluid && lastPointer.current) {
-            // Pointer is in [-1, 1]; the fluid works in [0, 1] UV space.
-            const dx = (pointer.x - lastPointer.current.x) / 2;
-            const dy = (pointer.y - lastPointer.current.y) / 2;
-            // ponytail: deltas over 0.1 UV in one frame are pointer jumps (first move, re-entry, touch tap), not motion; raise if fast flicks get dropped.
-            if ((dx !== 0 || dy !== 0) && Math.hypot(dx, dy) < 0.1) {
-                fluid.splat((pointer.x + 1) / 2, (pointer.y + 1) / 2, dx, dy);
-            }
+        if (!fluid) {
+            return;
         }
-        if (fluid) {
-            fluid.step(Math.min(delta, 1 / 60));
+        // ponytail: deltas over 0.1 UV in one frame are pointer jumps (first move, re-entry, touch tap), not motion; raise if fast flicks get dropped.
+        if ((dx !== 0 || dy !== 0) && Math.hypot(dx, dy) < 0.1) {
+            fluid.splat((pointer.x + 1) / 2, (pointer.y + 1) / 2, dx, dy);
         }
-        lastPointer.current = (lastPointer.current ?? pointer.clone()).copy(pointer);
+        fluid.step(Math.min(delta, 1 / 60));
     });
 
     return fluidRef;

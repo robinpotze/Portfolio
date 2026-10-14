@@ -2,11 +2,7 @@ uniform sampler2D uVelocity;
 uniform sampler2D uCurl;
 uniform float curl;
 uniform float dt;
-varying vec2 vUv;
-varying vec2 vL;
-varying vec2 vR;
-varying vec2 vT;
-varying vec2 vB;
+#include neighbors.glsl;
 
 void main() {
     float L = texture2D(uCurl, vL).x;

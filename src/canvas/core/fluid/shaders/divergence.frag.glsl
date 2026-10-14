@@ -1,9 +1,5 @@
 uniform sampler2D uVelocity;
-varying vec2 vUv;
-varying vec2 vL;
-varying vec2 vR;
-varying vec2 vT;
-varying vec2 vB;
+#include neighbors.glsl;
 
 void main() {
     float L = texture2D(uVelocity, vL).x;
@@ -13,18 +9,10 @@ void main() {
     vec2 C = texture2D(uVelocity, vUv).xy;
 
     // Reflect at the screen edges so the fluid bounces instead of leaking out.
-    if (vL.x < 0.0) {
-        L = -C.x;
-    }
-    if (vR.x > 1.0) {
-        R = -C.x;
-    }
-    if (vT.y > 1.0) {
-        T = -C.y;
-    }
-    if (vB.y < 0.0) {
-        B = -C.y;
-    }
+    if (vL.x < 0.0) L = -C.x;
+    if (vR.x > 1.0) R = -C.x;
+    if (vT.y > 1.0) T = -C.y;
+    if (vB.y < 0.0) B = -C.y;
 
     gl_FragColor = vec4(0.5 * (R - L + T - B), 0.0, 0.0, 1.0);
 }

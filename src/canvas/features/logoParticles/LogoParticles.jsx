@@ -11,31 +11,30 @@ import * as THREE from 'three';
 import { MeshSurfaceSampler } from 'three/addons/math/MeshSurfaceSampler.js';
 import { GPUComputationRenderer } from 'three/addons/misc/GPUComputationRenderer.js';
 import { LOGO_PARTICLES, TIERS } from './logoParticles.config';
-import particlesFrag from './particles.frag.glsl';
-import particlesVert from './particles.vert.glsl';
+import LogoParticlesMaterial from './LogoParticlesMaterial';
 import positionFrag from './position.frag.glsl';
 
+const { clamp, lerp, smoothstep } = THREE.MathUtils;
 const MAX_COUNT = TIERS.high.size ** 2;
+
+// { a: 1 } → { a: { value: 1 } } for the GPUComputationRenderer's plain ShaderMaterial.
+const toUniforms = (values) => Object.fromEntries(Object.entries(values).map(([name, value]) => [name, { value }]));
+
 // Targets per logo geometry, so returning to Home doesn't re-sample 262k points (useGLTF reuses the geometry object).
 const targetsCache = new WeakMap();
 
-// ponytail: builds the largest tier once on the main thread (~tens of ms); smaller tiers reuse the first N entries.
+/** Logo surface points and per-particle randoms (RGBA rows) for the largest tier; smaller tiers use the first N. */
+// ponytail: samples on the main thread (~tens of ms), once per geometry thanks to targetsCache.
 function buildTargets(geometry) {
     const sampler = new MeshSurfaceSampler(new THREE.Mesh(geometry)).build();
     const origins = new Float32Array(MAX_COUNT * 4);
-    const randoms = new Float32Array(MAX_COUNT * 4);
     const point = new THREE.Vector3();
-    for (let i = 0; i < MAX_COUNT; i++) {
+    for (let k = 0; k < origins.length; k += 4) {
         sampler.sample(point);
-        origins[i * 4] = point.x;
-        origins[i * 4 + 1] = point.y;
-        origins[i * 4 + 2] = point.z;
-        origins[i * 4 + 3] = 1;
-        for (let j = 0; j < 4; j++) {
-            randoms[i * 4 + j] = Math.random();
-        }
+        point.toArray(origins, k);
+        origins[k + 3] = 1;
     }
-    return { origins, randoms };
+    return { origins, randoms: Float32Array.from({ length: origins.length }, Math.random) };
 }
 
 function createDataTexture(data, size) {
@@ -44,15 +43,18 @@ function createDataTexture(data, size) {
     return texture;
 }
 
-// ~GRID_CELLS square cells across a panel of the given size (logo-local units), whatever its aspect.
+/** ~GRID_CELLS square cells across a panel of the given size (logo-local units), whatever its aspect. */
 function gridLayout([width, height]) {
     const columns = Math.max(1, Math.round(Math.sqrt((LOGO_PARTICLES.GRID_CELLS * width) / height)));
     const rows = Math.max(1, Math.round(LOGO_PARTICLES.GRID_CELLS / columns));
     return { columns, rows, width, height };
 }
 
+/** GPU simulation for size² particles, seeded where each particle rests at the given morph, plus their point geometry. */
 function createSimulation(gl, size, halfFloat, { origins, randoms }, morph, grid) {
     const count = size * size;
+    const { columns, rows, width, height } = grid;
+    const { GRID_Z, MORPH_STAGGER } = LOGO_PARTICLES;
     const originTexture = createDataTexture(origins, size);
     const randomTexture = createDataTexture(randoms, size);
 
@@ -60,47 +62,46 @@ function createSimulation(gl, size, halfFloat, { origins, randoms }, morph, grid
     if (halfFloat) {
         gpu.setDataType(THREE.HalfFloatType);
     }
+    // Seed at the current morph (0 = grid on first mount), so tier rebuilds don't jump.
     const start = gpu.createTexture();
-    // Seed where particles would rest for the current morph (0 = grid on first mount), so rebuilds don't jump.
     const seed = start.image.data;
-    const stagger = LOGO_PARTICLES.MORPH_STAGGER;
-    const { columns, rows, width, height } = grid;
-    const gridZ = LOGO_PARTICLES.GRID_Z;
-    for (let i = 0; i < count; i++) {
-        const k = i * 4;
-        // Dot-matrix cell, row 0 at the top (must match gridPoint() in position.frag.glsl).
+    for (let i = 0, k = 0; i < count; i++, k += 4) {
+        // Grid cell (row 0 at the top) and per-particle lag; both must match position.frag.glsl.
         const cell = i % (columns * rows);
         const gridX = ((cell % columns) - (columns - 1) / 2) * (width / columns);
         const gridY = ((rows - 1) / 2 - Math.floor(cell / columns)) * (height / rows);
-        // Same per-particle lag as position.frag.glsl, so the seed is exactly where each particle would rest.
-        const particleMorph = THREE.MathUtils.clamp((morph - randoms[k + 3] * stagger) / (1 - stagger), 0, 1);
-        seed[k] = gridX + (origins[k] - gridX) * particleMorph;
-        seed[k + 1] = gridY + (origins[k + 1] - gridY) * particleMorph;
-        seed[k + 2] = gridZ + (origins[k + 2] - gridZ) * particleMorph;
+        const t = clamp((morph - randoms[k + 3] * MORPH_STAGGER) / (1 - MORPH_STAGGER), 0, 1);
+        seed[k] = lerp(gridX, origins[k], t);
+        seed[k + 1] = lerp(gridY, origins[k + 1], t);
+        seed[k + 2] = lerp(GRID_Z, origins[k + 2], t);
         seed[k + 3] = 1;
     }
+
     const variable = gpu.addVariable('texturePosition', positionFrag, start);
     gpu.setVariableDependencies(variable, [variable]);
-    Object.assign(variable.material.uniforms, {
-        tOrigin: { value: originTexture },
-        tRandom: { value: randomTexture },
-        tFluid: { value: null },
-        uTime: { value: 0 },
-        uDelta: { value: 1 },
-        uMorph: { value: morph },
-        uMorphStagger: { value: LOGO_PARTICLES.MORPH_STAGGER },
-        uGridColumns: { value: columns },
-        uGridRows: { value: rows },
-        uGridSize: { value: new THREE.Vector2(width, height) },
-        uGridZ: { value: gridZ },
-        uSpring: { value: LOGO_PARTICLES.SPRING },
-        uCurlScale: { value: LOGO_PARTICLES.CURL_SCALE },
-        uCurlSpeed: { value: LOGO_PARTICLES.CURL_SPEED },
-        uCurlStrength: { value: LOGO_PARTICLES.CURL_STRENGTH },
-        uFluidStrength: { value: 0 },
-        uModelViewProjection: { value: new THREE.Matrix4() },
-        uScreenToLocal: { value: new THREE.Matrix3() },
-    });
+    Object.assign(
+        variable.material.uniforms,
+        toUniforms({
+            tOrigin: originTexture,
+            tRandom: randomTexture,
+            tFluid: null,
+            uTime: 0,
+            uDelta: 1,
+            uMorph: morph,
+            uMorphStagger: MORPH_STAGGER,
+            uGridColumns: columns,
+            uGridRows: rows,
+            uGridSize: new THREE.Vector2(width, height),
+            uGridZ: GRID_Z,
+            uSpring: LOGO_PARTICLES.SPRING,
+            uCurlScale: LOGO_PARTICLES.CURL_SCALE,
+            uCurlSpeed: LOGO_PARTICLES.CURL_SPEED,
+            uCurlStrength: LOGO_PARTICLES.CURL_STRENGTH,
+            uFluidStrength: 0,
+            uModelViewProjection: new THREE.Matrix4(),
+            uScreenToLocal: new THREE.Matrix3(),
+        })
+    );
     const error = gpu.init();
     // init() has copied the seed into the render targets; free its GPU copy (gpu.dispose() disposing it again is harmless).
     start.dispose();
@@ -111,9 +112,9 @@ function createSimulation(gl, size, halfFloat, { origins, randoms }, morph, grid
         references[i * 3] = ((i % size) + 0.5) / size;
         references[i * 3 + 1] = (Math.floor(i / size) + 0.5) / size;
     }
-    const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute('position', new THREE.BufferAttribute(references, 3));
-    geometry.setAttribute('random', new THREE.BufferAttribute(randoms.subarray(0, count * 4), 4));
+    const geometry = new THREE.BufferGeometry()
+        .setAttribute('position', new THREE.BufferAttribute(references, 3))
+        .setAttribute('random', new THREE.BufferAttribute(randoms.subarray(0, count * 4), 4));
 
     return {
         gpu,
@@ -132,6 +133,10 @@ function createSimulation(gl, size, halfFloat, { origins, randoms }, morph, grid
 export default function LogoParticles({ startAnimations, scrollProgress, gridSize }) {
     const gl = useThree((state) => state.gl);
     const { quality } = useQuality();
+    const { size, fluidIterations } = TIERS[quality];
+    // Low tier, or devices that can only render half floats, simulate at half precision.
+    const halfFloat = quality === 'low' || !gl.extensions.has('EXT_color_buffer_float');
+
     const { nodes } = useGLTF('/assets/3d/Logo.glb');
     const targets = useMemo(() => {
         const geometry = nodes.Logo.geometry;
@@ -140,50 +145,29 @@ export default function LogoParticles({ startAnimations, scrollProgress, gridSiz
         }
         return targetsCache.get(geometry);
     }, [nodes]);
-    const [sim, setSim] = useState(null);
-    const simRef = useRef(null);
-    const pointsRef = useRef(null);
-    const morphRef = useRef(0);
-    const introStart = useRef(null);
-    const matcap = useMemo(() => createMatcapTexture(), []);
+
     // The panel follows the viewport live (uniforms only); a rebuild reads the latest layout for its seed.
     const grid = useMemo(() => gridLayout(gridSize), [gridSize]);
     const gridRef = useRef(grid);
     gridRef.current = grid;
 
-    const { size, fluidIterations } = TIERS[quality];
+    const matcap = useMemo(() => createMatcapTexture(), []);
+    useEffect(() => () => matcap.dispose(), [matcap]);
+    const color = useMemo(() => {
+        const { r, g, b } = getCSSColorRGBA('--c-brnd_100');
+        // CSS colors are sRGB; the shader works in linear space.
+        return new THREE.Color().setRGB(r / 255, g / 255, b / 255, THREE.SRGBColorSpace);
+    }, []);
+
     // Must run before this component's own useFrame: R3F runs same-priority callbacks in subscription order.
     const fluidRef = useFluidSim(fluidIterations);
+    const [sim, setSim] = useState(null);
+    const simRef = useRef(null);
+    const pointsRef = useRef(null);
+    const materialRef = useRef(null);
+    const morphRef = useRef(0);
+    const introStart = useRef(null);
     const modelView = useMemo(() => new THREE.Matrix4(), []);
-    // Low tier, or devices that can only render half floats, simulate at half precision.
-    const halfFloat = quality === 'low' || !gl.extensions.has('EXT_color_buffer_float');
-
-    const material = useMemo(() => {
-        const { r, g, b } = getCSSColorRGBA('--c-brnd_100');
-        return new THREE.ShaderMaterial({
-            vertexShader: particlesVert,
-            fragmentShader: particlesFrag,
-            uniforms: {
-                tPosition: { value: null },
-                uPointSize: { value: LOGO_PARTICLES.POINT_SIZE },
-                uDpr: { value: 1 },
-                uIntro: { value: 0 },
-                uGridSize: { value: new THREE.Vector2() },
-                // CSS colors are sRGB; the shader works in linear space.
-                uColor: { value: new THREE.Color().setRGB(r / 255, g / 255, b / 255, THREE.SRGBColorSpace) },
-                tMatcap: { value: matcap },
-                uTime: { value: 0 },
-            },
-        });
-    }, [matcap]);
-
-    useEffect(
-        () => () => {
-            material.dispose();
-            matcap.dispose();
-        },
-        [material, matcap]
-    );
 
     useEffect(() => {
         const next = createSimulation(gl, size, halfFloat, targets, morphRef.current, gridRef.current);
@@ -198,56 +182,56 @@ export default function LogoParticles({ startAnimations, scrollProgress, gridSiz
         };
     }, [gl, size, halfFloat, targets]);
 
-    useFrame((state, delta) => {
+    useFrame(({ camera, clock, viewport }, delta) => {
         const current = simRef.current;
-        if (!current || current.error) {
+        const points = pointsRef.current;
+        const material = materialRef.current;
+        if (!current || current.error || !points || !material) {
             return;
         }
         // Skip the one frame where <points> still holds the previous tier's (disposed) geometry.
-        const points = pointsRef.current;
-        if (points) {
-            points.visible = points.geometry === current.geometry;
-        }
-        const time = state.clock.elapsedTime;
+        points.visible = points.geometry === current.geometry;
+        const time = clock.elapsedTime;
+        const { columns, rows, width, height } = gridRef.current;
+        const fluid = fluidRef.current;
 
-        // uMorph: 0 = dot-matrix grid, 1 = logo. The logo is formed when the page moves to Work.
-        morphRef.current = THREE.MathUtils.smoothstep(scrollProgress, 0, SCROLL_THRESHOLDS.HOME_TRANSITION);
+        // Simulation. uMorph: 0 = dot-matrix grid, 1 = logo; the logo is formed when the page moves to Work.
+        morphRef.current = smoothstep(scrollProgress, 0, SCROLL_THRESHOLDS.HOME_TRANSITION);
         const u = current.variable.material.uniforms;
         u.uTime.value = time;
         u.uDelta.value = Math.min(delta * 60, 2);
         u.uMorph.value = morphRef.current;
-        const { columns, rows, width, height } = gridRef.current;
         u.uGridColumns.value = columns;
         u.uGridRows.value = rows;
         u.uGridSize.value.set(width, height);
-
-        // Fluid velocity is in screen space; map it into the logo's local space (a null sampler reads as black).
-        const fluid = fluidRef.current;
+        // Fluid off on low tiers: a null sampler reads as black.
         u.tFluid.value = fluid ? fluid.velocity : null;
         u.uFluidStrength.value = fluid ? LOGO_PARTICLES.FLUID_STRENGTH : 0;
-        if (points) {
-            modelView.multiplyMatrices(state.camera.matrixWorldInverse, points.matrixWorld);
-            u.uModelViewProjection.value.multiplyMatrices(state.camera.projectionMatrix, modelView);
-            u.uScreenToLocal.value.setFromMatrix4(modelView).invert();
-        }
+        // The fluid pushes in screen space; these map a particle to the screen and the push back into the logo's space.
+        modelView.multiplyMatrices(camera.matrixWorldInverse, points.matrixWorld);
+        u.uModelViewProjection.value.multiplyMatrices(camera.projectionMatrix, modelView);
+        u.uScreenToLocal.value.setFromMatrix4(modelView).invert();
         current.gpu.compute();
 
-        // uIntro: the panel powers on over the reveal, in sync with the camera.
+        // Render. uIntro: the panel powers on over the reveal, in sync with the camera.
         if (startAnimations && introStart.current === null) {
             introStart.current = time;
         }
         const introT = introStart.current === null ? 0 : (time - introStart.current) / SCENE.CAMERA_DURATION;
-
-        const m = material.uniforms;
-        m.tPosition.value = current.gpu.getCurrentRenderTarget(current.variable).texture;
-        m.uDpr.value = state.viewport.dpr;
-        m.uIntro.value = entryEase(THREE.MathUtils.clamp(introT, 0, 1));
-        m.uGridSize.value.set(width, height);
-        m.uTime.value = time;
+        material.tPosition = current.gpu.getCurrentRenderTarget(current.variable).texture;
+        material.uDpr = viewport.dpr;
+        material.uIntro = entryEase(clamp(introT, 0, 1));
+        material.uTime = time;
+        material.uGridSize.set(width, height);
     });
 
     if (!sim || sim.error) {
         return null;
     }
-    return <points ref={pointsRef} geometry={sim.geometry} material={material} frustumCulled={false} />;
+    return (
+        <points ref={pointsRef} geometry={sim.geometry} frustumCulled={false}>
+            {/* key = drei's per-class id, so shader or config edits rebuild the material on hot reload */}
+            <logoParticlesMaterial key={LogoParticlesMaterial.key} ref={materialRef} tMatcap={matcap} uColor={color} />
+        </points>
+    );
 }

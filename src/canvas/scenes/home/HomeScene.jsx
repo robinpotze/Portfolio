@@ -33,6 +33,13 @@ const TILT_DAMPING = 7;
 // The dot panel covers the view where the camera settles after the reveal, with overscan for the tilt and parallax.
 const GRID_OVERSCAN = 1.15;
 
+// Post-processing per quality tier (ambient occlusion off on low).
+const POST_PROCESSING = {
+    low: { ao: null, bloom: { intensity: 0.3, levels: 2 } },
+    medium: { ao: { aoSamples: 4, denoiseSamples: 2, intensity: 1.2 }, bloom: { intensity: 0.45, levels: 4 } },
+    high: { ao: { aoSamples: 8, denoiseSamples: 4, intensity: 1.5 }, bloom: { intensity: 0.55, levels: 6 } },
+};
+
 // How far the "ROBIN POTZE" title rises by the end of the home scroll, in background-group units at viewportScale 1.
 const TITLE_RISE = 6;
 
@@ -73,39 +80,7 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
     // The title rises out of frame on the same curve the particles assimilate on, so only the logo is left.
     const titleRise = smoothstep(scrollProgress, 0, SCROLL_THRESHOLDS.HOME_TRANSITION) * TITLE_RISE;
 
-    // Memoize quality-based post-processing settings
-    const postProcessingSettings = useMemo(() => {
-        switch (quality) {
-            case 'low':
-                return {
-                    enableAO: false,
-                    bloomIntensity: 0.3,
-                    bloomLevels: 2,
-                    multisampling: 0,
-                };
-            case 'medium':
-                return {
-                    enableAO: true,
-                    aoSamples: 4,
-                    denoiseSamples: 2,
-                    aoIntensity: 1.2,
-                    bloomIntensity: 0.45,
-                    bloomLevels: 4,
-                    multisampling: 0,
-                };
-            case 'high':
-            default:
-                return {
-                    enableAO: true,
-                    aoSamples: 8,
-                    denoiseSamples: 4,
-                    aoIntensity: 1.5,
-                    bloomIntensity: 0.55,
-                    bloomLevels: 6,
-                    multisampling: 0,
-                };
-        }
-    }, [quality]);
+    const post = POST_PROCESSING[quality];
 
     // Scene timeline: every transform is a function of the reveal (time since startAnimations) and the scroll.
     useFrame(({ camera, clock, pointer }, delta) => {
@@ -204,22 +179,9 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
             </Float>
 
             {startAnimations && (
-                <EffectComposer multisampling={postProcessingSettings.multisampling}>
-                    {postProcessingSettings.enableAO && (
-                        <N8AO
-                            aoRadius={1}
-                            intensity={postProcessingSettings.aoIntensity}
-                            aoSamples={postProcessingSettings.aoSamples}
-                            denoiseSamples={postProcessingSettings.denoiseSamples}
-                        />
-                    )}
-                    <Bloom
-                        mipmapBlur
-                        luminanceThreshold={0.92}
-                        intensity={postProcessingSettings.bloomIntensity}
-                        radius={0.4}
-                        levels={postProcessingSettings.bloomLevels}
-                    />
+                <EffectComposer multisampling={0}>
+                    {post.ao && <N8AO aoRadius={1} {...post.ao} />}
+                    <Bloom mipmapBlur luminanceThreshold={0.92} radius={0.4} {...post.bloom} />
                 </EffectComposer>
             )}
         </>

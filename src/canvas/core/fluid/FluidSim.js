@@ -1,3 +1,4 @@
+import { shaderMaterial } from '@react-three/drei';
 import * as THREE from 'three';
 import { FullScreenQuad } from 'three/addons/postprocessing/Pass.js';
 import advectFrag from './shaders/advect.frag.glsl';
@@ -18,35 +19,21 @@ const CURL = 30;
 const SPLAT_RADIUS = 0.0025;
 const SPLAT_FORCE = 6000;
 
-function createTarget(width, height) {
-    return new THREE.WebGLRenderTarget(width, height, {
-        type: THREE.HalfFloatType,
-        format: THREE.RGBAFormat,
-        minFilter: THREE.LinearFilter,
-        magFilter: THREE.LinearFilter,
-        depthBuffer: false,
-    });
-}
+// Half-float RGBA with linear filtering (RGBA and linear are the render-target defaults).
+const createTarget = (width, height) => new THREE.WebGLRenderTarget(width, height, { type: THREE.HalfFloatType, depthBuffer: false });
 
-function createDoubleTarget(width, height) {
-    let read = createTarget(width, height);
-    let write = createTarget(width, height);
-    return {
-        get read() {
-            return read;
-        },
-        get write() {
-            return write;
-        },
-        swap() {
-            [read, write] = [write, read];
-        },
-        dispose() {
-            read.dispose();
-            write.dispose();
-        },
-    };
-}
+// Ping-pong pair: a pass reads .read, writes .write, then swaps.
+const createPingPong = (width, height) => ({
+    read: createTarget(width, height),
+    write: createTarget(width, height),
+    swap() {
+        [this.read, this.write] = [this.write, this.read];
+    },
+    dispose() {
+        this.read.dispose();
+        this.write.dispose();
+    },
+});
 
 /** Screen-space stable-fluids velocity field (no dye), at SIM_RESOLUTION on the short screen side. */
 export default class FluidSim {
@@ -55,125 +42,93 @@ export default class FluidSim {
         this.aspect = aspect;
         this.iterations = iterations;
 
-        const width = Math.round(aspect >= 1 ? SIM_RESOLUTION * aspect : SIM_RESOLUTION);
-        const height = Math.round(aspect >= 1 ? SIM_RESOLUTION : SIM_RESOLUTION / aspect);
-        const texelSize = new THREE.Vector2(1 / width, 1 / height);
-
-        this.velocityTargets = createDoubleTarget(width, height);
-        this.pressureTargets = createDoubleTarget(width, height);
-        this.divergenceTarget = createTarget(width, height);
-        this.curlTarget = createTarget(width, height);
+        const width = Math.round(SIM_RESOLUTION * Math.max(aspect, 1));
+        const height = Math.round(SIM_RESOLUTION / Math.min(aspect, 1));
+        this.targets = {
+            velocity: createPingPong(width, height),
+            pressure: createPingPong(width, height),
+            divergence: createTarget(width, height),
+            curl: createTarget(width, height),
+        };
         this.quad = new FullScreenQuad();
 
-        const pass = (fragmentShader, uniforms) =>
-            new THREE.ShaderMaterial({
-                vertexShader: baseVert,
-                fragmentShader,
-                uniforms: { texelSize: { value: texelSize }, ...uniforms },
-                depthTest: false,
-                depthWrite: false,
-            });
-
-        this.materials = {
+        // One material per pass; drei's shaderMaterial exposes every uniform as a property (pass.dt = 0.016).
+        const texelSize = new THREE.Vector2(1 / width, 1 / height);
+        const pass = (fragmentShader, uniforms) => {
+            const Pass = shaderMaterial({ texelSize, ...uniforms }, baseVert, fragmentShader);
+            return new Pass({ depthTest: false, depthWrite: false });
+        };
+        this.passes = {
             splat: pass(splatFrag, {
-                uTarget: { value: null },
-                aspectRatio: { value: aspect },
-                point: { value: new THREE.Vector2() },
-                color: { value: new THREE.Vector3() },
-                radius: { value: SPLAT_RADIUS * Math.max(aspect, 1) },
+                uTarget: null,
+                aspectRatio: aspect,
+                point: new THREE.Vector2(),
+                color: new THREE.Vector3(),
+                radius: SPLAT_RADIUS * Math.max(aspect, 1),
             }),
-            advect: pass(advectFrag, {
-                uVelocity: { value: null },
-                uSource: { value: null },
-                dt: { value: 0 },
-                dissipation: { value: VELOCITY_DISSIPATION },
-            }),
-            curl: pass(curlFrag, { uVelocity: { value: null } }),
-            vorticity: pass(vorticityFrag, {
-                uVelocity: { value: null },
-                uCurl: { value: null },
-                curl: { value: CURL },
-                dt: { value: 0 },
-            }),
-            divergence: pass(divergenceFrag, { uVelocity: { value: null } }),
-            clear: pass(clearFrag, { uTexture: { value: null }, value: { value: PRESSURE_DISSIPATION } }),
-            pressure: pass(pressureFrag, { uPressure: { value: null }, uDivergence: { value: null } }),
-            gradient: pass(gradientFrag, { uPressure: { value: null }, uVelocity: { value: null } }),
+            curl: pass(curlFrag, { uVelocity: null }),
+            vorticity: pass(vorticityFrag, { uVelocity: null, uCurl: null, curl: CURL, dt: 0 }),
+            divergence: pass(divergenceFrag, { uVelocity: null }),
+            clear: pass(clearFrag, { uTexture: null, value: PRESSURE_DISSIPATION }),
+            pressure: pass(pressureFrag, { uPressure: null, uDivergence: null }),
+            gradient: pass(gradientFrag, { uPressure: null, uVelocity: null }),
+            advect: pass(advectFrag, { uVelocity: null, uSource: null, dt: 0, dissipation: VELOCITY_DISSIPATION }),
         };
     }
 
+    /** Current velocity texture (xy in texels per second). */
     get velocity() {
-        return this.velocityTargets.read.texture;
+        return this.targets.velocity.read.texture;
     }
 
-    render(material, target) {
-        this.quad.material = material;
-        this.renderer.setRenderTarget(target);
+    /** Renders one pass with the given uniforms into target; a ping-pong pair is written, then swapped. */
+    run(pass, uniforms, target) {
+        Object.assign(pass, uniforms);
+        this.quad.material = pass;
+        this.renderer.setRenderTarget(target.write ?? target);
         this.quad.render(this.renderer);
+        target.swap?.();
     }
 
+    /** Adds pointer motion at (x, y) in 0–1 UV space; dx, dy is the UV delta since the last frame. */
     splat(x, y, dx, dy) {
+        const { splat } = this.passes;
         const previous = this.renderer.getRenderTarget();
-        const u = this.materials.splat.uniforms;
-        u.uTarget.value = this.velocityTargets.read.texture;
-        u.point.value.set(x, y);
+        splat.point.set(x, y);
         // Equal force per screen pixel in x and y (velocity is in texels; a UV step is width texels in x, height in y).
-        u.color.value.set(dx * SPLAT_FORCE * Math.min(this.aspect, 1), (dy * SPLAT_FORCE) / Math.max(this.aspect, 1), 0);
-        this.render(this.materials.splat, this.velocityTargets.write);
-        this.velocityTargets.swap();
+        splat.color.set(dx * SPLAT_FORCE * Math.min(this.aspect, 1), (dy * SPLAT_FORCE) / Math.max(this.aspect, 1), 0);
+        this.run(splat, { uTarget: this.velocity }, this.targets.velocity);
         this.renderer.setRenderTarget(previous);
     }
 
+    /** Advances the fluid by dt seconds: keep swirls, make the field divergence-free, then move it along itself. */
     step(dt) {
+        const { velocity, pressure, divergence, curl } = this.targets;
+        const { passes } = this;
         const previous = this.renderer.getRenderTarget();
-        const { velocityTargets: velocity, pressureTargets: pressure, materials: m } = this;
         // Dissipation constants are per 60 Hz frame; scale them by the real step so 120 Hz fades at the same speed.
-        m.clear.uniforms.value.value = Math.pow(PRESSURE_DISSIPATION, dt * 60);
-        m.advect.uniforms.dissipation.value = Math.pow(VELOCITY_DISSIPATION, dt * 60);
+        const frames = dt * 60;
 
-        m.curl.uniforms.uVelocity.value = velocity.read.texture;
-        this.render(m.curl, this.curlTarget);
-
-        m.vorticity.uniforms.uVelocity.value = velocity.read.texture;
-        m.vorticity.uniforms.uCurl.value = this.curlTarget.texture;
-        m.vorticity.uniforms.dt.value = dt;
-        this.render(m.vorticity, velocity.write);
-        velocity.swap();
-
-        m.divergence.uniforms.uVelocity.value = velocity.read.texture;
-        this.render(m.divergence, this.divergenceTarget);
-
-        m.clear.uniforms.uTexture.value = pressure.read.texture;
-        this.render(m.clear, pressure.write);
-        pressure.swap();
-
-        m.pressure.uniforms.uDivergence.value = this.divergenceTarget.texture;
+        this.run(passes.curl, { uVelocity: velocity.read.texture }, curl);
+        this.run(passes.vorticity, { uVelocity: velocity.read.texture, uCurl: curl.texture, dt }, velocity);
+        this.run(passes.divergence, { uVelocity: velocity.read.texture }, divergence);
+        this.run(passes.clear, { uTexture: pressure.read.texture, value: PRESSURE_DISSIPATION ** frames }, pressure);
         for (let i = 0; i < this.iterations; i++) {
-            m.pressure.uniforms.uPressure.value = pressure.read.texture;
-            this.render(m.pressure, pressure.write);
-            pressure.swap();
+            this.run(passes.pressure, { uPressure: pressure.read.texture, uDivergence: divergence.texture }, pressure);
         }
-
-        m.gradient.uniforms.uPressure.value = pressure.read.texture;
-        m.gradient.uniforms.uVelocity.value = velocity.read.texture;
-        this.render(m.gradient, velocity.write);
-        velocity.swap();
-
-        m.advect.uniforms.uVelocity.value = velocity.read.texture;
-        m.advect.uniforms.uSource.value = velocity.read.texture;
-        m.advect.uniforms.dt.value = dt;
-        this.render(m.advect, velocity.write);
-        velocity.swap();
+        this.run(passes.gradient, { uPressure: pressure.read.texture, uVelocity: velocity.read.texture }, velocity);
+        this.run(
+            passes.advect,
+            { uVelocity: velocity.read.texture, uSource: velocity.read.texture, dt, dissipation: VELOCITY_DISSIPATION ** frames },
+            velocity
+        );
 
         this.renderer.setRenderTarget(previous);
     }
 
     dispose() {
-        this.velocityTargets.dispose();
-        this.pressureTargets.dispose();
-        this.divergenceTarget.dispose();
-        this.curlTarget.dispose();
-        Object.values(this.materials).forEach((material) => material.dispose());
+        Object.values(this.targets).forEach((target) => target.dispose());
+        Object.values(this.passes).forEach((pass) => pass.dispose());
         this.quad.dispose();
     }
 }

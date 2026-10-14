@@ -1,10 +1,6 @@
 uniform sampler2D uPressure;
 uniform sampler2D uDivergence;
-varying vec2 vUv;
-varying vec2 vL;
-varying vec2 vR;
-varying vec2 vT;
-varying vec2 vB;
+#include neighbors.glsl;
 
 void main() {
     float L = texture2D(uPressure, vL).x;
