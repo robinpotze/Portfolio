@@ -512,7 +512,7 @@ Standard hero section for every case-study page. Renders project banner, overlay
 
 `src/canvas` is split into three layers. Imports flow one way only: `scenes → features → core`.
 
-- **`core/`**: generic 3D infrastructure (`CanvasRoot`, quality, animation and texture hooks, camera `Rig`, the fluid simulation, shared shader chunks). Never imports features or scenes.
+- **`core/`**: generic 3D infrastructure (`CanvasRoot`, quality, texture hooks, the fluid simulation, shared shader chunks). Never imports features or scenes.
 - **`features/<name>/`**: one folder per visual unit, with its component, material, shaders and config colocated. `index.js` is the public API (shader-only folders such as `transition/` and `lab/` have none until a component consumes them). Features never import other features or scenes.
 - **`scenes/<route>/`**: composition roots (`HomeCanvas`/`HomeScene`, `WorkCanvas`/`WorkScene`). The only canvas modules routes import.
 
@@ -538,23 +538,22 @@ Renders `CanvasRoot` (shared `<Canvas>` with project DPR/GL defaults and the ada
 
 > **`src/canvas/scenes/home/HomeScene.jsx`** — Home 3D scene orchestrator
 
-Combines background mesh, animated logo, subtitle text, laser plane, camera, post-processing, and mouse-reactive rig into one scroll-aware scene.
+Combines background mesh, logo, subtitle text, laser plane, camera and post-processing into one scroll-aware scene.
 
 - Renders `LogoParticles` when float or half-float render targets are supported, otherwise the metallic `LogoMesh`.
-- Eases the logo group's rotation toward the pointer.
+- One `useFrame` timeline drives the camera (z, FOV, damped pointer parallax, `lookAt` origin), logo, background and subtitle from two values: the eased reveal (time since `startAnimations`, `REVEAL`/`SCENE` timing) and `easeCurve(scrollProgress)`. Layout keyframes are module constants (`CAMERA_Z`, `CAMERA_FOV`, `LOGO_SCALE`, …) as `[before reveal, after reveal, end of scroll]`; scales are multiplied by `viewportScale`.
+- Damps the logo group's rotation toward the pointer (`THREE.MathUtils.damp`).
 - Raises the "ROBIN POTZE" title out of frame on scroll (`TITLE_RISE`), on the same curve the particles assimilate on.
 - Reads `quality` from context to select post-processing preset:
     - **Low:** bloom only (intensity 0.3, 2 levels)
     - **Medium:** N8AO (4 samples) + bloom (intensity 0.45, 4 levels)
     - **High:** N8AO (8 samples) + bloom (intensity 0.55, 6 levels)
-- Uses `useObjectAnimation` for logo, background, subtitle transforms.
-- Uses `useCameraAnimation` for camera position + FOV.
 - Pauses background video once scroll > 0.4.
 - Viewport-responsive scale via `BREAKPOINTS.REFERENCE_WIDTH`.
 
-| Hooks                                                                                                        | Context          | Config                                                                | Children                                                                              |
-| ------------------------------------------------------------------------------------------------------------ | ---------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| `useRef`, `useEffect`, `useMemo`, `useFrame`, `useThree`, **`useObjectAnimation`**, **`useCameraAnimation`** | **`useQuality`** | `FLOAT_CONFIG`, `REVEAL`, `SCENE`, `SCROLL_THRESHOLDS`, `BREAKPOINTS` | `Rig`, `BackgroundMesh`, `LogoParticles` / `LogoMesh`, `LaserPlane`, `EffectComposer` |
+| Hooks                                                    | Context          | Config                                                                | Children                                                                       |
+| -------------------------------------------------------- | ---------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `useRef`, `useEffect`, `useMemo`, `useFrame`, `useThree` | **`useQuality`** | `FLOAT_CONFIG`, `REVEAL`, `SCENE`, `SCROLL_THRESHOLDS`, `BREAKPOINTS` | `BackgroundMesh`, `LogoParticles` / `LogoMesh`, `LaserPlane`, `EffectComposer` |
 
 ---
 
@@ -649,18 +648,6 @@ Single project card in the 3D carousel. Combines refractive banner shader, optio
 
 ### 6.3 — Shared Scene Nodes
 
-#### `Rig`
-
-> **`src/canvas/core/camera/Rig.jsx`** — Mouse-driven camera parallax
-
-Applies smoothed camera offset based on pointer position and reorients camera toward origin. Frame-skips based on quality tier.
-
-| Hooks                | Context          | Config |
-| -------------------- | ---------------- | ------ |
-| `useRef`, `useFrame` | **`useQuality`** | —      |
-
----
-
 #### `BackgroundMesh`
 
 > **`src/canvas/features/background/BackgroundMesh.jsx`** — Video-textured background
@@ -705,11 +692,9 @@ These register custom JSX elements via `shaderMaterial` + `extend()` (or `RawSha
 | --------------------- | --------------------------------------------------------------------- |
 | `useAdaptiveQuality`  | `CanvasRoot` (via `AdaptiveQualityMonitor`)                           |
 | `useBorderProjection` | `WorkCanvas`                                                          |
-| `useCameraAnimation`  | `HomeScene`                                                           |
 | `useLenisScroll`      | `Entry`                                                               |
 | `useNoiseTexture`     | `WorkCard`                                                            |
 | `useFluidSim`         | `LogoParticles`                                                       |
-| `useObjectAnimation`  | `HomeScene` (×3 instances)                                            |
 | `usePageTransition`   | `Work`, `NavigationMenu`, `useScrollNavigation`, `useAdaptiveQuality` |
 | `useRandomNumber`     | `RAD_GRID_CRCL`, `RAD_GRID_TXT`                                       |
 | `useScrollNavigation` | `Home`                                                                |
@@ -719,19 +704,19 @@ These register custom JSX elements via `shaderMaterial` + `extend()` (or `RawSha
 
 | Context Hook        | Consumers                                                             |
 | ------------------- | --------------------------------------------------------------------- |
-| `useQuality`        | `HomeScene`, `LaserPlane`, `WorkCard`, `Rig`, `LogoParticles`         |
+| `useQuality`        | `HomeScene`, `LaserPlane`, `WorkCard`, `LogoParticles`                |
 | `useWorkItems`      | `Work`                                                                |
 | `usePageTransition` | `Work`, `NavigationMenu`, `useScrollNavigation`, `useAdaptiveQuality` |
 
 ### Config File → Consumer Map
 
-| Config Module                                           | Key Exports                                                                                                                                                      | Consumers                                                                                      |
-| ------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| `animation.config.js`                                   | `EASING`, `REVEAL`, `STAGGER`, `TIMEOUT`, `LENIS`, `SCROLL_THRESHOLDS`, `FLOAT_CONFIG`, `SCENE`, `SPRING_CONFIG`, `TYPEWRITER`, `BREAKPOINTS`, `CAMERA_DEFAULTS` | Most components — see individual tables                                                        |
-| `canvas/core/canvas.config.js`                          | `CANVAS_GL_DEFAULTS`, `CANVAS_DPR`                                                                                                                               | `CanvasRoot`                                                                                   |
-| `canvas/features/carousel/carousel.config.js`           | `CAROUSEL_CONFIG`                                                                                                                                                | `WorkCanvas`, `WorkScene`, `WorkCard`, `useBorderProjection`, `carousel.js`, `cardGeometry.js` |
-| `canvas/features/laser/laser.config.js`                 | `LASER_PARAMS`                                                                                                                                                   | `LaserPlane`                                                                                   |
-| `canvas/features/logoParticles/logoParticles.config.js` | `TIERS`, `LOGO_PARTICLES`                                                                                                                                        | `LogoParticles`                                                                                |
+| Config Module                                           | Key Exports                                                                                                                                   | Consumers                                                                                      |
+| ------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `animation.config.js`                                   | `EASING`, `REVEAL`, `STAGGER`, `TIMEOUT`, `LENIS`, `SCROLL_THRESHOLDS`, `FLOAT_CONFIG`, `SCENE`, `SPRING_CONFIG`, `TYPEWRITER`, `BREAKPOINTS` | Most components — see individual tables                                                        |
+| `canvas/core/canvas.config.js`                          | `CANVAS_GL_DEFAULTS`, `CANVAS_DPR`                                                                                                            | `CanvasRoot`                                                                                   |
+| `canvas/features/carousel/carousel.config.js`           | `CAROUSEL_CONFIG`                                                                                                                             | `WorkCanvas`, `WorkScene`, `WorkCard`, `useBorderProjection`, `carousel.js`, `cardGeometry.js` |
+| `canvas/features/laser/laser.config.js`                 | `LASER_PARAMS`                                                                                                                                | `LaserPlane`                                                                                   |
+| `canvas/features/logoParticles/logoParticles.config.js` | `TIERS`, `LOGO_PARTICLES`                                                                                                                     | `LogoParticles`                                                                                |
 
 ---
 

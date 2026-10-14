@@ -54,14 +54,14 @@ Built from this amendment (plan `docs/superpowers/plans/2026-10-13-particle-chor
 
 ## Building blocks already available
 
-| Need                                                       | Use                                                                                          | Source                                                           |
-| ---------------------------------------------------------- | -------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| Ping-pong simulation, starting textures, half-float switch | `GPUComputationRenderer`                                                                     | `three/addons/misc/GPUComputationRenderer.js`                    |
-| Area-weighted points on the logo surface                   | `MeshSurfaceSampler`                                                                         | `three/addons/math/MeshSurfaceSampler.js`                        |
-| Shared GLSL chunks                                         | `#include`                                                                                   | `vite-plugin-glsl` (already configured in `vite.config.mjs`)     |
-| Brand color                                                | `getCSSColorRGBA('--c-brnd_100')`                                                            | `src/utils/cssUtils.js` (as `LaserPlane` uses it)                |
-| Quality tier                                               | `useQuality`                                                                                 | `src/app/QualityContext.jsx`                                     |
-| Timing and easing                                          | `REVEAL.DURATION`, `SCENE.CAMERA_DURATION`, `SCROLL_THRESHOLDS.HOME_TRANSITION`, `entryEase` | `src/config/animation.config.js`, `src/utils/easingFunctions.js` |
+| Need                                                       | Use                                                                       | Source                                                           |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| Ping-pong simulation, starting textures, half-float switch | `GPUComputationRenderer`                                                  | `three/addons/misc/GPUComputationRenderer.js`                    |
+| Area-weighted points on the logo surface                   | `MeshSurfaceSampler`                                                      | `three/addons/math/MeshSurfaceSampler.js`                        |
+| Shared GLSL chunks                                         | `#include`                                                                | `vite-plugin-glsl` (already configured in `vite.config.mjs`)     |
+| Brand color                                                | `getCSSColorRGBA('--c-brnd_100')`                                         | `src/utils/cssUtils.js` (as `LaserPlane` uses it)                |
+| Quality tier                                               | `useQuality`                                                              | `src/app/QualityContext.jsx`                                     |
+| Timing and easing                                          | `SCENE.CAMERA_DURATION`, `SCROLL_THRESHOLDS.HOME_TRANSITION`, `entryEase` | `src/config/animation.config.js`, `src/utils/easingFunctions.js` |
 
 **Config split:** timing (delays, durations, easing, scroll ranges) comes only from the shared `animation.config.js`, and this spec adds **no new values** to it. `logoParticles.config.js` holds only the effect's own physics and look: particle count per tier, grid layout, spring, curl, morph stagger, fluid strength and point size.
 
@@ -96,7 +96,8 @@ src/canvas/features/logoParticles/
     - no longer owns a video texture (the shared-video step was reverted);
     - does the float-support check and renders `LogoParticles` or `LogoMesh` (built);
     - applies the pointer tilt to the logo group (built);
-    - **new:** wraps the "ROBIN POTZE" `<Text>` in a group whose `y` rises with the scroll curve.
+    - **new:** wraps the "ROBIN POTZE" `<Text>` in a group whose `y` rises with the scroll curve;
+    - **simplified (2026-10-14):** one plain `useFrame` timeline (`THREE.MathUtils` `lerp`/`clamp`/`damp`) drives the camera, logo, background and subtitle from the eased reveal and `easeCurve(scrollProgress)`, replacing `useObjectAnimation`, `useCameraAnimation` and `Rig` (all deleted, plus `CAMERA_DEFAULTS`). Layout keyframes are module constants; the logo's rest scale is `viewportScale` (its old JSX `1.5 × viewportScale` was overwritten at reveal and never applied).
 - `src/canvas/features/background/BackgroundMesh.jsx`: unchanged from `master` (loads its own video).
 - `src/canvas/features/logo/LogoMesh.jsx`: the metallic matcap fallback (built).
 - `COMPONENT_DOCUMENTATION.md`: document the new feature, the fluid core, the changed `BackgroundMesh` and `LogoMesh`, and the 6.0 architecture tree.
@@ -182,7 +183,7 @@ The curl swirl is barely there on the finished grid and logo (0.02, so the panel
 
 - **`uIntro` (0 → 1, render):**
     - It is 0 before the reveal, so the dots are invisible behind the loading screen.
-    - Starting `REVEAL.DURATION` after `startAnimations` turns true (the delay the logo and camera reveals use), it eases to 1 over `SCENE.CAMERA_DURATION` with `entryEase`.
+    - Starting when `startAnimations` turns true, it eases to 1 over `SCENE.CAMERA_DURATION` with `entryEase` — exactly the camera's reveal in `HomeScene`'s timeline.
 - **`uMorph` (0 = grid, 1 = logo, simulation):** `smoothstep(0.0, SCROLL_THRESHOLDS.HOME_TRANSITION, scrollProgress)`. The logo is formed exactly when the page transition fires.
 - **Title rise:** the "ROBIN POTZE" group's `y = smoothstep(0, SCROLL_THRESHOLDS.HOME_TRANSITION, scrollProgress) * TITLE_RISE`. `TITLE_RISE` is a layout constant in `HomeScene` (local units of the background group, which is scaled 8×), large enough to carry the title out of frame.
 
@@ -239,5 +240,5 @@ The repo has no test runner. Nothing in this spec is plain logic worth unit-test
 
 - **Budget:** 262k particles on the high tier is an estimate. If high cannot hold 60 fps, adaptive quality drops a tier. The table can be retuned without code changes.
 - **Constants:** these will need tuning by eye: the grid size and position, `MORPH_STAGGER`, `TITLE_RISE`, the fluid's strength, resolution and dissipation, and the curl and spring constants. They live in `logoParticles.config.js`, in `HomeScene` and as `FluidSim` defaults.
-- **Interaction with the existing scroll animation:** the logo group still pushes back and scales up 4× on scroll, so it moves while the logo forms. If that reads as too much motion, retune `logoAnimConfig` in a follow-up.
+- **Interaction with the existing scroll animation:** the logo group still pushes back and scales up 4× on scroll, so it moves while the logo forms. If that reads as too much motion, retune the `LOGO_Z` / `LOGO_SCALE` keyframes in `HomeScene`.
 - **Precision on half-float tiers:** small formed-state curl movements round away. That is accepted.

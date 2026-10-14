@@ -45,13 +45,6 @@ export const SCENE = {
     FADE_DURATION: 1,
 };
 
-export const CAMERA_DEFAULTS = {
-    START_POSITION: [0, 0, 30],
-    END_POSITION: [0, 0, 20],
-    START_FOV: 70,
-    END_FOV: 50,
-};
-
 export const TIMEOUT = {
     COMPLETE_DELAY_MS: 50,
     CURTAIN_STAGGER_MS: 70,

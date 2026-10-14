@@ -1,7 +1,7 @@
 import { useQuality } from '@app/QualityContext';
 import useFluidSim from '@canvas/core/fluid/useFluidSim';
 import createMatcapTexture from '@canvas/core/textures/createMatcapTexture';
-import { REVEAL, SCENE, SCROLL_THRESHOLDS } from '@config/animation.config';
+import { SCENE, SCROLL_THRESHOLDS } from '@config/animation.config';
 import { useGLTF } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
 import { getCSSColorRGBA } from '@utils/cssUtils';
@@ -225,7 +225,7 @@ export default function LogoParticles({ startAnimations, scrollProgress }) {
         if (startAnimations && introStart.current === null) {
             introStart.current = time;
         }
-        const introT = introStart.current === null ? 0 : (time - introStart.current - REVEAL.DURATION) / SCENE.CAMERA_DURATION;
+        const introT = introStart.current === null ? 0 : (time - introStart.current) / SCENE.CAMERA_DURATION;
 
         const m = material.uniforms;
         m.tPosition.value = current.gpu.getCurrentRenderTarget(current.variable).texture;
