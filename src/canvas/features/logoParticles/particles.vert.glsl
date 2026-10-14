@@ -18,5 +18,9 @@ void main() {
 
     gl_PointSize = uPointSize * uDpr * mix(0.5, 1.5, random.x) * power / -mvPosition.z;
     gl_Position = projectionMatrix * mvPosition;
+    // Size 0 is undefined in GLSL ES (some drivers draw 1 px); move dots that aren't powered on yet out of clip space instead.
+    if (power <= 0.0) {
+        gl_Position = vec4(2.0, 2.0, 2.0, 1.0);
+    }
     vRandom = random;
 }

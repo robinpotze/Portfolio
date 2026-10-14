@@ -13,8 +13,8 @@ import { Bloom, EffectComposer, N8AO } from '@react-three/postprocessing';
 import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 
-// How far the "ROBIN POTZE" title rises by the end of the home scroll (background-group local units; that group is scaled ~5–8×).
-const TITLE_RISE = 5;
+// How far the "ROBIN POTZE" title rises by the end of the home scroll, in background-group units at viewportScale 1 (divided by viewportScale at use).
+const TITLE_RISE = 6;
 
 export default function HomeScene({ scrollProgress = 0, startAnimations = true }) {
     const logoRef = useRef();
@@ -174,7 +174,7 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
             {startAnimations && (
                 <group ref={backgroundRef} scale={8}>
                     <BackgroundMesh paused={scrollProgress > 0.4} />
-                    <group position-y={titleRise}>
+                    <group position-y={titleRise / viewportScale}>
                         <Text font="/assets/fonts/Orbitron/static/Orbitron-Medium.ttf" color="#EEE">
                             ROBIN POTZE
                         </Text>

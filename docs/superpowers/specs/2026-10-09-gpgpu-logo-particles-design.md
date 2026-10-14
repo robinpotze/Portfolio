@@ -1,7 +1,7 @@
 # GPGPU Logo Particles — Design
 
 **Date:** 2026-10-09 (amended 2026-10-13)
-**Status:** Approved for planning
+**Status:** Implemented on `feat/gpgpu-particles` (browser review pending)
 **Branch:** `feat/gpgpu-particles`
 
 ## Context
@@ -26,18 +26,11 @@ The particle simulation runs on the GPU (GPGPU). Each particle's position is one
 Built on `feat/gpgpu-particles` from the original design, and still valid:
 
 - metallic matcap fallback logo, with the pointer tilt moved into `HomeScene` (718b399);
-- one shared video texture owned by `HomeScene`(3a8f285). This was reverted once the particles became brand-colored:`BackgroundMesh` loads its own video again;
+- one shared video texture owned by `HomeScene` (3a8f285), later reverted once the particles became brand-colored: `BackgroundMesh` loads its own video again;
 - GPU simulation, the float-support switch, and seeding each particle at its resting position (7056c45, 0667633);
 - matcap highlight and sparkle shading (8e41366).
 
-Still to build, as covered by this amendment:
-
-- the grid → logo choreography;
-- the power-on intro;
-- brand color in place of video color;
-- the rising title;
-- the mouse fluid;
-- docs.
+Built from this amendment (plan `docs/superpowers/plans/2026-10-13-particle-choreography.md`): the grid → logo choreography, the power-on intro, brand color, the rising title, the mouse fluid and the docs (9fad950..f645c9c), plus final-review fixes.
 
 ## Goals
 
@@ -169,7 +162,7 @@ The curl swirl is barely there on the finished grid and logo (0.02, so the panel
 
 `uScreenToLocal` is the inverse of the rotation part of the logo group's model-view matrix. It is computed on the CPU each frame, so a push in screen space moves particles the matching way on screen whatever the group's rotation.
 
-**Seeding:** a new simulation (first mount, return to Home, tier change) seeds each particle at `mix(grid, origin, lastMorph)`. `lastMorph` starts at 0, the grid. That way rebuilds don't jump.
+**Seeding:** a new simulation (first mount, return to Home, tier change) seeds each particle at `mix(grid, origin, particleMorph)`, where `particleMorph` is the same staggered morph the shader uses for `lastMorph`. `lastMorph` starts at 0, the grid. That way rebuilds don't jump.
 
 ### Rendering (`particles.vert.glsl` / `particles.frag.glsl`)
 

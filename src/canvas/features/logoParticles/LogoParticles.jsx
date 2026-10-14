@@ -16,6 +16,8 @@ import particlesVert from './particles.vert.glsl';
 import positionFrag from './position.frag.glsl';
 
 const MAX_COUNT = TIERS.high.size ** 2;
+// Targets per logo geometry, so returning to Home doesn't re-sample 262k points (useGLTF reuses the geometry object).
+const targetsCache = new WeakMap();
 
 // ponytail: builds the largest tier once on the main thread (~tens of ms); smaller tiers reuse the first N entries.
 function buildTargets(geometry) {
@@ -66,9 +68,12 @@ function createSimulation(gl, size, halfFloat, { origins, grids, randoms }, morp
     const start = gpu.createTexture();
     // Seed where particles would rest for the current morph (0 = grid on first mount), so rebuilds don't jump.
     const seed = start.image.data;
+    const stagger = LOGO_PARTICLES.MORPH_STAGGER;
     for (let i = 0; i < count * 4; i += 4) {
+        // Same per-particle lag as position.frag.glsl, so the seed is exactly where each particle would rest.
+        const particleMorph = THREE.MathUtils.clamp((morph - randoms[i + 3] * stagger) / (1 - stagger), 0, 1);
         for (let j = 0; j < 3; j++) {
-            seed[i + j] = grids[i + j] + (origins[i + j] - grids[i + j]) * morph;
+            seed[i + j] = grids[i + j] + (origins[i + j] - grids[i + j]) * particleMorph;
         }
         seed[i + 3] = 1;
     }
@@ -92,6 +97,8 @@ function createSimulation(gl, size, halfFloat, { origins, grids, randoms }, morp
         uScreenToLocal: { value: new THREE.Matrix3() },
     });
     const error = gpu.init();
+    // init() has copied the seed into the render targets; free its GPU copy (gpu.dispose() disposing it again is harmless).
+    start.dispose();
 
     // One point per texel: position holds the texel-centre UV the vertex shader reads from.
     const references = new Float32Array(count * 3);
@@ -122,7 +129,13 @@ export default function LogoParticles({ startAnimations, scrollProgress }) {
     const gl = useThree((state) => state.gl);
     const { quality } = useQuality();
     const { nodes } = useGLTF('/assets/3d/Logo.glb');
-    const targets = useMemo(() => buildTargets(nodes.Logo.geometry), [nodes]);
+    const targets = useMemo(() => {
+        const geometry = nodes.Logo.geometry;
+        if (!targetsCache.has(geometry)) {
+            targetsCache.set(geometry, buildTargets(geometry));
+        }
+        return targetsCache.get(geometry);
+    }, [nodes]);
     const [sim, setSim] = useState(null);
     const simRef = useRef(null);
     const pointsRef = useRef(null);
