@@ -4,7 +4,6 @@ uniform sampler2D uTexture;
 uniform sampler2D uNoiseTex;
 uniform vec2 uTextureSize;
 uniform vec2 uPlaneSize;
-uniform float uTime;
 uniform float uRoughness;
 uniform float uNoiseScale;
 uniform float uRefractPower;
@@ -68,9 +67,9 @@ void main() {
             random(baseUv + fi * 0.2) - 0.5
         ) * roughness * 0.3;
 
-        vec2 uvR = clamp(baseUv + roughnessOffset - vec2(uRefractPower + slide * 1.0, 0.0), 0.0, 1.0);
+        vec2 uvR = clamp(baseUv + roughnessOffset - vec2(uRefractPower + slide, 0.0), 0.0, 1.0);
         vec2 uvG = clamp(baseUv + roughnessOffset, 0.0, 1.0);
-        vec2 uvB = clamp(baseUv + roughnessOffset + vec2(uRefractPower + slide * 1.0, 0.0) * uChromaticAberration, 0.0, 1.0);
+        vec2 uvB = clamp(baseUv + roughnessOffset + vec2(uRefractPower + slide, 0.0) * uChromaticAberration, 0.0, 1.0);
 
         refractCol += vec3(
             texture2D(uTexture, uvR).r,

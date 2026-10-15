@@ -563,14 +563,14 @@ Combines background mesh, logo, subtitle text, laser plane, camera and post-proc
 
 Procedural laser/fog layer driven by shader uniforms. Scales behavior by quality tier.
 
-- Prop: `progress` (0–1 scroll progress). For each key of `LASER_PARAMS` (colocated `laser.config.js`) it computes `base + progress * scale` and passes the result to the internal `LaserFlow` component.
-- Updates time, mouse, resolution, quality uniforms every frame.
-- Skips frames on low quality (every 2nd frame).
+- Prop: `progress` (0–1 scroll progress). Each key of `LASER_PARAMS` (colocated `laser.config.js`) is a uniform name, set to `base + progress * scale`; every other uniform keeps the material's default.
+- Updates flow/fog time, resolution, mouse, fade-in and quality-driven fog/wisp detail every frame (`THREE.MathUtils.damp`).
+- Updates uniforms every 2nd frame on low quality.
 - Render order 1000, ignores frustum culling — effectively a full-screen post effect.
 
-| Hooks                                                    | Context          | Config         | Children            |
-| -------------------------------------------------------- | ---------------- | -------------- | ------------------- |
-| `useRef`, `useMemo`, `useEffect`, `useFrame`, `useThree` | **`useQuality`** | `LASER_PARAMS` | `LaserFlowMaterial` |
+| Hooks                           | Context          | Config         | Children            |
+| ------------------------------- | ---------------- | -------------- | ------------------- |
+| `useRef`, `useMemo`, `useFrame` | **`useQuality`** | `LASER_PARAMS` | `LaserFlowMaterial` |
 
 ---
 
@@ -634,8 +634,8 @@ Single project card in the 3D carousel. Combines refractive banner shader, optio
 
 - Uses `useTexture` for the banner and `useNoiseTexture` for refraction noise.
 - Quality-tiered shader fidelity:
-    - **Low:** no refraction, no chromatic aberration, no pixel overlay, no float
-    - **Medium:** `uRefractPower: 0.003`, `uChromaticAberration: 0.4`
+    - **Low:** no refraction, no chromatic aberration, no pixel overlay
+    - **Medium:** `uRefractPower: 0.003`, `uChromaticAberration: 0.4`, pixel overlay enabled
     - **High:** `uRefractPower: 0.006`, `uChromaticAberration: 0.8`, pixel overlay enabled
 - Smoothly scales based on centeredness from `WorkScene`.
 - Sets `document.body.style.cursor` on hover; delegates navigation via callback.
@@ -652,7 +652,7 @@ Single project card in the 3D carousel. Combines refractive banner shader, optio
 
 > **`src/canvas/features/background/BackgroundMesh.jsx`** — Video-textured background
 
-Renders GLB wall asset with looping video texture. `paused` prop stops playback to save resources. `React.memo`-wrapped with Suspense boundary.
+Renders the GLB wall with the looping video texture, and a dark placeholder material until the video can play. `paused` stops playback to save resources. `React.memo`-wrapped.
 
 | Hooks                                             | Context | Config |
 | ------------------------------------------------- | ------- | ------ |
@@ -676,12 +676,12 @@ Fallback logo for devices without float render targets. Renders the logo geometr
 
 These register custom JSX elements via `shaderMaterial` + `extend()` (or `RawShaderMaterial` + `extend()`). Used directly in scene component markup.
 
-| Primitive                   | File                                                         | Material Type       | Key Uniforms                                                                                                                                                                   | Used By         |
-| --------------------------- | ------------------------------------------------------------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------- |
-| **`WorkCardMaterial`**      | `src/canvas/features/carousel/WorkCardMaterial.js`           | `shaderMaterial`    | `uTexture`, `uNoiseTex`, `uTextureSize`, `uPlaneSize`, `uTime`, `uRoughness`, `uRefractPower`, `uChromaticAberration`                                                          | `WorkCard`      |
-| **`LaserFlowMaterial`**     | `src/canvas/features/laser/LaserFlowMaterial.js`             | `RawShaderMaterial` | `iTime`, `iResolution`, `iMouse`, `uFlowSpeed`, `uFogIntensity`, `uFogScale`, `uWispDensity`, `uWSpeed`, `uWIntensity`, `uDecay`, `uColor`, `uFade`, `uFogQuality` (25+ total) | `LaserPlane`    |
-| **`PixelOverlayMaterial`**  | `src/canvas/features/carousel/PixelOverlayMaterial.js`       | `shaderMaterial`    | `uTime`, `uHover`, `uResolution`, `uColor1`, `uColor2`                                                                                                                         | `WorkCard`      |
-| **`LogoParticlesMaterial`** | `src/canvas/features/logoParticles/LogoParticlesMaterial.js` | `shaderMaterial`    | `tPosition`, `tMatcap`, `uColor`, `uPointSize`, `uDpr`, `uIntro`, `uGridSize`, `uTime`                                                                                         | `LogoParticles` |
+| Primitive                   | File                                                         | Material Type       | Key Uniforms                                                                                                                                                               | Used By         |
+| --------------------------- | ------------------------------------------------------------ | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
+| **`WorkCardMaterial`**      | `src/canvas/features/carousel/WorkCardMaterial.js`           | `shaderMaterial`    | `uTexture`, `uNoiseTex`, `uTextureSize`, `uPlaneSize`, `uRoughness`, `uRefractPower`, `uChromaticAberration`                                                               | `WorkCard`      |
+| **`LaserFlowMaterial`**     | `src/canvas/features/laser/LaserFlowMaterial.js`             | `RawShaderMaterial` | `iResolution`, `iMouse`, `uFlowTime`, `uFogTime`, `uFade`, `uFogQuality`, `uWispDensity`, `uColor`, the 7 `LASER_PARAMS` uniforms, and 7 constant look uniforms (22 total) | `LaserPlane`    |
+| **`PixelOverlayMaterial`**  | `src/canvas/features/carousel/PixelOverlayMaterial.js`       | `shaderMaterial`    | `uTime`, `uHover`, `uResolution`, `uColor1`, `uColor2`                                                                                                                     | `WorkCard`      |
+| **`LogoParticlesMaterial`** | `src/canvas/features/logoParticles/LogoParticlesMaterial.js` | `shaderMaterial`    | `tPosition`, `tMatcap`, `uColor`, `uPointSize`, `uDpr`, `uIntro`, `uGridSize`, `uTime`                                                                                     | `LogoParticles` |
 
 ---
 
