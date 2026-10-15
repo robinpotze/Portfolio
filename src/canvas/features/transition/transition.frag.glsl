@@ -20,7 +20,7 @@ vec4 crossfade(vec2 uv,float progress){
     return mix(fromColor,toColor,progress);
 }
 
-// Wipe transition with soft edge (ActiveTheory style)
+// Wipe transition with soft edge
 vec4 wipeTransition(vec2 uv,float progress){
     float edge=smootherstep(0.,.4,progress);
     float softEdge=.15;

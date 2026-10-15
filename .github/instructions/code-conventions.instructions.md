@@ -311,9 +311,9 @@ For values that scale with a dynamic input (e.g., scroll progress), use `base` +
 
 ```javascript
 export const LASER_PARAMS = {
-    fogIntensity: { base: 0.2, scale: 0.2 },
+    uFogIntensity: { base: 0.2, scale: 0.2 },
 };
-// Usage: fogIntensity.base + fogIntensity.scale * progress
+// Usage: uFogIntensity.base + uFogIntensity.scale * progress
 ```
 
 ## Utility Functions
