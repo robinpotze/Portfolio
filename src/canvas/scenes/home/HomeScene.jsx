@@ -54,6 +54,8 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
     const subtitleRef = useRef();
     const lightRef = useRef();
     const introStart = useRef(null);
+    // Read by LogoParticles each frame: morph 0 = dot panel → 1 = logo, intro 0 → 1 = panel powered on.
+    const timeline = useRef({ morph: 0, intro: 0 });
     const parallax = useMemo(() => new THREE.Vector3(), []);
     const { quality } = useQuality();
 
@@ -77,12 +79,14 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
         return [(height * size.width) / size.height / restScale, height / restScale];
     }, [size.width, size.height, viewportScale]);
 
-    // The title rises out of frame on the same curve the particles assimilate on, so only the logo is left.
-    const titleRise = smoothstep(scrollProgress, 0, SCROLL_THRESHOLDS.HOME_TRANSITION) * TITLE_RISE;
+    // The particles form the logo by the time the page moves to Work; the title rises out of frame on the same curve.
+    const morph = smoothstep(scrollProgress, 0, SCROLL_THRESHOLDS.HOME_TRANSITION);
+    const titleRise = morph * TITLE_RISE;
 
     const post = POST_PROCESSING[quality];
 
     // Scene timeline: every transform is a function of the reveal (time since startAnimations) and the scroll.
+    // Priority -1 runs it before the children's frames, so LogoParticles sees this frame's camera, logo and timeline.
     useFrame(({ camera, clock, pointer }, delta) => {
         if (startAnimations && introStart.current === null) {
             introStart.current = clock.elapsedTime;
@@ -96,6 +100,8 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
         parallax.y = damp(parallax.y, pointer.y * CAMERA_PARALLAX, CAMERA_DAMPING, delta);
         parallax.z = damp(parallax.z, Math.cos(pointer.x) * CAMERA_PARALLAX, CAMERA_DAMPING, delta);
         const cameraReveal = reveal(0, SCENE.CAMERA_DURATION);
+        timeline.current.morph = morph;
+        timeline.current.intro = cameraReveal;
         camera.position.set(parallax.x, parallax.y, keyframe(CAMERA_Z, cameraReveal, scroll) + parallax.z);
         camera.lookAt(0, 0, 0);
         const fov = keyframe(CAMERA_FOV, cameraReveal, scroll);
@@ -125,7 +131,7 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
             subtitle.position.set(0, keyframe(SUBTITLE_Y, subtitleReveal, scroll), keyframe(SUBTITLE_Z, subtitleReveal, scroll));
             subtitle.scale.setScalar(keyframe(SUBTITLE_SCALE, subtitleReveal, scroll) * viewportScale);
         }
-    });
+    }, -1);
 
     useEffect(() => {
         if (!startAnimations || !lightRef.current) {
@@ -169,13 +175,7 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
             )}
 
             <Float floatIntensity={FLOAT_CONFIG.INTENSITY} rotationIntensity={FLOAT_CONFIG.ROTATION_INTENSITY} speed={FLOAT_CONFIG.SPEED}>
-                <group ref={logoRef}>
-                    {canSimulate ? (
-                        <LogoParticles startAnimations={startAnimations} scrollProgress={scrollProgress} gridSize={gridSize} />
-                    ) : (
-                        <LogoMesh />
-                    )}
-                </group>
+                <group ref={logoRef}>{canSimulate ? <LogoParticles timeline={timeline} gridSize={gridSize} /> : <LogoMesh />}</group>
             </Float>
 
             {startAnimations && (

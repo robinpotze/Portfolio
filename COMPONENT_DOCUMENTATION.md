@@ -544,6 +544,7 @@ Combines background mesh, logo, subtitle text, laser plane, camera and post-proc
 - One `useFrame` timeline drives the camera (z, FOV, damped pointer parallax, `lookAt` origin), logo, background and subtitle from two values: the eased reveal (time since `startAnimations`, `REVEAL`/`SCENE` timing) and `easeCurve(scrollProgress)`. Layout keyframes are module constants (`CAMERA_Z`, `CAMERA_FOV`, `LOGO_SCALE`, …) as `[before reveal, after reveal, end of scroll]`; scales are multiplied by `viewportScale`.
 - Damps the logo group's rotation toward the pointer (`THREE.MathUtils.damp`).
 - Raises the "ROBIN POTZE" title out of frame on scroll (`TITLE_RISE`), on the same curve the particles assimilate on.
+- Owns the particle timeline: writes `{ morph, intro }` to a ref that `LogoParticles` reads. The timeline `useFrame` runs at priority -1, so children read this frame's camera, logo transform and timeline.
 - Reads `quality` from context to select post-processing preset:
     - **Low:** bloom only (intensity 0.3, 2 levels)
     - **Medium:** N8AO (4 samples) + bloom (intensity 0.45, 4 levels)
@@ -578,14 +579,16 @@ Procedural laser/fog layer driven by shader uniforms. Scales behavior by quality
 
 > **`src/canvas/features/logoParticles/LogoParticles.jsx`** — GPU-simulated particle logo
 
-Simulates particles with `GPUComputationRenderer` between two targets: a viewport-filling dot-matrix panel (about 14,400 square cells, sized by `HomeScene` through `gridSize`) and points on the `Logo.glb` surface (`MeshSurfaceSampler`). Scroll drives `uMorph` (0 = panel, 1 = logo, formed at `SCROLL_THRESHOLDS.HOME_TRANSITION`), with a random per-particle lag and a curl-noise swirl mid-transition. The panel powers on diagonally during the reveal, over `SCENE.CAMERA_DURATION` together with the camera. Medium/high tiers add a mouse fluid push (`useFluidSim`). Points are brand-colored (`--c-brnd_100`) with a matcap soft-light highlight and a few sparkles for bloom.
+Simulates particles with `GPUComputationRenderer` between two targets: a viewport-filling dot-matrix panel (about 14,400 square cells, sized by `HomeScene` through `gridSize`) and points on the `Logo.glb` surface (`MeshSurfaceSampler`). `HomeScene`'s timeline drives `uMorph` (0 = panel, 1 = logo, formed at `SCROLL_THRESHOLDS.HOME_TRANSITION`), with a random per-particle lag and a curl-noise swirl mid-transition. The panel powers on diagonally during the reveal, over `SCENE.CAMERA_DURATION` together with the camera. Medium/high tiers add a mouse fluid push (`useFluidSim`). Points are brand-colored (`--c-brnd_100`) with a matcap soft-light highlight and a few sparkles for bloom.
 
-- Props: `startAnimations`, `scrollProgress`, `gridSize`.
-- Particle budget per tier from `TIERS`: 16k (low, half-float, no fluid), 65k (medium), 262k (high).
+- Props: `timeline` (ref to `{ morph, intro }`, written by `HomeScene` each frame), `gridSize`.
+- Particle budget per tier from `TIERS`: 16k (low, no fluid), 65k (medium), 262k (high). Logo points are sampled only up to the current tier's count.
+- Simulates in float; half float only where float can't be rendered.
+- Does no simulation work until the panel powers on (`intro > 0`).
 
-| Hooks                                                                                              | Context          | Config                                                  | Children |
-| -------------------------------------------------------------------------------------------------- | ---------------- | ------------------------------------------------------- | -------- |
-| `useState`, `useRef`, `useMemo`, `useEffect`, `useFrame`, `useThree`, `useGLTF`, **`useFluidSim`** | **`useQuality`** | `TIERS`, `LOGO_PARTICLES`, `SCENE`, `SCROLL_THRESHOLDS` | `points` |
+| Hooks                                                                                              | Context          | Config                    | Children |
+| -------------------------------------------------------------------------------------------------- | ---------------- | ------------------------- | -------- |
+| `useState`, `useRef`, `useMemo`, `useEffect`, `useFrame`, `useThree`, `useGLTF`, **`useFluidSim`** | **`useQuality`** | `TIERS`, `LOGO_PARTICLES` | `points` |
 
 ---
 

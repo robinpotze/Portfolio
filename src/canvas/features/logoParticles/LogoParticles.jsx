@@ -1,11 +1,9 @@
 import { useQuality } from '@app/QualityContext';
 import useFluidSim from '@canvas/core/fluid/useFluidSim';
 import createMatcapTexture from '@canvas/core/textures/createMatcapTexture';
-import { SCENE, SCROLL_THRESHOLDS } from '@config/animation.config';
 import { useGLTF } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
 import { getCSSColorRGBA } from '@utils/cssUtils';
-import { entryEase } from '@utils/easingFunctions';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { MeshSurfaceSampler } from 'three/addons/math/MeshSurfaceSampler.js';
@@ -14,27 +12,32 @@ import { LOGO_PARTICLES, TIERS } from './logoParticles.config';
 import LogoParticlesMaterial from './LogoParticlesMaterial';
 import positionFrag from './position.frag.glsl';
 
-const { clamp, lerp, smoothstep } = THREE.MathUtils;
-const MAX_COUNT = TIERS.high.size ** 2;
+const { clamp, lerp } = THREE.MathUtils;
 
 // { a: 1 } → { a: { value: 1 } } for the GPUComputationRenderer's plain ShaderMaterial.
 const toUniforms = (values) => Object.fromEntries(Object.entries(values).map(([name, value]) => [name, { value }]));
 
-// Targets per logo geometry, so returning to Home doesn't re-sample 262k points (useGLTF reuses the geometry object).
+// Targets per logo geometry, so returning to Home doesn't re-sample (useGLTF reuses the geometry object).
 const targetsCache = new WeakMap();
 
-/** Logo surface points and per-particle randoms (RGBA rows) for the largest tier; smaller tiers use the first N. */
-// ponytail: samples on the main thread (~tens of ms), once per geometry thanks to targetsCache.
-function buildTargets(geometry) {
+/** At least `count` logo surface points and per-particle randoms (RGBA rows); a smaller tier uses the first N. */
+// ponytail: samples on the main thread (~tens of ms on high), only when a tier needs more points than are cached.
+function getTargets(geometry, count) {
+    const cached = targetsCache.get(geometry);
+    if (cached && cached.count >= count) {
+        return cached;
+    }
     const sampler = new MeshSurfaceSampler(new THREE.Mesh(geometry)).build();
-    const origins = new Float32Array(MAX_COUNT * 4);
+    const origins = new Float32Array(count * 4);
     const point = new THREE.Vector3();
     for (let k = 0; k < origins.length; k += 4) {
         sampler.sample(point);
         point.toArray(origins, k);
         origins[k + 3] = 1;
     }
-    return { origins, randoms: Float32Array.from({ length: origins.length }, Math.random) };
+    const targets = { count, origins, randoms: Float32Array.from({ length: origins.length }, Math.random) };
+    targetsCache.set(geometry, targets);
+    return targets;
 }
 
 function createDataTexture(data, size) {
@@ -51,12 +54,21 @@ function gridLayout([width, height]) {
 }
 
 /** GPU simulation for size² particles, seeded where each particle rests at the given morph, plus their point geometry. */
-function createSimulation(gl, size, halfFloat, { origins, randoms }, morph, grid) {
+function createSimulation(gl, size, halfFloat, { origins, randoms }, morph, { columns, rows, width, height }) {
     const count = size * size;
-    const { columns, rows, width, height } = grid;
     const { GRID_Z, MORPH_STAGGER } = LOGO_PARTICLES;
     const originTexture = createDataTexture(origins, size);
     const randomTexture = createDataTexture(randoms, size);
+
+    // Each particle's dot-matrix cell as a fraction of the panel (-0.5…0.5, row 0 at the top); the shader scales it by
+    // the live panel size. Particles beyond the cell count wrap and stack.
+    const cells = new Float32Array(count * 4);
+    for (let i = 0; i < count; i++) {
+        const cell = i % (columns * rows);
+        cells[i * 4] = ((cell % columns) + 0.5) / columns - 0.5;
+        cells[i * 4 + 1] = 0.5 - (Math.floor(cell / columns) + 0.5) / rows;
+    }
+    const cellTexture = createDataTexture(cells, size);
 
     const gpu = new GPUComputationRenderer(size, size, gl);
     if (halfFloat) {
@@ -65,14 +77,11 @@ function createSimulation(gl, size, halfFloat, { origins, randoms }, morph, grid
     // Seed at the current morph (0 = grid on first mount), so tier rebuilds don't jump.
     const start = gpu.createTexture();
     const seed = start.image.data;
-    for (let i = 0, k = 0; i < count; i++, k += 4) {
-        // Grid cell (row 0 at the top) and per-particle lag; both must match position.frag.glsl.
-        const cell = i % (columns * rows);
-        const gridX = ((cell % columns) - (columns - 1) / 2) * (width / columns);
-        const gridY = ((rows - 1) / 2 - Math.floor(cell / columns)) * (height / rows);
+    for (let k = 0; k < count * 4; k += 4) {
+        // Per-particle lag; must match position.frag.glsl.
         const t = clamp((morph - randoms[k + 3] * MORPH_STAGGER) / (1 - MORPH_STAGGER), 0, 1);
-        seed[k] = lerp(gridX, origins[k], t);
-        seed[k + 1] = lerp(gridY, origins[k + 1], t);
+        seed[k] = lerp(cells[k] * width, origins[k], t);
+        seed[k + 1] = lerp(cells[k + 1] * height, origins[k + 1], t);
         seed[k + 2] = lerp(GRID_Z, origins[k + 2], t);
         seed[k + 3] = 1;
     }
@@ -84,13 +93,12 @@ function createSimulation(gl, size, halfFloat, { origins, randoms }, morph, grid
         toUniforms({
             tOrigin: originTexture,
             tRandom: randomTexture,
+            tCell: cellTexture,
             tFluid: null,
             uTime: 0,
             uDelta: 1,
             uMorph: morph,
             uMorphStagger: MORPH_STAGGER,
-            uGridColumns: columns,
-            uGridRows: rows,
             uGridSize: new THREE.Vector2(width, height),
             uGridZ: GRID_Z,
             uSpring: LOGO_PARTICLES.SPRING,
@@ -126,27 +134,26 @@ function createSimulation(gl, size, halfFloat, { origins, randoms }, morph, grid
             geometry.dispose();
             originTexture.dispose();
             randomTexture.dispose();
+            cellTexture.dispose();
         },
     };
 }
 
-export default function LogoParticles({ startAnimations, scrollProgress, gridSize }) {
+/**
+ * The logo as GPU particles: a dot-matrix panel at rest that swirls into the logo as `timeline.morph` rises.
+ * timeline is a ref HomeScene writes each frame before this reads it: { morph: 0…1, intro: 0…1 }.
+ */
+export default function LogoParticles({ timeline, gridSize }) {
     const gl = useThree((state) => state.gl);
     const { quality } = useQuality();
     const { size, fluidIterations } = TIERS[quality];
-    // Low tier, or devices that can only render half floats, simulate at half precision.
-    const halfFloat = quality === 'low' || !gl.extensions.has('EXT_color_buffer_float');
+    // Half floats can't hold positions precisely enough for the spring to settle, so only use them when floats can't be rendered.
+    const halfFloat = !gl.extensions.has('EXT_color_buffer_float');
 
     const { nodes } = useGLTF('/assets/3d/Logo.glb');
-    const targets = useMemo(() => {
-        const geometry = nodes.Logo.geometry;
-        if (!targetsCache.has(geometry)) {
-            targetsCache.set(geometry, buildTargets(geometry));
-        }
-        return targetsCache.get(geometry);
-    }, [nodes]);
+    const targets = useMemo(() => getTargets(nodes.Logo.geometry, size * size), [nodes, size]);
 
-    // The panel follows the viewport live (uniforms only); a rebuild reads the latest layout for its seed.
+    // The panel size follows the viewport live (a uniform); a new column/row count re-seeds the simulation in place.
     const grid = useMemo(() => gridLayout(gridSize), [gridSize]);
     const gridRef = useRef(grid);
     gridRef.current = grid;
@@ -159,18 +166,15 @@ export default function LogoParticles({ startAnimations, scrollProgress, gridSiz
         return new THREE.Color().setRGB(r / 255, g / 255, b / 255, THREE.SRGBColorSpace);
     }, []);
 
-    // Must run before this component's own useFrame: R3F runs same-priority callbacks in subscription order.
     const fluidRef = useFluidSim(fluidIterations);
     const [sim, setSim] = useState(null);
     const simRef = useRef(null);
     const pointsRef = useRef(null);
     const materialRef = useRef(null);
-    const morphRef = useRef(0);
-    const introStart = useRef(null);
     const modelView = useMemo(() => new THREE.Matrix4(), []);
 
     useEffect(() => {
-        const next = createSimulation(gl, size, halfFloat, targets, morphRef.current, gridRef.current);
+        const next = createSimulation(gl, size, halfFloat, targets, timeline.current.morph, gridRef.current);
         if (next.error) {
             console.error('LogoParticles:', next.error);
         }
@@ -180,47 +184,46 @@ export default function LogoParticles({ startAnimations, scrollProgress, gridSiz
             simRef.current = null;
             next.dispose();
         };
-    }, [gl, size, halfFloat, targets]);
+    }, [gl, size, halfFloat, targets, timeline, grid.columns, grid.rows]);
 
-    useFrame(({ camera, clock, viewport }, delta) => {
+    useFrame(({ camera, clock, pointer, viewport }, delta) => {
         const current = simRef.current;
         const points = pointsRef.current;
         const material = materialRef.current;
-        if (!current || current.error || !points || !material) {
+        const { morph, intro } = timeline.current;
+        // Nothing is visible until the panel powers on.
+        if (!current || current.error || !points || !material || intro === 0) {
             return;
         }
-        // Skip the one frame where <points> still holds the previous tier's (disposed) geometry.
+        // Skip the one frame where <points> still holds the previous simulation's (disposed) geometry.
         points.visible = points.geometry === current.geometry;
         const time = clock.elapsedTime;
-        const { columns, rows, width, height } = gridRef.current;
+        const { width, height } = gridRef.current;
         const fluid = fluidRef.current;
+        fluid?.update(pointer, delta);
 
-        // Simulation. uMorph: 0 = dot-matrix grid, 1 = logo; the logo is formed when the page moves to Work.
-        morphRef.current = smoothstep(scrollProgress, 0, SCROLL_THRESHOLDS.HOME_TRANSITION);
+        // Simulation. uMorph: 0 = dot-matrix grid, 1 = logo.
         const u = current.variable.material.uniforms;
         u.uTime.value = time;
         u.uDelta.value = Math.min(delta * 60, 2);
-        u.uMorph.value = morphRef.current;
-        u.uGridColumns.value = columns;
-        u.uGridRows.value = rows;
+        u.uMorph.value = morph;
         u.uGridSize.value.set(width, height);
         // Fluid off on low tiers: a null sampler reads as black.
         u.tFluid.value = fluid ? fluid.velocity : null;
         u.uFluidStrength.value = fluid ? LOGO_PARTICLES.FLUID_STRENGTH : 0;
         // The fluid pushes in screen space; these map a particle to the screen and the push back into the logo's space.
+        // HomeScene has moved the camera and logo this frame, so refresh their world matrices first.
+        camera.updateMatrixWorld();
+        points.updateWorldMatrix(true, false);
         modelView.multiplyMatrices(camera.matrixWorldInverse, points.matrixWorld);
         u.uModelViewProjection.value.multiplyMatrices(camera.projectionMatrix, modelView);
         u.uScreenToLocal.value.setFromMatrix4(modelView).invert();
         current.gpu.compute();
 
-        // Render. uIntro: the panel powers on over the reveal, in sync with the camera.
-        if (startAnimations && introStart.current === null) {
-            introStart.current = time;
-        }
-        const introT = introStart.current === null ? 0 : (time - introStart.current) / SCENE.CAMERA_DURATION;
+        // Render. uIntro: the panel powers on over the camera reveal.
         material.tPosition = current.gpu.getCurrentRenderTarget(current.variable).texture;
         material.uDpr = viewport.dpr;
-        material.uIntro = entryEase(clamp(introT, 0, 1));
+        material.uIntro = intro;
         material.uTime = time;
         material.uGridSize.set(width, height);
     });

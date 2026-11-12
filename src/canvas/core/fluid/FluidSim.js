@@ -18,6 +18,8 @@ const PRESSURE_DISSIPATION = 0.8;
 const CURL = 30;
 const SPLAT_RADIUS = 0.0025;
 const SPLAT_FORCE = 6000;
+// Longest step per frame (s): 30 fps still runs in real time.
+const MAX_STEP = 1 / 30;
 
 // Half-float RGBA with linear filtering (RGBA and linear are the render-target defaults).
 const createTarget = (width, height) => new THREE.WebGLRenderTarget(width, height, { type: THREE.HalfFloatType, depthBuffer: false });
@@ -29,6 +31,10 @@ const createPingPong = (width, height) => ({
     swap() {
         [this.read, this.write] = [this.write, this.read];
     },
+    setSize(width, height) {
+        this.read.setSize(width, height);
+        this.write.setSize(width, height);
+    },
     dispose() {
         this.read.dispose();
         this.write.dispose();
@@ -39,33 +45,23 @@ const createPingPong = (width, height) => ({
 export default class FluidSim {
     constructor(renderer, aspect, iterations) {
         this.renderer = renderer;
-        this.aspect = aspect;
         this.iterations = iterations;
-
-        const width = Math.round(SIM_RESOLUTION * Math.max(aspect, 1));
-        const height = Math.round(SIM_RESOLUTION / Math.min(aspect, 1));
-        this.targets = {
-            velocity: createPingPong(width, height),
-            pressure: createPingPong(width, height),
-            divergence: createTarget(width, height),
-            curl: createTarget(width, height),
-        };
+        this.lastPointer = null;
         this.quad = new FullScreenQuad();
 
-        // One material per pass; drei's shaderMaterial exposes every uniform as a property (pass.dt = 0.016).
-        const texelSize = new THREE.Vector2(1 / width, 1 / height);
+        // Allocated at 1×1, sized by resize() below. One material per pass; drei's shaderMaterial exposes every uniform as a property.
+        this.targets = {
+            velocity: createPingPong(1, 1),
+            pressure: createPingPong(1, 1),
+            divergence: createTarget(1, 1),
+            curl: createTarget(1, 1),
+        };
         const pass = (fragmentShader, uniforms) => {
-            const Pass = shaderMaterial({ texelSize, ...uniforms }, baseVert, fragmentShader);
+            const Pass = shaderMaterial({ texelSize: new THREE.Vector2(), ...uniforms }, baseVert, fragmentShader);
             return new Pass({ depthTest: false, depthWrite: false });
         };
         this.passes = {
-            splat: pass(splatFrag, {
-                uTarget: null,
-                aspectRatio: aspect,
-                point: new THREE.Vector2(),
-                color: new THREE.Vector3(),
-                radius: SPLAT_RADIUS * Math.max(aspect, 1),
-            }),
+            splat: pass(splatFrag, { uTarget: null, aspectRatio: 1, point: new THREE.Vector2(), color: new THREE.Vector3(), radius: 0 }),
             curl: pass(curlFrag, { uVelocity: null }),
             vorticity: pass(vorticityFrag, { uVelocity: null, uCurl: null, curl: CURL, dt: 0 }),
             divergence: pass(divergenceFrag, { uVelocity: null }),
@@ -74,6 +70,18 @@ export default class FluidSim {
             gradient: pass(gradientFrag, { uPressure: null, uVelocity: null }),
             advect: pass(advectFrag, { uVelocity: null, uSource: null, dt: 0, dissipation: VELOCITY_DISSIPATION }),
         };
+        this.resize(aspect);
+    }
+
+    /** Matches the screen aspect: SIM_RESOLUTION texels on the short side. Resets the field, keeps the compiled passes. */
+    resize(aspect) {
+        this.aspect = aspect;
+        const width = Math.round(SIM_RESOLUTION * Math.max(aspect, 1));
+        const height = Math.round(SIM_RESOLUTION / Math.min(aspect, 1));
+        Object.values(this.targets).forEach((target) => target.setSize(width, height));
+        Object.values(this.passes).forEach((pass) => pass.texelSize.set(1 / width, 1 / height));
+        this.passes.splat.aspectRatio = aspect;
+        this.passes.splat.radius = SPLAT_RADIUS * Math.max(aspect, 1);
     }
 
     /** Current velocity texture (xy in texels per second). */
@@ -90,23 +98,37 @@ export default class FluidSim {
         target.swap?.();
     }
 
+    /** Feeds pointer motion (R3F pointer, -1…1) into the field, then advances it by dt seconds. */
+    update(pointer, dt) {
+        const previous = this.renderer.getRenderTarget();
+        // The fluid works in 0–1 UV space. The first frame only records the pointer.
+        const last = (this.lastPointer ??= pointer.clone());
+        const dx = (pointer.x - last.x) / 2;
+        const dy = (pointer.y - last.y) / 2;
+        last.copy(pointer);
+        // ponytail: deltas over 0.1 UV in one frame are pointer jumps (re-entry, touch tap), not motion; raise if fast flicks get dropped.
+        if ((dx !== 0 || dy !== 0) && Math.hypot(dx, dy) < 0.1) {
+            this.splat((pointer.x + 1) / 2, (pointer.y + 1) / 2, dx, dy);
+        }
+        // Capped so a stalled tab doesn't blow the field up on its first frame back.
+        this.step(Math.min(dt, MAX_STEP));
+        this.renderer.setRenderTarget(previous);
+    }
+
     /** Adds pointer motion at (x, y) in 0–1 UV space; dx, dy is the UV delta since the last frame. */
     splat(x, y, dx, dy) {
         const { splat } = this.passes;
-        const previous = this.renderer.getRenderTarget();
         splat.point.set(x, y);
         // Equal force per screen pixel in x and y (velocity is in texels; a UV step is width texels in x, height in y).
         splat.color.set(dx * SPLAT_FORCE * Math.min(this.aspect, 1), (dy * SPLAT_FORCE) / Math.max(this.aspect, 1), 0);
         this.run(splat, { uTarget: this.velocity }, this.targets.velocity);
-        this.renderer.setRenderTarget(previous);
     }
 
     /** Advances the fluid by dt seconds: keep swirls, make the field divergence-free, then move it along itself. */
     step(dt) {
         const { velocity, pressure, divergence, curl } = this.targets;
         const { passes } = this;
-        const previous = this.renderer.getRenderTarget();
-        // Dissipation constants are per 60 Hz frame; scale them by the real step so 120 Hz fades at the same speed.
+        // Dissipation constants are per 60 Hz frame; scale them by the real step so the fade is frame-rate independent.
         const frames = dt * 60;
 
         this.run(passes.curl, { uVelocity: velocity.read.texture }, curl);
@@ -122,8 +144,6 @@ export default class FluidSim {
             { uVelocity: velocity.read.texture, uSource: velocity.read.texture, dt, dissipation: VELOCITY_DISSIPATION ** frames },
             velocity
         );
-
-        this.renderer.setRenderTarget(previous);
     }
 
     dispose() {

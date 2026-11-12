@@ -114,16 +114,17 @@ src/canvas/features/logoParticles/
     - it reads `quality` from `useQuality()`.
 - `BackgroundMesh({ paused })` (unchanged).
 - `LogoMesh()`: no props.
-- `useFluidSim(iterations)` returns a ref. Its `.current` is the `FluidSim`, or `null` when `iterations` is 0. Read `.current.velocity` every frame, because the velocity buffer swaps on every step.
+- `useFluidSim(iterations)` returns a ref. Its `.current` is the `FluidSim`, or `null` when `iterations` is 0. It owns the lifecycle only: the caller drives it with `.current.update(pointer, delta)` and reads `.current.velocity` every frame, because the velocity buffer swaps on every step. A resize calls `FluidSim.resize(aspect)`, which resizes the targets without recompiling the passes.
 
 ## Per-frame data flow
 
 ```text
 pointer (R3F state.pointer, from the existing eventSource)
-  └─ useFluidSim            [medium/high only; ref.current is null on low]
+  └─ FluidSim.update, called from LogoParticles' useFrame   [medium/high only; null on low]
        splat(pointer delta) → curl → vorticity → divergence → pressure × N → gradient subtract → advect
                                                         → velocity texture
-LogoParticles useFrame
+HomeScene useFrame (priority -1): camera, logo transform, timeline.current = { morph, intro }
+LogoParticles useFrame (skipped while intro is 0)
   ├─ uniforms: uTime, uDelta, uMorph, tFluid, uFluidStrength, uModelViewProjection, uScreenToLocal
   └─ gpuCompute.compute()                               → position texture
 Points (ShaderMaterial) reads the position texture        → drawn inside the logo group
@@ -134,12 +135,12 @@ Points (ShaderMaterial) reads the position texture        → drawn inside the l
 
 ### Targets
 
-There are two targets. The logo target is a texture built once on the CPU at the largest tier's size (smaller tiers use the first N entries); the grid target is computed in the shader.
+There are two targets. The logo target is a texture sampled on the CPU up to the current tier's count and cached per geometry (smaller tiers use the first N entries). The grid target is a per-simulation texture of cell positions.
 
 - **`tOrigin`:** the logo surface points from `MeshSurfaceSampler`. The samples come out in random order.
-- **Grid (`gridPoint()` in `position.frag.glsl`):** the dot-matrix cell for particle i, which is cell `i mod (columns × rows)`, centered at x = y = 0 and at `z = GRID_Z`.
+- **Grid (`tCell`):** the dot-matrix cell for particle i, which is cell `i mod (columns × rows)`, stored as a fraction of the panel (-0.5…0.5). The shader multiplies it by `uGridSize` and places it at `z = GRID_Z`.
     - `HomeScene` passes `gridSize`: the view's width and height at the logo plane where the camera settles after the reveal (`CAMERA_Z[1]` + parallax, `CAMERA_FOV[1]`), times `GRID_OVERSCAN` (1.15), in the logo group's local units. It recomputes on resize.
-    - `LogoParticles` lays out about `GRID_CELLS` (14,400) square cells for that size: 160 × 90 on 16:9, about 82 × 176 on a portrait phone. Columns, rows and size are uniforms, so a resize only updates numbers; the seed loop in `createSimulation` mirrors the same formula.
+    - `LogoParticles` lays out about `GRID_CELLS` (14,400) square cells for that size: 160 × 90 on 16:9, about 82 × 176 on a portrait phone. The panel size is a uniform, so a resize that keeps the column and row counts only rescales the grid. A new column or row count rebuilds the simulation, seeded where each particle rests, so the dots don't fly to new cells.
     - Because the logo samples are in random order, the grid ↔ logo pairing is effectively random. Paths cross, and the transition reads as a swarm.
     - Every tier has at least 16,384 particles and there are about 14,400 cells, so every dot is filled. On higher tiers several particles stack on each dot and split apart as they leave.
 
@@ -147,7 +148,7 @@ There are two targets. The logo target is a texture built once on the CPU at the
 
 Each texel holds one particle's position in the logo's local space. The inputs are:
 
-- `tOrigin` (logo point) and the grid cell from `gridPoint()`;
+- `tOrigin` (logo point) and `tCell` (grid cell);
 - `tRandom`: four random values in 0–1;
 - the previous position, which `GPUComputationRenderer` supplies.
 
@@ -196,13 +197,13 @@ The logo group's existing scroll push-back and 4× scale still apply on top.
 
 The values live in `logoParticles.config.js`.
 
-| Tier   | Simulation texture | Particles | Data type       | Fluid                                                              |
-| ------ | ------------------ | --------- | --------------- | ------------------------------------------------------------------ |
-| low    | 128 × 128          | 16,384    | `HalfFloatType` | off: `tFluid` is `null` (reads as black) and `uFluidStrength` is 0 |
-| medium | 256 × 256          | 65,536    | `FloatType`     | on, 10 pressure iterations                                         |
-| high   | 512 × 512          | 262,144   | `FloatType`     | on, 20 pressure iterations                                         |
+| Tier   | Simulation texture | Particles | Data type   | Fluid                                                              |
+| ------ | ------------------ | --------- | ----------- | ------------------------------------------------------------------ |
+| low    | 128 × 128          | 16,384    | `FloatType` | off: `tFluid` is `null` (reads as black) and `uFluidStrength` is 0 |
+| medium | 256 × 256          | 65,536    | `FloatType` | on, 10 pressure iterations                                         |
+| high   | 512 × 512          | 262,144   | `FloatType` | on, 20 pressure iterations                                         |
 
-- Devices that support only half-float rendering simulate at half precision on every tier.
+- Devices that support only half-float rendering simulate at half precision on every tier. Half floats can't hold positions finely enough for the spring to settle on the grid, so no tier chooses them.
 - When the tier changes (adaptive quality), `LogoParticles` disposes the `GPUComputationRenderer` and builds a new one at the new size, seeded at the current morph. Tier changes are rare (there is a 5 s cooldown), so this is accepted.
 - The fluid solver runs at 128 px on the screen's short side with `HalfFloatType` and linear filtering. Starting dissipation values are velocity 0.97 and pressure 0.8. These are starting points to tune in the browser.
 
@@ -213,7 +214,7 @@ The values live in `logoParticles.config.js`.
     - `gl.capabilities.maxVertexTextures` is 0.
 - WebGL2 is always present in three 0.186, so there is no separate check for it.
 - If `gpuCompute.init()` still returns an error, `LogoParticles` logs it with `console.error` and renders nothing.
-- On unmount or tier change, `LogoParticles` disposes the `GPUComputationRenderer`, the points geometry, and the origin, grid and random textures. It disposes the material and matcap on unmount. `useFluidSim` disposes its render targets.
+- On unmount or tier change, `LogoParticles` disposes the `GPUComputationRenderer`, the points geometry, and the origin, cell and random textures. It disposes the material and matcap on unmount. `useFluidSim` disposes the fluid's render targets and passes.
 
 ## Verification
 
@@ -244,4 +245,4 @@ The repo has no test runner. Nothing in this spec is plain logic worth unit-test
 - **Budget:** 262k particles on the high tier is an estimate. If high cannot hold 60 fps, adaptive quality drops a tier. The table can be retuned without code changes.
 - **Constants:** these will need tuning by eye: the grid size and position, `MORPH_STAGGER`, `TITLE_RISE`, the fluid's strength, resolution and dissipation, and the curl and spring constants. They live in `logoParticles.config.js`, in `HomeScene` and as `FluidSim` defaults.
 - **Interaction with the existing scroll animation:** the logo group still pushes back and scales up 4× on scroll, so it moves while the logo forms. If that reads as too much motion, retune the `LOGO_Z` / `LOGO_SCALE` keyframes in `HomeScene`.
-- **Precision on half-float tiers:** small formed-state curl movements round away. That is accepted.
+- **Precision on half-float-only devices:** small spring and curl steps round away, so the grid doesn't settle exactly. That is accepted for those devices.
