@@ -6,7 +6,6 @@
 export const BREAKPOINTS = {
     MOBILE: 375,
     TABLET: 768,
-    DESKTOP: 1024,
     REFERENCE_WIDTH: 1920,
 };
 
@@ -45,13 +44,6 @@ export const SCENE = {
     FADE_DURATION: 1,
 };
 
-export const CAMERA_DEFAULTS = {
-    START_POSITION: [0, 0, 30],
-    END_POSITION: [0, 0, 20],
-    START_FOV: 70,
-    END_FOV: 50,
-};
-
 export const TIMEOUT = {
     COMPLETE_DELAY_MS: 50,
     CURTAIN_STAGGER_MS: 70,
@@ -59,12 +51,9 @@ export const TIMEOUT = {
     NAV_CLOSE_MS: 300,
     CURTAIN_MS: 500,
     GLITCH_BUSY_MS: 500,
-    LOADING_FADE_MS: 600,
-    ENTRY_COMPLETE_MS: 800,
     GLITCH_DURATION_MS: 1200,
     LOADING_MIN_DISPLAY_MS: 2000,
     LOADING_FORCE_COMPLETE_MS: 6500,
-    SCENE_READY_GRACE_MS: 1200,
 };
 
 export const LENIS = {

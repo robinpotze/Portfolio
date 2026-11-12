@@ -19,10 +19,3 @@
     pointer-events: none;
     user-select: none;
 }
-
-/* Mobile */
-@media (max-width: 768px) {
-    .canvasContainer {
-        width: 100%;
-    }
-}
