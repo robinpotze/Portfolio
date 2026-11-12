@@ -13,127 +13,76 @@ import { CAROUSEL_CONFIG } from './carousel.config';
 import './PixelOverlayMaterial';
 import './WorkCardMaterial';
 
-const LGHT_COLOR = getCSSVariable('--c-LGHT') || '#eee';
+const { clamp, damp } = THREE.MathUtils;
+
+// Glass refraction per quality tier (off on low).
+const CARD_QUALITY = {
+    low: { uRoughness: 0, uRefractPower: 0, uChromaticAberration: 0 },
+    medium: { uRoughness: 0.05, uRefractPower: 0.003, uChromaticAberration: 0.4 },
+    high: { uRoughness: 0.1, uRefractPower: 0.006, uChromaticAberration: 0.8 },
+};
+// Smoothing rates: scale toward its centeredness target (ln 1000: closes 99.9% of the gap per second), hover overlay in/out.
+const SCALE_DAMPING = Math.log(1000);
+const HOVER_DAMPING = 4;
+
+const PLANE_SIZE = new THREE.Vector2(CARD_WIDTH, CARD_HEIGHT);
+const LABEL = { color: getCSSVariable('--c-LGHT') || '#eee', anchorX: 'center', anchorY: 'middle' };
+const MONO_FONT = '/assets/fonts/Kode_Mono/static/KodeMono-Regular.ttf';
+const TITLE_FONT = '/assets/fonts/Orbitron/static/Orbitron-Medium.ttf';
 
 export default function WorkCard({ item, index, visible = true, onNavigate, centerednessRef, entryComplete = false, entryDelay = 0 }) {
     const groupRef = useRef();
-    const cardRef = useRef();
-    const materialRef = useRef();
-    const { quality } = useQuality();
-    const [hovered, setHovered] = useState(false);
+    const overlayRef = useRef();
+    const scaleRef = useRef(0);
     const hoverRef = useRef(0);
     const entryTimeRef = useRef(null);
-
-    const { data, key: pageKey } = item;
-
-    const texture = useTexture(data.banner || '/assets/img/logo/logo.png');
-
-    const textureSize = useMemo(() => {
-        const img = texture.image;
-        return img ? new THREE.Vector2(img.width, img.height) : new THREE.Vector2(1, 1);
-    }, [texture]);
-
-    const planeSize = useMemo(() => new THREE.Vector2(CARD_WIDTH, CARD_HEIGHT), []);
-
+    const wasVisibleRef = useRef(false);
+    const [hovered, setHovered] = useState(false);
+    const { quality } = useQuality();
     const isLowQuality = quality === 'low';
 
-    const noiseTexture = useNoiseTexture({
-        size: isLowQuality ? 64 : 256,
-        scale: 10,
-        octaves: isLowQuality ? 2 : 3,
-        persistence: 0.5,
-    });
-
-    // Per-quality shader uniforms
-    const cardUniforms = useMemo(() => {
-        switch (quality) {
-            case 'low':
-                return {
-                    uRoughness: 0,
-                    uRefractPower: 0,
-                    uChromaticAberration: 0,
-                };
-            case 'medium':
-                return {
-                    uRoughness: 0.05,
-                    uRefractPower: 0.003,
-                    uChromaticAberration: 0.4,
-                };
-            default:
-                return {
-                    uRoughness: 0.1,
-                    uRefractPower: 0.006,
-                    uChromaticAberration: 0.8,
-                };
-        }
-    }, [quality]);
-
+    const { data, key: pageKey } = item;
+    const texture = useTexture(data.banner || '/assets/img/logo/logo.png');
+    const textureSize = useMemo(() => new THREE.Vector2(texture.image?.width ?? 1, texture.image?.height ?? 1), [texture]);
+    const noiseTexture = useNoiseTexture({ size: isLowQuality ? 64 : 256, scale: 10, octaves: isLowQuality ? 2 : 3, persistence: 0.5 });
     const position = useMemo(() => calculateCardPosition(index), [index]);
     const rotation = useMemo(() => calculateCardRotation(index), [index]);
 
-    const scaleRef = useRef(0);
-    const wasVisibleRef = useRef(false);
-
-    useFrame((state, delta) => {
-        if (!groupRef.current) {
+    useFrame(({ clock }, delta) => {
+        const group = groupRef.current;
+        if (!group) {
             return;
         }
-
-        // Entry reveal: stay at 0 until camera entry completes, then animate in with stagger
+        // Stay hidden until the camera entry completes, then grow in with a per-card stagger.
         if (!entryComplete) {
-            groupRef.current.scale.setScalar(0);
+            group.scale.setScalar(0);
             scaleRef.current = 0;
             return;
         }
-
-        // Track entry animation start time per card (staggered)
         if (entryTimeRef.current === null) {
-            entryTimeRef.current = state.clock.getElapsedTime() + entryDelay;
+            entryTimeRef.current = clock.elapsedTime + entryDelay;
         }
+        const entryT = clamp((clock.elapsedTime - entryTimeRef.current) / CAROUSEL_CONFIG.ENTRY.CARD_DURATION, 0, 1);
 
-        const entryElapsed = state.clock.getElapsedTime() - entryTimeRef.current;
-        const entryT = Math.min(1, Math.max(0, entryElapsed / CAROUSEL_CONFIG.ENTRY.CARD_DURATION));
-        const entryScale = entryEase(entryT);
-
-        // Reset scale when becoming visible so it animates in
+        // Re-grow from 0 whenever the card becomes visible again.
         if (visible && !wasVisibleRef.current) {
             scaleRef.current = 0;
         }
         wasVisibleRef.current = visible;
-
         if (!visible) {
             return;
         }
 
-        const centeredness = centerednessRef.current[index] ?? 1;
-        const targetScale = calculateCardScale(centeredness);
-        const smoothing = 1 - Math.pow(0.001, delta);
-        scaleRef.current += (targetScale - scaleRef.current) * smoothing;
+        const targetScale = calculateCardScale(centerednessRef.current[index] ?? 1);
+        scaleRef.current = damp(scaleRef.current, targetScale, SCALE_DAMPING, delta);
+        group.scale.setScalar(entryT < 1 ? scaleRef.current * entryEase(entryT) : scaleRef.current);
 
-        // During entry, multiply by entry progress; after entry, use full scale
-        const finalScale = entryT < 1 ? scaleRef.current * entryScale : scaleRef.current;
-        groupRef.current.scale.setScalar(finalScale);
-
-        // Animate hover uniform
-        const target = hovered ? 1 : 0;
-        hoverRef.current += (target - hoverRef.current) * Math.min(delta * 4, 1);
-
-        if (materialRef.current) {
-            materialRef.current.uHover = hoverRef.current;
-            materialRef.current.uTime = state.clock.elapsedTime;
-        }
-
-        if (cardRef.current && !isLowQuality) {
-            cardRef.current.uTime = state.clock.elapsedTime;
+        hoverRef.current = damp(hoverRef.current, hovered ? 1 : 0, HOVER_DAMPING, delta);
+        if (overlayRef.current) {
+            overlayRef.current.uHover = hoverRef.current;
+            overlayRef.current.uTime = clock.elapsedTime;
         }
     });
-
-    const onClick = (e) => {
-        e.stopPropagation();
-        if (onNavigate) {
-            onNavigate(pageKey);
-        }
-    };
 
     return (
         <Float speed={FLOAT_CONFIG.SPEED} rotationIntensity={FLOAT_CONFIG.ROTATION_INTENSITY} floatIntensity={FLOAT_CONFIG.INTENSITY}>
@@ -142,7 +91,10 @@ export default function WorkCard({ item, index, visible = true, onNavigate, cent
                 position={position}
                 rotation={rotation}
                 visible={visible}
-                onClick={onClick}
+                onClick={(e) => {
+                    e.stopPropagation();
+                    onNavigate?.(pageKey);
+                }}
                 onPointerEnter={(e) => {
                     e.stopPropagation();
                     setHovered(true);
@@ -157,56 +109,32 @@ export default function WorkCard({ item, index, visible = true, onNavigate, cent
                 <mesh>
                     <planeGeometry args={[CARD_WIDTH, CARD_HEIGHT]} />
                     <workCardMaterial
-                        ref={cardRef}
                         uTexture={texture}
                         uNoiseTex={noiseTexture}
                         uTextureSize={textureSize}
-                        uPlaneSize={planeSize}
-                        uRoughness={cardUniforms.uRoughness}
-                        uRefractPower={cardUniforms.uRefractPower}
-                        uChromaticAberration={cardUniforms.uChromaticAberration}
+                        uPlaneSize={PLANE_SIZE}
+                        {...CARD_QUALITY[quality]}
                         toneMapped={false}
                     />
                 </mesh>
 
-                {/* Pixel hover overlay (shader) */}
+                {/* Pixel hover overlay */}
                 {!isLowQuality && (
                     <mesh position={[0, 0, CARD_WIDTH * 0.011]}>
                         <planeGeometry args={[CARD_WIDTH, CARD_HEIGHT]} />
-                        <pixelOverlayMaterial ref={materialRef} transparent depthWrite={false} />
+                        <pixelOverlayMaterial ref={overlayRef} transparent depthWrite={false} />
                     </mesh>
                 )}
 
                 {/* Text content */}
                 <group position={[0, 0, CARD_WIDTH * 0.012]}>
-                    <Text
-                        fontSize={CARD_HEIGHT * 0.045}
-                        font="/assets/fonts/Kode_Mono/static/KodeMono-Regular.ttf"
-                        color={LGHT_COLOR}
-                        anchorX="center"
-                        anchorY="middle"
-                        position={[0, CARD_HEIGHT * 0.1, 0.1]}
-                    >
+                    <Text {...LABEL} font={MONO_FONT} fontSize={CARD_HEIGHT * 0.045} position={[0, CARD_HEIGHT * 0.1, 0.1]}>
                         {data?.year?.toString() || ''}
                     </Text>
-                    <Text
-                        fontSize={CARD_HEIGHT * 0.11}
-                        font="/assets/fonts/Orbitron/static/Orbitron-Medium.ttf"
-                        color={LGHT_COLOR}
-                        anchorX="center"
-                        anchorY="middle"
-                        position={[0, 0, 0.12]}
-                    >
+                    <Text {...LABEL} font={TITLE_FONT} fontSize={CARD_HEIGHT * 0.11} position={[0, 0, 0.12]}>
                         {data?.title || pageKey}
                     </Text>
-                    <Text
-                        fontSize={CARD_HEIGHT * 0.045}
-                        font="/assets/fonts/Kode_Mono/static/KodeMono-Regular.ttf"
-                        color={LGHT_COLOR}
-                        anchorX="center"
-                        anchorY="middle"
-                        position={[0, -CARD_HEIGHT * 0.1, 0.1]}
-                    >
+                    <Text {...LABEL} font={MONO_FONT} fontSize={CARD_HEIGHT * 0.045} position={[0, -CARD_HEIGHT * 0.1, 0.1]}>
                         {data?.client || ''}
                     </Text>
                 </group>
