@@ -15,9 +15,7 @@
 - [5 — Reusable DOM Components](#5--reusable-dom-components)
     - [5.1 — Navigation](#51--navigation)
     - [5.2 — UI](#52--ui)
-    - [5.3 — Blocks](#53--blocks)
-    - [5.4 — Sections](#54--sections)
-    - [5.5 — Layout](#55--layout)
+    - [5.3 — Sections](#53--sections)
 - [6 — Canvas & Scene Components](#6--canvas--scene-components)
     - [6.0 — Canvas Architecture](#60--canvas-architecture)
     - [6.1 — Home Scene](#61--home-scene)
@@ -33,27 +31,24 @@
 ```
 src/components/
 ├── ErrorBoundary.jsx          # Class-based error boundary (root)
-├── blocks/                    # Reusable content blocks (WorkHeader, WorkSubHeader)
-├── layout/
-│   └── image/                 # Image layout utilities (double/, grid/, wide/)
 ├── navigation/                # App-level navigation & transitions
 │   ├── CurtainTransition/     #   Page transition curtain effect
 │   ├── LoadingScreen/         #   Asset-loading experience
 │   └── NavigationMenu/        #   Global menu (button, panel, links, socials, layers)
-├── sections/                  # Case-study content blocks (CaseIntro, FeatureSplit, etc.)
+├── sections/                  # Case-study content blocks (CaseIntro, FeatureSplit, WorkHeader, etc.)
 └── ui/                        # Generic UI components (decorations, effects, indicators)
     ├── DashLine/
     ├── GradualBlur/
     ├── GridOverlay/
     ├── NineSliceBorder/
+    ├── PageTitle/
     ├── PixelCard/
     ├── RadialText/            #   CRCL/ and TXT/ subfolders
     ├── RandomText/
     ├── ScrollDown/
     ├── ScrollReveal/
     ├── StatusMessage/
-    ├── TypewriterText/
-    └── WorkLabel/
+    └── TypewriterText/
 ```
 
 ---
@@ -115,6 +110,7 @@ Combines the loading sequence, hero copy, decorative overlays, and the home 3D s
 - Preloads GLB assets (`Logo.glb`, `Wall.glb`) on mount.
 - Resets scroll position and clears navigation state on entry.
 - `HomeCanvas` renders behind the DOM content; interaction enabled only after loading completes.
+- A "VIEW WORK" link next to the scroll cue navigates to `/work` through the curtain transition.
 
 | Hooks                                                                                                     | Context | Config                                                        | Children                                                                  |
 | --------------------------------------------------------------------------------------------------------- | ------- | ------------------------------------------------------------- | ------------------------------------------------------------------------- |
@@ -148,10 +144,11 @@ Tabbed profile page swapping between experience, education, skills, and software
 - Local `currentPage` state selects one of `EXP`, `EDU`, `SKL`, `SFT` components.
 - `PixelCard` used as animated accent inside each selector button.
 - `GridOverlay` provides full-page decorative background.
+- Header shows email, LinkedIn and `CvDownload`, then the `ABOUT_BIO` paragraph from `about.data.js`.
 
-| Hooks      | Context | Config                                         | Children                                                              |
-| ---------- | ------- | ---------------------------------------------- | --------------------------------------------------------------------- |
-| `useState` | —       | `EASING`, `REVEAL`, `SPRING_CONFIG`, `STAGGER` | `GridOverlay`, `PixelCard`, `ExpSection`, `EduSection`, `ListSection` |
+| Hooks      | Context | Config                                         | Children                                                                            |
+| ---------- | ------- | ---------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `useState` | —       | `EASING`, `REVEAL`, `SPRING_CONFIG`, `STAGGER` | `GridOverlay`, `PixelCard`, `ExpSection`, `EduSection`, `ListSection`, `CvDownload` |
 
 ---
 
@@ -178,12 +175,27 @@ Staged terminal-interface flow through `message`, `intercept`, and `complete` ph
 Reads the `:title` route param, normalizes via `normalizeKey()`, looks up the matching generated page entry, and renders a common hero plus project-specific content.
 
 - Enables Lenis smooth scrolling for long-form reading.
-- Renders 404 fallback when normalized key doesn't resolve.
-- Shared structure: `ProjectHero` → synopsis block → `DashLine` → `ScrollReveal` → page body → `GradualBlur`.
+- Renders `NotFound` when the normalized key doesn't resolve.
+- Shared structure: `ProjectHero` → synopsis block → `DashLine` → `ScrollReveal` → page body → `CaseFooter` → `GradualBlur`.
+- The page root is keyed by project, and scroll resets to the top when the project changes ("Next project" reuses this route).
 
-| Hooks                             | Context | Config  | Children                                                 |
-| --------------------------------- | ------- | ------- | -------------------------------------------------------- |
-| `useParams`, **`useLenisScroll`** | —       | `LENIS` | `ProjectHero`, `ScrollReveal`, `DashLine`, `GradualBlur` |
+| Hooks                                          | Context | Config  | Children                                                                           |
+| ---------------------------------------------- | ------- | ------- | ---------------------------------------------------------------------------------- |
+| `useParams`, `useEffect`, **`useLenisScroll`** | —       | `LENIS` | `ProjectHero`, `ScrollReveal`, `DashLine`, `CaseFooter`, `GradualBlur`, `NotFound` |
+
+---
+
+### `NotFound`
+
+> **`src/routes/NotFound/NotFound.jsx`** — 404 page
+
+Catch-all route (`path: '*'`) and the fallback `Entry` renders for unknown project keys. Shows a status message plus Home and Work links that navigate through the curtain transition while keeping real `href`s.
+
+- `message` prop overrides the default copy (Entry passes a project-specific message).
+
+| Hooks                   | Context | Config | Children    |
+| ----------------------- | ------- | ------ | ----------- |
+| **`usePageTransition`** | —       | —      | `PageTitle` |
 
 ---
 
@@ -191,12 +203,21 @@ Reads the `:title` route param, normalizes via `normalizeKey()`, looks up the ma
 
 Small isolated tree used exclusively inside the About page.
 
-| Component         | File                                          | Description                                                                            | Hooks | Config             | Children    |
-| ----------------- | --------------------------------------------- | -------------------------------------------------------------------------------------- | ----- | ------------------ | ----------- |
-| **`ExpSection`**  | `src/routes/About/components/ExpSection.jsx`  | Experience timeline. Maps items into company, role, date, details.                     | —     | `EASING`, `REVEAL` | `AboutItem` |
-| **`EduSection`**  | `src/routes/About/components/EduSection.jsx`  | Education list. Formats school, course, date.                                          | —     | `EASING`, `REVEAL` | —           |
-| **`ListSection`** | `src/routes/About/components/ListSection.jsx` | Generic list for skills and software tabs.                                             | —     | —                  | `AboutItem` |
-| **`AboutItem`**   | `src/routes/About/components/AboutItem.jsx`   | Single line with optional icon and metadata. Handles SVG components and image sources. | —     | `EASING`, `REVEAL` | —           |
+| Component         | File                                          | Description                                                                                                                      | Hooks      | Config             | Children    |
+| ----------------- | --------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ---------- | ------------------ | ----------- |
+| **`ExpSection`**  | `src/routes/About/components/ExpSection.jsx`  | Experience timeline. Maps items into company, role, date, details.                                                               | —          | `EASING`, `REVEAL` | `AboutItem` |
+| **`EduSection`**  | `src/routes/About/components/EduSection.jsx`  | Education list. Formats school, course, date.                                                                                    | —          | `EASING`, `REVEAL` | —           |
+| **`ListSection`** | `src/routes/About/components/ListSection.jsx` | Generic list for skills and software tabs.                                                                                       | —          | —                  | `AboutItem` |
+| **`AboutItem`**   | `src/routes/About/components/AboutItem.jsx`   | Single line with optional icon and metadata. Handles SVG components and image sources.                                           | —          | `EASING`, `REVEAL` | —           |
+| **`CvDownload`**  | `src/routes/About/components/CvDownload.jsx`  | "Download CV" button. Lazy-loads `cv/CvDocument.jsx` on hover/focus, builds the PDF on click and downloads `Robin-Potze-CV.pdf`. | `useState` | —                  | —           |
+
+#### CV (`src/routes/About/cv/`)
+
+The CV is generated in the browser with `@react-pdf/renderer`, so it never goes out of date:
+
+- **`cvContent.js`** — `getCvContent()` gathers everything from existing data: `SITE` and `SOCIALS` (header and links), `ABOUT_BIO` (profile), `ABOUT_DATA` (experience, skills, education), and every project's data file (selected work uses `title`, `subtitle`, `year` and `summary`; tools are the About software list plus each project's `software`).
+- **`CvDocument.jsx`** — A4 layout (Orbitron and Kode Mono from `public/assets/fonts`, Helvetica body). Page 1 is a standard CV; page 2 lists the work, newest first, with links to each case. `renderCvBlob()` returns the PDF.
+- The renderer is about 440 kB gzipped and only loads when someone hovers, focuses or clicks the button.
 
 ---
 
@@ -248,6 +269,7 @@ Custom animated loading experience. Watches Three.js asset progress via `useProg
 
 - Internal `BlockLogo` helper samples SVG into a block field.
 - Radial pulse wave through blocks; occasional scanline glitches.
+- Shows `SITE.NAME` and `SITE.ROLE_LINE` under the logo; they fade out with the progress text.
 - Props: `onComplete`, `minDisplayTime`, `logoSrc`.
 
 | Hooks                                                           | Config              | Children             |
@@ -429,28 +451,19 @@ Multi-line typewriter effect. Renders text lines character-by-character with row
 
 ---
 
-#### `WorkLabel`
+#### `PageTitle`
 
-> **`src/components/ui/WorkLabel/WorkLabel.jsx`**
+> **`src/components/ui/PageTitle/PageTitle.jsx`**
 
-Simple badge-style label. Pure presentational — CSS Modules only, no hooks, no config.
+Renders `<title>Name — Robin Potze</title>` (or just the site name without `name`). React 19 hoists it into `<head>`, so each route sets its own document title by rendering one.
 
----
-
-### 5.3 — Blocks
-
-> **`src/components/blocks/`**
-
-Reusable content blocks that compose into case-study pages. Differ from sections in that they add interactive behavior (scroll reveal).
-
-| Component           | File                                                    | Description                                                                    | Children       |
-| ------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------ | -------------- |
-| **`WorkHeader`**    | `src/components/blocks/WorkHeader/WorkHeader.jsx`       | Main section heading: title + subtitle + description wrapped in `ScrollReveal` | `ScrollReveal` |
-| **`WorkSubHeader`** | `src/components/blocks/WorkSubHeader/WorkSubHeader.jsx` | Secondary heading: label + title + optional description in `ScrollReveal`      | `ScrollReveal` |
+| Hooks | Config |
+| ----- | ------ |
+| —     | —      |
 
 ---
 
-### 5.4 — Sections
+### 5.3 — Sections
 
 > **`src/components/sections/`**
 
@@ -467,14 +480,7 @@ Case-study content blocks. All are **pure presentational** — no hooks, no cont
 | **`HeroStatement`**   | `HeroStatement/HeroStatement.jsx`     | Prominent statement callout for outcomes/summaries.                               |
 | **`ImageGrid`**       | `ImageGrid/ImageGrid.jsx`             | Multi-image grid layout.                                                          |
 | **`StatementBlock`**  | `StatementBlock/StatementBlock.jsx`   | Generic labeled prose/content section wrapper.                                    |
-
----
-
-### 5.5 — Layout
-
-> **`src/components/layout/`**
-
-Contains `image/` with subdirectories (`double/`, `grid/`, `wide/`) — currently empty placeholder folders.
+| **`WorkHeader`**      | `WorkHeader/WorkHeader.jsx`           | Section heading: title + subtitle + description + optional `note`; bar scales in. |
 
 ---
 
@@ -498,11 +504,25 @@ Class-based React error boundary — the one deliberate exception to functional-
 
 > **`src/routes/Entry/components/ProjectHero/ProjectHero.jsx`**
 
-Standard hero section for every case-study page. Renders project banner, overlays `GridOverlay`, reveals title and metadata with staggered motion.
+Standard hero section for every case-study page. Renders project banner, overlays `GridOverlay`, reveals title (plus `subtitle` when the project data has one) and metadata with staggered motion.
+
+- When the project data has `summary: { project, role, result }`, a PROJECT / ROLE / RESULT block sits beside the title (below it on phones). The CV reuses the same lines.
 
 | Hooks | Config                        | Children                    |
 | ----- | ----------------------------- | --------------------------- |
 | —     | `EASING`, `REVEAL`, `STAGGER` | `GridOverlay`, `ScrollDown` |
+
+---
+
+#### `CaseFooter`
+
+> **`src/routes/Entry/components/CaseFooter/CaseFooter.jsx`**
+
+End-of-case navigation: "Next project" (the next item in the work order, wrapping to the first) and "Get in touch". Both are real links that navigate through the curtain transition.
+
+| Hooks                                       | Context           | Config | Children |
+| ------------------------------------------- | ----------------- | ------ | -------- |
+| **`usePageTransition`**, **`useWorkItems`** | **`WorkContext`** | —      | —        |
 
 ---
 
@@ -544,6 +564,7 @@ Combines background mesh, logo, subtitle text, laser plane, camera and post-proc
 - One `useFrame` timeline drives the camera (z, FOV, damped pointer parallax, `lookAt` origin), logo, background and subtitle from two values: the eased reveal (time since `startAnimations`, `REVEAL`/`SCENE` timing) and `easeCurve(scrollProgress)`. Layout keyframes are module constants (`CAMERA_Z`, `CAMERA_FOV`, `LOGO_SCALE`, …) as `[before reveal, after reveal, end of scroll]`; scales are multiplied by `viewportScale`.
 - Damps the logo group's rotation toward the pointer (`THREE.MathUtils.damp`).
 - Raises the "ROBIN POTZE" title out of frame on scroll (`TITLE_RISE`), on the same curve the particles assimilate on.
+- Shows `SITE.ROLE_LINE` under the title as an HTML overlay (drei `Html`); it rises with the title and fades out over the first quarter of the scroll.
 - Owns the particle timeline: writes `{ morph, intro }` to a ref that `LogoParticles` reads. The timeline `useFrame` runs at priority -1, so children read this frame's camera, logo transform and timeline.
 - Reads `quality` from context to select post-processing preset:
     - **Low:** bloom only (intensity 0.3, 2 levels)
@@ -552,9 +573,9 @@ Combines background mesh, logo, subtitle text, laser plane, camera and post-proc
 - Pauses background video once scroll > 0.4.
 - Viewport-responsive scale via `BREAKPOINTS.REFERENCE_WIDTH`.
 
-| Hooks                                                    | Context          | Config                                                                | Children                                                                       |
-| -------------------------------------------------------- | ---------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| `useRef`, `useEffect`, `useMemo`, `useFrame`, `useThree` | **`useQuality`** | `FLOAT_CONFIG`, `REVEAL`, `SCENE`, `SCROLL_THRESHOLDS`, `BREAKPOINTS` | `BackgroundMesh`, `LogoParticles` / `LogoMesh`, `LaserPlane`, `EffectComposer` |
+| Hooks                                                    | Context          | Config                                                                        | Children                                                                       |
+| -------------------------------------------------------- | ---------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `useRef`, `useEffect`, `useMemo`, `useFrame`, `useThree` | **`useQuality`** | `FLOAT_CONFIG`, `REVEAL`, `SCENE`, `SCROLL_THRESHOLDS`, `BREAKPOINTS`, `SITE` | `BackgroundMesh`, `LogoParticles` / `LogoMesh`, `LaserPlane`, `EffectComposer` |
 
 ---
 
@@ -641,6 +662,7 @@ Single project card in the 3D carousel. Combines refractive banner shader, optio
     - **Medium:** `uRefractPower: 0.003`, `uChromaticAberration: 0.4`, pixel overlay enabled
     - **High:** `uRefractPower: 0.006`, `uChromaticAberration: 0.8`, pixel overlay enabled
 - Smoothly scales based on centeredness from `WorkScene`.
+- Labels: year, title, optional `subtitle`, and the project's `skills` as tags. The banner's average brightness (`averageLuminance`) feeds `uBannerLuma`, which deepens the centre gradient on bright banners so the text stays readable.
 - Sets `document.body.style.cursor` on hover; delegates navigation via callback.
 
 | Hooks                                                                            | Context          | Config                            | Children                                                  |
@@ -721,6 +743,7 @@ These register custom JSX elements via `shaderMaterial` + `extend()` (or `RawSha
 | `canvas/features/carousel/carousel.config.js`           | `CAROUSEL_CONFIG`                                                                                                                             | `WorkCanvas`, `WorkScene`, `WorkCard`, `useBorderProjection`, `carousel.js`, `cardGeometry.js` |
 | `canvas/features/laser/laser.config.js`                 | `LASER_PARAMS`                                                                                                                                | `LaserPlane`                                                                                   |
 | `canvas/features/logoParticles/logoParticles.config.js` | `TIERS`, `LOGO_PARTICLES`                                                                                                                     | `LogoParticles`                                                                                |
+| `site.config.js`                                        | `SITE` (name, role line, email, URL), `SOCIALS`, `LINKEDIN`                                                                                   | `HomeScene`, `LoadingScreen`, `MenuSocials`, `About`, `Contact`, CV                            |
 
 ---
 

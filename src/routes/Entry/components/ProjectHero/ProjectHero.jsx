@@ -6,6 +6,13 @@ import { EASING, REVEAL, STAGGER } from '@config/animation.config';
 import { motion } from 'motion/react';
 import styles from './ProjectHero.module.css';
 
+// What it is / what I did / what happened, from `summary` in the project data
+const SUMMARY_ROWS = [
+    { key: 'project', label: 'PROJECT' },
+    { key: 'role', label: 'ROLE' },
+    { key: 'result', label: 'RESULT' },
+];
+
 export default function ProjectHero({ content }) {
     const bannerVars = {
         hidden: { opacity: 0, scale: 1.02 },
@@ -75,6 +82,19 @@ export default function ProjectHero({ content }) {
         },
     };
 
+    const summaryVars = {
+        hidden: { opacity: 0, y: 8 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                duration: REVEAL.DURATION,
+                delay: STAGGER.DEFAULT + STAGGER.SLOW * 2,
+                ease: EASING.EMPHASIZED,
+            },
+        },
+    };
+
     return (
         <div className={styles.section} id="work-hero-section">
             <div className={styles.bannerWrapper}>
@@ -101,11 +121,24 @@ export default function ProjectHero({ content }) {
             </div>
 
             <motion.div className={styles.content} id="work-hero-content" variants={sideVars} custom={1} initial="hidden" animate={'visible'}>
-                <motion.div className={styles.titleWrapper} id="work-hero-title-wrapper" variants={titleVars} initial="hidden" animate={'visible'}>
-                    <PlsIcon className={styles.titleDecal} id="work-hero-decal-start" aria-hidden="true" />
-                    <h1 id="work-hero-title">{content.title.replaceAll(/\s+/g, '_')}</h1>
-                    <PlsIcon className={styles.titleDecal} id="work-hero-decal-end" aria-hidden="true" />
+                <motion.div className={styles.titleBlock} variants={titleVars} initial="hidden" animate={'visible'}>
+                    <div className={styles.titleWrapper} id="work-hero-title-wrapper">
+                        <PlsIcon className={styles.titleDecal} id="work-hero-decal-start" aria-hidden="true" />
+                        <h1 id="work-hero-title">{content.title.replaceAll(/\s+/g, '_')}</h1>
+                        <PlsIcon className={styles.titleDecal} id="work-hero-decal-end" aria-hidden="true" />
+                    </div>
+                    {content.subtitle && <p className={`deco ${styles.titleSub}`}>{content.subtitle.toUpperCase()}</p>}
                 </motion.div>
+                {content.summary && (
+                    <motion.dl className={styles.summary} id="work-hero-summary" variants={summaryVars} initial="hidden" animate={'visible'}>
+                        {SUMMARY_ROWS.map(({ key, label }) => (
+                            <div className={styles.summaryRow} key={key}>
+                                <dt>{label}</dt>
+                                <dd>{content.summary[key]}</dd>
+                            </div>
+                        ))}
+                    </motion.dl>
+                )}
             </motion.div>
 
             <motion.div className={styles.side} id="work-hero-side" variants={sideVars} custom={0} initial="hidden" animate={'visible'}>

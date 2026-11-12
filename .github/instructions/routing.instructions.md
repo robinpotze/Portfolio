@@ -7,15 +7,16 @@ applyTo: 'src/routes/**, src/app/routes.jsx, src/hooks/usePageTransition.jsx, sr
 
 ## Route Definitions
 
-All routes are defined eagerly (no lazy loading) in `src/app/routes.jsx`, nested under the `App` layout:
+All routes are defined in `src/app/routes.jsx` (each route component is lazy-loaded), nested under the `App` layout:
 
-| Path           | Component | Notes                                                        |
-| -------------- | --------- | ------------------------------------------------------------ |
-| `/`            | `Home`    | Landing with 3D scene + scroll-to-exit                       |
-| `/work`        | `Work`    | 3D carousel with card navigation                             |
-| `/work/:title` | `Entry`   | Dynamic project detail (param normalized via `normalizeKey`) |
-| `/about`       | `About`   | Internal tab navigation only                                 |
-| `/contact`     | `Contact` | Static page                                                  |
+| Path           | Component  | Notes                                                        |
+| -------------- | ---------- | ------------------------------------------------------------ |
+| `/`            | `Home`     | Landing with 3D scene + scroll-to-exit                       |
+| `/work`        | `Work`     | 3D carousel with card navigation                             |
+| `/work/:title` | `Entry`    | Dynamic project detail (param normalized via `normalizeKey`) |
+| `/about`       | `About`    | Internal tab navigation only                                 |
+| `/contact`     | `Contact`  | Static page                                                  |
+| `*`            | `NotFound` | 404 catch-all; `Entry` also renders it for unknown projects  |
 
 ## Navigation Method
 

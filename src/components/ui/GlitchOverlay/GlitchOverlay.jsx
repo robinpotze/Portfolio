@@ -161,7 +161,12 @@ export default function GlitchOverlay({ active, warningText = 'INTERCEPT' }) {
                         <div className={styles.vignette} />
 
                         {/* Text — inherits variant state from overlay shell */}
-                        <motion.div className={styles.textContainer} variants={containerVariants} aria-hidden="true">
+                        <motion.div
+                            className={styles.textContainer}
+                            variants={containerVariants}
+                            aria-hidden="true"
+                            style={{ '--chars': warningText.length }}
+                        >
                             {[0, 1, 2].map((i) => (
                                 <motion.div key={i} className={styles.textRow} variants={rowVariants}>
                                     <span className={styles.word}>{warningText}</span>

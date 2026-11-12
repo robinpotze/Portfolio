@@ -67,7 +67,8 @@
 }
 
 .word {
-    font-size: 18vw;
+    /* Fit the word to the screen width: Kode Mono glyphs are ~0.6em wide */
+    font-size: min(18vw, calc(160vw / var(--chars, 9)));
     font-family: 'Kode Mono', monospace;
     font-weight: 700;
     text-transform: uppercase;

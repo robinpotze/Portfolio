@@ -5,6 +5,7 @@ import { Float, Text, useTexture } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { getCSSVariable } from '@utils/cssUtils';
 import { entryEase } from '@utils/easingFunctions';
+import { averageLuminance } from '@utils/imageUtils';
 import { useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { CARD_HEIGHT, CARD_WIDTH } from './cardGeometry';
@@ -44,6 +45,8 @@ export default function WorkCard({ item, index, visible = true, onNavigate, cent
     const { data, key: pageKey } = item;
     const texture = useTexture(data.banner || '/assets/img/logo/logo.png');
     const textureSize = useMemo(() => new THREE.Vector2(texture.image?.width ?? 1, texture.image?.height ?? 1), [texture]);
+    const bannerLuma = useMemo(() => averageLuminance(texture.image), [texture]);
+    const tags = (data.skills || []).join('  ·  ').toUpperCase();
     const noiseTexture = useNoiseTexture({ size: isLowQuality ? 64 : 256, scale: 10, octaves: isLowQuality ? 2 : 3, persistence: 0.5 });
     const position = useMemo(() => calculateCardPosition(index), [index]);
     const rotation = useMemo(() => calculateCardRotation(index), [index]);
@@ -113,6 +116,7 @@ export default function WorkCard({ item, index, visible = true, onNavigate, cent
                         uNoiseTex={noiseTexture}
                         uTextureSize={textureSize}
                         uPlaneSize={PLANE_SIZE}
+                        uBannerLuma={bannerLuma}
                         {...CARD_QUALITY[quality]}
                         toneMapped={false}
                     />
@@ -134,8 +138,23 @@ export default function WorkCard({ item, index, visible = true, onNavigate, cent
                     <Text {...LABEL} font={TITLE_FONT} fontSize={CARD_HEIGHT * 0.11} position={[0, 0, 0.12]}>
                         {data?.title || pageKey}
                     </Text>
-                    <Text {...LABEL} font={MONO_FONT} fontSize={CARD_HEIGHT * 0.045} position={[0, -CARD_HEIGHT * 0.1, 0.1]}>
-                        {data?.client || ''}
+                    {data.subtitle && (
+                        <Text {...LABEL} font={MONO_FONT} fontSize={CARD_HEIGHT * 0.05} position={[0, -CARD_HEIGHT * 0.1, 0.1]}>
+                            {data.subtitle.toUpperCase()}
+                        </Text>
+                    )}
+                    <Text
+                        {...LABEL}
+                        anchorY="top"
+                        font={MONO_FONT}
+                        fontSize={CARD_HEIGHT * 0.032}
+                        fillOpacity={0.8}
+                        maxWidth={CARD_WIDTH * 0.8}
+                        lineHeight={1.5}
+                        textAlign="center"
+                        position={[0, -CARD_HEIGHT * (data.subtitle ? 0.17 : 0.09), 0.1]}
+                    >
+                        {tags}
                     </Text>
                 </group>
             </group>

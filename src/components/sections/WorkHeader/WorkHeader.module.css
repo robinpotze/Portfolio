@@ -27,6 +27,12 @@
     padding: var(--s-s) var(--s-xl);
 }
 
+.note {
+    margin-top: var(--s-xs);
+    color: var(--c-lght_60);
+    letter-spacing: 0.06em;
+}
+
 @media (max-width: 768px) {
     .barContent {
         padding: 0 var(--s-m);

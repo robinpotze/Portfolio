@@ -1,5 +1,6 @@
 import { useWorkItems } from '@app/WorkContext';
 import ErrorBoundary from '@components/ErrorBoundary';
+import PageTitle from '@components/ui/PageTitle/PageTitle';
 import { SCROLL_THRESHOLDS } from '@config/animation.config';
 import { usePageTransition } from '@hooks/usePageTransition';
 import { prefetchEntryPages } from '@routes/Entry/pages/autogen';
@@ -111,6 +112,7 @@ export default function Work() {
     return (
         <ErrorBoundary>
             <div className={styles.pageContainer}>
+                <PageTitle name="Work" />
                 <ErrorBoundary>
                     <Suspense fallback={null}>
                         <WorkCanvas items={items} onCardNavigate={onCardNavigate} onScrollChange={onCanvasScrollChange} startAnimations />

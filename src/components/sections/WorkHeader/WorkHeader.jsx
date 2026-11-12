@@ -4,7 +4,7 @@ import { EASING, REVEAL } from '@config/animation.config';
 import { motion } from 'motion/react';
 import styles from './WorkHeader.module.css';
 
-export default function WorkHeader({ title, subtitle, description }) {
+export default function WorkHeader({ title, subtitle, description, note }) {
     return (
         <div className={styles.wrapper}>
             <motion.div
@@ -26,6 +26,7 @@ export default function WorkHeader({ title, subtitle, description }) {
             </motion.div>
             <div className={styles.description}>
                 <ScrollReveal>{description}</ScrollReveal>
+                {note && <p className={`deco-tiny ${styles.note}`}>{note}</p>}
             </div>
         </div>
     );

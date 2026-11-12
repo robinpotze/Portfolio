@@ -1,6 +1,7 @@
 import CrsIcon from '@/assets/icons/CRS.svg?react';
 import MsgIcon from '@/assets/icons/MSG.svg?react';
 import PlsIcon from '@/assets/icons/PLS.svg?react';
+import { useId } from 'react';
 
 import styles from './TextArea.module.css';
 
@@ -9,8 +10,20 @@ const VARIANT_CLASS = {
     intercept: styles.fieldIntercept,
 };
 
-export default function TextArea({ value, onChange, placeholder, disabled, icon: Icon = MsgIcon, decal, variant = 'default', className, ...props }) {
+export default function TextArea({
+    value,
+    onChange,
+    placeholder,
+    label,
+    disabled,
+    icon: Icon = MsgIcon,
+    decal,
+    variant = 'default',
+    className,
+    ...props
+}) {
     const fieldClass = VARIANT_CLASS[variant] ?? VARIANT_CLASS.default;
+    const textareaId = useId();
 
     return (
         <div className={`${fieldClass} ${className ?? ''}`}>
@@ -25,7 +38,22 @@ export default function TextArea({ value, onChange, placeholder, disabled, icon:
                     </span>
                 )}
             </div>
-            <textarea className={styles.textarea} placeholder={placeholder} value={value} onChange={onChange} disabled={disabled} {...props} />
+            <div className={styles.body}>
+                {label && (
+                    <label htmlFor={textareaId} className={styles.label}>
+                        {label}
+                    </label>
+                )}
+                <textarea
+                    id={textareaId}
+                    className={styles.textarea}
+                    placeholder={placeholder}
+                    value={value}
+                    onChange={onChange}
+                    disabled={disabled}
+                    {...props}
+                />
+            </div>
             <PlsIcon className={styles.cornerBL} aria-hidden="true" />
             <PlsIcon className={styles.cornerBR} aria-hidden="true" />
         </div>

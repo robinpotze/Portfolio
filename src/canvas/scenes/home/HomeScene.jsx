@@ -4,12 +4,14 @@ import { LaserPlane } from '@canvas/features/laser';
 import { LogoMesh } from '@canvas/features/logo';
 import { LogoParticles } from '@canvas/features/logoParticles';
 import { BREAKPOINTS, FLOAT_CONFIG, REVEAL, SCENE, SCROLL_THRESHOLDS } from '@config/animation.config';
-import { Float, PerspectiveCamera, Text } from '@react-three/drei';
+import { SITE } from '@config/site.config';
+import { Float, Html, PerspectiveCamera, Text } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
 import { Bloom, EffectComposer, N8AO } from '@react-three/postprocessing';
 import { easeCurve, entryEase } from '@utils/easingFunctions';
 import { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
+import styles from './HomeCanvas.module.css';
 
 const { clamp, damp, lerp, smoothstep } = THREE.MathUtils;
 
@@ -162,6 +164,15 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
                         <Text font="/assets/fonts/Orbitron/static/Orbitron-Medium.ttf" color="#EEE">
                             ROBIN POTZE
                         </Text>
+                        {/* Role line under the name: rises with it and fades out early in the scroll */}
+                        <Html
+                            position={[0, -(0.75 + 0.1 / viewportScale), 0]}
+                            center
+                            className={styles.roleLine}
+                            style={{ opacity: Math.max(0, 1 - scrollProgress * 4) }}
+                        >
+                            {SITE.ROLE_LINE}
+                        </Html>
                     </group>
                 </group>
             )}

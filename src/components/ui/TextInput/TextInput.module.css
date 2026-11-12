@@ -33,6 +33,14 @@
         color 0.2s ease;
 }
 
+.label {
+    align-self: center;
+    font: var(--f-func-small);
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+    color: inherit;
+}
+
 .input::placeholder {
     color: var(--c-drk_40);
 }

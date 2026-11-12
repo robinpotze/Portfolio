@@ -14,6 +14,7 @@ const WorkCardMaterial = shaderMaterial(
         uNoiseScale: 2.0,
         uRefractPower: 0.006,
         uChromaticAberration: 0.8,
+        uBannerLuma: 0,
     },
     vertShader,
     fragShader
