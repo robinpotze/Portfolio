@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'motion/react';
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
 import SnDecal from '@/assets/decals/SN.svg?react';
 import ChkIcon from '@/assets/icons/CHK.svg?react';
@@ -82,6 +82,7 @@ export default function Contact() {
     const [glitching, setGlitching] = useState(false);
     const [sendError, setSendError] = useState(null);
     const [statusMessageKey, setStatusMessageKey] = useState(0);
+    const sendingRef = useRef(false);
 
     // Derived values
     const isIntercept = phase === 'intercept';
@@ -104,6 +105,11 @@ export default function Contact() {
     );
 
     const onIdentify = useCallback(async () => {
+        // One request at a time: a second Enter or click before the reply would send a duplicate email.
+        if (sendingRef.current) {
+            return;
+        }
+        sendingRef.current = true;
         setSendError(null);
         try {
             const res = await fetch(CONTACT_FORM_URL, {
@@ -123,6 +129,8 @@ export default function Contact() {
         } catch (err) {
             setSendError(getSendErrorConfig(err.status));
             setStatusMessageKey((prev) => prev + 1);
+        } finally {
+            sendingRef.current = false;
         }
     }, [formData]);
 
@@ -141,10 +149,10 @@ export default function Contact() {
     const onEmailKeyDown = useCallback(
         (e) => {
             if (e.key === 'Enter') {
-                onIdentify();
+                onSend();
             }
         },
-        [onIdentify]
+        [onSend]
     );
 
     return (
