@@ -1,0 +1,17 @@
+.bar {
+    position: relative;
+    display: block;
+    flex-shrink: 0;
+    width: 110px;
+    height: 24px;
+    color: var(--c-brnd_100);
+}
+
+/* Decal is vertical; rotate so it reads left to right */
+.svg {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    transform-origin: 0 0;
+    rotate: -90deg;
+}
