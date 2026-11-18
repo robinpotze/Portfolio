@@ -1,0 +1,269 @@
+/* --about-serif is set on the About page and inherited */
+
+.ticket {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow: clip;
+    border-radius: 4px;
+    background: var(--c-brnd_100);
+    color: var(--c-drk_100);
+    /* Perforation notches: 9px holes punched at each edge's midpoint */
+    --holes:
+        radial-gradient(circle at 50% 0, #0000 9px, #000 9.5px), radial-gradient(circle at 50% 100%, #0000 9px, #000 9.5px),
+        radial-gradient(circle at 0 50%, #0000 9px, #000 9.5px), radial-gradient(circle at 100% 50%, #0000 9px, #000 9.5px);
+    mask-image: var(--holes);
+    mask-composite: intersect;
+}
+
+/* Open tickets get two extra notches level with the header stub */
+.expanded {
+    mask-image: var(--holes), radial-gradient(circle at 0 56px, #0000 9px, #000 9.5px), radial-gradient(circle at 100% 56px, #0000 9px, #000 9.5px);
+}
+
+.recordDetails,
+.stubText,
+.label,
+.skillGrid li,
+.softwareGrid li {
+    display: flex;
+    flex-direction: column;
+}
+
+.paragraph {
+    font: var(--f-paragraph);
+}
+
+/* ── Header: column when closed, 112px row when open ── */
+
+.head {
+    position: relative;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+}
+
+.expanded .head {
+    flex: 0 0 112px;
+    flex-direction: row;
+    align-items: center;
+}
+
+.stub {
+    display: grid;
+    place-items: center;
+    height: 72px;
+    flex-shrink: 0;
+    border-bottom: 1px dotted var(--c-drk_100);
+}
+
+.expanded .stub {
+    width: 100px;
+    height: 100%;
+    border-bottom: 0;
+    border-right: 1px dotted var(--c-drk_100);
+}
+
+.stubText {
+    align-items: center;
+    gap: var(--s-xxs);
+}
+
+.stubNumber {
+    font: 28px var(--about-serif);
+}
+
+.expanded .stubNumber {
+    font-size: 32px;
+}
+
+/* Margins, not padding: the label's box is what motion animates */
+.label {
+    gap: var(--s-s);
+    min-width: 0;
+    margin: var(--s-m) var(--s-s);
+}
+
+.expanded .label {
+    flex: 1;
+    gap: var(--s-xxs);
+    margin: 0 54px 0 20px;
+}
+
+/* h2 carries global uppercase; the design drops it */
+.ticketTitle {
+    font: 32px/1.1 var(--about-serif);
+    text-transform: none;
+}
+
+.compact .ticketTitle {
+    font-size: 26px;
+}
+
+.footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 48px;
+    padding: 0 12px;
+    flex-shrink: 0;
+}
+
+/* PLS.svg is drawn at 48px; keep its stroke at the design's 1.5px when scaled */
+.plus {
+    display: flex;
+}
+
+.plus svg {
+    width: 24px;
+    height: 24px;
+}
+
+.plus path {
+    vector-effect: non-scaling-stroke;
+    stroke-width: 1.5px;
+}
+
+.closeSlot {
+    position: absolute;
+    top: 42px;
+    right: 28px;
+}
+
+/* Overlay button: whole ticket when closed, header row when open */
+.hit {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+}
+
+.expanded .hit {
+    bottom: auto;
+    height: 112px;
+}
+
+.hit:focus-visible {
+    outline: 2px solid var(--c-drk_100);
+    outline-offset: -6px;
+}
+
+/* ── Records ───────────────────────────────────── */
+
+.record {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: var(--s-s);
+    min-height: 0;
+    padding: 0 var(--s-m) 24px 132px;
+    overflow-y: auto;
+}
+
+.perfSeparator {
+    width: 100%;
+    margin: 0;
+    border: 0;
+    border-top: 1px dotted var(--c-drk_100);
+}
+
+.datedRecord {
+    display: flex;
+    gap: var(--s-m);
+    padding: var(--s-m) 0;
+}
+
+/* Fixed column so titles line up whatever the date length */
+.dates {
+    flex: 0 0 10ch;
+}
+
+.recordDetails {
+    flex: 1;
+    gap: 9px;
+    min-width: 0;
+}
+
+.expRole {
+    font: 26px var(--about-serif);
+}
+
+.eduDegree {
+    font: 22px var(--about-serif);
+}
+
+.iconLine {
+    display: flex;
+    align-items: center;
+    gap: var(--s-xs);
+}
+
+.icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+/* Software logos are light-filled images; darken them for the ticket */
+img.icon {
+    object-fit: contain;
+    filter: brightness(0);
+}
+
+.skillGrid,
+.softwareGrid {
+    display: grid;
+    list-style: none;
+}
+
+.skillGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px var(--s-l);
+    padding: 6px 0 12px;
+    font: 24px var(--about-serif);
+}
+
+.softwareGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 40px 24px;
+    padding: 20px 0;
+    font: 20px var(--about-serif);
+}
+
+.skillGrid li,
+.softwareGrid li {
+    gap: var(--s-xs);
+    padding-top: 14px;
+}
+
+/* ── Responsive ────────────────────────────────── */
+
+@media (max-width: 1024px) {
+    .record {
+        padding-left: var(--s-m);
+    }
+}
+
+@media (max-width: 768px) {
+    .ticket {
+        min-height: 280px;
+    }
+
+    .record {
+        max-height: 70dvh;
+        padding: 0 var(--s-s) 24px;
+    }
+
+    .datedRecord {
+        flex-direction: column;
+        gap: var(--s-s);
+    }
+
+    .skillGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .softwareGrid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}

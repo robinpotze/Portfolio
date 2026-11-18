@@ -1,300 +1,203 @@
 .page {
-    position: relative;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr 1fr;
-    grid-template-areas:
-        '.       .         .'
-        '.       .         details'
-        '.       .         details'
-        'selector selector details';
-    height: 100vh;
-    height: 100dvh;
-    width: 100%;
-    padding: 3rem;
-    color: var(--c-lght_100);
-    box-sizing: border-box;
-    overflow: hidden;
-    background-image: url('/assets/img/about/face.jpg');
-    background-size: cover;
-    background-position: center;
-}
+    --about-serif: 'Lora', serif;
 
-/* ── Grid Overlay ───────────────────────────────── */
-
-.gridOverlay {
-    z-index: 0;
-}
-
-/* ── Selector Row ───────────────────────────────── */
-
-.selector {
-    grid-area: selector;
-    display: flex;
-    gap: 1rem;
-    align-self: stretch;
-    position: relative;
-    z-index: 1;
-}
-
-.selectorButton {
-    position: relative;
-    aspect-ratio: 9 / 16;
-    display: flex;
-    padding: 1rem;
-    align-items: start;
-    text-transform: uppercase;
-    color: var(--c-lght_40);
-    background: var(--c-drk_40);
-    border: 1px solid var(--c-brnd_20);
-    backdrop-filter: blur(8px);
-    transition:
-        color 0.3s ease,
-        background 0.3s ease;
-}
-
-.selectorPixel {
-    position: absolute;
-    inset: 0;
-}
-
-.selectorButton:hover {
-    color: var(--c-lght_100);
-    border-color: var(--c-brnd_100);
-}
-
-.selectorButton.active {
-    color: var(--c-lght_100);
-    background: var(--c-brnd_100);
-}
-
-.selectorIndicator {
-    position: absolute;
-    inset: -50px;
-    pointer-events: none;
-    border: 42px solid transparent;
-    border-image-source: url('../../assets/decals/MRKR.svg');
-    border-image-slice: 42 42 42 42;
-    border-image-width: 42px;
-    border-image-repeat: stretch;
-    box-sizing: border-box;
-}
-
-/* ── Details Container ──────────────────────────── */
-
-.details {
-    grid-area: details;
     display: flex;
     flex-direction: column;
-    margin-bottom: 20%;
-    overflow: hidden;
-    background-color: var(--c-drk_100);
-    padding: 1.5rem;
-    backdrop-filter: blur(8px);
-    position: relative;
-    z-index: 1;
+    /* Spacing shrinks with viewport height so the page fits one screen; Figma values are the max */
+    gap: clamp(var(--s-xs), 2vh, var(--s-m));
+    height: 100dvh;
+    padding: 56px 56px clamp(var(--s-s), 4vh, 56px);
+    box-sizing: border-box;
+    background: var(--c-drk_100);
+    color: var(--c-lght_100);
+    font: var(--f-func-small);
 }
 
-.header {
+/* ── Shared layout ─────────────────────────────── */
+
+.masthead,
+.key,
+.pageFooter {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.name {
-    font: var(--f-title);
-    text-transform: uppercase;
-    color: var(--c-lght_100);
-    text-shadow: 0 0 20px var(--c-lght_40);
-    margin-bottom: 0.5rem;
-    flex-shrink: 0;
-}
-
-.title {
-    font: var(--f-hdr_2);
-    border-bottom: 1px solid var(--c-brnd_100);
-    margin-bottom: 0.5rem;
-    flex-shrink: 0;
-}
-
-/* ── Dynamic Content Area ───────────────────────── */
-
-.contentScroll {
-    flex: 1;
-    overflow-y: auto;
-    scrollbar-width: none;
-}
-
-.content {
-    width: 100%;
-}
-
-/* ── EXP Subsection Header ──────────────────────── */
-
-.subsection {
-    margin-bottom: 2rem;
-}
-
-.subsectionHeader {
-    display: flex;
-    align-items: baseline;
-    gap: 1rem;
-    margin-bottom: 1rem;
-    margin-top: 0.5rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--c-brnd_20);
-}
-
-.subsectionName {
-    font: var(--f-hdr_3);
-    text-transform: uppercase;
-    color: var(--c-lght_100);
-}
-
-.subsectionDetails {
-    display: flex;
-    align-items: baseline;
-    gap: 1rem;
-}
-
-.subsectionFunction {
-    font: var(--f-func-small);
-    color: var(--c-brnd_100);
-}
-
-.subsectionCourse {
-    font: var(--f-func);
-    color: var(--c-lght_100);
-}
-
-.subsectionDate {
-    font: var(--f-func-small);
-    color: var(--c-brnd_100);
-    margin-left: auto;
-}
-
-/* ── List ───────────────────────────────────────── */
-
-.list {
-    list-style: none;
-    padding: 0;
-    width: 100%;
+.identity,
+.titleBlock,
+.bio {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
 }
 
-/* ── List Item ──────────────────────────────────── */
-
-.item {
+.mark,
+.signature {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    padding: 0.6rem 0;
-    border-radius: 4px;
+    gap: var(--s-s);
 }
 
-.itemIcon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    min-width: 36px;
-    border-radius: 4px;
-    background: var(--c-brnd_20);
-    border: 1px solid var(--c-brnd_20);
+.brand {
+    color: var(--c-brnd_100);
 }
 
-.itemIcon img,
-.itemIcon svg {
-    width: 20px;
-    height: 20px;
-    object-fit: contain;
-    filter: brightness(0) invert(1);
-}
-
-.itemText {
+.bio p + p {
     font: var(--f-paragraph);
-    color: var(--c-lght_100);
 }
 
-.itemMeta {
-    font: var(--f-func-small);
-    color: var(--c-lght_40);
-    margin-left: auto;
-    white-space: nowrap;
+/* ── Identity ──────────────────────────────────── */
+
+.identity {
+    gap: clamp(var(--s-xs), 2vh, var(--s-m));
+    padding-bottom: clamp(0px, 2vh, 38px);
 }
 
-/* ── Responsive ─────────────────────────────────── */
+.masthead {
+    height: 42px;
+    border-bottom: 1px solid var(--c-lght_100);
+}
+
+/* Double square: outer border + inset ring 4px inside */
+.emblem {
+    width: 24px;
+    height: 24px;
+    box-sizing: border-box;
+    border: 1px solid var(--c-brnd_100);
+    box-shadow:
+        inset 0 0 0 4px var(--c-drk_100),
+        inset 0 0 0 5px var(--c-brnd_100);
+}
+
+.intro {
+    display: flex;
+    align-items: flex-end;
+    gap: var(--s-xl);
+}
+
+.titleBlock {
+    flex: 1;
+    gap: var(--s-xs);
+}
+
+/* h1 carries global uppercase + glow; the design drops both */
+.title {
+    font: clamp(48px, min(8vh, 8vw), 108px) / 1.05 var(--about-serif);
+    text-transform: none;
+    text-shadow: none;
+    color: var(--c-brnd_100);
+}
+
+.name {
+    font: 32px/1.1 var(--about-serif);
+}
+
+.bio {
+    flex: 0 1 490px;
+    gap: var(--s-s);
+}
+
+/* ── Register ──────────────────────────────────── */
+
+.register {
+    position: relative;
+    display: flex;
+    flex: 1;
+    min-height: 280px;
+    max-height: 600px;
+}
+
+/* Corner frame: same MRKR nine-slice as StatusPanel / NineSliceBorder */
+.register::after {
+    content: '';
+    position: absolute;
+    inset: 0 -4px;
+    pointer-events: none;
+    border: 42px solid transparent;
+    border-image: url('../../assets/decals/MRKR.svg') 42 / 42px stretch;
+}
+
+.edgeCol {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    width: 40px;
+    padding: 48px 0;
+    flex-shrink: 0;
+}
+
+.lines {
+    width: 16px;
+    height: 43px;
+    border-block: 1px solid var(--c-brnd_-100);
+}
+
+.sideEntry {
+    width: 22px;
+    height: 162px;
+    background: var(--c-brnd_100);
+    color: var(--c-drk_100);
+    font:
+        20px 'Kode Mono',
+        monospace;
+}
+
+.tickets {
+    display: grid;
+    flex: 1;
+    grid-template-rows: minmax(0, 1fr);
+    gap: var(--s-xs);
+    min-width: 0;
+}
+
+/* ── Footer ────────────────────────────────────── */
+
+.contactLink:hover,
+.contactLink:focus-visible {
+    color: var(--c-brnd_100);
+}
+
+/* ── Responsive ────────────────────────────────── */
+
+@media (max-width: 1024px) {
+    .page {
+        padding: 5rem var(--s-m) clamp(var(--s-s), 4vh, var(--s-m));
+    }
+}
 
 @media (max-width: 768px) {
     .page {
-        grid-template-columns: 1fr;
-        grid-template-rows: 1fr auto;
-        grid-template-areas:
-            'details'
-            'selector';
-        padding: 5rem var(--s-m) calc(var(--s-m) + env(safe-area-inset-bottom, 0px));
-        gap: 1rem;
+        height: auto;
+        min-height: 100dvh;
+        padding: 5rem var(--s-s) calc(var(--s-s) + env(safe-area-inset-bottom, 0px));
     }
 
-    .selector {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-
-    .selectorButton {
-        font: var(--f-func);
-        flex: 0 1 auto;
-        aspect-ratio: auto;
-        padding: 0.5rem 1rem;
-    }
-
-    .subsectionHeader {
+    .intro,
+    .key,
+    .pageFooter {
         flex-direction: column;
-        gap: 0.25rem;
         align-items: flex-start;
+        gap: var(--s-s);
     }
 
-    .subsectionDate {
-        margin-left: 0;
+    .bio {
+        flex-basis: auto;
     }
 
-    .item {
-        gap: 0.75rem;
-        padding: 0.5rem 0.6rem;
+    .register {
+        min-height: 0;
+        max-height: none;
     }
 
-    .itemIcon {
-        width: 28px;
-        height: 28px;
-        min-width: 28px;
+    .edgeCol,
+    .register::after {
+        display: none;
     }
 
-    .itemIcon img,
-    .itemIcon svg {
-        width: 16px;
-        height: 16px;
-    }
-}
-
-@media (max-width: 375px) {
-    .page {
-        padding: var(--s-s);
-    }
-
-    .name {
-        font-size: clamp(1.5rem, 6vw, 2.5rem);
-    }
-
-    .selectorButton {
-        padding: 0.4rem 0.75rem;
-        font-size: 0.85rem;
-        min-height: 44px;
-    }
-
-    .details {
-        padding: 1rem;
+    /* Stack tickets; overrides the inline grid columns */
+    .tickets {
+        display: flex;
+        flex-direction: column;
+        gap: var(--s-s);
     }
 }

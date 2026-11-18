@@ -1,132 +1,94 @@
 import ErrorBoundary from '@components/ErrorBoundary';
-import GridOverlay from '@components/ui/GridOverlay';
-import PixelCard from '@components/ui/PixelCard/PixelCard';
-import { EASING, REVEAL, SPRING_CONFIG, STAGGER } from '@config/animation.config';
-import { AnimatePresence, motion } from 'motion/react';
+import MorseBar from '@components/ui/MorseBar';
+import { EASING, REVEAL } from '@config/animation.config';
+import { usePageTransition } from '@hooks/usePageTransition';
+import { motion } from 'motion/react';
 import { useState } from 'react';
 import styles from './About.module.css';
-import { ABOUT_DATA, ABOUT_SECTIONS } from './about.data';
-import EduSection from './components/EduSection';
-import ExpSection from './components/ExpSection';
-import ListSection from './components/ListSection';
+import { ABOUT_INTRO, ABOUT_SECTIONS } from './about.data';
+import Ticket from './components/Ticket';
 
-const SECTION_MAP = {
-    EXP: { Component: ExpSection, prop: 'data' },
-    SKL: { Component: ListSection, prop: 'items' },
-    SFT: { Component: ListSection, prop: 'items' },
-    EDU: { Component: EduSection, prop: 'data' },
-};
+// Figma ticket widths in px; used as fr weights so the grid matches the design at 1328px and scales below
+const TICKET_WIDTH = { default: 306, expanded: 684, compact: 180 };
 
-/* ── Motion variants ───────────────────────────── */
+function ticketState(key, open) {
+    if (open === null) return 'default';
+    return key === open ? 'expanded' : 'compact';
+}
 
-const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-        opacity: 1,
-        transition: {
-            staggerChildren: STAGGER.DEFAULT,
-            delayChildren: REVEAL.DELAY,
-        },
-    },
-    exit: {
-        opacity: 0,
-        y: 12,
-        transition: { duration: REVEAL.EXIT_DURATION },
-    },
-};
-
-const buttonContainerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-        opacity: 1,
-        transition: {
-            staggerChildren: STAGGER.DEFAULT,
-            delayChildren: REVEAL.DELAY,
-        },
-    },
-};
-
-const buttonVariants = {
-    hidden: { opacity: 0, y: 24 },
-    visible: {
-        opacity: 1,
-        y: 0,
-        transition: {
-            duration: REVEAL.DURATION,
-            ease: EASING.EMPHASIZED,
-        },
-    },
-};
-
-/* ── Main component ─────────────────────────────── */
+const columns = (open) => ABOUT_SECTIONS.map(({ key }) => `${TICKET_WIDTH[ticketState(key, open)]}fr`).join(' ');
 
 export default function About() {
-    const [currentPage, setCurrentPage] = useState('EXP');
-    const { Component: Section, prop } = SECTION_MAP[currentPage];
+    const [open, setOpen] = useState(null);
+    const { navigateWithTransition } = usePageTransition();
 
     return (
         <ErrorBoundary>
-            <div className={styles.page}>
-                <GridOverlay
-                    className={styles.gridOverlay}
-                    cellMinSize={100}
-                    cellMaxSize={200}
-                    stripeChance={0.35}
-                    stripeCount={30}
-                    stripeOpacity={0.1}
-                    crosshairSize={64}
-                    crosshairOpacity={0.3}
-                    parallaxStrength={10}
-                />
-                <motion.div className={styles.selector} variants={buttonContainerVariants} initial="hidden" animate="visible">
-                    {ABOUT_SECTIONS.map((key) => (
-                        <motion.button
-                            key={key}
-                            className={`${styles.selectorButton}${currentPage === key ? ' active' : ''}`}
-                            onClick={() => setCurrentPage(key)}
-                            variants={buttonVariants}
-                        >
-                            <PixelCard gap={5} speed={80} className={styles.selectorPixel} />
-                            <h2 className="tr90">{key}</h2>
-                            {currentPage === key && (
-                                <motion.div
-                                    className={styles.selectorIndicator}
-                                    layoutId="about-indicator"
-                                    transition={{
-                                        type: 'spring',
-                                        ...SPRING_CONFIG.SNAPPY_LAYOUT,
-                                    }}
-                                />
-                            )}
-                        </motion.button>
-                    ))}
-                </motion.div>
-
-                <div className={styles.details}>
-                    <div className={styles.header}>
-                        <h1 className={styles.name}>Robin Potze</h1>
-                        <span className={styles.subsectionFunction}>
-                            Digital Artist <br></br> Creative Developer
-                        </span>
+            <main className={styles.page}>
+                <header className={styles.identity}>
+                    <div className={styles.masthead}>
+                        <div className={styles.mark}>
+                            <span className={styles.emblem} />
+                            <p className={styles.brand}>PERSONAL REGISTER / ABOUT ME</p>
+                        </div>
+                        <p>I — 04 SECT</p>
                     </div>
-                    <h2 className={styles.title}>{currentPage}</h2>
-
-                    <div className={styles.contentScroll}>
-                        <AnimatePresence mode="wait">
-                            <motion.div
-                                key={currentPage}
-                                className={styles.content}
-                                variants={containerVariants}
-                                initial="hidden"
-                                animate="visible"
-                                exit="exit"
-                            >
-                                <Section {...{ [prop]: ABOUT_DATA[currentPage] }} />
-                            </motion.div>
-                        </AnimatePresence>
+                    <div className={styles.intro}>
+                        <div className={styles.titleBlock}>
+                            <h1 className={styles.title}>About me.</h1>
+                            <p className={styles.name}>{ABOUT_INTRO.name}</p>
+                        </div>
+                        <div className={styles.bio}>
+                            <p className={styles.brand}>{ABOUT_INTRO.role}</p>
+                            <p>{ABOUT_INTRO.bio}</p>
+                        </div>
                     </div>
-                </div>
-            </div>
+                    <div className={styles.key}>
+                        <p>RÉSUMÉ / SECTION REGISTER</p>
+                        <p className={styles.brand}>+ SELECT A TICKET TO EXPLORE</p>
+                    </div>
+                </header>
+
+                <section className={styles.register} aria-label="Résumé sections">
+                    <div className={styles.edgeCol}>
+                        <p className={`${styles.sideEntry} tr90`}>RECORD</p>
+                        <span className={styles.lines} />
+                    </div>
+                    <motion.div
+                        className={styles.tickets}
+                        initial={false}
+                        animate={{ gridTemplateColumns: columns(open) }}
+                        transition={{ duration: REVEAL.DURATION, ease: EASING.EMPHASIZED }}
+                    >
+                        {ABOUT_SECTIONS.map((section, index) => (
+                            <Ticket
+                                key={section.key}
+                                section={section}
+                                index={index}
+                                state={ticketState(section.key, open)}
+                                onToggle={() => setOpen(open === section.key ? null : section.key)}
+                            />
+                        ))}
+                    </motion.div>
+                    <div className={styles.edgeCol}>
+                        <span className={styles.lines} />
+                    </div>
+                </section>
+
+                <footer className={styles.pageFooter}>
+                    <div className={styles.signature}>
+                        <MorseBar />
+                        <p className="functional-tiny">
+                            ABOUT / PERSONAL ARCH
+                            <br />
+                            EOR — 04 SECT
+                        </p>
+                    </div>
+                    <button type="button" className={styles.contactLink} onClick={() => navigateWithTransition('/contact', 'Contact')}>
+                        [Get in touch] ↗
+                    </button>
+                </footer>
+            </main>
         </ErrorBoundary>
     );
 }
