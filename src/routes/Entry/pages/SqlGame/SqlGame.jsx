@@ -9,8 +9,6 @@ import HeroStatement from '@components/sections/HeroStatement/HeroStatement';
 import StatementBlock from '@components/sections/StatementBlock/StatementBlock';
 import WorkHeader from '@components/sections/WorkHeader/WorkHeader';
 
-import { Data } from './sqlgame.data';
-
 const assetPath = '/assets/img/work/ssgnl/sqlgame/';
 
 export default function SqlGame() {
@@ -20,27 +18,28 @@ export default function SqlGame() {
 
             <CaseIntro
                 src={`${assetPath}FullPage.webp`}
-                kicker={`SOPRA STERIA / ${Data.year}`}
-                heading="Write queries. Explore worlds. Learn SQL."
-                subtitle="An interactive learning game built almost single-handedly — design, gameplay, and front-end development."
+                kicker="SOPRA STERIA / 2023–NOW"
+                heading="A game for learning SQL on a real database."
+                subtitle="Design and development, together with Iris as ideator and SQL expert."
             />
 
-            {/* ── ROLE ── */}
+            {/* ── CONTEXT ── */}
 
-            <StatementBlock label="ROLE">
-                <h2>One designer. One developer. One game.</h2>
+            <StatementBlock label="CONTEXT">
+                <h2>An internal training game</h2>
                 <ScrollReveal>
-                    SQL Game was mine from concept to implementation. I designed every screen, defined the gameplay loop, and built the front end.
-                    Players write real SQL queries to progress through a world — no multiple choice, no hand-holding.
+                    Sopra Steria commissioned Monster DB for its internal trainees. I design and develop it together with my colleague Iris. She is
+                    the main ideator and the SQL expert, wrote all quests and learning material, and also develops on the side. The project started in
+                    2023 and is still running.
                 </ScrollReveal>
             </StatementBlock>
 
             <EvidenceRow
                 items={[
-                    { label: 'CLIENT', value: 'Sopra Steria' },
-                    { label: 'ROLE', value: 'Design, Dev, Game Design' },
-                    { label: 'TOOLS', value: 'Figma, React' },
-                    { label: 'YEAR', value: String(Data.year) },
+                    { label: 'ROLE', value: 'Design and development' },
+                    { label: 'TEAM', value: 'Iris and me' },
+                    { label: 'DURATION', value: '2023 – ongoing' },
+                    { label: 'OUTPUT', value: 'Playable game, in pilot' },
                 ]}
             />
 
@@ -49,23 +48,26 @@ export default function SqlGame() {
             <WorkHeader
                 title="QUERY TOOL"
                 subtitle="001:::CORE_MECHANIC"
-                description="The central interface. Players type actual SQL statements into a query editor and see immediate visual results. Abstract database operations become concrete the moment the query runs — SELECT, JOIN, WHERE, all of it."
+                description="A fully functional query tool that runs real SQL against a database. It is the core of the game."
             />
 
             <FeatureSplit src={`${assetPath}Components_Query.png`} alt="Query editor component breakdown." label="QUERY EDITOR">
-                <h3>Real queries. Real feedback. Real learning.</h3>
+                <h3>Feedback from the database</h3>
                 <ScrollReveal>
-                    A sandbox where players write actual SQL statements and see immediate results. No drag-and-drop, no templates — just a query
-                    editor, a result set, and a database that responds.
+                    Players write SQL in the editor. The feedback is whatever the database returns: the result set, or its error message.
                 </ScrollReveal>
             </FeatureSplit>
 
-            <FeatureSplit src={`${assetPath}Components_Interactive.png`} alt="Global interactive components" label="INTERACTIVE" reverse={true}>
-                <h3>Every element directs something.</h3>
+            <StatementBlock label="DECISION">
+                <h2>Layered security</h2>
                 <ScrollReveal>
-                    Apart from the query editor, every component is designed to provide feedback and guide players. Buttons, tooltips, result sets —
-                    all built to make the learning feel intuitive and responsive.
+                    Because players run real queries, we built layered security so each user can only access their own tables.
                 </ScrollReveal>
+            </StatementBlock>
+
+            <FeatureSplit src={`${assetPath}Components_Interactive.png`} alt="Global interactive components" label="INTERACTIVE" reverse={true}>
+                <h3>Supporting components</h3>
+                <ScrollReveal>Buttons, navigation tabs, input fields and status messages used across the game.</ScrollReveal>
             </FeatureSplit>
 
             {/* ── WORLD ── */}
@@ -73,7 +75,7 @@ export default function SqlGame() {
             <WorkHeader
                 title="WORLD MAP"
                 subtitle="002:::NAVIGATION"
-                description="A map screen that gives players context — where they've been, where they're going, and what's left to explore. Each region corresponds to a SQL concept, from basic SELECT statements to complex JOINs."
+                description="The map lets players immerse themselves in the game world. In a later version it will also carry more detailed feedback."
             />
 
             <FullImage src={`${assetPath}BookPage_Map.png`} alt="World map page showing explorable regions." />
@@ -83,32 +85,34 @@ export default function SqlGame() {
             <WorkHeader
                 title="QUESTS"
                 subtitle="003:::PROGRESSION"
-                description="Each quest frames a SQL concept as a concrete task — find all merchants in a region, join two tables to track shipments, filter records by date. The learning is embedded in the objective."
+                description="Iris turned SQL concepts into quests based on her expert knowledge: scenarios in which players have to analyse the database to move on."
             />
 
             <FeatureSplit src={`${assetPath}BookPage_Quests.png`} alt="Quest book page showing available missions." label="QUEST PAGE">
-                <h3>Quests turn concepts into tasks.</h3>
+                <h3>A quest step</h3>
                 <ScrollReveal>
-                    Each quest is designed to teach a specific SQL concept. Players complete tasks that require writing queries, reinforcing their
-                    understanding through practical application.
+                    When a step says "talk to the merchant", the player has to find the merchant's ID, find the table that uses that ID, and retrieve
+                    the item from it.
                 </ScrollReveal>
             </FeatureSplit>
 
             <FeatureSplit src={`${assetPath}Components_Quests.png`} alt="Quest component breakdown." label="QUEST COMPONENTS" reverse={true}>
-                <h3>Quests guide learning.</h3>
-                <ScrollReveal>
-                    Each quest is designed to teach a specific SQL concept. Players complete tasks that require writing queries, reinforcing their
-                    understanding through practical application.
-                </ScrollReveal>
+                <h3>Quest building blocks</h3>
+                <ScrollReveal>The components I designed to show quests and their steps.</ScrollReveal>
             </FeatureSplit>
 
             {/* ── BOOK PAGES ── */}
 
             <WorkHeader
-                title="REFERENCE BOOK"
-                subtitle="004:::KNOWLEDGE_BASE"
-                description="An in-game reference that players can consult at any time. SQL syntax, database schemas, inventory — all accessible without leaving the game. Designed for scanning, not studying."
+                title="THE BOOK"
+                subtitle="004:::INTERFACE"
+                description="The book holds the story, the player's journal and most of the interface, including SQL syntax, the database schema and the inventory."
             />
+
+            <StatementBlock label="DECISION">
+                <h2>Why a book</h2>
+                <ScrollReveal>The game tells a story, so it made sense to make the interface itself a book.</ScrollReveal>
+            </StatementBlock>
 
             <DoubleImage
                 images={[
@@ -142,7 +146,7 @@ export default function SqlGame() {
                 images={[
                     {
                         src: `${assetPath}LoginPage.webp`,
-                        alt: 'Login page for SQL Game.',
+                        alt: 'Login page for Monster DB.',
                     },
                     {
                         src: `${assetPath}RegisterPage.webp`,
@@ -156,12 +160,25 @@ export default function SqlGame() {
             <WorkHeader
                 title="ITERATION"
                 subtitle="005:::PROCESS"
-                description="From wireframes to polished product. Each version stripped away complexity and sharpened the core loop — write a query, see the result, learn the concept."
+                description="The game is still being iterated on. I change the designs and the code together."
             />
 
+            <StatementBlock label="PROBLEM">
+                <h2>Where the wireframes stopped</h2>
+                <ScrollReveal>
+                    The wireframes set out layouts for interaction and information, but they did not cover things like branching quests and connected
+                    information.
+                </ScrollReveal>
+            </StatementBlock>
+
+            <StatementBlock label="APPROACH">
+                <h2>Design and code in step</h2>
+                <ScrollReveal>As the game grew, I iterated on the code and the designs together so they kept matching.</ScrollReveal>
+            </StatementBlock>
+
             <ComparisonBlock
-                label="EVOLUTION"
-                heading="From wireframe to final product."
+                label="ITERATION"
+                heading="Wireframes and first iteration"
                 items={[
                     {
                         caption: 'WIREFRAMES',
@@ -177,8 +194,8 @@ export default function SqlGame() {
             />
 
             <ComparisonBlock
-                label="REFINEMENT"
-                heading="Stripped down, then built back up."
+                label="ITERATION"
+                heading="Second iteration and current version"
                 items={[
                     {
                         caption: 'SECOND ITERATION',
@@ -186,9 +203,9 @@ export default function SqlGame() {
                         alt: 'Alternate iteration exploring layout.',
                     },
                     {
-                        caption: 'FINAL VERSION',
+                        caption: 'CURRENT VERSION',
                         src: `${assetPath}WIP_Iterations_last.png`,
-                        alt: 'Final polished version of SQL Game.',
+                        alt: 'Current version of Monster DB.',
                     },
                 ]}
             />
@@ -196,10 +213,11 @@ export default function SqlGame() {
             {/* ── CLOSING ── */}
 
             <HeroStatement label="OUTCOME">
-                <h2>A game that teaches without lecturing.</h2>
+                <h2>Status and hindsight</h2>
                 <ScrollReveal>
-                    SQL Game turns database education into exploration. Players write real queries, navigate a world, and build skills through play —
-                    no slides, no quizzes, just a query editor and a reason to use it.
+                    The game is in use with a pilot group and in some classroom settings. Players find it fun, but still a bit confusing. Next time I
+                    would define the requirements properly beforehand to avoid scope creep. I would also like more time for it: working on it on the
+                    side has made progress slow.
                 </ScrollReveal>
             </HeroStatement>
 
@@ -207,13 +225,13 @@ export default function SqlGame() {
                 items={[
                     {
                         label: 'SCREENS',
-                        value: 'Query tool, map, quests, reference, auth',
+                        value: 'Query tool, map, quests, book, login',
                     },
                     {
                         label: 'DISCIPLINES',
                         value: 'UX, Game Design, Front-End Dev',
                     },
-                    { label: 'IMPLEMENTATION', value: 'React' },
+                    { label: 'IMPLEMENTATION', value: 'Figma, React' },
                 ]}
             />
         </>
