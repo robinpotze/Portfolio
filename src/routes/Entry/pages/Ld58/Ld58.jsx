@@ -10,8 +10,6 @@ import ImageGrid from '@components/sections/ImageGrid/ImageGrid';
 import StatementBlock from '@components/sections/StatementBlock/StatementBlock';
 import WorkHeader from '@components/sections/WorkHeader/WorkHeader';
 
-import { Data } from './ld58.data';
-
 const assetPath = '/assets/img/work/ld58/';
 
 const BRAND_IMAGES = [
@@ -84,27 +82,28 @@ export default function Ld58() {
 
             <CaseIntro
                 src={`${assetPath}Marketing/MARKET_Wallpaper.png`}
-                kicker={`LUDUM DARE / ${Data.year}`}
-                heading="72 hours to build a world worth cracking open."
-                subtitle="3D environments, branding, TV content, and audio for a satirical cap-collecting simulator."
+                kicker="LUDUM DARE 58 / 2025"
+                heading="A cap-collecting game in a bachelor pad, made in 72 hours."
+                subtitle="Artist and co-designer, with Cyril Ojoga as developer."
             />
 
-            {/* ── ROLE ── */}
+            {/* ── CONTEXT ── */}
 
-            <StatementBlock label="ROLE">
-                <h2>Every surface, every label, every pixel — in three days.</h2>
+            <StatementBlock label="CONTEXT">
+                <h2>Ludum Dare 58: collection</h2>
                 <ScrollReveal>
-                    The full visual layer for a satirical cap-collecting simulator. Hand-modeled interiors, sixteen knock-off beer brands, animated TV
-                    channels, tutorial graphics, and a cohesive brand identity — all under the Ludum Dare 58 clock.
+                    Ludum Dare is a game jam; the theme for edition 58 was collection. I made DDD (Day Drinking Day): Thanks to the Power of Day
+                    Drinking I've Achieved God-Tier Cap Collection with Cyril Ojoga in Unity, in 72 hours. I was the artist, he was the developer, and
+                    we designed it together. The player opens a beer, collects the cap and throws the bottle.
                 </ScrollReveal>
             </StatementBlock>
 
             <EvidenceRow
                 items={[
-                    { label: 'EVENT', value: 'Ludum Dare 58' },
+                    { label: 'ROLE', value: 'Art, sound, co-design' },
+                    { label: 'TEAM', value: 'Cyril Ojoga and me' },
                     { label: 'DURATION', value: '72 hours' },
-                    { label: 'ROLE', value: '3D Art, UI, Branding, Audio' },
-                    { label: 'TOOLS', value: 'Unity, Blender, Figma' },
+                    { label: 'OUTPUT', value: 'WebGL game in Unity' },
                 ]}
             />
 
@@ -113,8 +112,16 @@ export default function Ld58() {
             <WorkHeader
                 title="THE PAD"
                 subtitle="001:::ENVIRONMENT"
-                description="A bachelor pad built to feel lived-in. Every prop placed to tell a story of convenience and zero ambition. Warm palette. Intentional mess. The kind of room you'd never leave — and that's the point."
+                description="I modelled everything in the game: the bachelor pad of a single guy who owns the bare minimum."
             />
+
+            <StatementBlock label="DECISION">
+                <h2>Realistic, within WebGL</h2>
+                <ScrollReveal>
+                    I aimed for as realistic as possible within the limits of WebGL. A sparse bachelor pad fit the day-drinking theme. We built for
+                    WebGL because more people play browser games during game jams.
+                </ScrollReveal>
+            </StatementBlock>
 
             <FullImage
                 src={`${assetPath}Environment/ENV_Chair.png`}
@@ -123,7 +130,7 @@ export default function Ld58() {
 
             <ComparisonBlock
                 label="CONSTRUCTION"
-                heading="From wireframe to final render."
+                heading="Armchair, wireframe and render"
                 items={[
                     {
                         caption: 'WIREFRAME',
@@ -140,7 +147,7 @@ export default function Ld58() {
 
             <ComparisonBlock
                 label="THE TV CORNER"
-                heading="Every surface modeled. Every screen functional."
+                heading="TV corner, wireframe and render"
                 items={[
                     {
                         caption: 'WIREFRAME',
@@ -160,19 +167,31 @@ export default function Ld58() {
             <WorkHeader
                 title="TELEVISION"
                 subtitle="002:::GAME_DESIGN"
-                description="The centerpiece. A glowing rectangle of escape and distraction. The entire gameplay loop orbits around it — simple inputs, satisfying feedback, and a collection system designed to keep you reaching for one more cap."
+                description="Apart from throwing bottles, the TV is the main source of entertainment. It shows the tutorial, random videos and other effects."
             />
 
-            <ImageGrid images={TUTORIAL_IMAGES} columns={2} label="TUTORIAL" heading="Teaches without interrupting." />
+            <StatementBlock label="APPROACH">
+                <h2>Bonk to switch channels</h2>
+                <ScrollReveal>
+                    When a bottle hits the TV, it gets bonked and switches channels. The tutorials are some of those channels.
+                </ScrollReveal>
+            </StatementBlock>
 
-            <ImageGrid images={CHANNEL_IMAGES} columns={2} label="CHANNELS" heading="So many channels. None of them helpful." />
+            <StatementBlock label="DECISION">
+                <h2>A tutorial on TV</h2>
+                <ScrollReveal>The tutorial is inspired by BioShock, where a TV shows the player what to do to play the game.</ScrollReveal>
+            </StatementBlock>
+
+            <ImageGrid images={TUTORIAL_IMAGES} columns={2} label="TUTORIAL" heading="Tutorial channels" />
+
+            <ImageGrid images={CHANNEL_IMAGES} columns={2} label="CHANNELS" heading="Other channels" />
 
             {/* ── BRANDING ── */}
 
             <WorkHeader
                 title="BRAND"
                 subtitle="003:::IDENTITY"
-                description="Every jam game needs an identity that sells the joke instantly. Retro beer culture meets ironic self-awareness — a logo, logotype, and thumbnail that tell the story before you've read a word."
+                description="The logo, logotype and thumbnail for the game, and sixteen knock-off beer labels for the bottles."
             />
 
             <DoubleImage
@@ -189,30 +208,42 @@ export default function Ld58() {
             />
 
             <FeatureSplit src={`${assetPath}Marketing/MARKET_Logotype.png`} alt="Logotype design for the LD58 entry." reverse label="LOGOTYPE">
-                <h3>Type that sells the premise at a glance.</h3>
-                <ScrollReveal>
-                    Bold, unapologetic, slightly absurd. Designed to carry the tone across promotional material and in-game screens.
-                </ScrollReveal>
+                <h3>The DDD logotype</h3>
+                <ScrollReveal>Used on the promotional material and the in-game screens.</ScrollReveal>
             </FeatureSplit>
 
-            <ImageGrid images={BRAND_IMAGES} columns={4} label="BEER LABELS" heading="Sixteen knock-off brands. All fictional. Mostly drinkable." />
+            <StatementBlock label="DECISION">
+                <h2>Knock-off brands</h2>
+                <ScrollReveal>
+                    Real beer brands were not an option because of copyright, and knock-offs sold the game's universe better. The sixteen labels are
+                    the part of this project I am most proud of.
+                </ScrollReveal>
+            </StatementBlock>
+
+            <ImageGrid images={BRAND_IMAGES} columns={4} label="BEER LABELS" heading="Sixteen beer labels" />
+
+            {/* ── AUDIO ── */}
+
+            <WorkHeader title="AUDIO" subtitle="004:::SOUND" description="I made all sound effects in FL Studio." />
 
             {/* ── CLOSING ── */}
 
             <HeroStatement label="OUTCOME">
-                <h2>Built in 72 hours. Plays like it wasn't.</h2>
+                <h2>Results and hindsight</h2>
                 <ScrollReveal>
-                    Handcrafted 3D environments, sixteen beer brands, four TV channels, polished UI, cohesive branding, original audio, and a gameplay
-                    loop that makes cap collecting genuinely satisfying — all delivered within a single weekend.
+                    The game ranked 326th overall, with a 3.6 average from 27 ratings. Its best category was Humor, at 82nd. Players liked switching
+                    channels with bottles; one wrote, "Finding out you could switch channels with the bottles was fun!" The most common criticism was
+                    the missing drinking animation. Others found switching between E and the left mouse button confusing, and missed music and being
+                    able to walk around the room. Next time I would outsource some of the artwork and spend more time on animation and game feel.
                 </ScrollReveal>
             </HeroStatement>
 
             <EvidenceRow
                 items={[
-                    { label: '3D', value: 'Full interior environment' },
-                    { label: 'BRANDS', value: '16 beer labels' },
-                    { label: 'TV', value: '4 channels + tutorial' },
-                    { label: 'IDENTITY', value: 'Logo, logotype, thumbnail' },
+                    { label: 'OVERALL', value: '326th, 3.6 / 5' },
+                    { label: 'HUMOR', value: '82nd, 3.92 / 5' },
+                    { label: 'THEME', value: '222nd, 3.94 / 5' },
+                    { label: 'TOOLS', value: 'Unity, Blender, Figma, FL Studio' },
                 ]}
             />
         </>
