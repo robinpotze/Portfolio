@@ -175,6 +175,7 @@ export default function Contact() {
                         <motion.div className={formClass} variants={formVariants} initial="hidden" animate="visible" exit="exit">
                             <TextInput
                                 placeholder="USR.NAME"
+                                maxLength={200}
                                 value={formData.name}
                                 onChange={onInputChange('name')}
                                 disabled={showIntercept}
@@ -182,6 +183,7 @@ export default function Contact() {
                             />
                             <TextArea
                                 placeholder="MSG.PAYLOAD"
+                                maxLength={5000}
                                 value={formData.message}
                                 onChange={onInputChange('message')}
                                 disabled={showIntercept}
@@ -304,6 +306,7 @@ export default function Contact() {
                                     <input
                                         className={`${styles.panelInput} ${formData.email && !isValidEmail ? styles.panelInputInvalid : ''}`}
                                         placeholder="IDENTIFY@DOMAIN.COM"
+                                        maxLength={320}
                                         type="email"
                                         value={formData.email}
                                         onChange={onInputChange('email')}

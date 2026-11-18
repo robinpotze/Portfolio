@@ -8,8 +8,7 @@ import FluidSim from './FluidSim';
  */
 export default function useFluidSim(iterations) {
     const gl = useThree((state) => state.gl);
-    // Aspect to 0.1: a phone's address bar showing or hiding must not resize (and wipe) the fluid.
-    const aspect = useThree((state) => Math.round((state.size.width / state.size.height) * 10) / 10);
+    const aspect = useThree((state) => state.size.width / state.size.height);
     const fluidRef = useRef(null);
 
     useEffect(() => {

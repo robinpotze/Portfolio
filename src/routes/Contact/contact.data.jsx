@@ -31,6 +31,16 @@ export const SEND_ERROR_CONFIG = {
             </>
         ),
     },
+    429: {
+        status: 'error',
+        message: (
+            <>
+                RATE
+                <br />
+                LIMIT
+            </>
+        ),
+    },
     502: {
         status: 'error',
         message: (
