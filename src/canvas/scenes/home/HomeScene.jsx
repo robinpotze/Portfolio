@@ -74,7 +74,7 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
     // Panel size in the logo group's local units at rest (camera at CAMERA_Z[1] + parallax, fov CAMERA_FOV[1]).
     const gridSize = useMemo(() => {
         const distance = CAMERA_Z[1] - LOGO_Z[1] + CAMERA_PARALLAX;
-        const height = 2 * distance * Math.tan(THREE.MathUtils.degToRad(CAMERA_FOV[1]) / 2) * GRID_OVERSCAN;
+        const height = 3 * distance * Math.tan(THREE.MathUtils.degToRad(CAMERA_FOV[1]) / 2) * GRID_OVERSCAN;
         const restScale = LOGO_SCALE[1] * viewportScale;
         return [(height * size.width) / size.height / restScale, height / restScale];
     }, [size.width, size.height, viewportScale]);
