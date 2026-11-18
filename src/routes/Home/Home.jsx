@@ -57,7 +57,7 @@ export default function Home() {
     const [showContent, setShowContent] = useState(skipLoading);
     const loadingTimerRef = useRef(null);
 
-    const { scrollProgress, resetNavigation } = useScrollNavigation(containerRef, {
+    const { scrollProgressRef, resetNavigation } = useScrollNavigation(containerRef, {
         threshold: SCROLL_THRESHOLDS.HOME_TRANSITION,
         targetPath: '/work',
         targetName: 'Work',
@@ -171,7 +171,7 @@ export default function Home() {
             </div>
             <ErrorBoundary>
                 <Suspense fallback={null}>
-                    <HomeCanvas scrollProgress={scrollProgress} startAnimations={sceneStarted} />
+                    <HomeCanvas scrollProgressRef={scrollProgressRef} startAnimations={sceneStarted} />
                 </Suspense>
             </ErrorBoundary>
         </>

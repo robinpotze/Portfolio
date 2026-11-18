@@ -3,7 +3,7 @@ import DashLine from '@components/ui/DashLine';
 import GradualBlur from '@components/ui/GradualBlur';
 import ScrollReveal from '@components/ui/ScrollReveal';
 import ProjectHero from '@routes/Entry/components/ProjectHero/ProjectHero';
-import { EASING, LENIS, REVEAL } from '@config/animation.config';
+import { EASING, REVEAL } from '@config/animation.config';
 import useLenisScroll from '@hooks/useLenisScroll';
 import { motion } from 'motion/react';
 import { normalizeKey } from '@utils/stringUtils';
@@ -13,13 +13,7 @@ import styles from './Entry.module.css';
 import { pages } from './pages/autogen';
 
 export default function Entry() {
-    useLenisScroll({
-        lerp: LENIS.LERP,
-        duration: LENIS.DURATION,
-        smoothWheel: true,
-        wheelMultiplier: 1,
-        touchMultiplier: 2,
-    });
+    useLenisScroll();
 
     const { title } = useParams();
     const normalizedTitle = normalizeKey(title);

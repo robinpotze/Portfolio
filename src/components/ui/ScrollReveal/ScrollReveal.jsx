@@ -1,22 +1,14 @@
 import { REVEAL } from '@config/animation.config';
 import { motion, useInView } from 'motion/react';
-import { useMemo, useRef } from 'react';
+import { useRef } from 'react';
 
 import styles from './ScrollReveal.module.css';
 
+const OBSERVER_OPTIONS = { rootMargin: '0px 0px -20% 0px', threshold: 0.1 };
+
 export default function ScrollReveal({ children }) {
     const ref = useRef(null);
-
-    const observerOptions = useMemo(
-        () => ({
-            rootMargin: '0px 0px -20% 0px',
-            threshold: 0.1,
-            root: typeof globalThis !== 'undefined' && globalThis.lenis ? null : undefined,
-        }),
-        []
-    );
-
-    const inView = useInView(ref, observerOptions);
+    const inView = useInView(ref, OBSERVER_OPTIONS);
 
     return (
         <motion.div

@@ -8,7 +8,7 @@ import { Float, PerspectiveCamera, Text } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
 import { Bloom, EffectComposer, N8AO } from '@react-three/postprocessing';
 import { easeCurve, entryEase } from '@utils/easingFunctions';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 
 const { clamp, damp, lerp, smoothstep } = THREE.MathUtils;
@@ -48,8 +48,13 @@ function keyframe([before, after, end], reveal, scroll) {
     return lerp(before, after, reveal) + (end - after) * scroll;
 }
 
-export default function HomeScene({ scrollProgress = 0, startAnimations = true }) {
+// Video wall pauses once the scroll passes this, to save decoding while it is out of view.
+const BACKGROUND_PAUSE_AT = 0.4;
+
+export default function HomeScene({ scrollProgressRef, startAnimations = true }) {
     const logoRef = useRef();
+    const titleRef = useRef();
+    const [backgroundPaused, setBackgroundPaused] = useState(false);
     const backgroundRef = useRef();
     const subtitleRef = useRef();
     const lightRef = useRef();
@@ -79,10 +84,6 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
         return [(height * size.width) / size.height / restScale, height / restScale];
     }, [size.width, size.height, viewportScale]);
 
-    // The particles form the logo by the time the page moves to Work; the title rises out of frame on the same curve.
-    const morph = smoothstep(scrollProgress, 0, SCROLL_THRESHOLDS.HOME_TRANSITION);
-    const titleRise = morph * TITLE_RISE;
-
     const post = POST_PROCESSING[quality];
 
     // Scene timeline: every transform is a function of the reveal (time since startAnimations) and the scroll.
@@ -93,7 +94,15 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
         }
         const since = introStart.current === null ? -Infinity : clock.elapsedTime - introStart.current;
         const reveal = (delay, duration) => entryEase(clamp((since - delay) / duration, 0, 1));
+        const scrollProgress = scrollProgressRef.current;
         const scroll = easeCurve(scrollProgress);
+        // The particles form the logo by the time the page moves to Work; the title rises out of frame on the same curve.
+        const morph = smoothstep(scrollProgress, 0, SCROLL_THRESHOLDS.HOME_TRANSITION);
+        // Re-render only when the pause flips, not on every scroll.
+        const paused = scrollProgress > BACKGROUND_PAUSE_AT;
+        if (paused !== backgroundPaused) {
+            setBackgroundPaused(paused);
+        }
 
         // Camera: reveal and scroll on z and fov, plus a damped pointer orbit; always looks at the origin.
         parallax.x = damp(parallax.x, Math.sin(-pointer.x) * CAMERA_PARALLAX, CAMERA_DAMPING, delta);
@@ -124,6 +133,9 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
             background.position.z = keyframe(BACKGROUND_Z, backgroundReveal, scroll);
             background.scale.setScalar(keyframe(BACKGROUND_SCALE, backgroundReveal, scroll) * viewportScale);
         }
+        if (titleRef.current) {
+            titleRef.current.position.y = (morph * TITLE_RISE) / viewportScale;
+        }
 
         const subtitle = subtitleRef.current;
         if (subtitle) {
@@ -151,14 +163,14 @@ export default function HomeScene({ scrollProgress = 0, startAnimations = true }
 
     return (
         <>
-            {startAnimations && <LaserPlane progress={scrollProgress} />}
+            {startAnimations && <LaserPlane progressRef={scrollProgressRef} />}
             <PerspectiveCamera makeDefault position={[0, 0, CAMERA_Z[0]]} fov={CAMERA_FOV[0]} />
             <ambientLight ref={lightRef} intensity={0} />
 
             {startAnimations && (
                 <group ref={backgroundRef}>
-                    <BackgroundMesh paused={scrollProgress > 0.4} />
-                    <group position-y={titleRise / viewportScale}>
+                    <BackgroundMesh paused={backgroundPaused} />
+                    <group ref={titleRef}>
                         <Text font="/assets/fonts/Orbitron/static/Orbitron-Medium.ttf" color="#EEE">
                             ROBIN POTZE
                         </Text>

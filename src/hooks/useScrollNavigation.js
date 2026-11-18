@@ -1,10 +1,11 @@
 import { usePageTransition } from '@hooks/usePageTransition';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
+/** Navigates once scroll passes threshold. Returns a ref (not state) so scrolling doesn't re-render the page or its canvas. */
 export default function useScrollNavigation(containerRef, { threshold, targetPath, targetName, direction = 'up' }) {
     const { navigateWithTransition } = usePageTransition();
     const hasNavigated = useRef(false);
-    const [scrollProgress, setScrollProgress] = useState(0);
+    const scrollProgressRef = useRef(0);
 
     const resetNavigation = useCallback(() => {
         hasNavigated.current = false;
@@ -21,7 +22,7 @@ export default function useScrollNavigation(containerRef, { threshold, targetPat
             const scrollHeight = Math.max(1, container.scrollHeight - container.clientHeight);
             const progress = Math.max(0, Math.min(1, scrollTop / scrollHeight));
 
-            setScrollProgress(progress);
+            scrollProgressRef.current = progress;
 
             if (progress >= threshold && !hasNavigated.current) {
                 hasNavigated.current = true;
@@ -33,5 +34,5 @@ export default function useScrollNavigation(containerRef, { threshold, targetPat
         return () => container.removeEventListener('scroll', onScroll);
     }, [containerRef, threshold, targetPath, targetName, direction, navigateWithTransition]);
 
-    return { scrollProgress, resetNavigation };
+    return { scrollProgressRef, resetNavigation };
 }

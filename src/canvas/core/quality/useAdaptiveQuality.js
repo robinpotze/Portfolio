@@ -1,152 +1,80 @@
 import { useQuality } from '@app/QualityContext';
 import { useFrame } from '@react-three/fiber';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 
-function qualityRank(value) {
-    if (value === 'low') {
-        return 0;
-    }
-    if (value === 'medium') {
-        return 1;
-    }
-    return 2;
-}
+const QUALITIES = ['low', 'medium', 'high'];
 
-function rankToQuality(rank) {
-    if (rank <= 0) {
-        return 'low';
-    }
-    if (rank === 1) {
-        return 'medium';
-    }
-    return 'high';
-}
+// Average frame time is checked once per interval (ms).
+const CHECK_INTERVAL = 1000;
+// Below 42 fps: drop a tier at once. Below 50 fps for 3 checks in a row: drop a tier. Above 59 fps for 5 checks: raise a tier.
+const HARD_DROP_FRAME_TIME = 1000 / 42;
+const SOFT_DROP_FRAME_TIME = 1000 / 50;
+const UPGRADE_FRAME_TIME = 1000 / 59;
+const BAD_CHECKS_BEFORE_SOFT_DROP = 3;
+const GOOD_CHECKS_BEFORE_UPGRADE = 5;
+// No further change for this long after a switch, so the tiers don't oscillate (ms).
+const QUALITY_CHANGE_COOLDOWN = 5000;
 
 /**
- * Adaptive quality monitor for R3F scenes.
- *
- * - Measures average frame time over a fixed interval
- * - Drops quality quickly when performance degrades
- * - Raises quality cautiously after sustained good performance
- * - Applies a cooldown after every quality switch to avoid oscillation
- *
+ * Lowers or raises the shared quality tier from the measured frame rate.
  * Must be used inside both a QualityProvider and an R3F Canvas.
  */
-export default function useAdaptiveQuality(options = {}) {
-    const {
-        enabled = true,
-        checkInterval = 1000,
-
-        // Performance thresholds in milliseconds
-        // 55 fps = 18.18ms
-        // 50 fps = 20.00ms
-        // 42 fps = 23.81ms
-        // 59 fps = 16.95ms
-        targetFrameTime = 1000 / 55,
-        softDropFrameTime = 1000 / 50,
-        hardDropFrameTime = 1000 / 42,
-        upgradeFrameTime = 1000 / 59,
-
-        // Require consecutive bad/good intervals before changing quality
-        badChecksBeforeSoftDrop = 3,
-        goodChecksBeforeUpgrade = 5,
-
-        // Longer cooldown prevents oscillation feedback loops
-        qualityChangeCooldown = 5000,
-    } = options;
-
+export default function useAdaptiveQuality({ enabled = true } = {}) {
     const { quality, setQuality } = useQuality();
-    const [fps, setFps] = useState(60);
-
-    const lastCheckRef = useRef(0);
-    const cooldownUntilRef = useRef(0);
-    const totalDeltaMsRef = useRef(0);
-    const frameCountRef = useRef(0);
-    const goodChecksRef = useRef(0);
-    const badChecksRef = useRef(0);
+    const state = useRef({ lastCheck: 0, cooldownUntil: 0, totalDeltaMs: 0, frames: 0, goodChecks: 0, badChecks: 0 });
 
     useFrame((_, delta) => {
         if (!enabled) {
             return;
         }
-
+        const s = state.current;
         const now = performance.now();
-
-        if (lastCheckRef.current === 0) {
-            lastCheckRef.current = now;
+        if (s.lastCheck === 0) {
+            s.lastCheck = now;
         }
-
-        const deltaMs = delta * 1000;
-        totalDeltaMsRef.current += deltaMs;
-        frameCountRef.current += 1;
-
-        if (now - lastCheckRef.current < checkInterval) {
+        s.totalDeltaMs += delta * 1000;
+        s.frames += 1;
+        if (now - s.lastCheck < CHECK_INTERVAL) {
             return;
         }
 
-        const frameCount = frameCountRef.current;
-        if (frameCount === 0) {
-            lastCheckRef.current = now;
+        const avgFrameTime = s.totalDeltaMs / s.frames;
+        s.totalDeltaMs = 0;
+        s.frames = 0;
+        s.lastCheck = now;
+        if (now < s.cooldownUntil) {
             return;
         }
 
-        const avgFrameTime = totalDeltaMsRef.current / frameCount;
-        const avgFps = 1000 / avgFrameTime;
-
-        setFps(Math.round(avgFps));
-
-        // Reset sampling window before any early return
-        totalDeltaMsRef.current = 0;
-        frameCountRef.current = 0;
-        lastCheckRef.current = now;
-
-        // During cooldown, keep measuring fps but do not change quality
-        if (now < cooldownUntilRef.current) {
-            return;
-        }
-
-        const currentRank = qualityRank(quality);
-        let nextRank = currentRank;
-
-        if (avgFrameTime >= hardDropFrameTime) {
-            // Hard drop: immediate for severe performance issues
-            goodChecksRef.current = 0;
-            badChecksRef.current = 0;
-            nextRank = Math.max(0, currentRank - 1);
-        } else if (avgFrameTime >= softDropFrameTime && avgFrameTime > targetFrameTime && currentRank > 0) {
-            // Soft drop: require consecutive bad intervals to avoid reacting to transient dips
-            goodChecksRef.current = 0;
-            badChecksRef.current += 1;
-
-            if (badChecksRef.current >= badChecksBeforeSoftDrop) {
-                nextRank = currentRank - 1;
-                badChecksRef.current = 0;
+        const rank = QUALITIES.indexOf(quality);
+        let nextRank = rank;
+        if (avgFrameTime >= HARD_DROP_FRAME_TIME) {
+            s.goodChecks = 0;
+            s.badChecks = 0;
+            nextRank = Math.max(0, rank - 1);
+        } else if (avgFrameTime >= SOFT_DROP_FRAME_TIME && rank > 0) {
+            s.goodChecks = 0;
+            s.badChecks += 1;
+            if (s.badChecks >= BAD_CHECKS_BEFORE_SOFT_DROP) {
+                nextRank = rank - 1;
+                s.badChecks = 0;
             }
-        } else if (avgFrameTime <= upgradeFrameTime) {
-            badChecksRef.current = 0;
-            goodChecksRef.current += 1;
-
-            if (goodChecksRef.current >= goodChecksBeforeUpgrade) {
-                nextRank = Math.min(2, currentRank + 1);
-                goodChecksRef.current = 0;
+        } else if (avgFrameTime <= UPGRADE_FRAME_TIME) {
+            s.badChecks = 0;
+            s.goodChecks += 1;
+            if (s.goodChecks >= GOOD_CHECKS_BEFORE_UPGRADE) {
+                nextRank = Math.min(QUALITIES.length - 1, rank + 1);
+                s.goodChecks = 0;
             }
         } else {
-            // Neutral zone: reset both counters
-            goodChecksRef.current = 0;
-            badChecksRef.current = 0;
+            s.goodChecks = 0;
+            s.badChecks = 0;
         }
 
-        const nextQuality = rankToQuality(nextRank);
-
-        if (nextQuality !== quality) {
-            setQuality(nextQuality);
-            cooldownUntilRef.current = now + qualityChangeCooldown;
-            goodChecksRef.current = 0;
+        if (nextRank !== rank) {
+            setQuality(QUALITIES[nextRank]);
+            s.cooldownUntil = now + QUALITY_CHANGE_COOLDOWN;
+            s.goodChecks = 0;
         }
     });
-
-    return {
-        quality,
-        fps,
-    };
 }

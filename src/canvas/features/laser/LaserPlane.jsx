@@ -14,8 +14,8 @@ const FOG_QUALITY = { low: 0, medium: 0.3, high: 1 };
 // One triangle that covers the screen (positions are already clip space).
 const geometry = new THREE.BufferGeometry().setAttribute('position', new THREE.BufferAttribute(new Float32Array([-1, -1, 0, 3, -1, 0, -1, 3, 0]), 3));
 
-/** Fullscreen laser overlay on the home scene; each LASER_PARAMS uniform is base + progress * scale. */
-export default function LaserPlane({ progress = 0 }) {
+/** Fullscreen laser overlay on the home scene; each LASER_PARAMS uniform is base + progress * scale (progressRef.current: 0…1). */
+export default function LaserPlane({ progressRef }) {
     const materialRef = useRef();
     const frameCount = useRef(0);
     const { quality } = useQuality();
@@ -47,6 +47,7 @@ export default function LaserPlane({ progress = 0 }) {
         u.uFade.value = Math.min(1, u.uFade.value + dt); // fades in over ~1 s (~2 s on low quality)
         u.uFogQuality.value = damp(u.uFogQuality.value, FOG_QUALITY[quality], 2, dt);
         u.uWispDensity.value = damp(u.uWispDensity.value, quality === 'low' ? 0.3 : 1, 2, dt);
+        const progress = progressRef.current;
         for (const name in LASER_PARAMS) {
             u[name].value = LASER_PARAMS[name].base + progress * LASER_PARAMS[name].scale;
         }

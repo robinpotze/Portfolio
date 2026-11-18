@@ -2,7 +2,7 @@ import CanvasRoot from '@canvas/core/CanvasRoot';
 import styles from './HomeCanvas.module.css';
 import HomeScene from './HomeScene';
 
-export default function HomeCanvas({ scrollProgress, startAnimations }) {
+export default function HomeCanvas({ scrollProgressRef, startAnimations }) {
     return (
         <div className={styles.canvasContainer}>
             <CanvasRoot
@@ -12,7 +12,7 @@ export default function HomeCanvas({ scrollProgress, startAnimations }) {
                 eventPrefix="client"
                 gl={{ antialias: true }}
             >
-                <HomeScene scrollProgress={scrollProgress} startAnimations={startAnimations} />
+                <HomeScene scrollProgressRef={scrollProgressRef} startAnimations={startAnimations} />
             </CanvasRoot>
         </div>
     );
