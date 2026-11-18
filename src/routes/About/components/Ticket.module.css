@@ -19,7 +19,9 @@
 
 /* Open tickets get two extra notches level with the header stub */
 .expanded {
-    mask-image: var(--holes), radial-gradient(circle at 0 calc(var(--head-h) / 2), #0000 9px, #000 9.5px), radial-gradient(circle at 100% calc(var(--head-h) / 2), #0000 9px, #000 9.5px);
+    mask-image:
+        var(--holes), radial-gradient(circle at 0 calc(var(--head-h) / 2), #0000 9px, #000 9.5px),
+        radial-gradient(circle at 100% calc(var(--head-h) / 2), #0000 9px, #000 9.5px);
 }
 
 .recordDetails,
