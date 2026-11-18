@@ -36,8 +36,8 @@
    ---------------------------------------------------------------- */
 
 .corner {
-    width: 64px;
-    height: 64px;
+    width: 4rem;
+    height: 4rem;
     background-color: var(--c-brnd_-100);
     display: flex;
     align-items: center;
@@ -46,8 +46,8 @@
 }
 
 .icon {
-    height: 64px;
-    width: 64px;
+    height: 4rem;
+    width: 4rem;
     color: var(--c-drk_100);
 }
 
@@ -71,7 +71,7 @@
    Responsive
    ---------------------------------------------------------------- */
 
-@media (max-width: 768px) {
+@media (max-width: 48em) {
     .wrapper,
     .wrapperTr,
     .wrapperBr {

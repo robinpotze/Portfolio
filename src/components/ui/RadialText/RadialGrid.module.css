@@ -1,18 +1,18 @@
 .grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 4px;
+    gap: var(--s-xxs);
 }
 
 .gridTxt {
     composes: grid;
-    height: 53px;
-    width: 74px;
+    height: 3.3125rem;
+    width: 4.625rem;
     font: var(--f-deco-tiny);
 }
 
 .gridCrcl {
     composes: grid;
-    height: 44px;
-    width: 44px;
+    height: 2.75rem;
+    width: 2.75rem;
 }

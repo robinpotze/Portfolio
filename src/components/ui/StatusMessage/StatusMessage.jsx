@@ -12,14 +12,18 @@ const STATUS_CONFIG = {
     error: { Icon: CrsIcon, Decal: CrsIcon },
 };
 
+// Must match the corner icon offset in StatusMessage.module.css so the clip doesn't cut them off
+const CORNER = '-2rem';
+const HIDDEN_CLIP = `inset(${CORNER} ${CORNER} ${CORNER} 100%)`;
+
 const panelVariants = {
     hidden: {
         opacity: 0,
-        clipPath: 'inset(-32px -32px -32px 100%)',
+        clipPath: HIDDEN_CLIP,
     },
     visible: (delay = 0) => ({
         opacity: 1,
-        clipPath: 'inset(-32px -32px -32px -32px)',
+        clipPath: `inset(${CORNER} ${CORNER} ${CORNER} ${CORNER})`,
         transition: {
             delay,
             duration: REVEAL.DURATION,
@@ -31,7 +35,7 @@ const panelVariants = {
     }),
     exit: {
         opacity: 0,
-        clipPath: 'inset(-32px -32px -32px 100%)',
+        clipPath: HIDDEN_CLIP,
         transition: {
             duration: REVEAL.EXIT_DURATION,
             ease: EASING.EXIT,

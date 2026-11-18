@@ -45,7 +45,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    padding: 1rem 0 4rem 0;
+    padding: var(--s-s) 0 var(--s-xl) 0;
     width: 4rem;
 }
 
@@ -86,8 +86,8 @@
 }
 
 .sideDecal {
-    width: 48px;
-    height: 48px;
+    width: 3rem;
+    height: 3rem;
 }
 
 .sideDecal svg {
@@ -96,8 +96,8 @@
 }
 
 .titleDecal {
-    width: 32px;
-    height: 32px;
+    width: 2rem;
+    height: 2rem;
 }
 
 .titleWrapper {
@@ -114,7 +114,7 @@
     padding: var(--s-xs) 0;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 48em) {
     .side {
         display: none;
     }

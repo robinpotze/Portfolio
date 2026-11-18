@@ -28,7 +28,7 @@ export default function FeatureSplit({ src, alt, reverse = false, label, childre
                     ease: EASING.EMPHASIZED,
                 }}
             >
-                {label && <label className={styles.label}>{label}</label>}
+                {label && <label className="section-label">{label}</label>}
                 {children}
             </motion.div>
         </section>

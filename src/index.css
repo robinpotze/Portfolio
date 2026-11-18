@@ -9,15 +9,12 @@
     --c-drk_100: #0a0a0a;
     --c-drk_40: rgba(17, 17, 17, 0.4);
     --c-ok_100: #69d52a;
-    --c-ok_40: rgba(105, 213, 42, 0.4);
     --c-warn_100: #d5b32a;
-    --c-warn_40: rgba(213, 179, 42, 0.4);
     --c-error_100: #d40322;
-    --c-error_40: rgba(212, 3, 34, 0.4);
     --c-blue: #3d06eb;
     --c_0: rgba(0, 0, 0, 0);
 
-    --f-title: clamp(2em, 5vw, 4em) 'Kode Mono', monospace;
+    --f-title: clamp(2rem, 5vw, 4rem) 'Kode Mono', monospace;
     --f-hdr_1: clamp(1.75rem, 4vw, 3rem) 'Lora', serif;
     --f-hdr_2: clamp(1.375rem, 3vw, 2.25rem) 'Lora', serif;
     --f-hdr_3: clamp(1.125rem, 2vw, 1.5rem) 'Lora', serif;
@@ -30,18 +27,25 @@
     --f-deco-tiny: 0.75rem 'Kode Mono', monospace;
     --f-deco-micro: 0.5rem 'Kode Mono', monospace;
 
-    --s-xxs: 4px;
-    --s-xs: 8px;
-    --s-s: 16px;
-    --s-m: 32px;
-    --s-l: 48px;
-    --s-xl: 64px;
+    --s-xxs: 0.25rem;
+    --s-xs: 0.5rem;
+    --s-s: 1rem;
+    --s-m: 2rem;
+    --s-l: 3rem;
+    --s-xl: 4rem;
 
+    /* Horizontal page padding for content sections */
+    --gutter: var(--s-xl);
     --content-max-width: 60%;
 
-    --bp-mobile: 375px;
-    --bp-tablet: 768px;
-    --bp-desktop: 1024px;
+    /* Tracking: wide for small caps labels, tight-ish for headings */
+    --ls-wide: 0.2em;
+    --ls-head: 0.04em;
+
+    /* CSS transition durations; mirror REVEAL.EXIT/QUICK/MEDIUM_DURATION in animation.config.js */
+    --t-fast: 0.2s;
+    --t-base: 0.3s;
+    --t-slow: 0.4s;
 }
 
 html {
@@ -120,6 +124,13 @@ h3 {
     font: var(--f-deco-tiny);
 }
 
+.section-label {
+    font: var(--f-paragraph);
+    color: var(--c-brnd_100);
+    letter-spacing: var(--ls-wide);
+    text-transform: uppercase;
+}
+
 .r90 {
     rotate: 90deg;
 }
@@ -132,28 +143,29 @@ h3 {
     writing-mode: sideways-rl;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 64em) {
     :root {
-        --s-l: 32px;
-        --s-xl: 48px;
+        --s-l: 2rem;
+        --s-xl: 3rem;
         --content-max-width: 75%;
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 48em) {
     :root {
-        --s-m: 24px;
-        --s-l: 24px;
-        --s-xl: 32px;
+        --s-m: 1.5rem;
+        --s-l: 1.5rem;
+        --s-xl: 2rem;
+        --gutter: var(--s-m);
         --content-max-width: 90%;
     }
 }
 
-@media (max-width: 375px) {
+@media (max-width: 23.4375em) {
     :root {
-        --s-m: 16px;
-        --s-l: 16px;
-        --s-xl: 24px;
+        --s-m: 1rem;
+        --s-l: 1rem;
+        --s-xl: 1.5rem;
         --content-max-width: 95%;
     }
 }

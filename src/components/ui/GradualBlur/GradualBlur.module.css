@@ -13,7 +13,7 @@
 .gradualBlur {
     isolation: isolate;
     pointer-events: none;
-    transition: opacity 0.3s ease-out;
+    transition: opacity var(--t-base) ease-out;
 }
 
 @supports not (backdrop-filter: blur(1px)) {

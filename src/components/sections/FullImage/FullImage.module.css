@@ -19,7 +19,7 @@
     height: auto;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 48em) {
     .wrapper {
         height: 50vh;
     }

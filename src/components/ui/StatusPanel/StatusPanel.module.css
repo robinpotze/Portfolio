@@ -12,7 +12,7 @@
     position: relative;
     transform-origin: center center;
     will-change: transform;
-    transition: background-color 0.5s ease;
+    transition: background-color var(--t-slow) ease;
 }
 
 .panel::after {
@@ -21,11 +21,7 @@
     inset: -42px;
     pointer-events: none;
     border: 42px solid transparent;
-    border-image-source: url('../../../assets/decals/MRKR_BRND_-100.svg');
-    border-image-slice: 42 42 42 42;
-    border-image-width: 42px;
-    border-image-repeat: stretch;
-    box-sizing: border-box;
+    border-image: url('../../../assets/decals/MRKR_BRND_-100.svg') 42 / 42px stretch;
 }
 
 /* ----------------------------------------------------------------
@@ -61,7 +57,7 @@
    Responsive
    ---------------------------------------------------------------- */
 
-@media (max-width: 768px) {
+@media (max-width: 48em) {
     .panel,
     .success,
     .error {

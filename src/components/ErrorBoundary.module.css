@@ -7,25 +7,25 @@
     justify-content: center;
     background: var(--c-drk_100);
     color: var(--c-lght_100);
-    padding: 2rem;
+    padding: var(--s-m);
     text-align: center;
-    font-family: var(--f-func);
+    font: var(--f-func);
     z-index: 9999;
 }
 
 .title {
-    margin-bottom: 1rem;
+    margin-bottom: var(--s-s);
     color: var(--c-brnd_100);
 }
 
 .message {
-    margin-bottom: 2rem;
+    margin-bottom: var(--s-m);
     opacity: 0.7;
 }
 
 .actions {
     display: flex;
-    gap: 1rem;
+    gap: var(--s-s);
 }
 
 .retryButton {

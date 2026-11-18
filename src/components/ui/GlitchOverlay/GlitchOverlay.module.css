@@ -28,7 +28,7 @@
 .dither {
     position: absolute;
     inset: 0;
-    background-image: radial-gradient(circle, rgba(212, 3, 34, 0.35) 1px, transparent 1px);
+    background-image: radial-gradient(circle, color-mix(in srgb, var(--c-brnd_-100) 35%, transparent) 1px, transparent 1px);
     background-size: 4px 4px;
     background-repeat: repeat;
 }

@@ -23,14 +23,14 @@
     flex-direction: column;
     justify-content: center;
     height: 100%;
-    padding: var(--s-xl);
+    padding: var(--gutter);
     max-width: var(--content-max-width);
     gap: var(--s-s);
 }
 
 .overlay h1 {
     font: var(--f-title);
-    letter-spacing: 0.04em;
+    letter-spacing: var(--ls-head);
     color: var(--c-lght_100);
     line-height: 1.1;
 }
@@ -44,16 +44,12 @@
 .kicker {
     font: var(--f-func);
     color: var(--c-brnd_100);
-    letter-spacing: 0.2em;
+    letter-spacing: var(--ls-wide);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 48em) {
     .wrapper {
         height: 60vh;
-    }
-
-    .overlay {
-        padding: var(--s-m);
     }
 
     .overlay p {

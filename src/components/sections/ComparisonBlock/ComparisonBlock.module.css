@@ -1,7 +1,7 @@
 .wrapper {
     margin-top: var(--s-xl);
     width: 100%;
-    padding: 0 var(--s-xl);
+    padding: 0 var(--gutter);
     box-sizing: border-box;
 }
 
@@ -15,7 +15,7 @@
 
 .intro h3 {
     font: var(--f-hdr_3);
-    letter-spacing: 0.04em;
+    letter-spacing: var(--ls-head);
     color: var(--c-lght_100);
 }
 
@@ -52,18 +52,7 @@
     text-transform: uppercase;
 }
 
-.label {
-    font: var(--f-paragraph);
-    color: var(--c-brnd_100);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-}
-
-@media (max-width: 768px) {
-    .wrapper {
-        padding: 0 var(--s-m);
-    }
-
+@media (max-width: 48em) {
     .grid {
         flex-direction: column;
     }
