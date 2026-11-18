@@ -28,9 +28,9 @@ export default function Cjib() {
             <StatementBlock label="CONTEXT">
                 <h2>From test automation to UX design</h2>
                 <ScrollReveal>
-                    I joined a development team of six at CJIB as a test automation engineer. After about four months I switched to UX design, and
-                    later also worked as the UX designer for two other teams of six to eight people. The work covered three areas: motion design for
-                    internal presentations, the documentation site for PBS, and the design of Beslagportaal.
+                    Through Sopra Steria, I was seconded to CJIB and joined a development team of six as a test automation engineer. After about four
+                    months I switched to UX design, and later also worked as the UX designer for two other teams of six to eight people. The work
+                    covered three areas: motion design for internal presentations, the documentation site for PBS, and the design of Beslagportaal.
                 </ScrollReveal>
             </StatementBlock>
 
