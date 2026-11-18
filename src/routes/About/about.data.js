@@ -30,6 +30,7 @@ export const ABOUT_DATA = {
             details: [
                 { text: 'Designed and developed serious games in both digital and physical formats.', icon: DceIcon },
                 { text: 'Designed and developed UX for various clients in the public services sector.', icon: BrcIcon },
+                { text: 'Worked on secondment at CJIB as test automation engineer, then UX designer.', icon: ChkIcon },
                 { text: 'Designed multiple marketing campaigns and promotional materials.', icon: ArtIcon },
             ],
         },
@@ -39,14 +40,14 @@ export const ABOUT_DATA = {
             date: '2021-2022',
             details: [
                 {
-                    text: 'Designed a new webstore and introduced a mascot. Redesigned the logo, revamped brand colouring and adhered to industry standard UX practices',
+                    text: 'Designed a new webstore with a robot mascot, redesigned the logo and brand colours, and applied standard e-commerce UX patterns.',
                     icon: ArtIcon,
                 },
                 {
-                    text: 'Introduced a learning platform in the same branding with a larger focus on industry standard designs in learning tools.',
+                    text: 'Designed a learning platform in the same branding, where teachers share lessons linked to products.',
                     icon: GatIcon,
                 },
-                { text: 'Created a link between the products and the learning materials to create a USP', icon: ArwIcon },
+                { text: 'Linked products to the lessons and manuals that use them, through tags and metadata.', icon: ArwIcon },
             ],
         },
         {
@@ -61,19 +62,22 @@ export const ABOUT_DATA = {
         },
     ],
     SKL: [
-        { text: 'User Interface Design', icon: BllIcon, description: 'Designing intuitive and visually appealing user interfaces.' },
-        { text: 'Brand Identity', icon: GatIcon, description: 'Creating and maintaining a consistent brand image across various platforms.' },
-        { text: '3D Modeling', icon: ArwIcon, description: 'Building detailed and accurate 3D models for various applications.' },
-        { text: 'Visual Effects', icon: ChkIcon, description: 'Designing and implementing visual effects for digital media.' },
-        { text: 'Software Development', icon: BrcIcon, description: 'Developing software solutions with a focus on usability and performance.' },
+        { text: 'User Interface Design', icon: BllIcon, description: 'Interfaces for games and web projects, including Monster DB, PMOT and CJIB.' },
+        { text: 'Brand Identity', icon: GatIcon, description: 'Identities and promotional material, mostly for Sopra Steria.' },
+        { text: '3D Modeling', icon: ArwIcon, description: 'Environments and props for my games, and the PMOT mascot.' },
+        { text: 'Visual Effects', icon: ChkIcon, description: 'Shaders and effects for my game projects.' },
+        { text: 'Software Development', icon: BrcIcon, description: 'Front-end development at CJIB and on Monster DB.' },
     ],
     SFT: [
-        { text: 'Illustrator', icon: '/assets/img/software/Illustrator.svg', description: 'Creating vector graphics and illustrations.' },
-        { text: 'After Effects', icon: '/assets/img/software/AfterEffects.svg', description: 'Compositing and motion graphics for video projects.' },
-        { text: 'Figma', icon: '/assets/img/software/Figma.svg', description: 'Designing user interfaces and prototypes collaboratively.' },
-        { text: 'Blender', icon: '/assets/img/software/Blender.svg', description: '3D modeling, animation, and rendering.' },
-        { text: 'Unity', icon: '/assets/img/software/Unity.svg', description: 'Developing interactive 3D content and games.' },
-        { text: 'Unreal', icon: '/assets/img/software/Unreal.svg', description: 'Creating high-quality real-time 3D experiences.' },
+        { text: 'Illustrator', icon: '/assets/img/software/Illustrator.svg', description: 'Graphic design, and sometimes UI design.' },
+        { text: 'After Effects', icon: '/assets/img/software/AfterEffects.svg', description: 'Motion design, and video for in-game screens.' },
+        { text: 'Figma', icon: '/assets/img/software/Figma.svg', description: 'UI, UX and graphic design.' },
+        { text: 'Blender', icon: '/assets/img/software/Blender.svg', description: 'Everything 3D: modelling, materials, animation and rendering.' },
+        { text: 'Unity', icon: '/assets/img/software/Unity.svg', description: 'Game development, including my game jam entries.' },
+        { text: 'Unreal', icon: '/assets/img/software/Unreal.svg', description: 'Passion projects and complex VFX for video.' },
+        { text: 'React', icon: '/assets/img/software/React.svg', description: 'Front end of Monster DB.' },
+        { text: 'Angular', icon: '/assets/img/software/Angular.svg', description: 'Front-end work at CJIB and for a current Sopra Steria client.' },
+        { text: 'FL Studio', description: 'Sound design and music, including the DDD sound effects.' },
     ],
     EDU: [
         {

@@ -2,10 +2,10 @@ const assetPath = '/assets/img/work/ssgnl/sqlgame/';
 
 export const Data = {
     id: 4,
-    title: 'SQL GAME',
-    synopsis: 'Learn SQL by playing it.',
+    title: 'MONSTER DB',
+    synopsis: 'An SQL training game on a real database, for Sopra Steria trainees.',
     description:
-        'An interactive game that teaches SQL through exploration, built almost single-handedly at Sopra Steria. Players write real queries to navigate a world, manage inventory, and complete quests — turning abstract database concepts into tangible, immediate feedback.',
+        "An SQL training game for Sopra Steria's internal trainees, in use with a pilot group. I design and develop it with my colleague Iris, who wrote the quests and learning material. Players run real queries against their own tables to complete quests.",
     client: 'SOPRA STERIA',
     year: 2026,
     software: ['Figma', 'React'],

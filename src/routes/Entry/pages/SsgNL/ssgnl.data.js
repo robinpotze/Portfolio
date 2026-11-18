@@ -3,11 +3,11 @@ const assetPath = '/assets/img/work/ssgnl/';
 export const Data = {
     id: 3,
     title: 'SSGNL',
-    synopsis: 'The world is how we shape it.',
+    synopsis: 'Brand identity, board games and chatbot design at Sopra Steria.',
     description:
-        'UX Designer, Front-End Developer, and Game Designer at Sopra Steria. Designed the visual identity and guided gameplay for two educational board games, built a brand system for the test automation department, designed a conversational interface, and produced marketing materials in print and video.',
+        'Game, graphic and motion design at Sopra Steria Nederland since 2025: the identity for the AUTO|Q test automation chapter, two educational board games for events and customer meetings, and the interface of an internal HR chatbot.',
     client: 'SOPRA STERIA',
-    year: 2024,
+    year: 2025,
     software: ['Illustrator', 'AfterEffects', 'Blender', 'Figma'],
     skills: ['Graphic Design', 'Game Design', '3D Graphics', 'Motion Graphics'],
     banner: `${assetPath}cybersec/CyberSec_Render.png`,
