@@ -21,7 +21,14 @@ export default {
         }
 
         // Limit per visitor IP (binding in wrangler.toml), so a script can't flood the inbox or the Resend quota.
-        const { success } = await env.LIMITER.limit({ key: request.headers.get('CF-Connecting-IP') ?? 'unknown' });
+        let success;
+        try {
+            ({ success } = await env.LIMITER.limit({ key: request.headers.get('CF-Connecting-IP') ?? 'unknown' }));
+        } catch (err) {
+            // Missing or failing binding: answer with CORS headers so the page shows a server fault, not a lost link.
+            console.error('Rate limiter failed', err);
+            return json({ error: 'Internal server error' }, 500);
+        }
         if (!success) {
             return json({ error: 'Too many requests' }, 429);
         }

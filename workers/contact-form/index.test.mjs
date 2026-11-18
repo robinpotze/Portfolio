@@ -43,6 +43,13 @@ test('rate-limited visitor gets 429 and nothing is sent', async () => {
     assert.equal(sent.length, 0);
 });
 
+test('missing rate-limit binding gives a CORS-readable 500 and sends nothing', async () => {
+    const res = await worker.fetch(new Request('https://worker.test', { method: 'POST', body: JSON.stringify(valid) }), {});
+    assert.equal(res.status, 500);
+    assert.equal(res.headers.get('Access-Control-Allow-Origin'), '*');
+    assert.equal(sent.length, 0);
+});
+
 test('GET is not allowed', async () => {
     assert.equal((await worker.fetch(new Request('https://worker.test'), env)).status, 405);
 });
