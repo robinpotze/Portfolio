@@ -44,7 +44,7 @@ export default function ImageGrid({ images, columns = 4, label, heading }) {
                     whileInView="visible"
                     viewport={{ once: true, amount: 0.5 }}
                 >
-                    {label && <label className={styles.label}>{label}</label>}
+                    {label && <label className="section-label">{label}</label>}
                     {heading && <h3>{heading}</h3>}
                 </motion.div>
             )}

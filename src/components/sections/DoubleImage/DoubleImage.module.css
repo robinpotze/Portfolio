@@ -2,7 +2,7 @@
     width: 100%;
     display: flex;
     gap: var(--s-s);
-    padding: 0 var(--s-xl);
+    padding: 0 var(--gutter);
     box-sizing: border-box;
 }
 
@@ -14,10 +14,9 @@
     height: 75vh;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 48em) {
     .wrapper {
         flex-direction: column;
-        padding: 0 var(--s-m);
     }
 
     .wrapper img {

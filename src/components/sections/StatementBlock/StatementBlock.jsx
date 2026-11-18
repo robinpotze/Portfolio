@@ -11,7 +11,7 @@ export default function StatementBlock({ label, children }) {
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: REVEAL.DURATION, ease: EASING.EMPHASIZED }}
         >
-            {label && <label className={styles.label}>{label}</label>}
+            {label && <label className="section-label">{label}</label>}
             {children}
         </motion.section>
     );

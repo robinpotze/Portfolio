@@ -16,9 +16,9 @@
     cursor: pointer;
     border: none;
     transition:
-        background-color 0.2s ease,
-        color 0.2s ease,
-        transform 0.15s ease;
+        background-color var(--t-fast) ease,
+        color var(--t-fast) ease,
+        transform var(--t-fast) ease;
 }
 
 .button:hover {
@@ -27,7 +27,7 @@
 }
 
 .button:active {
-    transition: transform 0.08s ease;
+    transition: transform var(--t-fast) ease;
 }
 
 .button:disabled {
@@ -41,7 +41,7 @@
    Responsive
    ---------------------------------------------------------------- */
 
-@media (max-width: 768px) {
+@media (max-width: 48em) {
     .button {
         min-height: 44px;
         width: 100%;

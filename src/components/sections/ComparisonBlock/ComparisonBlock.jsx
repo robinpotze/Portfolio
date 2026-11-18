@@ -34,7 +34,7 @@ export default function ComparisonBlock({ label, heading, items }) {
     return (
         <section className={styles.wrapper}>
             <motion.div className={styles.intro} variants={introVars} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.5 }}>
-                {label && <label className={styles.label}>{label}</label>}
+                {label && <label className="section-label">{label}</label>}
                 {heading && <h3>{heading}</h3>}
             </motion.div>
             <motion.div className={styles.grid} variants={gridVars} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}>

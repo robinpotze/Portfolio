@@ -14,18 +14,18 @@
 .iconWrapper {
     display: grid;
     place-items: center;
-    width: 48px;
-    height: 48px;
+    width: 3rem;
+    height: 3rem;
 }
 
 .decoIcon {
     position: absolute;
-    height: 64px;
+    height: 4rem;
 }
 
 .statusIcon {
-    width: 48px;
-    height: 48px;
+    width: 3rem;
+    height: 3rem;
     color: var(--c-drk_100);
 }
 
@@ -35,30 +35,28 @@
     text-align: right;
 }
 
-.cornerIconTR {
+.cornerIcon {
     position: absolute;
-    top: -32px;
-    right: -32px;
-    width: 48px;
-    height: 48px;
+    width: 3rem;
+    height: 3rem;
 }
 
-.cornerIconTR svg {
+.cornerIcon svg {
     width: 100%;
     height: 100%;
+}
+
+/* Offset must match CORNER in StatusMessage.jsx */
+.cornerIconTR {
+    composes: cornerIcon;
+    top: -2rem;
+    right: -2rem;
 }
 
 .cornerIconBL {
-    position: absolute;
-    bottom: -32px;
-    left: -32px;
-    width: 48px;
-    height: 48px;
-}
-
-.cornerIconBL svg {
-    width: 100%;
-    height: 100%;
+    composes: cornerIcon;
+    bottom: -2rem;
+    left: -2rem;
 }
 
 .success {

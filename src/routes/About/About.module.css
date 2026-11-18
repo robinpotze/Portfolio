@@ -4,7 +4,7 @@
     /* Spacing shrinks with viewport height so the page fits one screen; Figma values are the max */
     gap: clamp(var(--s-xs), 2vh, var(--s-m));
     height: 100dvh;
-    padding: 56px 56px clamp(var(--s-s), 4vh, 56px);
+    padding: 3.5rem 3.5rem clamp(var(--s-s), 4vh, 3.5rem);
     box-sizing: border-box;
     background: var(--c-drk_100);
     color: var(--c-lght_100);
@@ -47,18 +47,18 @@
 
 .identity {
     gap: clamp(var(--s-xs), 2vh, var(--s-m));
-    padding-bottom: clamp(0px, 2vh, 38px);
+    padding-bottom: clamp(0rem, 2vh, 2.375rem);
 }
 
 .masthead {
-    height: 42px;
+    height: 2.625rem;
     border-bottom: 1px solid var(--c-lght_100);
 }
 
 /* Double square: outer border + inset ring 4px inside */
 .emblem {
-    width: 24px;
-    height: 24px;
+    width: 1.5rem;
+    height: 1.5rem;
     box-sizing: border-box;
     border: 1px solid var(--c-brnd_100);
     box-shadow:
@@ -80,7 +80,7 @@
 /* h1 carries global uppercase + glow; the design drops both */
 .title {
     /* Display size: the one heading larger than the --f-hdr scale */
-    font-size: clamp(48px, min(8vh, 8vw), 108px);
+    font-size: clamp(3rem, min(8vh, 8vw), 6.75rem);
     line-height: 1.05;
     text-transform: none;
     text-shadow: none;
@@ -92,7 +92,7 @@
 }
 
 .bio {
-    flex: 0 1 490px;
+    flex: 0 1 30.625rem;
     gap: var(--s-s);
 }
 
@@ -102,8 +102,8 @@
     position: relative;
     display: flex;
     flex: 1;
-    min-height: 280px;
-    max-height: 600px;
+    min-height: 17.5rem;
+    max-height: 37.5rem;
     /* Room for the MRKR corner lines, which reach 42px past the tickets */
     margin-block: var(--s-m);
 }
@@ -123,20 +123,20 @@
     flex-direction: column;
     align-items: center;
     justify-content: space-around;
-    width: 40px;
-    padding: 48px 0;
+    width: 2.5rem;
+    padding: var(--s-l) 0;
     flex-shrink: 0;
 }
 
 .lines {
-    width: 16px;
-    height: 43px;
+    width: 1rem;
+    height: 2.6875rem;
     border-block: 1px solid var(--c-brnd_-100);
 }
 
 .sideEntry {
-    width: 22px;
-    height: 162px;
+    width: 1.375rem;
+    height: 10.125rem;
     background: var(--c-brnd_100);
     color: var(--c-drk_100);
     font: var(--f-func);
@@ -159,13 +159,13 @@
 
 /* ── Responsive ────────────────────────────────── */
 
-@media (max-width: 1024px) {
+@media (max-width: 64em) {
     .page {
         padding: 5rem var(--s-m) clamp(var(--s-s), 4vh, var(--s-m));
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 48em) {
     .page {
         height: auto;
         min-height: 100dvh;

@@ -12,8 +12,8 @@
     border: 1px solid var(--c-lght_100);
     color: var(--c-lght_100);
     transition:
-        background-color 0.4s ease,
-        border-color 0.4s ease;
+        background-color var(--t-slow) ease,
+        border-color var(--t-slow) ease;
 }
 
 /* ----------------------------------------------------------------
@@ -53,8 +53,8 @@
     color: var(--c-lght_100);
     resize: none;
     transition:
-        border-color 0.2s ease,
-        color 0.2s ease;
+        border-color var(--t-fast) ease,
+        color var(--t-fast) ease;
 }
 
 .textarea::placeholder {
@@ -70,44 +70,24 @@
    Corner Decorations
    ---------------------------------------------------------------- */
 
-.corner {
-    width: 48px;
-    height: 48px;
-    position: absolute;
-    color: var(--c-lght_100);
-}
-
 .cornerTL {
-    composes: corner;
-    top: -24px;
-    left: -24px;
+    composes: cornerTL from '../TextInput/TextInput.module.css';
 }
 
 .cornerTR {
-    composes: corner;
-    top: -24px;
-    right: -24px;
+    composes: cornerTR from '../TextInput/TextInput.module.css';
 }
 
 .cornerBL {
-    composes: corner;
-    bottom: -24px;
-    left: -24px;
+    composes: cornerBL from '../TextInput/TextInput.module.css';
 }
 
 .cornerBR {
-    composes: corner;
-    bottom: -24px;
-    right: -24px;
+    composes: cornerBR from '../TextInput/TextInput.module.css';
 }
 
 .marker {
-    width: var(--s-s);
-    height: var(--s-s);
-    position: absolute;
-    top: 20px;
-    left: -24px;
-    color: var(--c-lght_100);
+    composes: marker from '../TextInput/TextInput.module.css';
 }
 
 /* ----------------------------------------------------------------
@@ -118,6 +98,7 @@
     composes: field;
     border-color: var(--c-error_100);
     background-color: var(--c-error_100);
+    --frame-color: var(--c-brnd_-100);
 }
 
 .fieldIntercept .textarea {
@@ -125,15 +106,7 @@
     border-left-color: var(--c-drk_100);
 }
 
-.fieldIntercept .corner,
-.fieldIntercept .marker {
-    color: var(--c-brnd_-100);
-}
-
-.fieldIntercept .icon {
-    color: var(--c-blue);
-}
-
+.fieldIntercept .icon,
 .fieldIntercept .decal {
     color: var(--c-blue);
 }
@@ -142,13 +115,8 @@
    Responsive
    ---------------------------------------------------------------- */
 
-@media (max-width: 768px) {
+@media (max-width: 48em) {
     .textarea {
         min-height: 44px;
-    }
-
-    .corner,
-    .marker {
-        display: none;
     }
 }

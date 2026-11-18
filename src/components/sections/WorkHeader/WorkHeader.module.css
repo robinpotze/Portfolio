@@ -10,29 +10,19 @@
 .barContent {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--s-xxs);
     max-width: var(--content-max-width);
     margin: 0 auto;
-    padding: 0 calc(var(--s-xl) + 4px);
+    padding: 0 calc(var(--gutter) + var(--s-xxs));
 }
 
 .barContent img,
 .barContent svg {
-    height: 24px;
+    height: 1.5rem;
 }
 
 .description {
     max-width: var(--content-max-width);
     margin: 0 auto;
-    padding: var(--s-s) var(--s-xl);
-}
-
-@media (max-width: 768px) {
-    .barContent {
-        padding: 0 var(--s-m);
-    }
-
-    .description {
-        padding: var(--s-s) var(--s-m);
-    }
+    padding: var(--s-s) var(--gutter);
 }

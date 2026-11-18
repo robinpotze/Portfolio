@@ -11,7 +11,7 @@
     height: 100vh;
     width: 100%;
     box-sizing: border-box;
-    padding: 64px 0 0 64px;
+    padding: var(--s-xl) 0 0 var(--s-xl);
     position: fixed;
 }
 
@@ -78,16 +78,16 @@
     align-items: center;
     justify-content: space-between;
     align-self: flex-end;
-    gap: 24px;
-    padding: 0 0 16px 0;
-    width: 64px;
+    gap: 1.5rem;
+    padding: 0 0 var(--s-s) 0;
+    width: 4rem;
     mix-blend-mode: difference;
     flex-shrink: 0;
 }
 
 .sideRotationWrapper {
-    width: 64px;
-    height: 256px;
+    width: 4rem;
+    height: 16rem;
 }
 
 .sideFlavourText {
@@ -109,12 +109,12 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
+    gap: var(--s-xxs);
 }
 
 .sideDividerIcon {
-    width: 26px;
-    height: 26px;
+    width: 1.625rem;
+    height: 1.625rem;
 }
 
 .sideDecoText {
@@ -131,14 +131,14 @@
 }
 
 /* Tablet */
-@media (max-width: 1024px) {
+@media (max-width: 64em) {
     .section {
         padding: var(--s-l) 0 0 var(--s-l);
     }
 }
 
 /* Mobile */
-@media (max-width: 768px) {
+@media (max-width: 48em) {
     .section {
         padding: 5rem var(--s-m) 0 var(--s-m);
         width: 100%;
@@ -158,12 +158,12 @@
     .accentsBottom,
     .side,
     .name {
-        display: none !important;
+        display: none;
     }
 }
 
 /* Small mobile */
-@media (max-width: 375px) {
+@media (max-width: 23.4375em) {
     .section {
         padding: var(--s-s) var(--s-s) 0 var(--s-s);
     }

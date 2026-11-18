@@ -12,8 +12,8 @@
     color: var(--c-drk_100);
     border: 1px solid var(--c-lght_100);
     transition:
-        background-color 0.4s ease,
-        border-color 0.4s ease;
+        background-color var(--t-slow) ease,
+        border-color var(--t-slow) ease;
 }
 
 /* ----------------------------------------------------------------
@@ -29,8 +29,8 @@
     color: var(--c-drk_100);
     font: var(--f-func);
     transition:
-        border-color 0.2s ease,
-        color 0.2s ease;
+        border-color var(--t-fast) ease,
+        color var(--t-fast) ease;
 }
 
 .input::placeholder {
@@ -47,53 +47,53 @@
    ---------------------------------------------------------------- */
 
 .icon {
-    width: 32px;
-    height: 32px;
+    width: 2rem;
+    height: 2rem;
     color: var(--c-brnd_100);
 }
 
 /* ----------------------------------------------------------------
-   Corner Decorations
+   Corner Decorations (shared with TextArea via composes)
    ---------------------------------------------------------------- */
 
 .corner {
-    width: 48px;
-    height: 48px;
+    width: 3rem;
+    height: 3rem;
     position: absolute;
-    color: var(--c-lght_100);
+    color: var(--frame-color, var(--c-lght_100));
 }
 
 .cornerTL {
     composes: corner;
-    top: -24px;
-    left: -24px;
+    top: -1.5rem;
+    left: -1.5rem;
 }
 
 .cornerTR {
     composes: corner;
-    top: -24px;
-    right: -24px;
+    top: -1.5rem;
+    right: -1.5rem;
 }
 
 .cornerBL {
     composes: corner;
-    bottom: -24px;
-    left: -24px;
+    bottom: -1.5rem;
+    left: -1.5rem;
 }
 
 .cornerBR {
     composes: corner;
-    bottom: -24px;
-    right: -24px;
+    bottom: -1.5rem;
+    right: -1.5rem;
 }
 
 .marker {
-    width: 16px;
-    height: 16px;
+    width: 1rem;
+    height: 1rem;
     position: absolute;
-    top: 20px;
-    left: -24px;
-    color: var(--c-lght_100);
+    top: 1.25rem;
+    left: -1.5rem;
+    color: var(--frame-color, var(--c-lght_100));
 }
 
 /* ----------------------------------------------------------------
@@ -104,15 +104,11 @@
     composes: field;
     background-color: var(--c-error_100);
     border-color: var(--c-error_100);
+    --frame-color: var(--c-brnd_-100);
 }
 
 .fieldIntercept .input {
     color: var(--c-drk_100);
-}
-
-.fieldIntercept .corner,
-.fieldIntercept .marker {
-    color: var(--c-brnd_-100);
 }
 
 .fieldIntercept .icon {
@@ -123,7 +119,7 @@
    Responsive
    ---------------------------------------------------------------- */
 
-@media (max-width: 768px) {
+@media (max-width: 48em) {
     .input {
         min-height: 44px;
     }

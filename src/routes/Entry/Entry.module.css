@@ -65,7 +65,7 @@
 }
 
 /* Mobile */
-@media (max-width: 768px) {
+@media (max-width: 48em) {
     .header {
         padding: 0 var(--s-m);
     }
@@ -79,7 +79,7 @@
     }
 }
 
-@media (max-width: 375px) {
+@media (max-width: 23.4375em) {
     .header {
         padding: 0 var(--s-s);
     }

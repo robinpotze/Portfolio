@@ -7,6 +7,8 @@
     border-radius: 4px;
     background: var(--c-brnd_100);
     color: var(--c-drk_100);
+    /* Open-ticket header height; the side notches sit at its midpoint */
+    --head-h: 7rem;
     /* Perforation notches: 9px holes punched at each edge's midpoint */
     --holes:
         radial-gradient(circle at 50% 0, #0000 9px, #000 9.5px), radial-gradient(circle at 50% 100%, #0000 9px, #000 9.5px),
@@ -17,7 +19,9 @@
 
 /* Open tickets get two extra notches level with the header stub */
 .expanded {
-    mask-image: var(--holes), radial-gradient(circle at 0 56px, #0000 9px, #000 9.5px), radial-gradient(circle at 100% 56px, #0000 9px, #000 9.5px);
+    mask-image:
+        var(--holes), radial-gradient(circle at 0 calc(var(--head-h) / 2), #0000 9px, #000 9.5px),
+        radial-gradient(circle at 100% calc(var(--head-h) / 2), #0000 9px, #000 9.5px);
 }
 
 .recordDetails,
@@ -33,7 +37,7 @@
     font: var(--f-paragraph);
 }
 
-/* ── Header: column when closed, 112px row when open ── */
+/* ── Header: column when closed, --head-h row when open ── */
 
 .head {
     position: relative;
@@ -43,7 +47,7 @@
 }
 
 .expanded .head {
-    flex: 0 0 112px;
+    flex: 0 0 var(--head-h);
     flex-direction: row;
     align-items: center;
 }
@@ -51,13 +55,13 @@
 .stub {
     display: grid;
     place-items: center;
-    height: 72px;
+    height: 4.5rem;
     flex-shrink: 0;
     border-bottom: 1px dotted var(--c-drk_100);
 }
 
 .expanded .stub {
-    width: 100px;
+    width: 6.25rem;
     height: 100%;
     border-bottom: 0;
     border-right: 1px dotted var(--c-drk_100);
@@ -82,7 +86,7 @@
 .expanded .label {
     flex: 1;
     gap: var(--s-xxs);
-    margin: 0 54px 0 20px;
+    margin: 0 3.375rem 0 1.25rem;
 }
 
 /* h2 carries global uppercase; the design drops it */
@@ -98,8 +102,8 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 48px;
-    padding: 0 12px;
+    height: 3rem;
+    padding: 0 0.75rem;
     flex-shrink: 0;
 }
 
@@ -109,8 +113,8 @@
 }
 
 .plus svg {
-    width: 24px;
-    height: 24px;
+    width: 1.5rem;
+    height: 1.5rem;
 }
 
 .plus path {
@@ -120,8 +124,8 @@
 
 .closeSlot {
     position: absolute;
-    top: 42px;
-    right: 28px;
+    top: 2.625rem;
+    right: 1.75rem;
 }
 
 /* Overlay button: whole ticket when closed, header row when open */
@@ -133,7 +137,7 @@
 
 .expanded .hit {
     bottom: auto;
-    height: 112px;
+    height: var(--head-h);
 }
 
 .hit:focus-visible {
@@ -149,7 +153,7 @@
     flex-direction: column;
     gap: var(--s-s);
     min-height: 0;
-    padding: 0 var(--s-m) 24px 132px;
+    padding: 0 var(--s-m) 1.5rem 8.25rem;
     overflow-y: auto;
 }
 
@@ -173,7 +177,7 @@
 
 .recordDetails {
     flex: 1;
-    gap: 9px;
+    gap: 0.5625rem;
     min-width: 0;
 }
 
@@ -188,8 +192,8 @@
 }
 
 .icon {
-    width: 20px;
-    height: 20px;
+    width: 1.25rem;
+    height: 1.25rem;
     flex-shrink: 0;
 }
 
@@ -208,38 +212,38 @@ img.icon {
 
 .skillGrid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 18px var(--s-l);
-    padding: 6px 0 12px;
+    gap: 1.125rem var(--s-l);
+    padding: 0.375rem 0 0.75rem;
 }
 
 .softwareGrid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 40px 24px;
-    padding: 20px 0;
+    gap: 2.5rem 1.5rem;
+    padding: 1.25rem 0;
 }
 
 .skillGrid li,
 .softwareGrid li {
     gap: var(--s-xs);
-    padding-top: 14px;
+    padding-top: 0.875rem;
 }
 
 /* ── Responsive ────────────────────────────────── */
 
-@media (max-width: 1024px) {
+@media (max-width: 64em) {
     .record {
         padding-left: var(--s-m);
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 48em) {
     .ticket {
-        min-height: 280px;
+        min-height: 17.5rem;
     }
 
     .record {
         max-height: 70dvh;
-        padding: 0 var(--s-s) 24px;
+        padding: 0 var(--s-s) 1.5rem;
     }
 
     .datedRecord {

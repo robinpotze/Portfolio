@@ -4,8 +4,8 @@
  */
 
 export const BREAKPOINTS = {
-    MOBILE: 375,
-    TABLET: 768,
+    // Same query as the CSS tablet breakpoint, so canvas and layout switch together at any root font size
+    TABLET: '(max-width: 48em)',
     REFERENCE_WIDTH: 1920,
 };
 

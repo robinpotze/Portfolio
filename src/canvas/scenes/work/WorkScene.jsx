@@ -52,7 +52,7 @@ export default function WorkScene({
 
     // Reactive FOV based on viewport width
     useEffect(() => {
-        const fov = size.width <= BREAKPOINTS.TABLET ? CAROUSEL_CONFIG.CAMERA.FOV + 15 : CAROUSEL_CONFIG.CAMERA.FOV;
+        const fov = window.matchMedia(BREAKPOINTS.TABLET).matches ? CAROUSEL_CONFIG.CAMERA.FOV + 15 : CAROUSEL_CONFIG.CAMERA.FOV;
         if (camera.isPerspectiveCamera && camera.fov !== fov) {
             camera.fov = fov;
             camera.updateProjectionMatrix();

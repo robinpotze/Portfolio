@@ -1,7 +1,7 @@
 .wrapper {
     display: flex;
     gap: var(--s-l);
-    padding: 0 var(--s-xl);
+    padding: 0 var(--gutter);
     margin: 0 auto;
     max-width: var(--content-max-width);
 }
@@ -18,7 +18,7 @@
 .item strong {
     font: var(--f-func-tiny);
     color: var(--c-brnd_100);
-    letter-spacing: 0.2em;
+    letter-spacing: var(--ls-wide);
     text-transform: uppercase;
 }
 
@@ -27,10 +27,9 @@
     color: var(--c-lght_100);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 48em) {
     .wrapper {
         flex-direction: column;
         gap: var(--s-m);
-        padding: 0 var(--s-m);
     }
 }
