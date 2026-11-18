@@ -9,8 +9,6 @@ import StatementBlock from '@components/sections/StatementBlock/StatementBlock';
 import WorkHeader from '@components/sections/WorkHeader/WorkHeader';
 import styles from '@routes/Entry/Entry.module.css';
 
-import { Data } from './cjib.data';
-
 const assetPath = '/assets/img/work/cjib/';
 
 export default function Cjib() {
@@ -20,26 +18,27 @@ export default function Cjib() {
 
             <CaseIntro
                 src={`${assetPath}Presentation.mp4`}
-                kicker={`CJIB / ${Data.year}`}
-                heading="Three teams. Twelve months. One designer."
-                subtitle="Embedded at CJIB to make government infrastructure legible."
+                kicker="CJIB / 2023–2025"
+                heading="Design and testing for CJIB's internal systems."
+                subtitle="Test automation engineer, then UX designer for three development teams."
             />
 
-            {/* ── ROLE ── */}
+            {/* ── CONTEXT ── */}
 
-            <StatementBlock label="ROLE">
-                <h2>Nobody had visualized these systems before. That was the job.</h2>
+            <StatementBlock label="CONTEXT">
+                <h2>From test automation to UX design</h2>
                 <ScrollReveal>
-                    Three product teams running parallel workstreams — motion design, developer documentation, and seizure-management UX. No
-                    templates. No precedent. Every deliverable built from zero.
+                    I joined a development team of six at CJIB as a test automation engineer. After about four months I switched to UX design, and
+                    later also worked as the UX designer for two other teams of six to eight people. The work covered three areas: motion design for
+                    internal presentations, the documentation site for PBS, and the design of Beslagportaal.
                 </ScrollReveal>
             </StatementBlock>
 
             <EvidenceRow
                 items={[
-                    { label: 'SCOPE', value: '3 product teams' },
-                    { label: 'DURATION', value: '12 months' },
-                    { label: 'ROLE', value: 'Sole designer' },
+                    { label: 'ROLE', value: 'Test automation, then UX design' },
+                    { label: 'TEAM', value: '3 teams of 6–8' },
+                    { label: 'DURATION', value: 'Oct 2023 – Jul 2025' },
                     {
                         label: 'OUTPUT',
                         value: 'Motion, documentation, product UX',
@@ -47,74 +46,104 @@ export default function Cjib() {
                 ]}
             />
 
+            {/* ── TEST AUTOMATION ── */}
+
+            <WorkHeader
+                title="TEST AUTOMATION"
+                subtitle="001:::QUALITY_ASSURANCE"
+                description="My first four months at CJIB, as test automation engineer in my base team."
+            />
+
+            <StatementBlock label="APPROACH">
+                <h2>From Tosca to Cucumber</h2>
+                <ScrollReveal>I started with Tosca. The team then moved to a custom test setup in Java, based on Cucumber.</ScrollReveal>
+            </StatementBlock>
+
             {/* ── COMMUNICATING SYSTEMS ── */}
 
             <WorkHeader
                 title="COMMUNICATING SYSTEMS"
-                subtitle="001:::MOTION_DESIGN"
-                description="CJIB's internal presentations were walls of text over stock templates. I replaced them with animated system narratives — transitions that traced data through architecture, identity sequences that gave each team a visual language worth remembering."
+                subtitle="002:::MOTION_DESIGN"
+                description="Animations for company-wide presentations, explaining how our systems work to stakeholders and developers."
             />
 
-            <StatementBlock label="DECISION">
-                <h2>REST couldn't match the data layer. GraphQL could. That story needed telling in sixty seconds.</h2>
+            <StatementBlock label="PROBLEM">
+                <h2>Explaining a move away from REST</h2>
+                <ScrollReveal>
+                    Our presentations to the company were bare slides, shown to stakeholders and developers from other teams. REST was the well-known
+                    standard in the company, and our lead developer had chosen GraphQL instead. The presentations had to explain that deviation and
+                    how GraphQL works in our context.
+                </ScrollReveal>
             </StatementBlock>
-
-            <FullImage src={`${assetPath}GraphQLTransition.webp`} alt="Animated transition showing GraphQL query flow through the system." />
 
             <FeatureSplit
                 src={`${assetPath}McDonalds_Logo.webp`}
                 alt="Animated logo sequence for internal presentation material."
                 label="MOTION LANGUAGE"
             >
-                <h3>Identity sequences for teams that never had one.</h3>
+                <h3>The menu metaphor</h3>
                 <ScrollReveal>
-                    Animated transitions and motion graphics that replaced generic slide decks with deliberate visual storytelling. Each team got a
-                    recognizable visual language — not a template, a system.
+                    In a GraphQL request you list the nested fields you want, and you get exactly those back. I compared that to ordering from a
+                    McDonald's menu: you get what you ask for, nothing more and nothing less. I built the animations in After Effects around that
+                    metaphor.
                 </ScrollReveal>
             </FeatureSplit>
+
+            <FullImage src={`${assetPath}GraphQLTransition.webp`} alt="Animated transition showing GraphQL query flow through the system." />
 
             {/* ── PBS DOCUMENTATION ── */}
 
             <WorkHeader
                 title="PBS"
-                subtitle="002:::DOCUMENTATION"
-                description="The system that merges fragmented government identity data into unified person profiles. Dozens of integration states. Hundreds of edge cases. I designed the documentation site that maps it all for the developers building against it."
+                subtitle="003:::DOCUMENTATION"
+                description="PBS gives internal applications one central access point for the data they need. I designed its documentation site and built it together with the team."
             />
 
             <FullImage src={`${assetPath}LANDING TMI.png`} alt="Landing page for the PBS documentation website." />
 
-            <HeroStatement label="SYSTEM OVERVIEW">
-                <h2>One identity layer across every government source.</h2>
+            <StatementBlock label="PROBLEM">
+                <h2>A new API language</h2>
                 <ScrollReveal>
-                    PBS pulls from multiple registries to construct a single profile model. The documentation accounts for every connection state and
-                    failure path — no ambiguity, no guesswork. Developers know what breaks before they write a line of code.
+                    The same switch to GraphQL reached the developers integrating with PBS, who had not worked with it before. They needed to be
+                    guided through working with a different API language.
                 </ScrollReveal>
+            </StatementBlock>
+
+            <HeroStatement label="APPROACH">
+                <h2>System overview</h2>
+                <ScrollReveal>The site starts with an architecture infographic of how internal applications get their data through PBS.</ScrollReveal>
             </HeroStatement>
 
             <div className={styles.isolatedVisual}>
                 <img src={`${assetPath}INFOGRAPHIC LARGE.png`} alt="Technical architecture infographic for PBS." />
             </div>
 
-            <StatementBlock label="API STATES">
-                <h3>Every state documented. Every failure explained.</h3>
-                <ScrollReveal>
-                    Success paths and error states on dedicated reference pages — cause, resolution, and code samples. No hunting through changelogs.
-                </ScrollReveal>
+            <StatementBlock label="APPROACH">
+                <h3>Request and error states</h3>
+                <ScrollReveal>Success and error responses each have a reference page with the cause, the resolution and code samples.</ScrollReveal>
                 <img className={styles.imgFullWidth} src={`${assetPath}INFOGRAPHIC.png`} alt="Normal request reference in PBS documentation." />
                 <img className={styles.imgFullWidth} src={`${assetPath}ERROR INFO.png`} alt="Error handling reference in PBS documentation." />
             </StatementBlock>
 
+            <StatementBlock label="DECISION">
+                <h3>Matching the internal documentation</h3>
+                <ScrollReveal>
+                    I simplified the first design so it matched the company's other documentation pages, which made it familiar to internal
+                    developers.
+                </ScrollReveal>
+            </StatementBlock>
+
             <ComparisonBlock
                 label="API DOCUMENTATION"
-                heading="Stripped back until only the useful parts remained."
+                heading="First design and simplified version"
                 items={[
                     {
-                        caption: 'ORIGINAL DESIGN',
+                        caption: 'V1: CUSTOM DESIGN',
                         src: `${assetPath}PBS-MenuDocs-Design.png`,
                         alt: 'Early iteration of PBS documentation with text-heavy reference pages.',
                     },
                     {
-                        caption: 'TONED DOWN',
+                        caption: 'V2: ALIGNED WITH INTERNAL DOCS',
                         src: `${assetPath}PBS-MenuDocs-Clean.png`,
                         alt: 'Later iteration of PBS documentation with visual reference pages.',
                     },
@@ -125,75 +154,87 @@ export default function Cjib() {
 
             <WorkHeader
                 title="BESLAGPORTAAL"
-                subtitle="003:::UX_DESIGN"
-                description="Search, case records, and seized-item management in one application. Officers were reconstructing context across three disconnected tools for every case. That workflow ended here."
+                subtitle="004:::UX_DESIGN"
+                description="An application for CJIB employees to look up cases and manage seized items. I did the design; it was still in development when I left, and the screens below are not final."
             />
 
             <StatementBlock label="PROBLEM">
-                <h2>Every case meant rebuilding context from scratch.</h2>
+                <h2>Split across applications</h2>
                 <ScrollReveal>
-                    What was seized, where it was stored, what its legal status was — all scattered across disconnected systems. Officers spent more
-                    time navigating tools than doing their jobs.
+                    Employees worked with several custom internal applications. What was seized, where it was stored and its legal status were spread
+                    across them.
                 </ScrollReveal>
             </StatementBlock>
 
-            <StatementBlock label="CASE OVERVIEW">
-                <h2>One screen. Full context. No reconstruction.</h2>
+            <StatementBlock label="APPROACH">
+                <h2>Case overview</h2>
+                <ScrollReveal>I designed a case overview that brings that information together on one screen.</ScrollReveal>
             </StatementBlock>
 
             <FullImage src={`${assetPath}Zaakoverzicht-v1.png`} alt="Case overview screen of the Beslagportaal application." />
 
-            <StatementBlock label="SEARCH">
-                <h2>Partial numbers. Uncertain descriptions. Still finds the record.</h2>
+            <StatementBlock label="APPROACH">
+                <h2>Search</h2>
                 <ScrollReveal>
-                    Officers work with incomplete information — a fragment of a case number, a vague item description. The search was built for that
-                    ambiguity. Flexible filters, fast results, thousands of records.
+                    I based the search screen mostly on an internal registration number that identifies a person. This supports CJIB's Persoonsgericht
+                    werken initiative: working around the person instead of the case.
                 </ScrollReveal>
             </StatementBlock>
 
-            <FullImage src={`${assetPath}Zoeken.png`} alt="Search interface for locating seized items across thousands of records." />
+            <FullImage src={`${assetPath}Zoeken.png`} alt="Search screen of the Beslagportaal application." />
+
+            <StatementBlock label="DECISION">
+                <h3>Toward standard case management</h3>
+                <ScrollReveal>
+                    The first version nested the information more deeply. For the second I moved to a more standard case management layout.
+                </ScrollReveal>
+            </StatementBlock>
 
             <ComparisonBlock
                 label="ITERATION"
-                heading="Stripped for scanability."
+                heading="Case overview iterations"
                 items={[
                     {
-                        caption: 'EARLY STRUCTURE',
+                        caption: 'V1: NESTED STRUCTURE',
                         src: `${assetPath}V1.png`,
                         alt: 'Early iteration establishing information architecture.',
                     },
                     {
-                        caption: 'REFINED HIERARCHY',
+                        caption: 'V2: STANDARD CASE MANAGEMENT',
                         src: `${assetPath}V2.png`,
-                        alt: 'Later iteration with refined hierarchy and interaction patterns.',
+                        alt: 'Later iteration with revised hierarchy and interaction patterns.',
                     },
                 ]}
             />
 
             <FeatureSplit src={`${assetPath}Beslagvoorwerp.png`} alt="Detail view for an individual seized item." reverse label="DETAIL VIEW">
-                <h3>Every seized item, fully contextualized.</h3>
+                <h3>Seized item detail</h3>
+                <ScrollReveal>
+                    Each seized item expands in the list to show its details, a note and its status: open, in progress or completed.
+                </ScrollReveal>
             </FeatureSplit>
 
             {/* ── CLOSING ── */}
 
             <HeroStatement label="OUTCOME">
-                <h2>Systems that explain themselves.</h2>
+                <h2>Status and hindsight</h2>
                 <ScrollReveal>
-                    A documentation layer that made PBS integration predictable. An item-management application that replaced fragmented tools with a
-                    single workflow. Motion design that turned invisible infrastructure into something stakeholders could finally point at.
+                    PBS is in use. Beslagportaal was still in development when I left. In hindsight, I would have built the PBS documentation as a
+                    custom site instead of on a documentation framework. For Beslagportaal I would start from a case management perspective and focus
+                    on cognitive load. I had too little input from users, and the designs show it.
                 </ScrollReveal>
             </HeroStatement>
 
             <EvidenceRow
                 items={[
-                    { label: 'SYSTEMS', value: 'PBS, ABE, BSP' },
+                    { label: 'SYSTEMS', value: 'PBS, BSP' },
                     {
                         label: 'SKILLS',
                         value: 'Motion Design, Infographics, Documentation, UX Design',
                     },
                     {
                         label: 'IMPLEMENTATION',
-                        value: 'Angular, Antora, SpectaQl, AfterEffects',
+                        value: 'Angular, Antora, SpectaQL, After Effects, Tosca, Cucumber',
                     },
                 ]}
             />
