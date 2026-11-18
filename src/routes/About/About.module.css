@@ -1,6 +1,4 @@
 .page {
-    --about-serif: 'Lora', serif;
-
     display: flex;
     flex-direction: column;
     /* Spacing shrinks with viewport height so the page fits one screen; Figma values are the max */
@@ -81,14 +79,16 @@
 
 /* h1 carries global uppercase + glow; the design drops both */
 .title {
-    font: clamp(48px, min(8vh, 8vw), 108px) / 1.05 var(--about-serif);
+    /* Display size: the one heading larger than the --f-hdr scale */
+    font-size: clamp(48px, min(8vh, 8vw), 108px);
+    line-height: 1.05;
     text-transform: none;
     text-shadow: none;
     color: var(--c-brnd_100);
 }
 
 .name {
-    font: 32px/1.1 var(--about-serif);
+    font: var(--f-hdr_2);
 }
 
 .bio {
@@ -104,13 +104,15 @@
     flex: 1;
     min-height: 280px;
     max-height: 600px;
+    /* Room for the MRKR corner lines, which reach 42px past the tickets */
+    margin-block: var(--s-m);
 }
 
 /* Corner frame: same MRKR nine-slice as StatusPanel / NineSliceBorder */
 .register::after {
     content: '';
     position: absolute;
-    inset: 0 -4px;
+    inset: -42px -2px;
     pointer-events: none;
     border: 42px solid transparent;
     border-image: url('../../assets/decals/MRKR.svg') 42 / 42px stretch;
@@ -137,9 +139,7 @@
     height: 162px;
     background: var(--c-brnd_100);
     color: var(--c-drk_100);
-    font:
-        20px 'Kode Mono',
-        monospace;
+    font: var(--f-func);
 }
 
 .tickets {
@@ -187,6 +187,7 @@
     .register {
         min-height: 0;
         max-height: none;
+        margin-block: 0;
     }
 
     .edgeCol,

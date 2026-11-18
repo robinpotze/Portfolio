@@ -15,12 +15,12 @@ function IconLine({ icon: Svg, className = '', children }) {
 }
 
 // Work and education entry: date column + title, subtitle and optional detail lines
-function DatedRecord({ date, title, titleClass, subtitle, icon, lines = [] }) {
+function DatedRecord({ date, title, subtitle, icon, lines = [] }) {
     return (
         <div className={styles.datedRecord}>
             <p className={styles.dates}>{date}</p>
             <div className={styles.recordDetails}>
-                <p className={titleClass}>{title}</p>
+                <p className={styles.recordTitle}>{title}</p>
                 <IconLine icon={icon}>{subtitle}</IconLine>
                 {lines.map(({ text, icon: lineIcon }) => (
                     <IconLine key={text} icon={lineIcon} className={styles.paragraph}>
@@ -48,28 +48,12 @@ function ListRecords({ data, className }) {
 
 const RECORDS = {
     EXP: (data) =>
-        data.map((job) => (
-            <DatedRecord
-                key={job.name + job.date}
-                date={job.date}
-                title={job.function}
-                titleClass={styles.expRole}
-                subtitle={job.name}
-                lines={job.details}
-            />
-        )),
+        data.map((job) => <DatedRecord key={job.name + job.date} date={job.date} title={job.function} subtitle={job.name} lines={job.details} />),
     SKL: (data) => <ListRecords data={data} className={styles.skillGrid} />,
     SFT: (data) => <ListRecords data={data} className={styles.softwareGrid} />,
     EDU: (data) =>
         data.map((entry) => (
-            <DatedRecord
-                key={entry.school + entry.date}
-                date={entry.date}
-                title={entry.course}
-                titleClass={styles.eduDegree}
-                subtitle={entry.school}
-                icon={entry.icon}
-            />
+            <DatedRecord key={entry.school + entry.date} date={entry.date} title={entry.course} subtitle={entry.school} icon={entry.icon} />
         )),
 };
 
