@@ -130,10 +130,11 @@ export default function LsdJam() {
             {/* ── CLOSING ── */}
 
             <HeroStatement label="OUTCOME">
-                <h2>Status</h2>
+                <h2>Status and hindsight</h2>
                 <ScrollReveal>
                     We did not finish the game within the jam, so it has no results beyond a DNF. The environments on this page are the parts I
-                    completed.
+                    completed. In hindsight, we needed a much smaller scope, and I should have spent far less time on the cassette room. A jam is
+                    about making a lot of things quickly; I made them with a ton of detail instead.
                 </ScrollReveal>
             </HeroStatement>
 
