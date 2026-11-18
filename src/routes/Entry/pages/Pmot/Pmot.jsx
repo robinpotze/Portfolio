@@ -9,8 +9,6 @@ import HeroStatement from '@components/sections/HeroStatement/HeroStatement';
 import StatementBlock from '@components/sections/StatementBlock/StatementBlock';
 import WorkHeader from '@components/sections/WorkHeader/WorkHeader';
 
-import { Data } from './pmot.data';
-
 const assetPath = '/assets/img/work/pmot/';
 
 export default function Pmot() {
@@ -20,60 +18,59 @@ export default function Pmot() {
 
             <CaseIntro
                 src={`${assetPath}Landing Page.png`}
-                kicker={`PMOT / ${Data.year}`}
-                heading="Two platforms. One ecosystem."
-                subtitle="Redesigning a STEAM retail store and building a learning platform from scratch."
+                kicker="PMOT / 2021–2022"
+                heading="A webstore and learning platform for STEAM materials."
+                subtitle="Graduation project at Hanze: research, UX and visual design, on my own."
             />
 
-            {/* ── CHALLENGE ── */}
+            {/* ── CONTEXT ── */}
 
-            <StatementBlock label="CHALLENGE">
-                <h2>Low clickthrough, hard navigation, no reason to return.</h2>
+            <StatementBlock label="CONTEXT">
+                <h2>Graduation project for PMOT</h2>
                 <ScrollReveal>
-                    PMOT sells technical learning materials for children aged 2–17, but their existing website struggled with usability and visual
-                    appeal. Teachers — the primary audience — needed translated manuals, custom lesson plans, and a reason to come back after
-                    purchasing. The objective was to redesign the store while introducing a community learning platform that connects products to
-                    educational content.
+                    PMOT sells STEAM learning materials, such as robotics kits, for children aged 2–17. The buyers are teachers and parents in the
+                    Benelux. For my graduation project at Hanze I redesigned the webstore and designed a new learning platform next to it. I worked
+                    alone, with one stakeholder at PMOT, for about six months.
                 </ScrollReveal>
             </StatementBlock>
 
             <EvidenceRow
                 items={[
-                    { label: 'CLIENT', value: 'PMOT' },
-                    { label: 'AUDIENCE', value: 'Teachers (Benelux)' },
-                    { label: 'SCOPE', value: 'Webstore + Learning Platform' },
-                    { label: 'PROCESS', value: 'Full design cycle' },
+                    { label: 'ROLE', value: 'UX and visual design' },
+                    { label: 'TEAM', value: 'Solo, one stakeholder' },
+                    { label: 'DURATION', value: '~6 months, 2021–2022' },
+                    { label: 'OUTPUT', value: 'Webstore + learning platform prototype' },
                 ]}
             />
-
-            <StatementBlock label="DESIGN CHALLENGE">
-                <h2>Visually child-friendly while remaining professional enough for teachers to trust.</h2>
-                <ScrollReveal>
-                    The products are made for children, but the buyers are educators. The interface had to bridge that gap — approachable enough to
-                    signal the right category, structured enough for teachers to navigate efficiently. On top of that, every product needed a
-                    counterpart on the learning platform where teachers could find and share lesson materials.
-                </ScrollReveal>
-            </StatementBlock>
 
             {/* ── WEBSTORE ── */}
 
             <WorkHeader
                 title="WEBSTORE"
                 subtitle="001:::RETAIL_PLATFORM"
-                description="A complete redesign of the PMOT retail experience — from product browsing and category navigation to cart, wishlist, and account management. Every page designed for clarity and conversion."
+                description="A redesign of the PMOT webstore: product browsing, categories, cart, wishlist and account."
             />
 
             <FullImage src={`${assetPath}Landing Page.png`} alt="PMOT webstore landing page design." />
+
+            <StatementBlock label="PROBLEM">
+                <h2>The old store</h2>
+                <ScrollReveal>
+                    My own review and interviews with customers showed the same issues: low clickthrough, navigation that was hard to follow, and no
+                    reason for customers to come back after buying.
+                </ScrollReveal>
+            </StatementBlock>
 
             <FeatureSplit
                 src={`${assetPath}Product Browser Page.png`}
                 alt="Product browser with filtering and category navigation."
                 label="PRODUCT BROWSING"
             >
-                <h3>Find materials fast, even without knowing the exact name.</h3>
+                <h3>Filters for age, material and subject</h3>
                 <ScrollReveal>
-                    Category-driven navigation with expanded filtering lets teachers browse by age group, material type, or subject area. The layout
-                    was informed by card sorting exercises with users and benchmarked against the most-used Dutch retail platforms.
+                    My research combined end-user research, interviews with teachers throughout the project, card sorting and benchmarking against the
+                    most-used Dutch retail platforms. The product browser combines category navigation with filters for age group, material type and
+                    subject.
                 </ScrollReveal>
             </FeatureSplit>
 
@@ -83,10 +80,10 @@ export default function Pmot() {
                 reverse
                 label="CATEGORIES"
             >
-                <h3>Structured around how teachers think, not how suppliers ship.</h3>
+                <h3>Grouped by classroom use</h3>
                 <ScrollReveal>
-                    Product categories were reorganized based on educational context rather than manufacturer groupings — making it intuitive to find
-                    materials that fit a lesson plan rather than a stock code.
+                    Based on that research, I grouped the categories by how teachers use the materials in class. Browsing by manufacturer stayed
+                    available as a second route.
                 </ScrollReveal>
             </FeatureSplit>
 
@@ -104,8 +101,8 @@ export default function Pmot() {
             />
 
             <ComparisonBlock
-                label="ACCOUNT EXPERIENCE"
-                heading="Everything in one place — orders, details, access."
+                label="ACCOUNT"
+                heading="Orders, details and preferences"
                 items={[
                     {
                         caption: 'ACCOUNT OVERVIEW',
@@ -133,30 +130,41 @@ export default function Pmot() {
                 ]}
             />
 
+            <StatementBlock label="DECISION">
+                <h2>Visual style</h2>
+                <ScrollReveal>
+                    The products are for children, but teachers buy them, so the design had to be approachable and still structured. PMOT's main
+                    colour stayed red; I chose a new shade of it and made the other visual decisions myself. I also designed the robot mascot and
+                    modelled it in Blender. A robot can be emotive and expressive, and it relates closely to many of the products the store sells.
+                </ScrollReveal>
+            </StatementBlock>
+
             {/* ── LEARNING PLATFORM ── */}
 
             <WorkHeader
                 title="LEARNING PLATFORM"
                 subtitle="002:::EDUCATION"
-                description="A community-managed platform where teachers consume and create lesson materials tied to PMOT products. Designed for sharing courses, research, and experiences between educators across the Benelux."
+                description="A new platform where teachers create and share lessons linked to PMOT products. There was no existing platform; I designed it from the start."
             />
 
             <FullImage src={`${assetPath}Learning Landing Page.png`} alt="Learning platform landing page." />
 
-            <HeroStatement label="INTEGRATION">
-                <h2>Products and lessons, connected by design.</h2>
+            <StatementBlock label="PROBLEM">
+                <h2>After the purchase</h2>
+                <ScrollReveal>Teachers had no place to find lessons, manuals or other downloads for the products they had bought.</ScrollReveal>
+            </StatementBlock>
+
+            <HeroStatement label="APPROACH">
+                <h2>Linking products and lessons</h2>
                 <ScrollReveal>
-                    Every product in the store has a counterpart on the learning platform — manuals, tasks, and full lesson programs created by the
-                    community. Teachers find materials for what they bought; the platform references back to the store. Two sites, one ecosystem.
+                    Teachers write the lessons. They can link products to a lesson, and products carry tags and other metadata that fill in related
+                    lessons automatically. The same links give manuals and downloads a place. Connecting the two sites this way was my idea.
                 </ScrollReveal>
             </HeroStatement>
 
             <FeatureSplit src={`${assetPath}Learning Lesmaterialen Page.png`} alt="Lesson materials overview page." label="LESSON MATERIALS">
-                <h3>Browse, filter, and discover lessons built by other teachers.</h3>
-                <ScrollReveal>
-                    Community-created lesson programs organized by subject, age group, and associated product. Teachers can publish their own courses
-                    and share experiences — turning the platform into a living resource rather than a static repository.
-                </ScrollReveal>
+                <h3>Lesson overview</h3>
+                <ScrollReveal>Teachers browse lessons by subject, age group and product, and can publish their own.</ScrollReveal>
             </FeatureSplit>
 
             <FeatureSplit
@@ -165,11 +173,8 @@ export default function Pmot() {
                 reverse
                 label="LESSON DETAIL"
             >
-                <h3>Complex information, digestible format.</h3>
-                <ScrollReveal>
-                    Each lesson page structures content for quick scanning — objectives, required materials, step-by-step instructions, and direct
-                    links to purchase the products used. Designed so teachers can evaluate a lesson plan in under a minute.
-                </ScrollReveal>
+                <h3>Lesson page</h3>
+                <ScrollReveal>Each lesson lists its objectives, required materials and steps, with links to the products it uses.</ScrollReveal>
             </FeatureSplit>
 
             <DoubleImage
@@ -191,9 +196,18 @@ export default function Pmot() {
 
             <WorkHeader
                 title="PROTOTYPING"
-                subtitle="003:::BEHIND_THE_SCENES"
-                description="From sketches to Adobe XD to Axure RP 10 — the prototype was rebuilt across tools to meet the design requirements. Axure's advanced interaction capabilities enabled a functional proof of concept with real navigation flows and variable-driven states."
+                subtitle="003:::TESTING"
+                description="I started the prototype in Adobe XD and moved to Axure RP early on, then built both sites as one interactive prototype and tested it."
             />
+
+            <StatementBlock label="APPROACH">
+                <h2>Expert reviews, user tests and AttrakDiff</h2>
+                <ScrollReveal>
+                    I validated the prototype with expert reviews, thinking-aloud tests with users, and an AttrakDiff survey. Users found it much
+                    easier to use than the old store and more familiar in its design. Navigation from the store to the learning platform needed more
+                    guidance.
+                </ScrollReveal>
+            </StatementBlock>
 
             <DoubleImage
                 images={[
@@ -211,23 +225,19 @@ export default function Pmot() {
             {/* ── OUTCOME ── */}
 
             <HeroStatement label="OUTCOME">
-                <h2>A validated proof of concept, ready for production.</h2>
+                <h2>Status and hindsight</h2>
                 <ScrollReveal>
-                    The project delivered a complete front-end concept for two integrated websites — validated through expert reviews and
-                    thinking-aloud usability tests with the target audience. Design decisions were backed by UX experts consulted across every phase,
-                    and the prototype is directly exportable to a functioning front end.
+                    The design did not go live. I wanted to develop it, but we could not agree on a budget. Looking back, I would make something more
+                    creative; the design now feels too generic.
                 </ScrollReveal>
             </HeroStatement>
 
             <EvidenceRow
                 items={[
-                    { label: 'PLATFORMS', value: 'Webstore + Learning' },
-                    {
-                        label: 'VALIDATION',
-                        value: 'Expert review + User testing',
-                    },
-                    { label: 'METHODOLOGY', value: 'Full design cycle' },
-                    { label: 'TOOLS', value: 'Blender, Illustrator, Axure RP' },
+                    { label: 'PLATFORMS', value: 'Webstore + learning platform' },
+                    { label: 'RESEARCH', value: 'Interviews, card sorting, benchmarking' },
+                    { label: 'VALIDATION', value: 'Expert reviews, thinking-aloud tests, AttrakDiff' },
+                    { label: 'TOOLS', value: 'Axure RP, Illustrator, Blender' },
                 ]}
             />
         </>
