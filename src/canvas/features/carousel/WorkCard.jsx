@@ -1,7 +1,6 @@
 import { useQuality } from '@app/QualityContext';
-import useNoiseTexture from '@canvas/core/textures/useNoiseTexture';
 import { FLOAT_CONFIG } from '@config/animation.config';
-import { Float, Text, useTexture } from '@react-three/drei';
+import { Float, Text, useCursor, useTexture } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { getCSSVariable } from '@utils/cssUtils';
 import { entryEase } from '@utils/easingFunctions';
@@ -30,7 +29,7 @@ const LABEL = { color: getCSSVariable('--c-LGHT') || '#eee', anchorX: 'center', 
 const MONO_FONT = '/assets/fonts/Kode_Mono/static/KodeMono-Regular.ttf';
 const TITLE_FONT = '/assets/fonts/Orbitron/static/Orbitron-Medium.ttf';
 
-export default function WorkCard({ item, index, visible = true, onNavigate, centerednessRef, entryComplete = false, entryDelay = 0 }) {
+export default function WorkCard({ item, index, visible = true, onNavigate, noiseTexture, centerednessRef, entryComplete = false, entryDelay = 0 }) {
     const groupRef = useRef();
     const overlayRef = useRef();
     const scaleRef = useRef(0);
@@ -38,13 +37,14 @@ export default function WorkCard({ item, index, visible = true, onNavigate, cent
     const entryTimeRef = useRef(null);
     const wasVisibleRef = useRef(false);
     const [hovered, setHovered] = useState(false);
+    // Resets the cursor on unmount too: clicking a card navigates away before onPointerLeave can fire.
+    useCursor(hovered);
     const { quality } = useQuality();
     const isLowQuality = quality === 'low';
 
     const { data, key: pageKey } = item;
     const texture = useTexture(data.banner || '/assets/img/logo/logo.png');
     const textureSize = useMemo(() => new THREE.Vector2(texture.image?.width ?? 1, texture.image?.height ?? 1), [texture]);
-    const noiseTexture = useNoiseTexture({ size: isLowQuality ? 64 : 256, scale: 10, octaves: isLowQuality ? 2 : 3, persistence: 0.5 });
     const position = useMemo(() => calculateCardPosition(index), [index]);
     const rotation = useMemo(() => calculateCardRotation(index), [index]);
 
@@ -98,12 +98,8 @@ export default function WorkCard({ item, index, visible = true, onNavigate, cent
                 onPointerEnter={(e) => {
                     e.stopPropagation();
                     setHovered(true);
-                    document.body.style.cursor = 'pointer';
                 }}
-                onPointerLeave={() => {
-                    setHovered(false);
-                    document.body.style.cursor = 'auto';
-                }}
+                onPointerLeave={() => setHovered(false)}
             >
                 {/* Glass card with banner refracted through it */}
                 <mesh>
