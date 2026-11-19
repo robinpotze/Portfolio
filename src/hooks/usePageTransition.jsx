@@ -20,10 +20,23 @@ export function PageTransitionProvider({ children }) {
     const [transitionKey, setTransitionKey] = useState(0);
     const pendingNavigation = useRef(null);
     const pendingState = useRef(null);
+    // A mounted layout can take over navigation between its own routes (no curtain): handler(path) → true when handled.
+    const localNavigationRef = useRef(null);
+    const registerLocalNavigation = useCallback((handler) => {
+        localNavigationRef.current = handler;
+        return () => {
+            if (localNavigationRef.current === handler) {
+                localNavigationRef.current = null;
+            }
+        };
+    }, []);
 
     const navigateWithTransition = useCallback((path, name, dir = 'right', state) => {
         if (pendingNavigation.current) {
             return false;
+        }
+        if (localNavigationRef.current?.(path)) {
+            return true;
         }
         pendingNavigation.current = path;
         pendingState.current = state || null;
@@ -56,7 +69,7 @@ export function PageTransitionProvider({ children }) {
     }, []);
 
     return (
-        <PageTransitionContext.Provider value={{ navigateWithTransition }}>
+        <PageTransitionContext.Provider value={{ navigateWithTransition, registerLocalNavigation }}>
             <CurtainTransition
                 key={transitionKey}
                 isOpen={curtainOpen}
