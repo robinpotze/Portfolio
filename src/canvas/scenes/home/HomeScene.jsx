@@ -1,12 +1,11 @@
-import { useQuality } from '@app/QualityContext';
 import { BackgroundMesh } from '@canvas/features/background';
+import { CAROUSEL_CONFIG, getCarouselFov } from '@canvas/features/carousel';
 import { LaserPlane } from '@canvas/features/laser';
 import { LogoMesh } from '@canvas/features/logo';
 import { LogoParticles } from '@canvas/features/logoParticles';
 import { BREAKPOINTS, FLOAT_CONFIG, REVEAL, SCENE, SCROLL_THRESHOLDS } from '@config/animation.config';
-import { Float, PerspectiveCamera, Text } from '@react-three/drei';
+import { Float, Text } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
-import { Bloom, EffectComposer, N8AO } from '@react-three/postprocessing';
 import { easeCurve, entryEase } from '@utils/easingFunctions';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
@@ -14,8 +13,8 @@ import * as THREE from 'three';
 const { clamp, damp, lerp, smoothstep } = THREE.MathUtils;
 
 // Layout keyframes: [before the reveal, after the reveal, end of the home scroll]. Scales are multiplied by viewportScale.
-const CAMERA_Z = [30, 20, 10];
-const CAMERA_FOV = [70, 50, 100];
+export const CAMERA_Z = [30, 20, 10];
+export const CAMERA_FOV = [70, 50, 100];
 const LOGO_Z = [0, 0, -15];
 const LOGO_SCALE = [1, 1, 4];
 const BACKGROUND_Z = [-15, -30, -10];
@@ -33,13 +32,6 @@ const TILT_DAMPING = 7;
 // The dot panel covers the view where the camera settles after the reveal, with overscan for the tilt and parallax.
 const GRID_OVERSCAN = 1.15;
 
-// Post-processing per quality tier (ambient occlusion off on low).
-const POST_PROCESSING = {
-    low: { ao: null, bloom: { intensity: 0.3, levels: 2 } },
-    medium: { ao: { aoSamples: 4, denoiseSamples: 2, intensity: 1.2 }, bloom: { intensity: 0.45, levels: 4 } },
-    high: { ao: { aoSamples: 8, denoiseSamples: 4, intensity: 1.5 }, bloom: { intensity: 0.55, levels: 6 } },
-};
-
 // How far the "ROBIN POTZE" title rises by the end of the home scroll, in background-group units at viewportScale 1.
 const TITLE_RISE = 6;
 
@@ -51,8 +43,11 @@ function keyframe([before, after, end], reveal, scroll) {
 // Video wall pauses once the scroll passes this, to save decoding while it is out of view.
 const BACKGROUND_PAUSE_AT = 0.4;
 
-export default function HomeScene({ scrollProgressRef, startAnimations = true }) {
+export default function HomeScene({ segmentsRef, streamRef, startAnimations = true }) {
     const logoRef = useRef();
+    const laserRef = useRef();
+    const extrasRef = useRef();
+    const homeProgressRef = useRef(0);
     const titleRef = useRef();
     const [backgroundPaused, setBackgroundPaused] = useState(false);
     const backgroundRef = useRef();
@@ -62,7 +57,6 @@ export default function HomeScene({ scrollProgressRef, startAnimations = true })
     // Read by LogoParticles each frame: morph 0 = dot panel → 1 = logo, intro 0 → 1 = panel powered on.
     const timeline = useRef({ morph: 0, intro: 0 });
     const parallax = useMemo(() => new THREE.Vector3(), []);
-    const { quality } = useQuality();
 
     const { gl, size } = useThree();
 
@@ -84,8 +78,6 @@ export default function HomeScene({ scrollProgressRef, startAnimations = true })
         return [(height * size.width) / size.height / restScale, height / restScale];
     }, [size.width, size.height, viewportScale]);
 
-    const post = POST_PROCESSING[quality];
-
     // Scene timeline: every transform is a function of the reveal (time since startAnimations) and the scroll.
     // Priority -1 runs it before the children's frames, so LogoParticles sees this frame's camera, logo and timeline.
     useFrame(({ camera, clock, pointer }, delta) => {
@@ -94,7 +86,10 @@ export default function HomeScene({ scrollProgressRef, startAnimations = true })
         }
         const since = introStart.current === null ? -Infinity : clock.elapsedTime - introStart.current;
         const reveal = (delay, duration) => entryEase(clamp((since - delay) / duration, 0, 1));
-        const scrollProgress = scrollProgressRef.current;
+        const { home: scrollProgress, morph: streamProgress } = segmentsRef.current;
+        homeProgressRef.current = scrollProgress;
+        // Morph segment: blend from Home's end pose to the carousel's start pose.
+        const blend = easeCurve(streamProgress);
         const scroll = easeCurve(scrollProgress);
         // The particles form the logo by the time the page moves to Work; the title rises out of frame on the same curve.
         const morph = smoothstep(scrollProgress, 0, SCROLL_THRESHOLDS.HOME_TRANSITION);
@@ -111,18 +106,32 @@ export default function HomeScene({ scrollProgressRef, startAnimations = true })
         const cameraReveal = reveal(0, SCENE.CAMERA_DURATION);
         timeline.current.morph = morph;
         timeline.current.intro = cameraReveal;
-        camera.position.set(parallax.x, parallax.y, keyframe(CAMERA_Z, cameraReveal, scroll) + parallax.z);
-        camera.lookAt(0, 0, 0);
-        const fov = keyframe(CAMERA_FOV, cameraReveal, scroll);
-        if (camera.fov !== fov) {
-            camera.fov = fov;
-            camera.updateProjectionMatrix();
+        // WorkScene owns the camera once the morph completes.
+        if (streamProgress < 1) {
+            camera.position.set(
+                lerp(parallax.x, 0, blend),
+                lerp(parallax.y, 0, blend),
+                lerp(keyframe(CAMERA_Z, cameraReveal, scroll) + parallax.z, CAROUSEL_CONFIG.CAMERA.POSITION[2], blend)
+            );
+            camera.lookAt(0, 0, 0);
+            const fov = lerp(keyframe(CAMERA_FOV, cameraReveal, scroll), getCarouselFov(), blend);
+            if (camera.fov !== fov) {
+                camera.fov = fov;
+                camera.updateProjectionMatrix();
+            }
+        }
+        // Home's extras are out of frame once the morph starts; hide them without unmounting (keeps the video loaded).
+        if (extrasRef.current) {
+            extrasRef.current.visible = streamProgress === 0;
+        }
+        if (laserRef.current) {
+            laserRef.current.visible = streamProgress === 0;
         }
 
         const logo = logoRef.current;
         if (logo) {
-            logo.position.z = keyframe(LOGO_Z, 1, scroll);
-            logo.scale.setScalar(keyframe(LOGO_SCALE, 1, scroll) * viewportScale);
+            logo.position.z = lerp(keyframe(LOGO_Z, 1, scroll), 0, blend);
+            logo.scale.setScalar(keyframe(LOGO_SCALE, 1, scroll) * viewportScale * (1 - blend));
             logo.rotation.y = damp(logo.rotation.y, pointer.x * LOGO_TILT, TILT_DAMPING, delta);
             logo.rotation.x = damp(logo.rotation.x, -pointer.y * LOGO_TILT, TILT_DAMPING, delta);
         }
@@ -163,39 +172,39 @@ export default function HomeScene({ scrollProgressRef, startAnimations = true })
 
     return (
         <>
-            {startAnimations && <LaserPlane progressRef={scrollProgressRef} />}
-            <PerspectiveCamera makeDefault position={[0, 0, CAMERA_Z[0]]} fov={CAMERA_FOV[0]} />
+            {startAnimations && (
+                <group ref={laserRef}>
+                    <LaserPlane progressRef={homeProgressRef} />
+                </group>
+            )}
             <ambientLight ref={lightRef} intensity={0} />
 
-            {startAnimations && (
-                <group ref={backgroundRef}>
-                    <BackgroundMesh paused={backgroundPaused} />
-                    <group ref={titleRef}>
-                        <Text font="/assets/fonts/Orbitron/static/Orbitron-Medium.ttf" color="#EEE">
-                            ROBIN POTZE
+            <group ref={extrasRef}>
+                {startAnimations && (
+                    <group ref={backgroundRef}>
+                        <BackgroundMesh paused={backgroundPaused} />
+                        <group ref={titleRef}>
+                            <Text font="/assets/fonts/Orbitron/static/Orbitron-Medium.ttf" color="#EEE">
+                                ROBIN POTZE
+                            </Text>
+                        </group>
+                    </group>
+                )}
+
+                {startAnimations && (
+                    <group ref={subtitleRef}>
+                        <Text fontSize={0.6} font="/assets/fonts/Kode_Mono/static/KodeMono-Regular.ttf" color="#EEE">
+                            PRJNo::000 | _CREATIVE_/DEVELOPER | /DIGITAL_/ARTIST | ~% /PRJ/PRT/V1
                         </Text>
                     </group>
-                </group>
-            )}
-
-            {startAnimations && (
-                <group ref={subtitleRef}>
-                    <Text fontSize={0.6} font="/assets/fonts/Kode_Mono/static/KodeMono-Regular.ttf" color="#EEE">
-                        PRJNo::000 | _CREATIVE_/DEVELOPER | /DIGITAL_/ARTIST | ~% /PRJ/PRT/V1
-                    </Text>
-                </group>
-            )}
+                )}
+            </group>
 
             <Float floatIntensity={FLOAT_CONFIG.INTENSITY} rotationIntensity={FLOAT_CONFIG.ROTATION_INTENSITY} speed={FLOAT_CONFIG.SPEED}>
-                <group ref={logoRef}>{canSimulate ? <LogoParticles timeline={timeline} gridSize={gridSize} /> : <LogoMesh />}</group>
+                <group ref={logoRef}>
+                    {canSimulate ? <LogoParticles timeline={timeline} gridSize={gridSize} streamRef={streamRef} /> : <LogoMesh />}
+                </group>
             </Float>
-
-            {startAnimations && (
-                <EffectComposer multisampling={0}>
-                    {post.ao && <N8AO aoRadius={1} {...post.ao} />}
-                    <Bloom mipmapBlur luminanceThreshold={0.92} radius={0.4} {...post.bloom} />
-                </EffectComposer>
-            )}
         </>
     );
 }

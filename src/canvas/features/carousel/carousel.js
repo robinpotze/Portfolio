@@ -1,3 +1,4 @@
+import { BREAKPOINTS } from '@config/animation.config';
 import { CAROUSEL_CONFIG } from './carousel.config';
 
 export function calculateCardPosition(index) {
@@ -16,4 +17,12 @@ export function calculateCardCenteredness(rigRotation, cardIndex) {
 
 export function calculateCardScale(centeredness) {
     return 1 - centeredness * CAROUSEL_CONFIG.SCALE_RANGE;
+}
+
+// One MediaQueryList, so the per-frame camera code reads a cached boolean.
+const tabletQuery = window.matchMedia(BREAKPOINTS.TABLET);
+
+/** Carousel camera FOV: wider below the tablet breakpoint. */
+export function getCarouselFov() {
+    return tabletQuery.matches ? CAROUSEL_CONFIG.CAMERA.FOV + 15 : CAROUSEL_CONFIG.CAMERA.FOV;
 }

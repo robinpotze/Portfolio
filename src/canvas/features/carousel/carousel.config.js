@@ -31,9 +31,14 @@ export const CAROUSEL_CONFIG = {
     },
 
     ENTRY: {
-        CAMERA_START_Z: 15,
-        CAMERA_DURATION: 1.0,
-        CARD_STAGGER: 0.1,
         CARD_DURATION: 0.6,
+    },
+
+    // The branch to the centred card: full length at centeredness 0, gone at RANGE (half a card step).
+    // A card reveals the first time its branch reaches REVEAL_AT.
+    BRANCH: {
+        RANGE: 0.4 / Math.PI,
+        REVEAL_AT: 0.9,
+        REACH: 0.85,
     },
 };

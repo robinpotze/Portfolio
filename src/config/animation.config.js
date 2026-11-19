@@ -63,9 +63,13 @@ export const LENIS = {
 
 export const SCROLL_THRESHOLDS = {
     HOME_TRANSITION: 0.95,
-    WORK_TOP_THRESHOLD: 0.02,
-    WORK_SCROLL_TIMEOUT: 500,
-    WORK_MAX_SCROLL: 600,
+};
+
+// Home → Work layout: segment lengths in viewport heights (one card step per CARD_VH).
+export const HOME_WORK = {
+    HOME_VH: 0.5,
+    MORPH_VH: 1,
+    CARD_VH: 1,
 };
 
 export const FLOAT_CONFIG = {

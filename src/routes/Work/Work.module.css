@@ -1,15 +1,5 @@
 /* Work page styles - transparent background for canvas visibility */
 
-.pageContainer {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    height: 100dvh;
-    overflow: hidden;
-}
-
 .touchHint {
     position: fixed;
     bottom: var(--s-l);

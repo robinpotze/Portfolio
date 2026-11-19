@@ -29,7 +29,7 @@ const LABEL = { color: getCSSVariable('--c-LGHT') || '#eee', anchorX: 'center', 
 const MONO_FONT = '/assets/fonts/Kode_Mono/static/KodeMono-Regular.ttf';
 const TITLE_FONT = '/assets/fonts/Orbitron/static/Orbitron-Medium.ttf';
 
-export default function WorkCard({ item, index, visible = true, onNavigate, noiseTexture, centerednessRef, entryComplete = false, entryDelay = 0 }) {
+export default function WorkCard({ item, index, visible = true, onNavigate, noiseTexture, centerednessRef, revealed = false }) {
     const groupRef = useRef();
     const overlayRef = useRef();
     const scaleRef = useRef(0);
@@ -53,14 +53,14 @@ export default function WorkCard({ item, index, visible = true, onNavigate, nois
         if (!group) {
             return;
         }
-        // Stay hidden until the camera entry completes, then grow in with a per-card stagger.
-        if (!entryComplete) {
+        // Hidden until the branch first reaches this card, then grow in once.
+        if (!revealed) {
             group.scale.setScalar(0);
             scaleRef.current = 0;
             return;
         }
         if (entryTimeRef.current === null) {
-            entryTimeRef.current = clock.elapsedTime + entryDelay;
+            entryTimeRef.current = clock.elapsedTime;
         }
         const entryT = clamp((clock.elapsedTime - entryTimeRef.current) / CAROUSEL_CONFIG.ENTRY.CARD_DURATION, 0, 1);
 
