@@ -86,3 +86,14 @@ Each stage is shippable on its own:
 - The scroll → segment mapping and the push/replace decision are pure functions with one `node:test` file; the `test` script widens from `workers/` to include it.
 - Headless Chrome screenshots at fixed scroll points (top, logo formed, mid-morph, carousel start, card 2), plus direct `/work`, Back, menu Home ↔ Work, mobile width, and the forced no-simulation fallback.
 - `npm run lint`, `npm run fmt:check` and `npm run build` pass after each stage.
+
+## Amendment 2026-11-20: fibre stream
+
+After stage 3 the dense dot trunk read as a solid pipe. The user's reference (fibre-optic light trails) replaces its look:
+
+- The stream is a sparse bundle of glowing light trails: about 300 (low), 700 (medium) or 1,200 (high) strands, each a 24-point line with a bright head and a fading tail, drawn additively so overlaps glow.
+- Trails are computed in the vertex shader by sampling the stream path slightly back in time; no history textures.
+- The bundle sways organically: slow noise along its height and over time for the whole bundle, plus a small per-strand offset. A few loose sparks drift around it.
+- Brand cyan only, brightness varying per strand.
+- Hand-off: during the morph the logo particles still fly onto the swaying path; over the end of the morph they fade out while the trails fade in on the same path, after which the particle simulation stops.
+- The branch uses the same trails while scrolling and hides behind the centred card (no change to the branch geometry).

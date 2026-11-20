@@ -1209,7 +1209,336 @@ git commit -m "feat(particles): branch the trunk to the centred work card"
 
 ---
 
-### Task 6: Final verification
+### Task 6: Fibre stream (amendment 2026-11-20)
+
+Deliverable: the dense dot trunk becomes a sparse, swaying bundle of brand-cyan light trails (fibre-optic look) with a few sparks; the logo particles hand off to it over the end of the morph and then stop simulating. The branch uses the same trails while scrolling.
+
+**Files:**
+
+- Create: `src/canvas/core/shaders/streamPath.glsl` (shared path: sim + fibres)
+- Create: `src/canvas/features/streamFibers/{StreamFibers.jsx,streamFibers.config.js,streamFibers.vert.glsl,streamFibers.frag.glsl,index.js}`
+- Modify: `src/config/animation.config.js` (`STREAM.SWAY_SPEED`)
+- Modify: `src/canvas/scenes/work/WorkScene.jsx` (flow + fade into `streamRef`, mount fibres in the rig)
+- Modify: `src/canvas/features/logoParticles/{position.frag.glsl,LogoParticles.jsx,LogoParticlesMaterial.js,particles.vert.glsl,logoParticles.config.js}`
+
+**Interfaces:**
+
+- Consumes: `streamRef.current.{ space, trunkY, trunkHalf, velocity, grow, branchY, branchEnd }`, `segmentsRef.current.morph`.
+- Produces: `streamRef.current.flow` (0–1, wraps), `streamRef.current.flowStep` (this frame's flow increment), `streamRef.current.fade` (0 = particles, 1 = fibres), all written by WorkScene; `STREAM_FIBERS` config; GLSL `swayBend`, `trunkPoint`, `branchPoint`.
+
+- [ ] **Step 1: Config.** Add to `STREAM` in `src/config/animation.config.js`:
+
+```text
+    // Bundle sway: radians of phase per second.
+    SWAY_SPEED: 0.4,
+```
+
+Create `src/canvas/features/streamFibers/streamFibers.config.js`:
+
+```text
+// Fibre stream geometry and look (timing lives in @config/animation.config STREAM).
+export const FIBER_TIERS = { low: 300, medium: 700, high: 1200 };
+
+export const STREAM_FIBERS = {
+    POINTS_PER_FIBER: 24,
+    // Trail length as a fraction of the trunk's flow cycle.
+    TRAIL: 0.06,
+    // Bundle radius in carousel units; the logo particles land on the same spread.
+    SPREAD: 0.35,
+    // Bundle sway: amplitude (units), frequency (per unit of height), per-strand amplitude.
+    SWAY_AMPLITUDE: 0.25,
+    SWAY_FREQUENCY: 0.6,
+    STRAND_AMPLITUDE: 0.06,
+    // One spark per this many fibres; sparks drift at SPARK_SPREAD × SPREAD.
+    SPARK_EVERY: 10,
+    SPARK_SPREAD: 3,
+    SPARK_SIZE: 6,
+    // Hand-off: fibres fade in (particles out) over this last part of the morph.
+    HANDOFF_START: 0.85,
+};
+```
+
+and `index.js`: `export { default as StreamFibers } from './StreamFibers';` plus `export { STREAM_FIBERS } from './streamFibers.config';`. In `logoParticles.config.js` delete `TRUNK_RADIUS` (the spread now comes from `STREAM_FIBERS.SPREAD`).
+
+- [ ] **Step 2: Shared path** — create `src/canvas/core/shaders/streamPath.glsl`:
+
+```text
+// Stream path in carousel (rig) space, shared by the logo-particle sim and the fibres so the hand-off lines up.
+// sway = (bundle amplitude, frequency, phase = time × speed, per-strand amplitude).
+
+vec2 swayBend(float y, vec4 sway) {
+    return sway.x * vec2(sin(y * sway.y + sway.z), cos(y * sway.y * 0.7 + sway.z * 1.3));
+}
+
+vec2 swayStrand(float y, float angle, vec4 sway) {
+    return sway.w * vec2(sin(y * sway.y * 3.1 + angle + sway.z * 1.7), cos(y * sway.y * 2.3 + angle * 1.3 + sway.z));
+}
+
+// along 0 = top of the trunk, 1 = bottom.
+vec3 trunkPoint(float along, float angle, float radius, float trunkY, float trunkHalf, vec4 sway) {
+    float y = trunkY + trunkHalf * (1.0 - 2.0 * along);
+    vec2 offset = swayBend(y, sway) + swayStrand(y, angle, sway) + vec2(cos(angle), sin(angle)) * radius;
+    return vec3(offset.x, y, offset.y);
+}
+
+// t 0 = on the trunk at the card's height, 1 = at branchEnd. Bows upward mid-way so it reads as a curve.
+vec3 branchPoint(float t, float angle, float radius, float branchY, vec3 branchEnd, vec4 sway) {
+    vec2 bend = swayBend(branchY, sway);
+    vec3 p = mix(vec3(bend.x, branchY, bend.y), branchEnd, t) + vec3(0.0, sin(3.14159265 * t) * 0.25, 0.0);
+    vec2 offset = swayStrand(p.y, angle, sway) + vec2(cos(angle), sin(angle)) * radius * (1.0 - 0.5 * t);
+    return p + vec3(offset.x, 0.0, offset.y);
+}
+```
+
+- [ ] **Step 3: Sim uses the shared path.** In `position.frag.glsl`: add `#include ../../core/shaders/streamPath.glsl;` after the curl include, add `uniform vec4 uSway;`, and replace the body of `streamTarget()` after the `seed` line with:
+
+```text
+    float angle = random.z * 6.2831853;
+    float radius = uTrunkRadius * sqrt(fract(random.x * 13.37));
+    float along = fract(seed + uFlow);
+    wrapped = along < uFlowStep;
+    vec3 p = trunkPoint(along, angle, radius, uTrunkY, uTrunkHalf, uSway);
+    // A share of particles runs out along the branch to the centred card (twice the trunk's flow speed).
+    if (random.y < uBranchShare && uBranchGrow > 0.0) {
+        float out_ = fract(seed + uFlow * 2.0);
+        wrapped = out_ < uFlowStep * 2.0;
+        p = branchPoint(out_ * uBranchGrow, angle, radius, uBranchY, uBranchEnd, uSway);
+    }
+    return (uStreamToLocal * vec4(p, 1.0)).xyz;
+```
+
+- [ ] **Step 4: WorkScene owns flow and fade.** In `WorkScene.jsx`: change the frame callback to `useFrame((_, delta) => { … }, -1)`, import `STREAM` from `@config/animation.config`, `easeCurve` from `@utils/easingFunctions`, `StreamFibers, STREAM_FIBERS` from `@canvas/features/streamFibers`, destructure `smoothstep` from `THREE.MathUtils`, and after the branch lines add:
+
+```text
+        // Flow: one shared phase for the sim and the fibres. velocity is viewport heights per frame.
+        const scrollSpeed = delta > 0 ? Math.abs(velocity) / delta : 0;
+        stream.flowStep = delta * (STREAM.FLOW_BASE + scrollSpeed * STREAM.FLOW_SCROLL_GAIN);
+        stream.flow = (stream.flow + stream.flowStep) % 1;
+        // Hand-off from particles to fibres over the end of the morph (same easing as HomeScene's blend).
+        stream.fade = smoothstep(easeCurve(morph), STREAM_FIBERS.HANDOFF_START, 1);
+```
+
+Initialise `flow: 0, flowStep: 0, fade: 0` in the `streamRef` object in `HomeWorkCanvas.jsx`. Mount the fibres inside the rig so they share its space: `<group ref={setRigRef}>{…cards…}<StreamFibers streamRef={streamRef} /></group>`.
+
+- [ ] **Step 5: LogoParticles hands off.** In `LogoParticles.jsx`: delete `flowRef` and the `STREAM` import; replace the flow lines with `u.uFlow.value = s?.flow ?? 0; u.uFlowStep.value = s?.flowStep ?? 0;`; add `uTrunkRadius: STREAM_FIBERS.SPREAD` (import from `@canvas/features/streamFibers`) and `uSway: new THREE.Vector4()` to `toUniforms`; inside `if (s?.space)` set `u.uSway.value.set(STREAM_FIBERS.SWAY_AMPLITUDE, STREAM_FIBERS.SWAY_FREQUENCY, time * STREAM.SWAY_SPEED, STREAM_FIBERS.STRAND_AMPLITUDE)` (keep the `STREAM` import for this). Before `current.gpu.compute()`:
+
+```text
+        // Once the fibres have taken over, the particles are out of view: stop simulating and drawing them.
+        const fade = s?.fade ?? 0;
+        points.visible = points.visible && fade < 1;
+        if (fade >= 1) {
+            return;
+        }
+```
+
+and after the render uniforms: `material.uStreamFade = fade;`. In `LogoParticlesMaterial.js` add `uStreamFade: 0` to the uniforms; in `particles.vert.glsl` add `uniform float uStreamFade;` and multiply `gl_PointSize` by `(1.0 - uStreamFade)`.
+
+- [ ] **Step 6: Fibre shaders** — `streamFibers.vert.glsl`:
+
+```text
+uniform float uTrunkY;
+uniform float uTrunkHalf;
+uniform float uSpread;
+uniform float uFlow;
+uniform float uTrail;
+uniform float uBranchY;
+uniform vec3 uBranchEnd;
+uniform float uBranchGrow;
+uniform float uBranchShare;
+uniform vec4 uSway;
+uniform float uSpark;
+uniform float uPointSize;
+uniform float uDpr;
+attribute vec4 random;
+attribute float trail;
+varying float vAlpha;
+
+#include ../../core/shaders/streamPath.glsl;
+
+void main() {
+    // Same seed as the particle sim, so fibres sit where the particles were.
+    float seed = fract(sin(dot(random.xyz, vec3(12.9898, 78.233, 37.719))) * 43758.5453);
+    float angle = random.z * 6.2831853;
+    float radius = uSpread * sqrt(fract(random.x * 13.37)) * mix(1.0, 3.0, uSpark);
+    // Head at the flow position, tail sampled slightly earlier on the same path.
+    float head = fract(seed + uFlow * mix(1.0, 0.5, uSpark));
+    float along = head - trail * uTrail;
+    vec3 p = trunkPoint(along, angle, radius, uTrunkY, uTrunkHalf, uSway);
+    float alpha = (1.0 - trail) * (1.0 - trail) * mix(0.25, 1.0, random.w);
+    if (uSpark < 0.5 && random.y < uBranchShare && uBranchGrow > 0.0) {
+        float out_ = fract(seed + uFlow * 2.0) - trail * uTrail * 2.0;
+        p = branchPoint(clamp(out_, 0.0, 1.0) * uBranchGrow, angle, radius, uBranchY, uBranchEnd, uSway);
+        alpha *= step(0.0, out_);
+    }
+    // Hide the part of a tail that would wrap past the top of the trunk.
+    alpha *= step(0.0, along);
+    vAlpha = alpha;
+    vec4 mvPosition = modelViewMatrix * vec4(p, 1.0);
+    gl_Position = projectionMatrix * mvPosition;
+    gl_PointSize = uPointSize * uDpr * uSpark / -mvPosition.z;
+}
+```
+
+`streamFibers.frag.glsl`:
+
+```text
+uniform vec3 uColor;
+uniform float uFade;
+varying float vAlpha;
+
+void main() {
+    gl_FragColor = vec4(uColor * vAlpha * uFade, 1.0);
+}
+```
+
+(Additive blending: colour is pre-multiplied by alpha.)
+
+- [ ] **Step 7: `StreamFibers.jsx`:**
+
+```text
+import { useQuality } from '@app/QualityContext';
+import { STREAM } from '@config/animation.config';
+import { useFrame, useThree } from '@react-three/fiber';
+import { getCSSColorRGBA } from '@utils/cssUtils';
+import { useEffect, useMemo, useRef } from 'react';
+import * as THREE from 'three';
+import { FIBER_TIERS, STREAM_FIBERS } from './streamFibers.config';
+import fibersFrag from './streamFibers.frag.glsl';
+import fibersVert from './streamFibers.vert.glsl';
+
+const { POINTS_PER_FIBER: K } = STREAM_FIBERS;
+
+/** Fibre geometry: `count` strands of K points (line segments between neighbours), plus per-vertex random and trail position. */
+function createFibers(count) {
+    const randoms = new Float32Array(count * K * 4);
+    const trail = new Float32Array(count * K);
+    const index = [];
+    for (let f = 0; f < count; f++) {
+        const r = [Math.random(), Math.random(), Math.random(), Math.random()];
+        for (let k = 0; k < K; k++) {
+            const v = f * K + k;
+            randoms.set(r, v * 4);
+            trail[v] = k / (K - 1);
+            if (k > 0) {
+                index.push(v - 1, v);
+            }
+        }
+    }
+    const geometry = new THREE.BufferGeometry()
+        .setAttribute('position', new THREE.BufferAttribute(new Float32Array(count * K * 3), 3))
+        .setAttribute('random', new THREE.BufferAttribute(randoms, 4))
+        .setAttribute('trail', new THREE.BufferAttribute(trail, 1));
+    geometry.setIndex(index);
+    return geometry;
+}
+
+/** Spark geometry: one point per SPARK_EVERY fibres, at the head (trail 0). */
+function createSparks(count) {
+    const sparks = Math.max(1, Math.round(count / STREAM_FIBERS.SPARK_EVERY));
+    return new THREE.BufferGeometry()
+        .setAttribute('position', new THREE.BufferAttribute(new Float32Array(sparks * 3), 3))
+        .setAttribute('random', new THREE.BufferAttribute(Float32Array.from({ length: sparks * 4 }, Math.random), 4))
+        .setAttribute('trail', new THREE.BufferAttribute(new Float32Array(sparks), 1));
+}
+
+function createMaterial(color, spark) {
+    return new THREE.ShaderMaterial({
+        vertexShader: fibersVert,
+        fragmentShader: fibersFrag,
+        transparent: true,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending,
+        uniforms: {
+            uTrunkY: { value: 0 },
+            uTrunkHalf: { value: 10 },
+            uSpread: { value: STREAM_FIBERS.SPREAD },
+            uFlow: { value: 0 },
+            uTrail: { value: STREAM_FIBERS.TRAIL },
+            uBranchY: { value: 0 },
+            uBranchEnd: { value: new THREE.Vector3() },
+            uBranchGrow: { value: 0 },
+            uBranchShare: { value: 0.2 },
+            uSway: { value: new THREE.Vector4() },
+            uSpark: { value: spark ? 1 : 0 },
+            uPointSize: { value: STREAM_FIBERS.SPARK_SIZE },
+            uDpr: { value: 1 },
+            uColor: { value: color },
+            uFade: { value: 0 },
+        },
+    });
+}
+
+/** The stream as fibre-optic light trails in carousel space; reads streamRef (written by WorkScene) every frame. */
+export default function StreamFibers({ streamRef }) {
+    const { quality } = useQuality();
+    const dpr = useThree((state) => state.viewport.dpr);
+    const groupRef = useRef(null);
+    const count = FIBER_TIERS[quality];
+
+    const color = useMemo(() => {
+        const { r, g, b } = getCSSColorRGBA('--c-brnd_100');
+        return new THREE.Color().setRGB(r / 255, g / 255, b / 255, THREE.SRGBColorSpace);
+    }, []);
+    const fibers = useMemo(() => createFibers(count), [count]);
+    const sparks = useMemo(() => createSparks(count), [count]);
+    const materials = useMemo(() => [createMaterial(color, false), createMaterial(color, true)], [color]);
+    useEffect(() => () => fibers.dispose(), [fibers]);
+    useEffect(() => () => sparks.dispose(), [sparks]);
+    useEffect(() => () => materials.forEach((m) => m.dispose()), [materials]);
+
+    useFrame(({ clock }) => {
+        const s = streamRef.current;
+        const group = groupRef.current;
+        if (!group) {
+            return;
+        }
+        // Only drawn once the hand-off has started.
+        group.visible = s.fade > 0;
+        if (!group.visible) {
+            return;
+        }
+        for (const material of materials) {
+            const u = material.uniforms;
+            u.uTrunkY.value = s.trunkY;
+            u.uTrunkHalf.value = s.trunkHalf;
+            u.uFlow.value = s.flow;
+            u.uBranchY.value = s.branchY;
+            u.uBranchEnd.value.copy(s.branchEnd);
+            u.uBranchGrow.value = s.grow;
+            u.uSway.value.set(STREAM_FIBERS.SWAY_AMPLITUDE, STREAM_FIBERS.SWAY_FREQUENCY, clock.elapsedTime * STREAM.SWAY_SPEED, STREAM_FIBERS.STRAND_AMPLITUDE);
+            u.uDpr.value = dpr;
+            u.uFade.value = s.fade;
+        }
+    });
+
+    return (
+        <group ref={groupRef} visible={false}>
+            <lineSegments geometry={fibers} material={materials[0]} frustumCulled={false} />
+            <points geometry={sparks} material={materials[1]} frustumCulled={false} />
+        </group>
+    );
+}
+```
+
+`uBranchShare` must match `LOGO_PARTICLES.BRANCH_SHARE`; import it instead of the literal `0.2` (`import { LOGO_PARTICLES } from '@canvas/features/logoParticles/logoParticles.config'`).
+
+- [ ] **Step 8: Run checks**
+
+Run: `npm test && npm run lint && npm run fmt:check && npm run build`
+Expected: pass.
+
+- [ ] **Step 9: Browser check** (shared procedure), 1440×900 and 390×844: at 1.0 × innerHeight particles converge on a swaying path; at 1.4 × innerHeight particles fade while trails appear; at 1.5 × innerHeight a sparse bundle of thin cyan light trails with bright heads and fading tails, gently curved, a few sparks, no dense dots; two frames 0.5 s apart differ (flow + sway); about 90 ms after setting scrollTop to 1.7 × innerHeight trails run out to the second card. Compare against the reference look (fibre-optic light trails). No console errors. Tune only the `STREAM_FIBERS` values (spread, trail, sway, counts) if the look is clearly off, and report the values used.
+
+- [ ] **Step 10: Commit**
+
+```text
+git add src/config/animation.config.js src/canvas/core/shaders/streamPath.glsl src/canvas/features/streamFibers src/canvas/features/logoParticles src/canvas/scenes/work/WorkScene.jsx src/canvas/scenes/homeWork/HomeWorkCanvas.jsx
+git commit -m "feat(stream): fibre-optic light trails replace the dense particle trunk"
+```
+
+---
+
+### Task 7: Final verification
 
 **Files:** none changed unless a check fails.
 
