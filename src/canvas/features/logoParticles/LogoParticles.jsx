@@ -211,6 +211,13 @@ export default function LogoParticles({ timeline, gridSize, streamRef }) {
         }
         // Skip the one frame where <points> still holds the previous simulation's (disposed) geometry.
         points.visible = points.geometry === current.geometry;
+        // Once the fibres have taken over, the particles are out of view: stop simulating and drawing them.
+        const s = streamRef?.current;
+        const fade = s?.fade ?? 0;
+        if (fade >= 1) {
+            points.visible = false;
+            return;
+        }
         const time = clock.elapsedTime;
         const { width, height } = gridRef.current;
         const fluid = fluidRef.current;
@@ -234,7 +241,6 @@ export default function LogoParticles({ timeline, gridSize, streamRef }) {
         u.uScreenToLocal.value.setFromMatrix4(modelView).invert();
         // Stream: carousel space → particle space, trunk placement and flow.
         u.uStream.value = stream;
-        const s = streamRef?.current;
         if (s?.space) {
             s.space.updateWorldMatrix(true, false);
             u.uStreamToLocal.value.copy(points.matrixWorld).invert().multiply(s.space.matrixWorld);
@@ -247,12 +253,6 @@ export default function LogoParticles({ timeline, gridSize, streamRef }) {
         }
         u.uFlow.value = s?.flow ?? 0;
         u.uFlowStep.value = s?.flowStep ?? 0;
-        // Once the fibres have taken over, the particles are out of view: stop simulating and drawing them.
-        const fade = s?.fade ?? 0;
-        points.visible = points.visible && fade < 1;
-        if (fade >= 1) {
-            return;
-        }
         current.gpu.compute();
 
         // Render. uIntro: the panel powers on over the camera reveal.
