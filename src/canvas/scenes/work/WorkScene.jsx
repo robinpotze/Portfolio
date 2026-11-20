@@ -37,6 +37,8 @@ export default function WorkScene({ items = [], segmentsRef, streamRef, onCardNa
             return;
         }
         const { carousel: offset, morph, velocity } = segmentsRef.current;
+        // Off-screen on Home; hidden rather than unmounted so card textures stay loaded for the first morph.
+        rig.visible = morph > 0;
 
         const targetRotation = -offset * (items.length - 1) * CAROUSEL_CONFIG.ANGLE_STEP;
         rig.rotation.y += (targetRotation - rig.rotation.y) * CAROUSEL_CONFIG.LERP_SPEED;

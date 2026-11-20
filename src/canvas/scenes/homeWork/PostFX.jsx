@@ -25,6 +25,8 @@ export default function PostFX({ segmentsRef }) {
         const { morph } = segmentsRef.current;
         if (aoRef.current && home.ao) {
             aoRef.current.configuration.intensity = home.ao.intensity * (1 - morph);
+            // AO contributes nothing in the carousel; skip its passes there.
+            aoRef.current.enabled = morph < 1;
         }
         if (bloomRef.current) {
             bloomRef.current.intensity = lerp(home.bloom.intensity, WORK_BLOOM[quality], morph);

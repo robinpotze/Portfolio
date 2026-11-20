@@ -8,6 +8,10 @@
     opacity: calc(1 - var(--home-out, 0));
 }
 
+:global([data-home-hidden]) .section {
+    visibility: hidden;
+}
+
 .content {
     flex: 1;
     display: grid;

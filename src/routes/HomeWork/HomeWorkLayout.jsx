@@ -80,7 +80,10 @@ export default function HomeWorkLayout() {
             const segments = getSegments(scroll, boundsRef.current);
             Object.assign(segmentsRef.current, segments, { velocity: velocity / window.innerHeight });
             // Overlay fades without React renders: Home's DOM leaves over the end of home, Work's border arrives at the end of the morph.
-            root.style.setProperty('--home-out', String(clamp01((segments.home - 0.7) / 0.3)));
+            const homeOut = clamp01((segments.home - 0.7) / 0.3);
+            root.style.setProperty('--home-out', String(homeOut));
+            // Fully faded Home overlay: not clickable or tabbable.
+            root.toggleAttribute('data-home-hidden', homeOut >= 1);
             root.style.setProperty('--work-in', String(clamp01((segments.morph - 0.8) / 0.2)));
             if (!seekingRef.current) {
                 syncUrl();
@@ -96,6 +99,13 @@ export default function HomeWorkLayout() {
 
         measure();
         lenis.on('scroll', onScroll);
+        // User wheel/touch input interrupts a seek (Lenis replaces or stops the animation, so its onComplete never runs).
+        lenis.on('virtual-scroll', ({ deltaX, deltaY }) => {
+            if (seekingRef.current && (deltaX || deltaY)) {
+                seekingRef.current = false;
+                syncUrl();
+            }
+        });
         lenis.scrollTo(scrollForPath(pathnameRef.current, boundsRef.current), { immediate: true, force: true });
         onScroll({ scroll: lenis.scroll, velocity: 0 });
         window.addEventListener('resize', measure);

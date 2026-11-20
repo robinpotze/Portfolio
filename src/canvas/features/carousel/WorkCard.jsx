@@ -29,6 +29,16 @@ const LABEL = { color: getCSSVariable('--c-LGHT') || '#eee', anchorX: 'center', 
 const MONO_FONT = '/assets/fonts/Kode_Mono/static/KodeMono-Regular.ttf';
 const TITLE_FONT = '/assets/fonts/Orbitron/static/Orbitron-Medium.ttf';
 
+// Raycasting ignores `visible`, so a hidden card (or one inside the hidden rig) must not take pointer events.
+function isShown(object) {
+    for (let o = object; o; o = o.parent) {
+        if (!o.visible) {
+            return false;
+        }
+    }
+    return true;
+}
+
 export default function WorkCard({ item, index, visible = true, onNavigate, noiseTexture, centerednessRef, revealed = false }) {
     const groupRef = useRef();
     const overlayRef = useRef();
@@ -92,10 +102,16 @@ export default function WorkCard({ item, index, visible = true, onNavigate, nois
                 rotation={rotation}
                 visible={visible}
                 onClick={(e) => {
+                    if (!isShown(e.eventObject)) {
+                        return;
+                    }
                     e.stopPropagation();
                     onNavigate?.(pageKey);
                 }}
                 onPointerEnter={(e) => {
+                    if (!isShown(e.eventObject)) {
+                        return;
+                    }
                     e.stopPropagation();
                     setHovered(true);
                 }}
