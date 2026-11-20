@@ -167,6 +167,8 @@ export default function HomeWorkLayout() {
     // Back/Forward: the URL moved but the scroll did not; follow it.
     useEffect(() => {
         if (!seekingRef.current && location.pathname !== pathForSegment(segmentsRef.current.inCarousel)) {
+            // Back to '/' re-arms the push, so the next crossing into the carousel adds a /work entry again.
+            hasPushedRef.current = location.pathname === '/work';
             seek(location.pathname);
         }
     }, [location.pathname, seek]);

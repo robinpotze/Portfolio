@@ -63,6 +63,10 @@ export default function WorkCard({ item, index, visible = true, onNavigate, nois
         if (!group) {
             return;
         }
+        // A card hidden under the pointer gets no pointer-leave; drop the hover so the cursor resets.
+        if (hovered && !isShown(group)) {
+            setHovered(false);
+        }
         // Hidden until the branch first reaches this card, then grow in once.
         if (!revealed) {
             group.scale.setScalar(0);
