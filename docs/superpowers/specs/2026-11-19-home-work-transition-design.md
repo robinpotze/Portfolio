@@ -95,5 +95,5 @@ After stage 3 the dense dot trunk read as a solid pipe. The user's reference (fi
 - Trails are computed in the vertex shader by sampling the stream path slightly back in time; no history textures.
 - The bundle sways organically: slow noise along its height and over time for the whole bundle, plus a small per-strand offset. A few loose sparks drift around it.
 - Brand cyan only, brightness varying per strand.
-- Hand-off: during the morph the logo particles still fly onto the swaying path; over the end of the morph they fade out while the trails fade in on the same path, after which the particle simulation stops.
+- Fibres the whole way (user decision): each fibre follows one logo particle. As the logo dissolves, the dense particles fade out over the first quarter of the stream, and each remaining fibre starts as a glowing dot on the logo surface that stretches into its trail as it travels onto the swaying path. Once the morph completes, the fibres are purely analytic and the particle simulation stops; it resumes when scrolling back.
 - The branch uses the same trails while scrolling and hides behind the centred card (no change to the branch geometry).
