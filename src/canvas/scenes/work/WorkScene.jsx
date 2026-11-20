@@ -1,14 +1,14 @@
 import { useQuality } from '@app/QualityContext';
 import { CAROUSEL_CONFIG, calculateCardCenteredness, calculateCardPosition, getCarouselFov, WorkCard } from '@canvas/features/carousel';
 import useNoiseTexture from '@canvas/core/textures/useNoiseTexture';
-import { STREAM_FIBERS, StreamFibers } from '@canvas/features/streamFibers';
+import { StreamFibers } from '@canvas/features/streamFibers';
 import { STREAM } from '@config/animation.config';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useRef, useState } from 'react';
 import * as THREE from 'three';
 import { easeCurve } from '@utils/easingFunctions';
 
-const { clamp, degToRad, smoothstep } = THREE.MathUtils;
+const { clamp, degToRad } = THREE.MathUtils;
 // The trunk spans a bit more than the visible height, so its ends stay off-screen.
 const TRUNK_OVERSCAN = 1.3;
 
@@ -94,8 +94,8 @@ export default function WorkScene({ items = [], segmentsRef, streamRef, onCardNa
         const scrollSpeed = delta > 0 ? Math.abs(velocity) / delta : 0;
         stream.flowStep = delta * (STREAM.FLOW_BASE + scrollSpeed * STREAM.FLOW_SCROLL_GAIN);
         stream.flow = (stream.flow + stream.flowStep) % 1;
-        // Hand-off from particles to fibres over the end of the morph (same easing as HomeScene's blend).
-        stream.fade = smoothstep(easeCurve(morph), STREAM_FIBERS.HANDOFF_START, 1);
+        // Logo → stream progress, the same eased value HomeScene feeds the particle sim as timeline.stream.
+        stream.blend = easeCurve(morph);
 
         onCenterednessChange?.(minCenteredness, bestIndex);
     }, -1);

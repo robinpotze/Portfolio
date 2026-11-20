@@ -1,5 +1,5 @@
 import { useQuality } from '@app/QualityContext';
-import { LOGO_PARTICLES } from '@canvas/features/logoParticles/logoParticles.config';
+import { LOGO_PARTICLES, TIERS } from '@canvas/features/logoParticles/logoParticles.config';
 import { STREAM } from '@config/animation.config';
 import { useFrame, useThree } from '@react-three/fiber';
 import { getCSSColorRGBA } from '@utils/cssUtils';
@@ -10,17 +10,30 @@ import fibersFrag from './streamFibers.frag.glsl';
 import fibersVert from './streamFibers.vert.glsl';
 
 const { POINTS_PER_FIBER: K } = STREAM_FIBERS;
+const { smoothstep } = THREE.MathUtils;
 
-/** Fibre geometry: `count` strands of K points (line segments between neighbours), plus per-vertex random and trail position. */
-function createFibers(count) {
-    const randoms = new Float32Array(count * K * 4);
+/** Texel-centre UVs of `count` sim particles spread evenly over the size² texture, starting at `offset`. */
+function simUvs(count, size, offset = 0) {
+    const stride = Math.max(1, Math.floor((size * size) / count));
+    const uvs = new Float32Array(count * 2);
+    for (let f = 0; f < count; f++) {
+        const i = (f * stride + offset) % (size * size);
+        uvs[f * 2] = ((i % size) + 0.5) / size;
+        uvs[f * 2 + 1] = (Math.floor(i / size) + 0.5) / size;
+    }
+    return { uvs, stride };
+}
+
+/** Fibre geometry: `count` strands of K points (line segments between neighbours), each tied to one sim particle. */
+function createFibers(count, size) {
+    const { uvs } = simUvs(count, size);
+    const vertexUvs = new Float32Array(count * K * 2);
     const trail = new Float32Array(count * K);
     const index = [];
     for (let f = 0; f < count; f++) {
-        const r = [Math.random(), Math.random(), Math.random(), Math.random()];
         for (let k = 0; k < K; k++) {
             const v = f * K + k;
-            randoms.set(r, v * 4);
+            vertexUvs.set(uvs.subarray(f * 2, f * 2 + 2), v * 2);
             trail[v] = k / (K - 1);
             if (k > 0) {
                 index.push(v - 1, v);
@@ -29,22 +42,27 @@ function createFibers(count) {
     }
     const geometry = new THREE.BufferGeometry()
         .setAttribute('position', new THREE.BufferAttribute(new Float32Array(count * K * 3), 3))
-        .setAttribute('random', new THREE.BufferAttribute(randoms, 4))
+        .setAttribute('simUv', new THREE.BufferAttribute(vertexUvs, 2))
         .setAttribute('trail', new THREE.BufferAttribute(trail, 1));
     geometry.setIndex(index);
     return geometry;
 }
 
-/** Spark geometry: one point per SPARK_EVERY fibres, at the head (trail 0). */
-function createSparks(count) {
-    const sparks = Math.max(1, Math.round(count / STREAM_FIBERS.SPARK_EVERY));
+/** One point per sim particle at the strand head (trail 0): the fibres' heads, or sparks on other particles (offset). */
+function createPoints(count, size, offset) {
     return new THREE.BufferGeometry()
-        .setAttribute('position', new THREE.BufferAttribute(new Float32Array(sparks * 3), 3))
-        .setAttribute('random', new THREE.BufferAttribute(Float32Array.from({ length: sparks * 4 }, Math.random), 4))
-        .setAttribute('trail', new THREE.BufferAttribute(new Float32Array(sparks), 1));
+        .setAttribute('position', new THREE.BufferAttribute(new Float32Array(count * 3), 3))
+        .setAttribute('simUv', new THREE.BufferAttribute(simUvs(count, size, offset).uvs, 2))
+        .setAttribute('trail', new THREE.BufferAttribute(new Float32Array(count), 1));
 }
 
-function createMaterial(color, spark) {
+function createSparks(count, size) {
+    const sparks = Math.max(1, Math.round(count / STREAM_FIBERS.SPARK_EVERY));
+    // Half a stride off, so sparks sit on particles between the fibres' ones.
+    return createPoints(sparks, size, Math.floor(simUvs(sparks, size).stride / 2));
+}
+
+function createMaterial(color, { spark = 0, head = 0 }) {
     return new THREE.ShaderMaterial({
         vertexShader: fibersVert,
         fragmentShader: fibersFrag,
@@ -62,7 +80,13 @@ function createMaterial(color, spark) {
             uBranchGrow: { value: 0 },
             uBranchShare: { value: LOGO_PARTICLES.BRANCH_SHARE },
             uSway: { value: new THREE.Vector4() },
-            uSpark: { value: spark ? 1 : 0 },
+            uSpark: { value: spark },
+            uHead: { value: head },
+            tSimPosition: { value: null },
+            tSimRandom: { value: null },
+            uLocalToStream: { value: new THREE.Matrix4() },
+            uStream: { value: 0 },
+            uMorphStagger: { value: LOGO_PARTICLES.MORPH_STAGGER },
             uPointSize: { value: STREAM_FIBERS.SPARK_SIZE },
             uDpr: { value: 1 },
             uColor: { value: color },
@@ -77,15 +101,19 @@ export default function StreamFibers({ streamRef }) {
     const dpr = useThree((state) => state.viewport.dpr);
     const groupRef = useRef(null);
     const count = FIBER_TIERS[quality];
+    // Same tier as LogoParticles, so the UVs address its simulation texture.
+    const { size } = TIERS[quality];
 
     const color = useMemo(() => {
         const { r, g, b } = getCSSColorRGBA('--c-brnd_100');
         return new THREE.Color().setRGB(r / 255, g / 255, b / 255, THREE.SRGBColorSpace);
     }, []);
-    const fibers = useMemo(() => createFibers(count), [count]);
-    const sparks = useMemo(() => createSparks(count), [count]);
-    const materials = useMemo(() => [createMaterial(color, false), createMaterial(color, true)], [color]);
+    const fibers = useMemo(() => createFibers(count, size), [count, size]);
+    const heads = useMemo(() => createPoints(count, size, 0), [count, size]);
+    const sparks = useMemo(() => createSparks(count, size), [count, size]);
+    const materials = useMemo(() => [createMaterial(color, {}), createMaterial(color, { spark: 1 }), createMaterial(color, { head: 1 })], [color]);
     useEffect(() => () => fibers.dispose(), [fibers]);
+    useEffect(() => () => heads.dispose(), [heads]);
     useEffect(() => () => sparks.dispose(), [sparks]);
     useEffect(() => () => materials.forEach((m) => m.dispose()), [materials]);
 
@@ -95,8 +123,9 @@ export default function StreamFibers({ streamRef }) {
         if (!group) {
             return;
         }
-        // Only drawn once the hand-off has started.
-        group.visible = s.fade > 0;
+        // Drawn from the start of the morph; needs the logo sim (no fibres on the metallic-logo fallback).
+        // ponytail: devices without the particle sim show no stream; add an analytic-only fibre mode if that matters.
+        group.visible = s.blend > 0 && s.simRandom !== null;
         if (!group.visible) {
             return;
         }
@@ -115,7 +144,11 @@ export default function StreamFibers({ streamRef }) {
                 STREAM_FIBERS.STRAND_AMPLITUDE
             );
             u.uDpr.value = dpr;
-            u.uFade.value = s.fade;
+            u.uStream.value = s.blend;
+            u.tSimPosition.value = s.simPosition;
+            u.tSimRandom.value = s.simRandom;
+            u.uLocalToStream.value.copy(s.localToStream);
+            u.uFade.value = smoothstep(s.blend, 0, STREAM_FIBERS.FADE_IN_END);
         }
     });
 
@@ -123,6 +156,7 @@ export default function StreamFibers({ streamRef }) {
         <group ref={groupRef} visible={false}>
             <lineSegments geometry={fibers} material={materials[0]} frustumCulled={false} />
             <points geometry={sparks} material={materials[1]} frustumCulled={false} />
+            <points geometry={heads} material={materials[2]} frustumCulled={false} />
         </group>
     );
 }

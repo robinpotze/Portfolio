@@ -9,16 +9,23 @@ uniform float uBranchGrow;
 uniform float uBranchShare;
 uniform vec4 uSway;
 uniform float uSpark;
+uniform float uHead;
 uniform float uPointSize;
 uniform float uDpr;
-attribute vec4 random;
+uniform sampler2D tSimPosition;
+uniform sampler2D tSimRandom;
+uniform mat4 uLocalToStream;
+uniform float uStream;
+uniform float uMorphStagger;
+attribute vec2 simUv;
 attribute float trail;
 varying float vAlpha;
 
 #include ../../core/shaders/streamPath.glsl;
 
 void main() {
-    // Same seed as the particle sim, so fibres sit where the particles were.
+    // The sim particle this strand grows out of: its random gives the same seed, angle, radius and branch pick.
+    vec4 random = texture2D(tSimRandom, simUv);
     float seed = fract(sin(dot(random.xyz, vec3(12.9898, 78.233, 37.719))) * 43758.5453);
     float angle = random.z * 6.2831853;
     float radius = uSpread * sqrt(fract(random.x * 13.37)) * mix(1.0, 3.0, uSpark);
@@ -34,8 +41,21 @@ void main() {
     }
     // Hide the part of a tail that would wrap past the top of the trunk.
     alpha *= step(0.0, along);
+    // Morph (same per-particle stagger as the sim): the strand stretches from its particle onto the path.
+    // At sp = 1 the path is exact, so the (then frozen) sim texture is not read.
+    float sp = clamp((uStream - random.w * uMorphStagger) / (1.0 - uMorphStagger), 0.0, 1.0);
+    if (sp < 1.0) {
+        vec3 particle = (uLocalToStream * vec4(texture2D(tSimPosition, simUv).xyz, 1.0)).xyz;
+        p = mix(particle, p, sp);
+    }
     vAlpha = alpha;
     vec4 mvPosition = modelViewMatrix * vec4(p, 1.0);
     gl_Position = projectionMatrix * mvPosition;
-    gl_PointSize = uPointSize * uDpr * uSpark / -mvPosition.z;
+    // Sparks always; strand heads only while the strand is still collapsed onto its particle.
+    float size = max(uSpark, uHead * (1.0 - sp));
+    gl_PointSize = uPointSize * uDpr * size / -mvPosition.z;
+    // Size 0 is undefined in GLSL ES (some drivers draw 1 px): move empty points out of clip space.
+    if (uSpark + uHead > 0.5 && size <= 0.0) {
+        gl_Position = vec4(2.0, 2.0, 2.0, 1.0);
+    }
 }

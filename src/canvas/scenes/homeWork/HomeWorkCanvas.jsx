@@ -32,7 +32,11 @@ export default function HomeWorkCanvas({ segmentsRef, startAnimations }) {
         branchEnd: new THREE.Vector3(),
         flow: 0,
         flowStep: 0,
-        fade: 0,
+        blend: 0,
+        // Written by LogoParticles while its sim runs; the fibres grow out of these particles.
+        simPosition: null,
+        simRandom: null,
+        localToStream: new THREE.Matrix4(),
     });
     const [isMobile] = useState(() => window.innerWidth <= CAROUSEL_CONFIG.MOBILE.BREAKPOINT);
 

@@ -15,6 +15,7 @@ export const STREAM_FIBERS = {
     SPARK_EVERY: 10,
     SPARK_SPREAD: 3,
     SPARK_SIZE: 6,
-    // Hand-off: fibres fade in (particles out) over this last part of the morph.
-    HANDOFF_START: 0.85,
+    // Morph progress (logo → stream, 0–1): the fibres fade in by FADE_IN_END, the dense logo particles fade out by PARTICLE_FADE_END.
+    FADE_IN_END: 0.1,
+    PARTICLE_FADE_END: 0.25,
 };

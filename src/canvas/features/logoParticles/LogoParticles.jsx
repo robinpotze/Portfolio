@@ -14,7 +14,7 @@ import { LOGO_PARTICLES, TIERS } from './logoParticles.config';
 import LogoParticlesMaterial from './LogoParticlesMaterial';
 import positionFrag from './position.frag.glsl';
 
-const { clamp, lerp } = THREE.MathUtils;
+const { clamp, lerp, smoothstep } = THREE.MathUtils;
 
 // { a: 1 } → { a: { value: 1 } } for the GPUComputationRenderer's plain ShaderMaterial.
 const toUniforms = (values) => Object.fromEntries(Object.entries(values).map(([name, value]) => [name, { value }]));
@@ -143,6 +143,7 @@ function createSimulation(gl, size, halfFloat, { origins, randoms }, morph, { co
 
     return {
         gpu,
+        randomTexture,
         variable,
         geometry,
         error,
@@ -199,9 +200,13 @@ export default function LogoParticles({ timeline, gridSize, streamRef }) {
         setSim(next);
         return () => {
             simRef.current = null;
+            // The fibres sample these textures; drop them before they are freed.
+            if (streamRef?.current?.simRandom === next.randomTexture) {
+                Object.assign(streamRef.current, { simRandom: null, simPosition: null });
+            }
             next.dispose();
         };
-    }, [gl, size, halfFloat, targets, timeline, grid.columns, grid.rows]);
+    }, [gl, size, halfFloat, targets, timeline, streamRef, grid.columns, grid.rows]);
 
     useFrame(({ camera, clock, pointer, viewport }, delta) => {
         const current = simRef.current;
@@ -214,13 +219,19 @@ export default function LogoParticles({ timeline, gridSize, streamRef }) {
         }
         // Skip the one frame where <points> still holds the previous simulation's (disposed) geometry.
         points.visible = points.geometry === current.geometry;
-        // Once the fibres have taken over, the particles are out of view: stop simulating and drawing them.
+        // The fibres grow out of these particles: they read the sim's randoms (always) and positions (while it runs).
         const s = streamRef?.current;
-        const fade = s?.fade ?? 0;
-        if (fade >= 1) {
+        if (s) {
+            s.simRandom = current.randomTexture;
+        }
+        // Once the stream is complete the fibres follow the path analytically: stop simulating and drawing the particles.
+        if (stream >= 1) {
             points.visible = false;
             return;
         }
+        // The dense logo fades out early in the morph; the sim keeps running to place the fibre heads.
+        const fade = smoothstep(stream, 0, STREAM_FIBERS.PARTICLE_FADE_END);
+        points.visible = points.visible && fade < 1;
         const time = clock.elapsedTime;
         const { width, height } = gridRef.current;
         const fluid = fluidRef.current;
@@ -248,6 +259,7 @@ export default function LogoParticles({ timeline, gridSize, streamRef }) {
         if (s?.space) {
             s.space.updateWorldMatrix(true, false);
             u.uStreamToLocal.value.copy(points.matrixWorld).invert().multiply(s.space.matrixWorld);
+            s.localToStream.copy(u.uStreamToLocal.value).invert();
             u.uTrunkY.value = s.trunkY;
             u.uTrunkHalf.value = s.trunkHalf;
             u.uBranchY.value = s.branchY;
@@ -261,6 +273,9 @@ export default function LogoParticles({ timeline, gridSize, streamRef }) {
 
         // Render. uIntro: the panel powers on over the camera reveal.
         material.tPosition = current.gpu.getCurrentRenderTarget(current.variable).texture;
+        if (s) {
+            s.simPosition = material.tPosition;
+        }
         material.uDpr = viewport.dpr;
         material.uIntro = intro;
         material.uTime = time;
