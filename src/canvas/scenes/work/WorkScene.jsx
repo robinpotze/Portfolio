@@ -97,7 +97,10 @@ export default function WorkScene({ items = [], segmentsRef, streamRef, onCardNa
         // Logo → stream progress, the same eased value HomeScene feeds the particle sim as timeline.stream.
         stream.blend = easeCurve(morph);
 
-        onCenterednessChange?.(minCenteredness, bestIndex);
+        // The frame fades in from morph 0.8; before that it is invisible.
+        if (morph >= 0.8) {
+            onCenterednessChange?.(minCenteredness, bestIndex);
+        }
     }, -1);
 
     if (!items?.length) {

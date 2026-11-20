@@ -38,8 +38,8 @@ uniform vec4 uSway;
 // Point on the flowing trunk in carousel space, mapped into the particles' local space.
 // wrapped: the particle crossed the bottom this frame and restarts at the top.
 vec3 streamTarget(vec4 random, out bool wrapped) {
-    // Decorrelated from random.x (radius, point size) and random.y (Task 5's branch pick), or the trunk renders as cones.
-    float seed = fract(sin(dot(random.xyz, vec3(12.9898, 78.233, 37.719))) * 43758.5453);
+    // Decorrelated from random.x (radius, point size) and random.y (branch pick), or the trunk renders as cones.
+    float seed = streamSeed(random);
     float angle = random.z * 6.2831853;
     float radius = uTrunkRadius * sqrt(fract(random.x * 13.37));
     float along = fract(seed + uFlow);

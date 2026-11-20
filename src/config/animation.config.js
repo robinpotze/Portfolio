@@ -78,6 +78,8 @@ export const STREAM = {
     FLOW_SCROLL_GAIN: 0.5,
     // Bundle sway: radians of phase per second.
     SWAY_SPEED: 0.4,
+    // Sparks drift at this fraction of the fibres' flow speed.
+    SPARK_FLOW: 0.5,
 };
 
 export const FLOAT_CONFIG = {

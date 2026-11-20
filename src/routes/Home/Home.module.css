@@ -5,6 +5,8 @@
     box-sizing: border-box;
     padding: var(--s-xl) 0 0 var(--s-xl);
     position: fixed;
+    top: 0;
+    left: 0;
     opacity: calc(1 - var(--home-out, 0));
 }
 

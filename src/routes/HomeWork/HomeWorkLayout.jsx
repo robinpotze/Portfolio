@@ -90,11 +90,20 @@ export default function HomeWorkLayout() {
             }
         };
 
+        let viewHeight = window.innerHeight;
         const measure = () => {
             boundsRef.current = getSegmentBounds(window.innerHeight, items.length, HOME_WORK);
             // Scroll range = content height − viewport height.
             spacer.style.height = `${boundsRef.current.total + window.innerHeight}px`;
             lenis.resize();
+        };
+        // All bounds are linear in viewport height, so the scroll position scales with it.
+        const onResize = () => {
+            const previous = viewHeight;
+            viewHeight = window.innerHeight;
+            measure();
+            lenis.scrollTo((lenis.scroll * viewHeight) / previous, { immediate: true, force: true });
+            onScroll({ scroll: lenis.scroll, velocity: 0 });
         };
 
         measure();
@@ -108,7 +117,7 @@ export default function HomeWorkLayout() {
         });
         lenis.scrollTo(scrollForPath(pathnameRef.current, boundsRef.current), { immediate: true, force: true });
         onScroll({ scroll: lenis.scroll, velocity: 0 });
-        window.addEventListener('resize', measure);
+        window.addEventListener('resize', onResize);
 
         let rafId = 0;
         let idleFrames = 0;
@@ -132,7 +141,7 @@ export default function HomeWorkLayout() {
 
         return () => {
             cancelAnimationFrame(rafId);
-            window.removeEventListener('resize', measure);
+            window.removeEventListener('resize', onResize);
             lenis.destroy();
             lenisRef.current = null;
         };

@@ -82,6 +82,8 @@ function createMaterial(color, { spark = 0, head = 0 }) {
             uSway: { value: new THREE.Vector4() },
             uSpark: { value: spark },
             uHead: { value: head },
+            uSparkSpread: { value: STREAM_FIBERS.SPARK_SPREAD },
+            uSparkFlow: { value: STREAM.SPARK_FLOW },
             tSimPosition: { value: null },
             tSimRandom: { value: null },
             uLocalToStream: { value: new THREE.Matrix4() },
@@ -100,6 +102,7 @@ export default function StreamFibers({ streamRef }) {
     const { quality } = useQuality();
     const dpr = useThree((state) => state.viewport.dpr);
     const groupRef = useRef(null);
+    const headsRef = useRef(null);
     const count = FIBER_TIERS[quality];
     // Same tier as LogoParticles, so the UVs address its simulation texture.
     const { size } = TIERS[quality];
@@ -129,6 +132,7 @@ export default function StreamFibers({ streamRef }) {
         if (!group.visible) {
             return;
         }
+        headsRef.current.visible = s.blend < 1;
         for (const material of materials) {
             const u = material.uniforms;
             u.uTrunkY.value = s.trunkY;
@@ -156,7 +160,7 @@ export default function StreamFibers({ streamRef }) {
         <group ref={groupRef} visible={false}>
             <lineSegments geometry={fibers} material={materials[0]} frustumCulled={false} />
             <points geometry={sparks} material={materials[1]} frustumCulled={false} />
-            <points geometry={heads} material={materials[2]} frustumCulled={false} />
+            <points ref={headsRef} geometry={heads} material={materials[2]} frustumCulled={false} />
         </group>
     );
 }

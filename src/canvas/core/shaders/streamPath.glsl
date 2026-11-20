@@ -1,6 +1,11 @@
 // Stream path in carousel (rig) space, shared by the logo-particle sim and the fibres so the hand-off lines up.
 // sway = (bundle amplitude, frequency, phase = time × speed, per-strand amplitude).
 
+// Per-particle path seed; decorrelated from random.x (radius) and random.y (branch pick).
+float streamSeed(vec4 random) {
+    return fract(sin(dot(random.xyz, vec3(12.9898, 78.233, 37.719))) * 43758.5453);
+}
+
 vec2 swayBend(float y, vec4 sway) {
     return sway.x * vec2(sin(y * sway.y + sway.z), cos(y * sway.y * 0.7 + sway.z * 1.3));
 }
