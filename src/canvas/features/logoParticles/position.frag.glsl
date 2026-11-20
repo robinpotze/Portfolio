@@ -27,24 +27,26 @@ uniform float uBranchY;
 uniform vec3 uBranchEnd;
 uniform float uBranchGrow;
 uniform float uBranchShare;
+uniform vec4 uSway;
 
 #include ../../core/shaders/curl.glsl;
+#include ../../core/shaders/streamPath.glsl;
 
 // Point on the flowing trunk in carousel space, mapped into the particles' local space.
 // wrapped: the particle crossed the bottom this frame and restarts at the top.
 vec3 streamTarget(vec4 random, out bool wrapped) {
     // Decorrelated from random.x (radius, point size) and random.y (Task 5's branch pick), or the trunk renders as cones.
     float seed = fract(sin(dot(random.xyz, vec3(12.9898, 78.233, 37.719))) * 43758.5453);
-    float along = fract(seed + uFlow);
-    wrapped = along < uFlowStep;
     float angle = random.z * 6.2831853;
     float radius = uTrunkRadius * sqrt(fract(random.x * 13.37));
-    vec3 p = vec3(cos(angle) * radius, uTrunkY + uTrunkHalf * (1.0 - 2.0 * along), sin(angle) * radius);
+    float along = fract(seed + uFlow);
+    wrapped = along < uFlowStep;
+    vec3 p = trunkPoint(along, angle, radius, uTrunkY, uTrunkHalf, uSway);
     // A share of particles runs out along the branch to the centred card (twice the trunk's flow speed).
     if (random.y < uBranchShare && uBranchGrow > 0.0) {
         float out_ = fract(seed + uFlow * 2.0);
         wrapped = out_ < uFlowStep * 2.0;
-        p = mix(vec3(0.0, uBranchY, 0.0), uBranchEnd, out_ * uBranchGrow) + vec3(cos(angle), sin(angle), 0.0) * radius * 0.5;
+        p = branchPoint(out_ * uBranchGrow, angle, radius, uBranchY, uBranchEnd, uSway);
     }
     return (uStreamToLocal * vec4(p, 1.0)).xyz;
 }

@@ -1,11 +1,14 @@
 import { useQuality } from '@app/QualityContext';
 import { CAROUSEL_CONFIG, calculateCardCenteredness, calculateCardPosition, getCarouselFov, WorkCard } from '@canvas/features/carousel';
 import useNoiseTexture from '@canvas/core/textures/useNoiseTexture';
+import { STREAM_FIBERS, StreamFibers } from '@canvas/features/streamFibers';
+import { STREAM } from '@config/animation.config';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useRef, useState } from 'react';
 import * as THREE from 'three';
+import { easeCurve } from '@utils/easingFunctions';
 
-const { clamp, degToRad } = THREE.MathUtils;
+const { clamp, degToRad, smoothstep } = THREE.MathUtils;
 // The trunk spans a bit more than the visible height, so its ends stay off-screen.
 const TRUNK_OVERSCAN = 1.3;
 
@@ -31,7 +34,7 @@ export default function WorkScene({ items = [], segmentsRef, streamRef, onCardNa
     };
 
     // Priority -1: runs before LogoParticles reads streamRef this frame.
-    useFrame(() => {
+    useFrame((_, delta) => {
         const rig = rigRef.current;
         if (!rig || items.length === 0) {
             return;
@@ -87,6 +90,12 @@ export default function WorkScene({ items = [], segmentsRef, streamRef, onCardNa
         const [cardX, cardY, cardZ] = calculateCardPosition(bestIndex);
         stream.branchY = cardY;
         stream.branchEnd.set(cardX * CAROUSEL_CONFIG.BRANCH.REACH, cardY, cardZ * CAROUSEL_CONFIG.BRANCH.REACH);
+        // Flow: one shared phase for the sim and the fibres. velocity is viewport heights per frame.
+        const scrollSpeed = delta > 0 ? Math.abs(velocity) / delta : 0;
+        stream.flowStep = delta * (STREAM.FLOW_BASE + scrollSpeed * STREAM.FLOW_SCROLL_GAIN);
+        stream.flow = (stream.flow + stream.flowStep) % 1;
+        // Hand-off from particles to fibres over the end of the morph (same easing as HomeScene's blend).
+        stream.fade = smoothstep(easeCurve(morph), STREAM_FIBERS.HANDOFF_START, 1);
 
         onCenterednessChange?.(minCenteredness, bestIndex);
     }, -1);
@@ -111,6 +120,7 @@ export default function WorkScene({ items = [], segmentsRef, streamRef, onCardNa
                             centerednessRef={centerednessRef}
                         />
                     ))}
+                    <StreamFibers streamRef={streamRef} />
                 </group>
             </group>
             <ambientLight intensity={1} />

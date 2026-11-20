@@ -1,6 +1,7 @@
 import { useQuality } from '@app/QualityContext';
 import useFluidSim from '@canvas/core/fluid/useFluidSim';
 import createMatcapTexture from '@canvas/core/textures/createMatcapTexture';
+import { STREAM_FIBERS } from '@canvas/features/streamFibers';
 import { useGLTF } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
 import { STREAM } from '@config/animation.config';
@@ -113,13 +114,14 @@ function createSimulation(gl, size, halfFloat, { origins, randoms }, morph, { co
             uStreamToLocal: new THREE.Matrix4(),
             uTrunkY: 0,
             uTrunkHalf: 10,
-            uTrunkRadius: LOGO_PARTICLES.TRUNK_RADIUS,
+            uTrunkRadius: STREAM_FIBERS.SPREAD,
             uFlow: 0,
             uFlowStep: 0,
             uBranchY: 0,
             uBranchEnd: new THREE.Vector3(),
             uBranchGrow: 0,
             uBranchShare: LOGO_PARTICLES.BRANCH_SHARE,
+            uSway: new THREE.Vector4(),
         })
     );
     const error = gpu.init();
@@ -184,7 +186,6 @@ export default function LogoParticles({ timeline, gridSize, streamRef }) {
     const pointsRef = useRef(null);
     const materialRef = useRef(null);
     const modelView = useMemo(() => new THREE.Matrix4(), []);
-    const flowRef = useRef(0);
 
     useEffect(() => {
         const next = createSimulation(gl, size, halfFloat, targets, timeline.current.morph, gridRef.current);
@@ -242,13 +243,16 @@ export default function LogoParticles({ timeline, gridSize, streamRef }) {
             u.uBranchY.value = s.branchY;
             u.uBranchEnd.value.copy(s.branchEnd);
             u.uBranchGrow.value = s.grow;
+            u.uSway.value.set(STREAM_FIBERS.SWAY_AMPLITUDE, STREAM_FIBERS.SWAY_FREQUENCY, time * STREAM.SWAY_SPEED, STREAM_FIBERS.STRAND_AMPLITUDE);
         }
-        // velocity is viewport heights per frame: / delta gives per second, × delta back to this frame's step.
-        const scrollSpeed = delta > 0 ? Math.abs(s?.velocity ?? 0) / delta : 0;
-        const flowStep = delta * (STREAM.FLOW_BASE + scrollSpeed * STREAM.FLOW_SCROLL_GAIN);
-        flowRef.current = (flowRef.current + flowStep) % 1;
-        u.uFlow.value = flowRef.current;
-        u.uFlowStep.value = flowStep;
+        u.uFlow.value = s?.flow ?? 0;
+        u.uFlowStep.value = s?.flowStep ?? 0;
+        // Once the fibres have taken over, the particles are out of view: stop simulating and drawing them.
+        const fade = s?.fade ?? 0;
+        points.visible = points.visible && fade < 1;
+        if (fade >= 1) {
+            return;
+        }
         current.gpu.compute();
 
         // Render. uIntro: the panel powers on over the camera reveal.
@@ -257,6 +261,7 @@ export default function LogoParticles({ timeline, gridSize, streamRef }) {
         material.uIntro = intro;
         material.uTime = time;
         material.uGridSize.set(width, height);
+        material.uStreamFade = fade;
     });
 
     if (!sim || sim.error) {

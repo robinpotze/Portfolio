@@ -16,6 +16,7 @@ const LogoParticlesMaterial = shaderMaterial(
         uIntro: 0,
         uGridSize: new THREE.Vector2(),
         uTime: 0,
+        uStreamFade: 0,
     },
     particlesVert,
     particlesFrag

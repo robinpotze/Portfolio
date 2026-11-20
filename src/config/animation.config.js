@@ -76,6 +76,8 @@ export const HOME_WORK = {
 export const STREAM = {
     FLOW_BASE: 0.05,
     FLOW_SCROLL_GAIN: 0.5,
+    // Bundle sway: radians of phase per second.
+    SWAY_SPEED: 0.4,
 };
 
 export const FLOAT_CONFIG = {

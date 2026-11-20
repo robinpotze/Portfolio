@@ -17,7 +17,6 @@ export const LOGO_PARTICLES = {
     CURL_STRENGTH: 0.015,
     POINT_SIZE: 20,
     FLUID_STRENGTH: 0.0002,
-    // Stream: trunk thickness (carousel units) and the share of particles that form the branch (Task 5).
-    TRUNK_RADIUS: 0.08,
+    // Stream: the share of particles that form the branch (Task 5).
     BRANCH_SHARE: 0.2,
 };

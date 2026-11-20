@@ -22,7 +22,18 @@ export default function HomeWorkCanvas({ segmentsRef, startAnimations }) {
     const cameraRef = useRef(null);
     const rigRef = useRef(null);
     const hasNavigated = useRef(false);
-    const streamRef = useRef({ space: null, trunkY: 0, trunkHalf: 10, velocity: 0, grow: 0, branchY: 0, branchEnd: new THREE.Vector3() });
+    const streamRef = useRef({
+        space: null,
+        trunkY: 0,
+        trunkHalf: 10,
+        velocity: 0,
+        grow: 0,
+        branchY: 0,
+        branchEnd: new THREE.Vector3(),
+        flow: 0,
+        flowStep: 0,
+        fade: 0,
+    });
     const [isMobile] = useState(() => window.innerWidth <= CAROUSEL_CONFIG.MOBILE.BREAKPOINT);
 
     // Border frame around the centred card.
