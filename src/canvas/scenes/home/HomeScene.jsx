@@ -54,7 +54,8 @@ export default function HomeScene({ segmentsRef, streamRef, startAnimations = tr
     const subtitleRef = useRef();
     const lightRef = useRef();
     const introStart = useRef(null);
-    // Read by LogoParticles each frame: morph 0 = dot panel → 1 = logo, intro 0 → 1 = panel powered on.
+    // Read by LogoParticles each frame: morph 0 = dot panel → 1 = logo, intro 0 → 1 = panel powered on,
+    // stream 0 → 1 = logo → trunk.
     const timeline = useRef({ morph: 0, intro: 0, stream: 0 });
     const parallax = useMemo(() => new THREE.Vector3(), []);
 
@@ -133,6 +134,8 @@ export default function HomeScene({ segmentsRef, streamRef, startAnimations = tr
         if (logo) {
             // Particles unravel into the stream; the metallic fallback shrinks onto the axis instead.
             const shrink = canSimulate ? 1 : 1 - blend;
+            // The shrunk fallback is out of view after the morph; the particles stay as the trunk.
+            logo.visible = canSimulate || blend < 1;
             logo.position.z = canSimulate ? keyframe(LOGO_Z, 1, scroll) : lerp(keyframe(LOGO_Z, 1, scroll), 0, blend);
             logo.scale.setScalar(keyframe(LOGO_SCALE, 1, scroll) * viewportScale * shrink);
             logo.rotation.y = damp(logo.rotation.y, pointer.x * LOGO_TILT, TILT_DAMPING, delta);

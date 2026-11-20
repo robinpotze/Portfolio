@@ -149,7 +149,7 @@ function createSimulation(gl, size, halfFloat, { origins, randoms }, morph, { co
 
 /**
  * The logo as GPU particles: a dot-matrix panel at rest that swirls into the logo as `timeline.morph` rises.
- * timeline is a ref HomeScene writes each frame before this reads it: { morph: 0…1, intro: 0…1 }.
+ * timeline is a ref HomeScene writes each frame before this reads it: { morph: 0…1, intro: 0…1, stream: 0…1 }.
  */
 export default function LogoParticles({ timeline, gridSize, streamRef }) {
     const gl = useThree((state) => state.gl);
@@ -236,7 +236,9 @@ export default function LogoParticles({ timeline, gridSize, streamRef }) {
             u.uTrunkY.value = s.trunkY;
             u.uTrunkHalf.value = s.trunkHalf;
         }
-        const flowStep = delta * (STREAM.FLOW_BASE + Math.abs(s?.velocity ?? 0) * STREAM.FLOW_SCROLL_GAIN * 60);
+        // velocity is viewport heights per frame: / delta gives per second, × delta back to this frame's step.
+        const scrollSpeed = delta > 0 ? Math.abs(s?.velocity ?? 0) / delta : 0;
+        const flowStep = delta * (STREAM.FLOW_BASE + scrollSpeed * STREAM.FLOW_SCROLL_GAIN);
         flowRef.current = (flowRef.current + flowStep) % 1;
         u.uFlow.value = flowRef.current;
         u.uFlowStep.value = flowStep;
