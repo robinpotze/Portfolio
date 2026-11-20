@@ -1,5 +1,5 @@
 import { useQuality } from '@app/QualityContext';
-import { CAROUSEL_CONFIG, calculateCardCenteredness, getCarouselFov, WorkCard } from '@canvas/features/carousel';
+import { CAROUSEL_CONFIG, calculateCardCenteredness, calculateCardPosition, getCarouselFov, WorkCard } from '@canvas/features/carousel';
 import useNoiseTexture from '@canvas/core/textures/useNoiseTexture';
 import { useFrame, useThree } from '@react-three/fiber';
 import { useRef, useState } from 'react';
@@ -83,6 +83,10 @@ export default function WorkScene({ items = [], segmentsRef, streamRef, onCardNa
         stream.trunkHalf = (CAROUSEL_CONFIG.CAMERA.POSITION[2] * Math.tan(degToRad(getCarouselFov()) / 2) * TRUNK_OVERSCAN) / scale;
         stream.velocity = velocity;
         stream.grow = grow;
+        // Branch from the axis at the card's height out to just short of the card centre (rig space).
+        const [cardX, cardY, cardZ] = calculateCardPosition(bestIndex);
+        stream.branchY = cardY;
+        stream.branchEnd.set(cardX * CAROUSEL_CONFIG.BRANCH.REACH, cardY, cardZ * CAROUSEL_CONFIG.BRANCH.REACH);
 
         onCenterednessChange?.(minCenteredness, bestIndex);
     }, -1);

@@ -1,4 +1,4 @@
-export { calculateCardCenteredness, getCarouselFov } from './carousel';
+export { calculateCardCenteredness, calculateCardPosition, getCarouselFov } from './carousel';
 export { CAROUSEL_CONFIG } from './carousel.config';
 export { default as useBorderProjection } from './useBorderProjection';
 export { default as WorkCard } from './WorkCard';

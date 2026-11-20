@@ -116,6 +116,10 @@ function createSimulation(gl, size, halfFloat, { origins, randoms }, morph, { co
             uTrunkRadius: LOGO_PARTICLES.TRUNK_RADIUS,
             uFlow: 0,
             uFlowStep: 0,
+            uBranchY: 0,
+            uBranchEnd: new THREE.Vector3(),
+            uBranchGrow: 0,
+            uBranchShare: LOGO_PARTICLES.BRANCH_SHARE,
         })
     );
     const error = gpu.init();
@@ -235,6 +239,9 @@ export default function LogoParticles({ timeline, gridSize, streamRef }) {
             u.uStreamToLocal.value.copy(points.matrixWorld).invert().multiply(s.space.matrixWorld);
             u.uTrunkY.value = s.trunkY;
             u.uTrunkHalf.value = s.trunkHalf;
+            u.uBranchY.value = s.branchY;
+            u.uBranchEnd.value.copy(s.branchEnd);
+            u.uBranchGrow.value = s.grow;
         }
         // velocity is viewport heights per frame: / delta gives per second, × delta back to this frame's step.
         const scrollSpeed = delta > 0 ? Math.abs(s?.velocity ?? 0) / delta : 0;

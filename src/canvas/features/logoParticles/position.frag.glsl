@@ -23,6 +23,10 @@ uniform float uTrunkHalf;
 uniform float uTrunkRadius;
 uniform float uFlow;
 uniform float uFlowStep;
+uniform float uBranchY;
+uniform vec3 uBranchEnd;
+uniform float uBranchGrow;
+uniform float uBranchShare;
 
 #include ../../core/shaders/curl.glsl;
 
@@ -36,6 +40,12 @@ vec3 streamTarget(vec4 random, out bool wrapped) {
     float angle = random.z * 6.2831853;
     float radius = uTrunkRadius * sqrt(fract(random.x * 13.37));
     vec3 p = vec3(cos(angle) * radius, uTrunkY + uTrunkHalf * (1.0 - 2.0 * along), sin(angle) * radius);
+    // A share of particles runs out along the branch to the centred card (twice the trunk's flow speed).
+    if (random.y < uBranchShare && uBranchGrow > 0.0) {
+        float out_ = fract(seed + uFlow * 2.0);
+        wrapped = out_ < uFlowStep * 2.0;
+        p = mix(vec3(0.0, uBranchY, 0.0), uBranchEnd, out_ * uBranchGrow) + vec3(cos(angle), sin(angle), 0.0) * radius * 0.5;
+    }
     return (uStreamToLocal * vec4(p, 1.0)).xyz;
 }
 
