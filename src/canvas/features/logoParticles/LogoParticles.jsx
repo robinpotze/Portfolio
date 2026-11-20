@@ -99,6 +99,9 @@ function createSimulation(gl, size, halfFloat, { origins, randoms }, morph, { co
             tFluid: null,
             uTime: 0,
             uDelta: 1,
+            uDt: 1 / 60,
+            uFollow: LOGO_PARTICLES.FOLLOW,
+            uTransitAmplitude: LOGO_PARTICLES.TRANSIT_AMPLITUDE,
             uMorph: morph,
             uMorphStagger: MORPH_STAGGER,
             uGridSize: new THREE.Vector2(width, height),
@@ -227,6 +230,7 @@ export default function LogoParticles({ timeline, gridSize, streamRef }) {
         const u = current.variable.material.uniforms;
         u.uTime.value = time;
         u.uDelta.value = Math.min(delta * 60, 2);
+        u.uDt.value = delta;
         u.uMorph.value = morph;
         u.uGridSize.value.set(width, height);
         // Fluid off on low tiers: a null sampler reads as black.

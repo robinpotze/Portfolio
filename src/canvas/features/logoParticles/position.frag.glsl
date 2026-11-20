@@ -5,6 +5,9 @@ uniform sampler2D tCell;
 uniform sampler2D tFluid;
 uniform float uTime;
 uniform float uDelta;
+uniform float uDt;
+uniform float uFollow;
+uniform float uTransitAmplitude;
 uniform float uMorph;
 uniform float uMorphStagger;
 uniform vec2 uGridSize;
@@ -69,14 +72,20 @@ void main() {
     vec3 streamGoal = streamTarget(random, wrapped);
 
     vec3 goal = mix(mix(grid, origin, morph), streamGoal, stream);
-    pos += (goal - pos) * uSpring * uDelta;
+    // Swirl in transit as an offset on the goal (not accumulated), so it never lags behind a fast-moving path.
+    float transit = sin(3.14159265 * morph) + sin(3.14159265 * stream);
+    goal += curlNoise(goal * uCurlScale + uTime * uCurlSpeed) * uTransitAmplitude * transit;
+    // At rest: the soft spring (lets the fluid push show). In transit: a fast frame-rate independent follow, so the
+    // particles stay on the path during a seek or fast scroll instead of trailing it as a block.
+    bool resting = (morph <= 0.0 || morph >= 1.0) && stream <= 0.0;
+    pos = mix(pos, goal, resting ? uSpring * uDelta : 1.0 - exp(-uFollow * uDt));
     // Jump wrapped particles straight to the top instead of springing back up the whole trunk.
     if (stream >= 1.0 && wrapped) {
         pos = goal;
     }
 
-    // Curl swirl: barely there at rest (keeps the panel crisp), strongest halfway through the transition.
-    pos += curlNoise(pos * uCurlScale + uTime * uCurlSpeed) * uCurlStrength * (0.02 + sin(3.14159265 * morph) + sin(3.14159265 * stream)) * uDelta;
+    // Faint curl drift at rest keeps the panel alive without blurring it.
+    pos += curlNoise(pos * uCurlScale + uTime * uCurlSpeed) * uCurlStrength * 0.02 * uDelta;
 
     // Push by the fluid velocity under the particle on screen, mapped back into the logo's local space.
     vec4 clip = uModelViewProjection * vec4(pos, 1.0);

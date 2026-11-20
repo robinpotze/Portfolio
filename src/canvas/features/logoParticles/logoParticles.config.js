@@ -12,6 +12,10 @@ export const LOGO_PARTICLES = {
     GRID_Z: -0.5,
     MORPH_STAGGER: 0.3,
     SPRING: 0.06,
+    // In transit (morph or stream moving): follow rate toward the path per second (~3 frames to settle), instead of SPRING.
+    FOLLOW: 60,
+    // In transit: curl swirl offset on the goal (logo-local units), peaking mid-transition.
+    TRANSIT_AMPLITUDE: 0.25,
     CURL_SCALE: 0.35,
     CURL_SPEED: 0.08,
     CURL_STRENGTH: 0.015,
