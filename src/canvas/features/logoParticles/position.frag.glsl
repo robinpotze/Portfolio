@@ -16,8 +16,26 @@ uniform float uCurlStrength;
 uniform float uFluidStrength;
 uniform mat4 uModelViewProjection;
 uniform mat3 uScreenToLocal;
+uniform float uStream;
+uniform mat4 uStreamToLocal;
+uniform float uTrunkY;
+uniform float uTrunkHalf;
+uniform float uTrunkRadius;
+uniform float uFlow;
+uniform float uFlowStep;
 
 #include ../../core/shaders/curl.glsl;
+
+// Point on the flowing trunk in carousel space, mapped into the particles' local space.
+// wrapped: the particle crossed the bottom this frame and restarts at the top.
+vec3 streamTarget(vec4 random, out bool wrapped) {
+    float along = fract(random.x + uFlow);
+    wrapped = along < uFlowStep;
+    float angle = random.z * 6.2831853;
+    float radius = uTrunkRadius * sqrt(fract(random.x * 13.37));
+    vec3 p = vec3(cos(angle) * radius, uTrunkY + uTrunkHalf * (1.0 - 2.0 * along), sin(angle) * radius);
+    return (uStreamToLocal * vec4(p, 1.0)).xyz;
+}
 
 void main() {
     vec2 uv = gl_FragCoord.xy / resolution.xy;
@@ -31,11 +49,20 @@ void main() {
     float morph = clamp((uMorph - random.w * uMorphStagger) / (1.0 - uMorphStagger), 0.0, 1.0);
 
     // Spring from the dot-matrix cell toward the logo surface as morph rises.
-    vec3 goal = mix(grid, origin, morph);
+    // Second stage: logo → stream, with the same per-particle lag.
+    float stream = clamp((uStream - random.w * uMorphStagger) / (1.0 - uMorphStagger), 0.0, 1.0);
+    bool wrapped;
+    vec3 streamGoal = streamTarget(random, wrapped);
+
+    vec3 goal = mix(mix(grid, origin, morph), streamGoal, stream);
     pos += (goal - pos) * uSpring * uDelta;
+    // Jump wrapped particles straight to the top instead of springing back up the whole trunk.
+    if (stream >= 1.0 && wrapped) {
+        pos = goal;
+    }
 
     // Curl swirl: barely there at rest (keeps the panel crisp), strongest halfway through the transition.
-    pos += curlNoise(pos * uCurlScale + uTime * uCurlSpeed) * uCurlStrength * (0.02 + sin(3.14159265 * morph)) * uDelta;
+    pos += curlNoise(pos * uCurlScale + uTime * uCurlSpeed) * uCurlStrength * (0.02 + sin(3.14159265 * morph) + sin(3.14159265 * stream)) * uDelta;
 
     // Push by the fluid velocity under the particle on screen, mapped back into the logo's local space.
     vec4 clip = uModelViewProjection * vec4(pos, 1.0);

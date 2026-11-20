@@ -72,6 +72,12 @@ export const HOME_WORK = {
     CARD_VH: 1,
 };
 
+// Particle trunk flow: cycles per second at rest, plus extra cycles per second per viewport height per second of scroll.
+export const STREAM = {
+    FLOW_BASE: 0.05,
+    FLOW_SCROLL_GAIN: 0.5,
+};
+
 export const FLOAT_CONFIG = {
     INTENSITY: 0.2,
     ROTATION_INTENSITY: 0.2,

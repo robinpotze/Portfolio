@@ -55,7 +55,7 @@ export default function HomeScene({ segmentsRef, streamRef, startAnimations = tr
     const lightRef = useRef();
     const introStart = useRef(null);
     // Read by LogoParticles each frame: morph 0 = dot panel → 1 = logo, intro 0 → 1 = panel powered on.
-    const timeline = useRef({ morph: 0, intro: 0 });
+    const timeline = useRef({ morph: 0, intro: 0, stream: 0 });
     const parallax = useMemo(() => new THREE.Vector3(), []);
 
     const { gl, size } = useThree();
@@ -106,6 +106,7 @@ export default function HomeScene({ segmentsRef, streamRef, startAnimations = tr
         const cameraReveal = reveal(0, SCENE.CAMERA_DURATION);
         timeline.current.morph = morph;
         timeline.current.intro = cameraReveal;
+        timeline.current.stream = blend;
         // WorkScene owns the camera once the morph completes.
         if (streamProgress < 1) {
             camera.position.set(
@@ -130,8 +131,10 @@ export default function HomeScene({ segmentsRef, streamRef, startAnimations = tr
 
         const logo = logoRef.current;
         if (logo) {
-            logo.position.z = lerp(keyframe(LOGO_Z, 1, scroll), 0, blend);
-            logo.scale.setScalar(keyframe(LOGO_SCALE, 1, scroll) * viewportScale * (1 - blend));
+            // Particles unravel into the stream; the metallic fallback shrinks onto the axis instead.
+            const shrink = canSimulate ? 1 : 1 - blend;
+            logo.position.z = canSimulate ? keyframe(LOGO_Z, 1, scroll) : lerp(keyframe(LOGO_Z, 1, scroll), 0, blend);
+            logo.scale.setScalar(keyframe(LOGO_SCALE, 1, scroll) * viewportScale * shrink);
             logo.rotation.y = damp(logo.rotation.y, pointer.x * LOGO_TILT, TILT_DAMPING, delta);
             logo.rotation.x = damp(logo.rotation.x, -pointer.y * LOGO_TILT, TILT_DAMPING, delta);
         }

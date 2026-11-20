@@ -3,6 +3,7 @@ import useFluidSim from '@canvas/core/fluid/useFluidSim';
 import createMatcapTexture from '@canvas/core/textures/createMatcapTexture';
 import { useGLTF } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
+import { STREAM } from '@config/animation.config';
 import { getCSSColorRGBA } from '@utils/cssUtils';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
@@ -108,6 +109,13 @@ function createSimulation(gl, size, halfFloat, { origins, randoms }, morph, { co
             uFluidStrength: 0,
             uModelViewProjection: new THREE.Matrix4(),
             uScreenToLocal: new THREE.Matrix3(),
+            uStream: 0,
+            uStreamToLocal: new THREE.Matrix4(),
+            uTrunkY: 0,
+            uTrunkHalf: 10,
+            uTrunkRadius: LOGO_PARTICLES.TRUNK_RADIUS,
+            uFlow: 0,
+            uFlowStep: 0,
         })
     );
     const error = gpu.init();
@@ -143,7 +151,7 @@ function createSimulation(gl, size, halfFloat, { origins, randoms }, morph, { co
  * The logo as GPU particles: a dot-matrix panel at rest that swirls into the logo as `timeline.morph` rises.
  * timeline is a ref HomeScene writes each frame before this reads it: { morph: 0…1, intro: 0…1 }.
  */
-export default function LogoParticles({ timeline, gridSize }) {
+export default function LogoParticles({ timeline, gridSize, streamRef }) {
     const gl = useThree((state) => state.gl);
     const { quality } = useQuality();
     const { size, fluidIterations } = TIERS[quality];
@@ -172,6 +180,7 @@ export default function LogoParticles({ timeline, gridSize }) {
     const pointsRef = useRef(null);
     const materialRef = useRef(null);
     const modelView = useMemo(() => new THREE.Matrix4(), []);
+    const flowRef = useRef(0);
 
     useEffect(() => {
         const next = createSimulation(gl, size, halfFloat, targets, timeline.current.morph, gridRef.current);
@@ -190,7 +199,7 @@ export default function LogoParticles({ timeline, gridSize }) {
         const current = simRef.current;
         const points = pointsRef.current;
         const material = materialRef.current;
-        const { morph, intro } = timeline.current;
+        const { morph, intro, stream } = timeline.current;
         // Nothing is visible until the panel powers on.
         if (!current || current.error || !points || !material || intro === 0) {
             return;
@@ -218,6 +227,19 @@ export default function LogoParticles({ timeline, gridSize }) {
         modelView.multiplyMatrices(camera.matrixWorldInverse, points.matrixWorld);
         u.uModelViewProjection.value.multiplyMatrices(camera.projectionMatrix, modelView);
         u.uScreenToLocal.value.setFromMatrix4(modelView).invert();
+        // Stream: carousel space → particle space, trunk placement and flow.
+        u.uStream.value = stream;
+        const s = streamRef?.current;
+        if (s?.space) {
+            s.space.updateWorldMatrix(true, false);
+            u.uStreamToLocal.value.copy(points.matrixWorld).invert().multiply(s.space.matrixWorld);
+            u.uTrunkY.value = s.trunkY;
+            u.uTrunkHalf.value = s.trunkHalf;
+        }
+        const flowStep = delta * (STREAM.FLOW_BASE + Math.abs(s?.velocity ?? 0) * STREAM.FLOW_SCROLL_GAIN * 60);
+        flowRef.current = (flowRef.current + flowStep) % 1;
+        u.uFlow.value = flowRef.current;
+        u.uFlowStep.value = flowStep;
         current.gpu.compute();
 
         // Render. uIntro: the panel powers on over the camera reveal.
