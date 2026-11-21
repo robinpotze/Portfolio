@@ -30,17 +30,24 @@ export const CAROUSEL_CONFIG = {
         SCALE_FACTOR: 0.7,
     },
 
-    // The branch to the centred card: full length at centeredness 0, gone at RANGE (half a card step).
+    // Per-card sequence over its presence (0 at the frame edge → 1 near the centre): the branch reaches the card by
+    // GROW_BY, then the card dissolves in from DISSOLVE_FROM to 1. Leaving reverses it.
     BRANCH: {
-        RANGE: 0.4 / Math.PI,
+        GROW_BY: 0.5,
+        DISSOLVE_FROM: 0.4,
         // A pyramid from the trunk onto the card: faces land at INSET × the card's half-extents (inside the corners),
         // and mid-way each strand is pulled BOW of the way toward the pyramid axis, so the faces curve inward.
         INSET: 0.85,
         BOW: 0.35,
     },
+    // Card dissolve: square cells across the card (dot-matrix look) and the width of the glowing edge band.
+    DISSOLVE: {
+        CELLS: [48, 27],
+        EDGE: 0.08,
+    },
 
-    // On-screen growth: full size within FULL_WITHIN of the centre, 0 at ENTER_FROM (about 1.5 card steps, just past the
-    // frame edge). Centeredness units: |angle difference| / π. The first card grows in from MORPH_FROM of the morph.
+    // On-screen presence: full within FULL_WITHIN of the centre, 0 at ENTER_FROM (about 1.5 card steps, just past the
+    // frame edge). Centeredness units: |angle difference| / π. The first card arrives from MORPH_FROM of the morph.
     FRAME: {
         FULL_WITHIN: 0.2 / Math.PI,
         ENTER_FROM: 1.2 / Math.PI,

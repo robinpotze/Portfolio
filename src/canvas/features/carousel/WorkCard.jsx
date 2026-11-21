@@ -2,11 +2,11 @@ import { useQuality } from '@app/QualityContext';
 import { FLOAT_CONFIG } from '@config/animation.config';
 import { Float, Text, useCursor, useTexture } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
-import { getCSSVariable } from '@utils/cssUtils';
+import { getCSSColorRGBA, getCSSVariable } from '@utils/cssUtils';
 import { useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { CARD_HEIGHT, CARD_WIDTH } from './cardGeometry';
-import { calculateCardPosition, calculateCardFrameScale, calculateCardRotation } from './carousel';
+import { calculateCardPosition, calculateCardPresence, calculateCardRotation, calculateCardScale, cardDissolve } from './carousel';
 import './PixelOverlayMaterial';
 import './WorkCardMaterial';
 
@@ -38,7 +38,10 @@ function isShown(object) {
 
 export default function WorkCard({ item, index, visible = true, onNavigate, noiseTexture, centerednessRef, segmentsRef }) {
     const groupRef = useRef();
+    const cardMaterialRef = useRef();
     const overlayRef = useRef();
+    const overlayMaterialRef = useRef();
+    const textRefs = useRef([]);
     const hoverRef = useRef(0);
     const [hovered, setHovered] = useState(false);
     // Resets the cursor on unmount too: clicking a card navigates away before onPointerLeave can fire.
@@ -51,6 +54,10 @@ export default function WorkCard({ item, index, visible = true, onNavigate, nois
     const textureSize = useMemo(() => new THREE.Vector2(texture.image?.width ?? 1, texture.image?.height ?? 1), [texture]);
     const position = useMemo(() => calculateCardPosition(index), [index]);
     const rotation = useMemo(() => calculateCardRotation(index), [index]);
+    const edgeColor = useMemo(() => {
+        const { r, g, b } = getCSSColorRGBA('--c-brnd_100');
+        return new THREE.Color().setRGB(r / 255, g / 255, b / 255, THREE.SRGBColorSpace);
+    }, []);
 
     useFrame(({ clock }, delta) => {
         const group = groupRef.current;
@@ -61,18 +68,31 @@ export default function WorkCard({ item, index, visible = true, onNavigate, nois
         if (hovered && !isShown(group)) {
             setHovered(false);
         }
-        // Size follows the card's place on screen; nothing is drawn or hit-tested at scale 0.
-        const scale = calculateCardFrameScale(centerednessRef.current[index] ?? 1, segmentsRef.current.morph);
-        group.scale.setScalar(scale);
-        group.visible = visible && scale > 0.001;
+        // Presence drives the card: it forms by dissolve once its branch has arrived; nothing is drawn or hit-tested
+        // while fully dissolved.
+        const centeredness = centerednessRef.current[index] ?? 1;
+        const dissolve = cardDissolve(calculateCardPresence(centeredness, segmentsRef.current.morph));
+        group.scale.setScalar(calculateCardScale(centeredness));
+        group.visible = visible && dissolve > 0.001;
         if (!group.visible) {
             return;
         }
+        if (cardMaterialRef.current) {
+            cardMaterialRef.current.uDissolve = dissolve;
+        }
+        for (const text of textRefs.current) {
+            if (text) {
+                text.fillOpacity = dissolve;
+            }
+        }
+        if (overlayRef.current) {
+            overlayRef.current.visible = dissolve >= 1;
+        }
 
         hoverRef.current = damp(hoverRef.current, hovered ? 1 : 0, HOVER_DAMPING, delta);
-        if (overlayRef.current) {
-            overlayRef.current.uHover = hoverRef.current;
-            overlayRef.current.uTime = clock.elapsedTime;
+        if (overlayMaterialRef.current) {
+            overlayMaterialRef.current.uHover = hoverRef.current;
+            overlayMaterialRef.current.uTime = clock.elapsedTime;
         }
     });
 
@@ -102,6 +122,9 @@ export default function WorkCard({ item, index, visible = true, onNavigate, nois
                 <mesh>
                     <planeGeometry args={[CARD_WIDTH, CARD_HEIGHT]} />
                     <workCardMaterial
+                        ref={cardMaterialRef}
+                        uEdgeColor={edgeColor}
+                        transparent={false}
                         uTexture={texture}
                         uNoiseTex={noiseTexture}
                         uTextureSize={textureSize}
@@ -113,21 +136,33 @@ export default function WorkCard({ item, index, visible = true, onNavigate, nois
 
                 {/* Pixel hover overlay */}
                 {!isLowQuality && (
-                    <mesh position={[0, 0, CARD_WIDTH * 0.011]}>
+                    <mesh ref={overlayRef} position={[0, 0, CARD_WIDTH * 0.011]}>
                         <planeGeometry args={[CARD_WIDTH, CARD_HEIGHT]} />
-                        <pixelOverlayMaterial ref={overlayRef} transparent depthWrite={false} />
+                        <pixelOverlayMaterial ref={overlayMaterialRef} transparent depthWrite={false} />
                     </mesh>
                 )}
 
                 {/* Text content */}
                 <group position={[0, 0, CARD_WIDTH * 0.012]}>
-                    <Text {...LABEL} font={MONO_FONT} fontSize={CARD_HEIGHT * 0.045} position={[0, CARD_HEIGHT * 0.1, 0.1]}>
+                    <Text
+                        {...LABEL}
+                        font={MONO_FONT}
+                        fontSize={CARD_HEIGHT * 0.045}
+                        position={[0, CARD_HEIGHT * 0.1, 0.1]}
+                        ref={(el) => (textRefs.current[0] = el)}
+                    >
                         {data?.year?.toString() || ''}
                     </Text>
-                    <Text {...LABEL} font={TITLE_FONT} fontSize={CARD_HEIGHT * 0.11} position={[0, 0, 0.12]}>
+                    <Text {...LABEL} font={TITLE_FONT} fontSize={CARD_HEIGHT * 0.11} position={[0, 0, 0.12]} ref={(el) => (textRefs.current[1] = el)}>
                         {data?.title || pageKey}
                     </Text>
-                    <Text {...LABEL} font={MONO_FONT} fontSize={CARD_HEIGHT * 0.045} position={[0, -CARD_HEIGHT * 0.1, 0.1]}>
+                    <Text
+                        {...LABEL}
+                        font={MONO_FONT}
+                        fontSize={CARD_HEIGHT * 0.045}
+                        position={[0, -CARD_HEIGHT * 0.1, 0.1]}
+                        ref={(el) => (textRefs.current[2] = el)}
+                    >
                         {data?.client || ''}
                     </Text>
                 </group>

@@ -76,12 +76,12 @@ function createMaterial(color, { spark = 0, head = 0 }) {
             uSpread: { value: STREAM_FIBERS.SPREAD },
             uFlow: { value: 0 },
             uTrail: { value: STREAM_FIBERS.TRAIL },
-            uCardCenter: { value: new THREE.Vector3() },
-            uCardRight: { value: new THREE.Vector3() },
-            uCardUp: { value: new THREE.Vector3() },
+            uCardCenter: { value: [new THREE.Vector3(), new THREE.Vector3()] },
+            uCardRight: { value: [new THREE.Vector3(), new THREE.Vector3()] },
+            uCardUp: { value: [new THREE.Vector3(), new THREE.Vector3()] },
             uBranchInset: { value: CAROUSEL_CONFIG.BRANCH.INSET },
             uBranchBow: { value: CAROUSEL_CONFIG.BRANCH.BOW },
-            uBranchGrow: { value: 0 },
+            uBranchGrow: { value: [0, 0] },
             uBranchShare: { value: LOGO_PARTICLES.BRANCH_SHARE },
             uSway: { value: new THREE.Vector4() },
             uSpark: { value: spark },
@@ -142,10 +142,12 @@ export default function StreamFibers({ streamRef }) {
             u.uTrunkY.value = s.trunkY;
             u.uTrunkHalf.value = s.trunkHalf;
             u.uFlow.value = s.flow;
-            u.uCardCenter.value.copy(s.cardCenter);
-            u.uCardRight.value.copy(s.cardRight);
-            u.uCardUp.value.copy(s.cardUp);
-            u.uBranchGrow.value = s.grow;
+            s.cards.forEach((card, slot) => {
+                u.uCardCenter.value[slot].copy(card.center);
+                u.uCardRight.value[slot].copy(card.right);
+                u.uCardUp.value[slot].copy(card.up);
+                u.uBranchGrow.value[slot] = card.grow;
+            });
             u.uSway.value.set(
                 STREAM_FIBERS.SWAY_AMPLITUDE,
                 STREAM_FIBERS.SWAY_FREQUENCY,

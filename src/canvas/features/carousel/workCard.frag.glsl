@@ -8,6 +8,10 @@ uniform float uRoughness;
 uniform float uNoiseScale;
 uniform float uRefractPower;
 uniform float uChromaticAberration;
+uniform float uDissolve;
+uniform vec2 uCells;
+uniform float uEdge;
+uniform vec3 uEdgeColor;
 
 varying vec2 vUv;
 varying vec3 vNormal;
@@ -49,6 +53,15 @@ vec2 coverUv(vec2 uv, vec2 texSize, vec2 planeSize) {
 }
 
 void main() {
+    // Cell dissolve: square cells (dot-matrix look) appear in a noise-driven order, the card's edges first (where the
+    // branch lands); the cells just forming glow in the brand colour.
+    vec2 cell = floor(vUv * uCells);
+    float cellNoise = mix(random(cell), texture2D(uNoiseTex, (cell + 0.5) / uCells).r, 0.6);
+    vec2 fromCentre = abs((cell + 0.5) / uCells - 0.5) * 2.0;
+    float order = mix(cellNoise, 1.0 - max(fromCentre.x, fromCentre.y), 0.5) * 0.98;
+    if (order > uDissolve) discard;
+    float edge = 1.0 - smoothstep(uDissolve - uEdge, uDissolve, order);
+
     // Base UV in texture space (cover-fit)
     vec2 baseUv = coverUv(vUv, uTextureSize, uPlaneSize);
 
@@ -103,5 +116,5 @@ void main() {
     float vignette = dot(vigUv, vigUv) * 1.5;
     color *= mix(0.55, 1.0, vignette);
 
-    gl_FragColor = vec4(color, 1.0);
+    gl_FragColor = vec4(mix(uEdgeColor * 1.6, color, edge * step(uDissolve, 0.999) + step(0.999, uDissolve)), 1.0);
 }

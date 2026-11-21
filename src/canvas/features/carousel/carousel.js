@@ -32,10 +32,15 @@ const smooth01 = (t) => {
     return x * x * (3 - 2 * x);
 };
 
-/** Card scale on screen: grows in from the frame edge, full near the centre, and grows in over the end of the morph. */
-export function calculateCardFrameScale(centeredness, morph) {
+/** How present a card is (0–1): 0 past the frame edge, 1 near the centre, and only once the morph has arrived. */
+export function calculateCardPresence(centeredness, morph) {
     const { FULL_WITHIN, ENTER_FROM, MORPH_FROM } = CAROUSEL_CONFIG.FRAME;
     const onScreen = 1 - smooth01((centeredness - FULL_WITHIN) / (ENTER_FROM - FULL_WITHIN));
-    const arrived = smooth01((morph - MORPH_FROM) / (1 - MORPH_FROM));
-    return calculateCardScale(centeredness) * onScreen * arrived;
+    return onScreen * smooth01((morph - MORPH_FROM) / (1 - MORPH_FROM));
 }
+
+/** Branch length for a card's presence: reaches the card first. */
+export const branchGrow = (presence) => smooth01(presence / CAROUSEL_CONFIG.BRANCH.GROW_BY);
+
+/** Card dissolve for a card's presence: forms once the branch has arrived. */
+export const cardDissolve = (presence) => smooth01((presence - CAROUSEL_CONFIG.BRANCH.DISSOLVE_FROM) / (1 - CAROUSEL_CONFIG.BRANCH.DISSOLVE_FROM));

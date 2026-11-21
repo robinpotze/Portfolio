@@ -1,9 +1,11 @@
 import { useQuality } from '@app/QualityContext';
 import {
     CAROUSEL_CONFIG,
+    branchGrow,
     calculateCardCenteredness,
-    calculateCardFrameScale,
+    calculateCardPresence,
     calculateCardPosition,
+    calculateCardScale,
     getCarouselFov,
     WorkCard,
 } from '@canvas/features/carousel';
@@ -16,13 +18,14 @@ import { useRef, useState } from 'react';
 import * as THREE from 'three';
 import { easeCurve } from '@utils/easingFunctions';
 
-const { clamp, degToRad } = THREE.MathUtils;
+const { degToRad } = THREE.MathUtils;
 // The trunk spans a bit more than the visible height, so its ends stay off-screen.
 const TRUNK_OVERSCAN = 1.3;
 
 export default function WorkScene({ items = [], segmentsRef, streamRef, onCardNavigate, onCenterednessChange, rigRef: externalRigRef, isMobile }) {
     const rigRef = useRef();
     const centerednessRef = useRef([]);
+    const presenceRef = useRef([]);
     const bestIndexRef = useRef(0);
     const [visibleCenter, setVisibleCenter] = useState(0);
     const camera = useThree((state) => state.camera);
@@ -78,23 +81,39 @@ export default function WorkScene({ items = [], segmentsRef, streamRef, onCardNa
             setVisibleCenter(bestIndex);
         }
 
-        // Branch to the centred card.
-        const grow = morph < 1 ? 0 : 1 - clamp(minCenteredness / CAROUSEL_CONFIG.BRANCH.RANGE, 0, 1);
-
         // Trunk in rig space: rig y = world y / scale (the rig only rotates about y).
         const stream = streamRef.current;
         stream.space = rig;
         stream.trunkY = camera.position.y / scale;
         stream.trunkHalf = (CAROUSEL_CONFIG.CAMERA.POSITION[2] * Math.tan(degToRad(getCarouselFov()) / 2) * TRUNK_OVERSCAN) / scale;
         stream.velocity = velocity;
-        stream.grow = grow;
-        // The centred card's centre and half-extents at its current on-screen scale (rig space), for the corner branch.
-        const [cardX, cardY, cardZ] = calculateCardPosition(bestIndex);
-        const angle = bestIndex * CAROUSEL_CONFIG.ANGLE_STEP;
-        const cardScale = calculateCardFrameScale(minCenteredness, morph);
-        stream.cardCenter.set(cardX, cardY, cardZ);
-        stream.cardRight.set(Math.cos(angle), 0, -Math.sin(angle)).multiplyScalar((CARD_WIDTH / 2) * cardScale);
-        stream.cardUp.set(0, (CARD_HEIGHT / 2) * cardScale, 0);
+        // Branches for the (at most two) cards on screen: the most and second-most present. Each slot holds the
+        // card's centre and half-extents at its on-screen scale (rig space).
+        let first = 0;
+        let second = -1;
+        for (let i = 0; i < items.length; i++) {
+            presenceRef.current[i] = calculateCardPresence(centerednessRef.current[i], morph);
+            if (presenceRef.current[i] > presenceRef.current[first]) {
+                second = first;
+                first = i;
+            } else if (i !== first && (second < 0 || presenceRef.current[i] > presenceRef.current[second])) {
+                second = i;
+            }
+        }
+        [first, second].forEach((index, slot) => {
+            const card = stream.cards[slot];
+            if (index < 0) {
+                card.grow = 0;
+                return;
+            }
+            const [x, y, z] = calculateCardPosition(index);
+            const angle = index * CAROUSEL_CONFIG.ANGLE_STEP;
+            const cardScale = calculateCardScale(centerednessRef.current[index]);
+            card.center.set(x, y, z);
+            card.right.set(Math.cos(angle), 0, -Math.sin(angle)).multiplyScalar((CARD_WIDTH / 2) * cardScale);
+            card.up.set(0, (CARD_HEIGHT / 2) * cardScale, 0);
+            card.grow = branchGrow(presenceRef.current[index]);
+        });
         // Flow: one shared phase for the sim and the fibres. velocity is viewport heights per frame.
         const scrollSpeed = delta > 0 ? Math.abs(velocity) / delta : 0;
         stream.flowStep = delta * (STREAM.FLOW_BASE + scrollSpeed * STREAM.FLOW_SCROLL_GAIN);
@@ -104,7 +123,7 @@ export default function WorkScene({ items = [], segmentsRef, streamRef, onCardNa
 
         // The frame fades in from morph 0.8; before that it is invisible.
         if (morph >= 0.8) {
-            onCenterednessChange?.(minCenteredness, bestIndex, morph);
+            onCenterednessChange?.(minCenteredness, bestIndex);
         }
     }, -1);
 

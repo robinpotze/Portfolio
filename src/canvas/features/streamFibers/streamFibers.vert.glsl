@@ -3,12 +3,12 @@ uniform float uTrunkHalf;
 uniform float uSpread;
 uniform float uFlow;
 uniform float uTrail;
-uniform vec3 uCardCenter;
-uniform vec3 uCardRight;
-uniform vec3 uCardUp;
+uniform vec3 uCardCenter[2];
+uniform vec3 uCardRight[2];
+uniform vec3 uCardUp[2];
 uniform float uBranchInset;
 uniform float uBranchBow;
-uniform float uBranchGrow;
+uniform float uBranchGrow[2];
 uniform float uBranchShare;
 uniform vec4 uSway;
 uniform float uSpark;
@@ -39,17 +39,22 @@ void main() {
     float along = head - trail * uTrail;
     vec3 p = trunkPoint(along, angle, radius, uTrunkY, uTrunkHalf, uSway);
     float alpha = (1.0 - trail) * (1.0 - trail) * mix(0.25, 1.0, random.w);
-    if (uSpark < 0.5 && random.y < uBranchShare && uBranchGrow > 0.0) {
-        // Face (0 top, 1 bottom, 2 left, 3 right) and place across it from random.y, which is uniform 0–1 on this
-        // path and independent of the flow seed, so each face stays evenly filled.
-        float pick = random.y / uBranchShare;
-        float face = floor(pick * 4.0);
-        float across = (fract(pick * 4.0) * 2.0 - 1.0) * uBranchInset;
-        vec3 normal = face < 2.0 ? uCardUp * (1.0 - 2.0 * face) : uCardRight * (2.0 * face - 5.0);
-        vec3 side = face < 2.0 ? uCardRight : uCardUp;
-        vec3 target = uCardCenter + normal * uBranchInset + side * across;
+    // Eight faces: two pyramids (slot 0 = most present card) × four sides (0 top, 1 bottom, 2 left, 3 right), evenly
+    // filled. random.y is uniform 0–1 on this path and independent of the flow seed.
+    float pick = random.y / uBranchShare;
+    float slotFace = floor(pick * 8.0);
+    int slot = int(slotFace >= 4.0);
+    float face = mod(slotFace, 4.0);
+    float across = (fract(pick * 8.0) * 2.0 - 1.0) * uBranchInset;
+    if (uSpark < 0.5 && random.y < uBranchShare && uBranchGrow[slot] > 0.0) {
+        vec3 cardCenter = uCardCenter[slot];
+        vec3 cardRight = uCardRight[slot];
+        vec3 cardUp = uCardUp[slot];
+        vec3 normal = face < 2.0 ? cardUp * (1.0 - 2.0 * face) : cardRight * (2.0 * face - 5.0);
+        vec3 side = face < 2.0 ? cardRight : cardUp;
+        vec3 target = cardCenter + normal * uBranchInset + side * across;
         float out_ = fract(seed + uFlow * 2.0) - trail * uTrail * 2.0;
-        p = pyramidBranchPoint(clamp(out_, 0.0, 1.0) * uBranchGrow, angle, radius, target, uCardCenter, uBranchBow, uSway);
+        p = pyramidBranchPoint(clamp(out_, 0.0, 1.0) * uBranchGrow[slot], angle, radius, target, cardCenter, uBranchBow, uSway);
         // Tail gate at the apex; soft fade at the card so heads don't pop when they wrap.
         alpha *= step(0.0, out_) * (1.0 - smoothstep(0.92, 1.0, out_));
     } else {
