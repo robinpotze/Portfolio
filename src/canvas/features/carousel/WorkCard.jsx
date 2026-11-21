@@ -3,16 +3,14 @@ import { FLOAT_CONFIG } from '@config/animation.config';
 import { Float, Text, useCursor, useTexture } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
 import { getCSSVariable } from '@utils/cssUtils';
-import { entryEase } from '@utils/easingFunctions';
 import { useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { CARD_HEIGHT, CARD_WIDTH } from './cardGeometry';
-import { calculateCardPosition, calculateCardRotation, calculateCardScale } from './carousel';
-import { CAROUSEL_CONFIG } from './carousel.config';
+import { calculateCardPosition, calculateCardFrameScale, calculateCardRotation } from './carousel';
 import './PixelOverlayMaterial';
 import './WorkCardMaterial';
 
-const { clamp, damp } = THREE.MathUtils;
+const { damp } = THREE.MathUtils;
 
 // Glass refraction per quality tier (off on low).
 const CARD_QUALITY = {
@@ -20,8 +18,7 @@ const CARD_QUALITY = {
     medium: { uRoughness: 0.05, uRefractPower: 0.003, uChromaticAberration: 0.4 },
     high: { uRoughness: 0.1, uRefractPower: 0.006, uChromaticAberration: 0.8 },
 };
-// Smoothing rates: scale toward its centeredness target (ln 1000: closes 99.9% of the gap per second), hover overlay in/out.
-const SCALE_DAMPING = Math.log(1000);
+// Smoothing rate of the hover overlay in/out.
 const HOVER_DAMPING = 4;
 
 const PLANE_SIZE = new THREE.Vector2(CARD_WIDTH, CARD_HEIGHT);
@@ -39,13 +36,10 @@ function isShown(object) {
     return true;
 }
 
-export default function WorkCard({ item, index, visible = true, onNavigate, noiseTexture, centerednessRef, revealed = false }) {
+export default function WorkCard({ item, index, visible = true, onNavigate, noiseTexture, centerednessRef, segmentsRef }) {
     const groupRef = useRef();
     const overlayRef = useRef();
-    const scaleRef = useRef(0);
     const hoverRef = useRef(0);
-    const entryTimeRef = useRef(null);
-    const wasVisibleRef = useRef(false);
     const [hovered, setHovered] = useState(false);
     // Resets the cursor on unmount too: clicking a card navigates away before onPointerLeave can fire.
     useCursor(hovered);
@@ -67,29 +61,13 @@ export default function WorkCard({ item, index, visible = true, onNavigate, nois
         if (hovered && !isShown(group)) {
             setHovered(false);
         }
-        // Hidden until the branch first reaches this card, then grow in once.
-        if (!revealed) {
-            group.scale.setScalar(0);
-            scaleRef.current = 0;
+        // Size follows the card's place on screen; nothing is drawn or hit-tested at scale 0.
+        const scale = calculateCardFrameScale(centerednessRef.current[index] ?? 1, segmentsRef.current.morph);
+        group.scale.setScalar(scale);
+        group.visible = visible && scale > 0.001;
+        if (!group.visible) {
             return;
         }
-        if (entryTimeRef.current === null) {
-            entryTimeRef.current = clock.elapsedTime;
-        }
-        const entryT = clamp((clock.elapsedTime - entryTimeRef.current) / CAROUSEL_CONFIG.ENTRY.CARD_DURATION, 0, 1);
-
-        // Re-grow from 0 whenever the card becomes visible again.
-        if (visible && !wasVisibleRef.current) {
-            scaleRef.current = 0;
-        }
-        wasVisibleRef.current = visible;
-        if (!visible) {
-            return;
-        }
-
-        const targetScale = calculateCardScale(centerednessRef.current[index] ?? 1);
-        scaleRef.current = damp(scaleRef.current, targetScale, SCALE_DAMPING, delta);
-        group.scale.setScalar(entryT < 1 ? scaleRef.current * entryEase(entryT) : scaleRef.current);
 
         hoverRef.current = damp(hoverRef.current, hovered ? 1 : 0, HOVER_DAMPING, delta);
         if (overlayRef.current) {
@@ -104,7 +82,6 @@ export default function WorkCard({ item, index, visible = true, onNavigate, nois
                 ref={groupRef}
                 position={position}
                 rotation={rotation}
-                visible={visible}
                 onClick={(e) => {
                     if (!isShown(e.eventObject)) {
                         return;

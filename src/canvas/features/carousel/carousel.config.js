@@ -30,15 +30,17 @@ export const CAROUSEL_CONFIG = {
         SCALE_FACTOR: 0.7,
     },
 
-    ENTRY: {
-        CARD_DURATION: 0.6,
-    },
-
     // The branch to the centred card: full length at centeredness 0, gone at RANGE (half a card step).
-    // A card reveals the first time its branch reaches REVEAL_AT.
     BRANCH: {
         RANGE: 0.4 / Math.PI,
-        REVEAL_AT: 0.9,
         REACH: 0.85,
+    },
+
+    // On-screen growth: full size within FULL_WITHIN of the centre, 0 at ENTER_FROM (about 1.5 card steps, just past the
+    // frame edge). Centeredness units: |angle difference| / π. The first card grows in from MORPH_FROM of the morph.
+    FRAME: {
+        FULL_WITHIN: 0.2 / Math.PI,
+        ENTER_FROM: 1.2 / Math.PI,
+        MORPH_FROM: 0.6,
     },
 };

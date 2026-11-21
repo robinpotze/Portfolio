@@ -26,3 +26,16 @@ const tabletQuery = window.matchMedia(BREAKPOINTS.TABLET);
 export function getCarouselFov() {
     return tabletQuery.matches ? CAROUSEL_CONFIG.CAMERA.FOV + 15 : CAROUSEL_CONFIG.CAMERA.FOV;
 }
+
+const smooth01 = (t) => {
+    const x = Math.min(1, Math.max(0, t));
+    return x * x * (3 - 2 * x);
+};
+
+/** Card scale on screen: grows in from the frame edge, full near the centre, and grows in over the end of the morph. */
+export function calculateCardFrameScale(centeredness, morph) {
+    const { FULL_WITHIN, ENTER_FROM, MORPH_FROM } = CAROUSEL_CONFIG.FRAME;
+    const onScreen = 1 - smooth01((centeredness - FULL_WITHIN) / (ENTER_FROM - FULL_WITHIN));
+    const arrived = smooth01((morph - MORPH_FROM) / (1 - MORPH_FROM));
+    return calculateCardScale(centeredness) * onScreen * arrived;
+}

@@ -16,9 +16,7 @@ export default function WorkScene({ items = [], segmentsRef, streamRef, onCardNa
     const rigRef = useRef();
     const centerednessRef = useRef([]);
     const bestIndexRef = useRef(0);
-    const revealedRef = useRef(0);
     const [visibleCenter, setVisibleCenter] = useState(0);
-    const [revealedCount, setRevealedCount] = useState(0);
     const camera = useThree((state) => state.camera);
     const { quality } = useQuality();
 
@@ -72,12 +70,8 @@ export default function WorkScene({ items = [], segmentsRef, streamRef, onCardNa
             setVisibleCenter(bestIndex);
         }
 
-        // Branch to the centred card; reveal every card up to it the first time the branch reaches it.
+        // Branch to the centred card.
         const grow = morph < 1 ? 0 : 1 - clamp(minCenteredness / CAROUSEL_CONFIG.BRANCH.RANGE, 0, 1);
-        if (grow >= CAROUSEL_CONFIG.BRANCH.REVEAL_AT && bestIndex >= revealedRef.current) {
-            revealedRef.current = bestIndex + 1;
-            setRevealedCount(bestIndex + 1);
-        }
 
         // Trunk in rig space: rig y = world y / scale (the rig only rotates about y).
         const stream = streamRef.current;
@@ -117,7 +111,7 @@ export default function WorkScene({ items = [], segmentsRef, streamRef, onCardNa
                             item={item}
                             index={i}
                             visible={Math.abs(i - visibleCenter) <= 1}
-                            revealed={i < revealedCount}
+                            segmentsRef={segmentsRef}
                             onNavigate={onCardNavigate}
                             noiseTexture={noiseTexture}
                             centerednessRef={centerednessRef}
