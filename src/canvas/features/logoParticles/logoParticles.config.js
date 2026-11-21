@@ -21,6 +21,6 @@ export const LOGO_PARTICLES = {
     CURL_STRENGTH: 0.015,
     POINT_SIZE: 20,
     FLUID_STRENGTH: 0.0002,
-    // Stream: the share of particles that form the branch.
+    // Stream: the share of fibre strands that form the card branches.
     BRANCH_SHARE: 0.2,
 };

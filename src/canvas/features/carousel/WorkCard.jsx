@@ -6,7 +6,7 @@ import { getCSSColorRGBA, getCSSVariable } from '@utils/cssUtils';
 import { useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { CARD_HEIGHT, CARD_WIDTH } from './cardGeometry';
-import { calculateCardPosition, calculateCardPresence, calculateCardRotation, calculateCardScale, cardDissolve } from './carousel';
+import { calculateCardPosition, calculateCardRotation, calculateCardScale, cardDissolve } from './carousel';
 import './PixelOverlayMaterial';
 import './WorkCardMaterial';
 
@@ -39,7 +39,7 @@ function isShown(object) {
     return true;
 }
 
-export default function WorkCard({ item, index, visible = true, onNavigate, noiseTexture, centerednessRef, segmentsRef }) {
+export default function WorkCard({ item, index, visible = true, onNavigate, noiseTexture, centerednessRef, presenceRef }) {
     const groupRef = useRef();
     const cardMaterialRef = useRef();
     const overlayRef = useRef();
@@ -75,7 +75,7 @@ export default function WorkCard({ item, index, visible = true, onNavigate, nois
         // Presence drives the card: it forms by dissolve once its branch has arrived; nothing is drawn or hit-tested
         // while fully dissolved.
         const centeredness = centerednessRef.current[index] ?? 1;
-        const dissolve = cardDissolve(calculateCardPresence(centeredness, segmentsRef.current.morph));
+        const dissolve = cardDissolve(presenceRef.current[index] ?? 0);
         dissolveRef.current = dissolve;
         group.scale.setScalar(calculateCardScale(centeredness));
         group.visible = visible && dissolve > 0.001;

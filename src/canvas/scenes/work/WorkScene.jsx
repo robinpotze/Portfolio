@@ -140,7 +140,7 @@ export default function WorkScene({ items = [], segmentsRef, streamRef, onCardNa
                             item={item}
                             index={i}
                             visible={Math.abs(i - visibleCenter) <= 1}
-                            segmentsRef={segmentsRef}
+                            presenceRef={presenceRef}
                             onNavigate={onCardNavigate}
                             noiseTexture={noiseTexture}
                             centerednessRef={centerednessRef}
