@@ -1832,10 +1832,186 @@ git commit -m "feat(homework): gradual exit from Home — no warp, fading extras
 
 ---
 
-### Task 11: Verify the revisions
+### Task 11: Verify the revisions (superseded by Task 14)
 
 **Files:** none changed unless a check fails (then report, do not fix).
 
 - [ ] **Step 1:** `npm test && npm run lint && npm run fmt:check && npm run build` pass.
 - [ ] **Step 2:** Browser sweep (shared procedure) at 1440×900 and 390×844: a full menu Home → Work seek and a Work → Home Back, captured every ~100 ms; scroll positions 0, 0.5, 1.0, 1.5, 2.0 (≈90 ms after setting), 2.5 × innerHeight. Check: Home overlay visible at the top; gradual exit (no warp, no poof, no density jump); fibres the whole way; cards grow in at the frame edge and shrink out; branch strands reach the centred card's four corners; URL `/work` in the carousel, `/` after Back; no console errors.
 - [ ] **Step 3:** Report per check with screenshot paths.
+
+---
+
+## Revisions (amendment 2026-11-22)
+
+### Task 12: Cinematic seek
+
+**Files:** Modify `src/config/animation.config.js`, `src/utils/easingFunctions.js`, `src/routes/HomeWork/HomeWorkLayout.jsx`.
+
+- [ ] **Step 1:** add to `HOME_WORK`: `// Menu/Back seek between Home and Work, seconds.` `SEEK_DURATION: 3,` and to `easingFunctions.js`:
+
+```text
+/** Even ease-in-out (sine): slow start and end, steady through the middle. */
+export const easeInOutSine = (t) => 0.5 - 0.5 * Math.cos(Math.PI * t);
+```
+
+- [ ] **Step 2:** in `HomeWorkLayout.jsx`'s `seek`, use `duration: HOME_WORK.SEEK_DURATION` and `easing: easeInOutSine` (replacing `SCENE.CAMERA_DURATION`; drop the `SCENE` import if unused).
+- [ ] **Step 3:** checks (`npm test && npm run lint && npm run fmt:check && npm run build`); browser: Menu → WORK from the top of Home captured every ~100 ms takes about 3 s and the morph spans many frames; interrupting with a wheel still works; Back returns in about 3 s.
+- [ ] **Step 4:** commit `feat(homework): slower, even seek between Home and Work`.
+
+---
+
+### Task 13: Per-card pyramids and dissolving cards
+
+**Files:**
+
+- Modify: `src/canvas/features/carousel/{carousel.config.js,carousel.js,index.js,WorkCard.jsx,WorkCardMaterial.js,workCard.frag.glsl,useBorderProjection.js}`
+- Modify: `src/canvas/scenes/work/WorkScene.jsx`, `src/canvas/scenes/homeWork/HomeWorkCanvas.jsx`
+- Modify: `src/canvas/features/streamFibers/{StreamFibers.jsx,streamFibers.vert.glsl}`
+
+**Interfaces:**
+
+- Produces: `calculateCardPresence(centeredness, morph) → 0–1` (replaces `calculateCardFrameScale`); `branchGrow(presence)`, `cardDissolve(presence)` in `carousel.js`; `streamRef.current.cards = [{ center, right, up, grow }, { … }]` (two slots, THREE.Vector3 + number), replacing `cardCenter`/`cardRight`/`cardUp`/`grow`.
+
+- [ ] **Step 1: Config** — in `carousel.config.js` replace the `BRANCH` block (keep `INSET`, `BOW`) and keep `FRAME`:
+
+```text
+    // Per-card sequence over its presence (0 at the frame edge → 1 near the centre): the branch reaches the card by
+    // GROW_BY, then the card dissolves in from DISSOLVE_FROM to 1. Leaving reverses it.
+    BRANCH: {
+        GROW_BY: 0.5,
+        DISSOLVE_FROM: 0.4,
+        INSET: 0.85,
+        BOW: 0.35,
+    },
+    // Card dissolve: square cells across the card (dot-matrix look) and the width of the glowing edge band.
+    DISSOLVE: {
+        CELLS: [48, 27],
+        EDGE: 0.08,
+    },
+```
+
+- [ ] **Step 2: Presence helpers** — in `carousel.js` replace `calculateCardFrameScale` with (keep `smooth01`):
+
+```text
+/** How present a card is (0–1): 0 past the frame edge, 1 near the centre, and only once the morph has arrived. */
+export function calculateCardPresence(centeredness, morph) {
+    const { FULL_WITHIN, ENTER_FROM, MORPH_FROM } = CAROUSEL_CONFIG.FRAME;
+    const onScreen = 1 - smooth01((centeredness - FULL_WITHIN) / (ENTER_FROM - FULL_WITHIN));
+    return onScreen * smooth01((morph - MORPH_FROM) / (1 - MORPH_FROM));
+}
+
+/** Branch length for a card's presence: reaches the card first. */
+export const branchGrow = (presence) => smooth01(presence / CAROUSEL_CONFIG.BRANCH.GROW_BY);
+
+/** Card dissolve for a card's presence: forms once the branch has arrived. */
+export const cardDissolve = (presence) => smooth01((presence - CAROUSEL_CONFIG.BRANCH.DISSOLVE_FROM) / (1 - CAROUSEL_CONFIG.BRANCH.DISSOLVE_FROM));
+```
+
+and export the three from `index.js` (drop `calculateCardFrameScale`). The card's size is `calculateCardScale(centeredness)` again (no growth from 0).
+
+- [ ] **Step 3: Card dissolve shader** — in `WorkCardMaterial.js` add uniforms `uDissolve: 1`, `uCells: new THREE.Vector2(...CAROUSEL_CONFIG.DISSOLVE.CELLS)`, `uEdge: CAROUSEL_CONFIG.DISSOLVE.EDGE`, `uEdgeColor: new THREE.Color()`, and set `transparent: false` (discard-based). In `workCard.frag.glsl` declare them and, at the very start of `main()`:
+
+```text
+    // Cell dissolve: square cells (dot-matrix look) appear in a noise-driven order, the card's edges first (where the
+    // branch lands); the cells just forming glow in the brand colour.
+    vec2 cell = floor(vUv * uCells);
+    float cellNoise = mix(random(cell), texture2D(uNoiseTex, (cell + 0.5) / uCells).r, 0.6);
+    vec2 fromCentre = abs((cell + 0.5) / uCells - 0.5) * 2.0;
+    float order = mix(cellNoise, 1.0 - max(fromCentre.x, fromCentre.y), 0.5) * 0.98;
+    if (order > uDissolve) discard;
+    float edge = 1.0 - smoothstep(uDissolve - uEdge, uDissolve, order);
+```
+
+and replace the final `gl_FragColor = vec4(color, 1.0);` with:
+
+```text
+    gl_FragColor = vec4(mix(uEdgeColor * 1.6, color, edge * step(uDissolve, 0.999) + step(0.999, uDissolve)), 1.0);
+```
+
+(at full dissolve no edge tint remains).
+
+- [ ] **Step 4: `WorkCard`** — replace the scale block with:
+
+```text
+        // Presence drives the card: it forms by dissolve once its branch has arrived; nothing is drawn or hit-tested
+        // while fully dissolved.
+        const centeredness = centerednessRef.current[index] ?? 1;
+        const dissolve = cardDissolve(calculateCardPresence(centeredness, segmentsRef.current.morph));
+        group.scale.setScalar(calculateCardScale(centeredness));
+        group.visible = visible && dissolve > 0.001;
+        if (!group.visible) {
+            return;
+        }
+        if (cardMaterialRef.current) {
+            cardMaterialRef.current.uDissolve = dissolve;
+        }
+        for (const text of textRefs.current) {
+            if (text) {
+                text.fillOpacity = dissolve;
+            }
+        }
+        if (overlayRef.current) {
+            overlayRef.current.visible = dissolve >= 1;
+        }
+```
+
+Give the `workCardMaterial` a `ref={cardMaterialRef}` and `uEdgeColor={edgeColor}` (brand colour via `getCSSColorRGBA('--c-brnd_100')`, sRGB, memoised, as in StreamFibers), the overlay `<mesh>` a ref (rename the material ref if needed so `overlayRef` points at the mesh for visibility and keep the material's `uHover`/`uTime` updates working), and the three `Text` elements `ref={(el) => (textRefs.current[i] = el)}`.
+
+- [ ] **Step 5: Two pyramids** — in `WorkScene.jsx` replace the single-card frame block with: compute each card's presence, pick the two highest (`best` and `second`), and write slots:
+
+```text
+        // Branches for the (at most two) cards on screen: the most and second-most present.
+        let first = 0;
+        let second = -1;
+        for (let i = 0; i < items.length; i++) {
+            presenceRef.current[i] = calculateCardPresence(centerednessRef.current[i], morph);
+            if (presenceRef.current[i] > presenceRef.current[first]) {
+                second = first;
+                first = i;
+            } else if (i !== first && (second < 0 || presenceRef.current[i] > presenceRef.current[second])) {
+                second = i;
+            }
+        }
+        [first, second].forEach((index, slot) => {
+            const card = stream.cards[slot];
+            if (index < 0) {
+                card.grow = 0;
+                return;
+            }
+            const [x, y, z] = calculateCardPosition(index);
+            const angle = index * CAROUSEL_CONFIG.ANGLE_STEP;
+            const scale = calculateCardScale(centerednessRef.current[index]);
+            card.center.set(x, y, z);
+            card.right.set(Math.cos(angle), 0, -Math.sin(angle)).multiplyScalar((CARD_WIDTH / 2) * scale);
+            card.up.set(0, (CARD_HEIGHT / 2) * scale, 0);
+            card.grow = branchGrow(presenceRef.current[index]);
+        });
+```
+
+(`presenceRef = useRef([])`; remove the old `grow`/`cardCenter`/`cardRight`/`cardUp` writes and `BRANCH.RANGE` use). In `HomeWorkCanvas.jsx` replace `grow`, `cardCenter`, `cardRight`, `cardUp` in `streamRef` with `cards: [0, 1].map(() => ({ center: new THREE.Vector3(), right: new THREE.Vector3(), up: new THREE.Vector3(), grow: 0 }))`. In `useBorderProjection.js` size the frame with `calculateCardScale(centeredness)` again.
+
+- [ ] **Step 6: Fibres for two pyramids** — in `streamFibers.vert.glsl` turn `uCardCenter`, `uCardRight`, `uCardUp`, `uBranchGrow` into two-element arrays (`uniform vec3 uCardCenter[2];` …, `uniform float uBranchGrow[2];`) and replace the face pick with:
+
+```text
+        // Eight faces: two pyramids (slot 0 = most present card) × four sides, evenly filled.
+        float pick = random.y / uBranchShare;
+        float slotFace = floor(pick * 8.0);
+        int slot = int(slotFace >= 4.0);
+        float face = mod(slotFace, 4.0);
+        float across = (fract(pick * 8.0) * 2.0 - 1.0) * uBranchInset;
+```
+
+then use `uCardCenter[slot]`, `uCardRight[slot]`, `uCardUp[slot]`, `uBranchGrow[slot]` where the single values were used, and change the branch condition to `uBranchGrow[slot] > 0.0` (compute `slot` before the condition). In `StreamFibers.jsx` create the uniforms as arrays (`{ value: [new THREE.Vector3(), new THREE.Vector3()] }`, `{ value: [0, 0] }`) and copy both slots from `s.cards` each frame.
+
+- [ ] **Step 7: Checks** — `npm test && npm run lint && npm run fmt:check && npm run build`; `grep -rn "calculateCardFrameScale\|cardCenter\|\.grow\b" src` only shows the new slot fields.
+
+- [ ] **Step 8: Browser check** (shared procedure), 1440×900 and 390×844, frames every ~100 ms while scrolling from 1.5 × to 2.5 × innerHeight with a held wheel or small scrollTop steps (avoid snapping): the next card's pyramid reaches out from the trunk first, then the card forms by cell dissolve with a cyan edge, title/year/client fading in; the leaving card dissolves into cells, then its branch retracts; at rest (centred) the card is complete and its pyramid sits behind it. No console errors.
+
+- [ ] **Step 9: Commit** `feat(carousel): per-card pyramid branches and cell-dissolve cards`.
+
+---
+
+### Task 14: Verify the revisions
+
+Same as Task 11, plus: the seek takes about 3 s and stays interruptible; cards form by dissolve after their pyramid arrives, and dissolve out before it retracts.
