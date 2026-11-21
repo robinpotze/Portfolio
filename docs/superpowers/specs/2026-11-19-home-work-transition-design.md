@@ -97,3 +97,11 @@ After stage 3 the dense dot trunk read as a solid pipe. The user's reference (fi
 - Brand cyan only, brightness varying per strand.
 - Fibres the whole way (user decision): each fibre follows one logo particle. As the logo dissolves, the dense particles fade out over the first quarter of the stream, and each remaining fibre starts as a glowing dot on the logo surface that stretches into its trail as it travels onto the swaying path. Once the morph completes, the fibres are purely analytic and the particle simulation stops; it resumes when scrolling back.
 - The branch uses the same trails while scrolling and hides behind the centred card (no change to the branch geometry).
+
+## Amendment 2026-11-21: organic branch, on-screen cards, cinematic exit
+
+User revisions after reviewing the branch:
+
+- **Branch (variant A):** strands peel off the flowing trunk above and below the centred card and curve outward with the sway onto its four corners, so the card looks held by the flow. The corners sit off the camera axis, so the branch stays visible when the card is centred (replaces "hides behind the centred card"). Only the fibres draw the branch; the particle simulation no longer has a branch (it is never active during the morph).
+- **Cards:** a card's size follows its place on screen: it grows from 0 as it enters the frame to full size at the centre and shrinks again as it leaves, both ways, with no one-shot reveal. The first card grows in over the end of the morph.
+- **Cinematic exit:** Home's end-of-scroll camera FOV is capped (100 → 75) to remove the warp. The video wall, title, subtitle and laser fade and recede over the first half of the morph instead of switching off in one frame; they stop rendering only once fully faded. The dense logo particles disappear one by one, each at its own moment spread over most of the morph, while the fibres brighten gradually.

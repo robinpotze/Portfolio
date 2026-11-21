@@ -1550,3 +1550,292 @@ Expected: pass.
 - [ ] **Step 2: Browser sweep** (shared procedure). Repeat Task 3 Step 16 items 1–10 on the finished build, plus: quality tier `low` (temporarily force it in `QualityContext`) shows the trunk with fewer particles and no ambient occlusion; navigating About → menu WORK runs the curtain and lands on the first card; Entry page → Back returns to `/work` at the first card.
 
 - [ ] **Step 3: Report** any failure with its screenshot path and fix it in the task it belongs to before finishing the branch.
+
+---
+
+## Revisions (amendment 2026-11-21)
+
+User revisions after Task 7: on-screen card growth, an organic branch to the card's four corners, and a gradual exit from Home. Global Constraints still apply.
+
+### Task 8: Cards grow with their place on screen
+
+**Files:**
+
+- Modify: `src/canvas/features/carousel/carousel.config.js`, `carousel.js`, `index.js`, `WorkCard.jsx`
+- Modify: `src/canvas/scenes/work/WorkScene.jsx`
+
+**Interfaces:**
+
+- Produces: `calculateCardFrameScale(centeredness, morph) → number` (0 = hidden, otherwise the card's scale), exported from `@canvas/features/carousel`. Task 9 uses it for the corners. `WorkCard` prop `revealed` is replaced by `segmentsRef`.
+
+- [ ] **Step 1: Config** — in `carousel.config.js` delete the `ENTRY` block and `BRANCH.REVEAL_AT` and its comment line, and add:
+
+```text
+    // On-screen growth: full size within FULL_WITHIN of the centre, 0 at ENTER_FROM (about 1.5 card steps, just past the
+    // frame edge). Centeredness units: |angle difference| / π. The first card grows in from MORPH_FROM of the morph.
+    FRAME: {
+        FULL_WITHIN: 0.2 / Math.PI,
+        ENTER_FROM: 1.2 / Math.PI,
+        MORPH_FROM: 0.6,
+    },
+```
+
+- [ ] **Step 2: Scale function** — append to `carousel.js` and export it from `index.js`:
+
+```text
+const smooth01 = (t) => {
+    const x = Math.min(1, Math.max(0, t));
+    return x * x * (3 - 2 * x);
+};
+
+/** Card scale on screen: grows in from the frame edge, full near the centre, and grows in over the end of the morph. */
+export function calculateCardFrameScale(centeredness, morph) {
+    const { FULL_WITHIN, ENTER_FROM, MORPH_FROM } = CAROUSEL_CONFIG.FRAME;
+    const onScreen = 1 - smooth01((centeredness - FULL_WITHIN) / (ENTER_FROM - FULL_WITHIN));
+    const arrived = smooth01((morph - MORPH_FROM) / (1 - MORPH_FROM));
+    return calculateCardScale(centeredness) * onScreen * arrived;
+}
+```
+
+- [ ] **Step 3: `WorkCard`** — replace the `revealed = false` prop with `segmentsRef`; delete `entryTimeRef`, `wasVisibleRef`, `scaleRef`, `SCALE_DAMPING`, the `entryEase` and `damp`-for-scale usage that only served them (keep `damp` for the hover). Replace the body between the hover-reset block and the hover damping with:
+
+```text
+        // Size follows the card's place on screen; nothing is drawn or hit-tested at scale 0.
+        const scale = calculateCardFrameScale(centerednessRef.current[index] ?? 1, segmentsRef.current.morph);
+        group.scale.setScalar(scale);
+        group.visible = visible && scale > 0.001;
+        if (!group.visible) {
+            return;
+        }
+```
+
+Import `calculateCardFrameScale` from `./carousel` (and drop `calculateCardScale` from that import if unused). Remove the JSX `visible={visible}` on the group (the frame loop owns it now).
+
+- [ ] **Step 4: `WorkScene`** — delete `revealedRef`, `revealedCount`/`setRevealedCount` and the reveal block (`grow >= …REVEAL_AT`); pass `segmentsRef={segmentsRef}` to each `WorkCard` instead of `revealed`. Keep `grow` (the branch still uses it).
+
+- [ ] **Step 5: Checks** — `npm test && npm run lint && npm run fmt:check && npm run build`; `grep -rn "revealed\|REVEAL_AT\|ENTRY\.CARD_DURATION" src` returns nothing.
+
+- [ ] **Step 6: Browser check** (shared procedure), 1440×900: at 1.3 × innerHeight (end of the morph) the first card is growing in; at 1.5 × the first card is full size and the neighbour at the frame edge is partly grown; about 90 ms after setting scrollTop to 2.0 × both cards are mid-size; at 2.5 × the second card is full size and the first has shrunk at the edge. Repeat at 390×844. No console errors.
+
+- [ ] **Step 7: Commit**
+
+```text
+git add src/canvas/features/carousel src/canvas/scenes/work/WorkScene.jsx
+git commit -m "feat(carousel): cards grow as they enter the frame and shrink as they leave"
+```
+
+---
+
+### Task 9: Organic branch to the card's four corners
+
+**Files:**
+
+- Modify: `src/canvas/core/shaders/streamPath.glsl`
+- Modify: `src/canvas/features/streamFibers/{streamFibers.vert.glsl,StreamFibers.jsx}`
+- Modify: `src/canvas/features/logoParticles/{position.frag.glsl,LogoParticles.jsx}`
+- Modify: `src/canvas/features/carousel/carousel.config.js`, `src/canvas/scenes/work/WorkScene.jsx`, `src/canvas/scenes/homeWork/HomeWorkCanvas.jsx`
+
+**Interfaces:**
+
+- Consumes: `calculateCardFrameScale` (Task 8), `CARD_WIDTH`/`CARD_HEIGHT` from `@canvas/features/carousel/cardGeometry`.
+- Produces: `streamRef.current.{ cardCenter, cardRight, cardUp }` (THREE.Vector3, rig space; right/up are half-extent vectors at the card's current scale), replacing `branchY`/`branchEnd`. GLSL `cornerBranchPoint`.
+
+- [ ] **Step 1: Config** — in `carousel.config.js` replace `BRANCH.REACH` with:
+
+```text
+        // Strands leave the trunk this far above/below the card centre (rig units) and bow outward past the corner
+        // by OUTWARD × the centre→corner distance before landing on it.
+        RISE: 1.2,
+        OUTWARD: 0.35,
+```
+
+- [ ] **Step 2: Path** — in `streamPath.glsl` replace `branchPoint` with:
+
+```text
+// Branch strand from the trunk (above or below the card) onto one card corner, as a cubic Bézier.
+// t 0 = on the trunk at startY, 1 = on the corner. The strand keeps the flow's sway and tapers onto the corner.
+vec3 cornerBranchPoint(float t, float angle, float radius, float startY, vec3 corner, vec3 cardCenter, float outward, vec4 sway) {
+    vec2 bend = swayBend(startY, sway);
+    vec3 p0 = vec3(bend.x, startY, bend.y);
+    // Leave along the flow first, then swing outward past the corner and land on it.
+    vec3 p1 = vec3(p0.x, mix(startY, corner.y, 0.6), p0.z);
+    vec3 p2 = corner + (corner - cardCenter) * outward;
+    float u = 1.0 - t;
+    vec3 p = u * u * u * p0 + 3.0 * u * u * t * p1 + 3.0 * u * t * t * p2 + t * t * t * corner;
+    vec2 offset = swayStrand(p.y, angle, sway) * (1.0 - t) + vec2(cos(angle), sin(angle)) * radius * (1.0 - t);
+    return p + vec3(offset.x, 0.0, offset.y);
+}
+```
+
+- [ ] **Step 3: Sim drops its branch** — in `position.frag.glsl` delete the branch `if` block in `streamTarget()` and the uniforms `uBranchY`, `uBranchEnd`, `uBranchGrow`, `uBranchShare`; in `LogoParticles.jsx` delete those four from `toUniforms` and from the per-frame update. (The branch is only active once the morph has completed, when the sim no longer runs.)
+
+- [ ] **Step 4: Fibre shader** — in `streamFibers.vert.glsl` replace the uniforms `uBranchY`, `uBranchEnd` with:
+
+```text
+uniform vec3 uCardCenter;
+uniform vec3 uCardRight;
+uniform vec3 uCardUp;
+uniform float uBranchRise;
+uniform float uBranchOutward;
+```
+
+and replace the branch block inside `if (uSpark < 0.5 && random.y < uBranchShare && uBranchGrow > 0.0) { … }` with:
+
+```text
+        // Corner pick: two bits from a decorrelated hash (random.y is the branch pick, random.x the radius).
+        float corner = floor(fract(seed * 7.31) * 4.0);
+        float sx = mod(corner, 2.0) * 2.0 - 1.0;
+        float sy = step(2.0, corner) * 2.0 - 1.0;
+        vec3 target = uCardCenter + uCardRight * sx + uCardUp * sy;
+        float out_ = fract(seed + uFlow * 2.0) - trail * uTrail * 2.0;
+        p = cornerBranchPoint(clamp(out_, 0.0, 1.0) * uBranchGrow, angle, radius, uCardCenter.y + sy * uBranchRise, target, uCardCenter, uBranchOutward, uSway);
+        alpha *= step(0.0, out_);
+```
+
+- [ ] **Step 5: Fibre uniforms** — in `StreamFibers.jsx`'s `createMaterial` replace `uBranchY`/`uBranchEnd` with `uCardCenter`, `uCardRight`, `uCardUp` (`new THREE.Vector3()` each), `uBranchRise: CAROUSEL_CONFIG.BRANCH.RISE`, `uBranchOutward: CAROUSEL_CONFIG.BRANCH.OUTWARD` (import `CAROUSEL_CONFIG` from `@canvas/features/carousel`), and in the frame loop replace the two branch copies with `u.uCardCenter.value.copy(s.cardCenter); u.uCardRight.value.copy(s.cardRight); u.uCardUp.value.copy(s.cardUp);`.
+
+- [ ] **Step 6: WorkScene writes the card frame** — replace the `branchY`/`branchEnd` lines with:
+
+```text
+        // The centred card's centre and half-extents at its current on-screen scale (rig space), for the corner branch.
+        const [cardX, cardY, cardZ] = calculateCardPosition(bestIndex);
+        const angle = bestIndex * CAROUSEL_CONFIG.ANGLE_STEP;
+        const cardScale = calculateCardFrameScale(minCenteredness, morph);
+        stream.cardCenter.set(cardX, cardY, cardZ);
+        stream.cardRight.set(Math.cos(angle), 0, -Math.sin(angle)).multiplyScalar((CARD_WIDTH / 2) * cardScale);
+        stream.cardUp.set(0, (CARD_HEIGHT / 2) * cardScale, 0);
+```
+
+(import `calculateCardFrameScale` from `@canvas/features/carousel`, `CARD_WIDTH, CARD_HEIGHT` from `@canvas/features/carousel/cardGeometry`). In `HomeWorkCanvas.jsx` replace `branchY: 0, branchEnd: new THREE.Vector3()` in the `streamRef` object with `cardCenter: new THREE.Vector3(), cardRight: new THREE.Vector3(), cardUp: new THREE.Vector3()`. Confirm with `grep -rn "branchY\|branchEnd\|REACH" src` that nothing else uses the old names.
+
+- [ ] **Step 7: Checks** — `npm test && npm run lint && npm run fmt:check && npm run build`.
+
+- [ ] **Step 8: Browser check** (shared procedure), 1440×900 and 390×844: at 1.5 × innerHeight (first card centred, settled) curved strands leave the trunk above and below the card and land on its four corners, visible around the card; about 90 ms after setting scrollTop to 2.0 × the branch has retracted; at 2.5 × the strands reach the second card's corners. Compare with the variant A mockup (strands from above to the top corners, from below to the bottom corners). No console errors.
+
+- [ ] **Step 9: Commit**
+
+```text
+git add src/canvas/core/shaders/streamPath.glsl src/canvas/features/streamFibers src/canvas/features/logoParticles src/canvas/features/carousel/carousel.config.js src/canvas/scenes/work/WorkScene.jsx src/canvas/scenes/homeWork/HomeWorkCanvas.jsx
+git commit -m "feat(stream): branch strands peel off the flow onto the card's corners"
+```
+
+---
+
+### Task 10: Gradual, cinematic exit from Home
+
+**Files:**
+
+- Modify: `src/config/animation.config.js` (`HOME_WORK.EXIT_END`, `HOME_WORK.EXIT_RECEDE`)
+- Modify: `src/canvas/scenes/home/HomeScene.jsx`
+- Modify: `src/canvas/features/laser/LaserPlane.jsx`
+- Modify: `src/canvas/features/logoParticles/{particles.vert.glsl,LogoParticles.jsx,LogoParticlesMaterial.js}`
+- Modify: `src/canvas/features/streamFibers/streamFibers.config.js`
+
+**Interfaces:**
+
+- Consumes: `segmentsRef.current.morph` via HomeScene's `streamProgress`.
+- Produces: `LaserPlane` prop `fadeOutRef` (number ref, 0 = visible, 1 = gone; optional).
+
+- [ ] **Step 1: Config** — add to `HOME_WORK` in `animation.config.js`:
+
+```text
+    // Home's video wall, title, subtitle and laser fade and recede over the first EXIT_END of the morph, by EXIT_RECEDE units.
+    EXIT_END: 0.5,
+    EXIT_RECEDE: 20,
+```
+
+In `streamFibers.config.js` replace the two hand-off values and their comment with:
+
+```text
+    // Morph progress (logo → stream, 0–1): the fibres brighten by FADE_IN_END; each dense logo particle disappears at
+    // its own moment between PARTICLE_FADE_START and PARTICLE_FADE_END, so the density drops gradually.
+    FADE_IN_END: 0.6,
+    PARTICLE_FADE_START: 0.05,
+    PARTICLE_FADE_END: 0.85,
+```
+
+- [ ] **Step 2: No warp** — in `HomeScene.jsx` change `export const CAMERA_FOV = [70, 50, 100];` to `[70, 50, 75]`.
+
+- [ ] **Step 3: Extras fade and recede** — in `HomeScene.jsx` import `HOME_WORK` from `@config/animation.config`, add `const exitRef = useRef(0);`, and replace the two `.visible = streamProgress === 0` blocks with:
+
+```text
+        // Home's extras fade and recede over the first part of the morph; they stop rendering once fully gone.
+        const exit = smoothstep(streamProgress, 0, HOME_WORK.EXIT_END);
+        exitRef.current = exit;
+        const extras = extrasRef.current;
+        if (extras) {
+            extras.visible = exit < 1;
+            extras.position.z = -exit * HOME_WORK.EXIT_RECEDE;
+            extras.traverse((object) => {
+                const material = object.material;
+                if (material && !Array.isArray(material)) {
+                    material.transparent = true;
+                    material.opacity = 1 - exit;
+                }
+            });
+        }
+        if (laserRef.current) {
+            laserRef.current.visible = exit < 1;
+        }
+```
+
+and pass `fadeOutRef={exitRef}` to `<LaserPlane />`. If the title/subtitle (drei `Text`) ignore `material.opacity`, set their `fillOpacity` instead through a ref, and say so in the report.
+
+- [ ] **Step 4: Laser fade-out** — in `LaserPlane.jsx` accept `fadeOutRef`, keep the fade-in in its own ref and multiply:
+
+```text
+    const fadeInRef = useRef(0);
+```
+
+```text
+        fadeInRef.current = Math.min(1, fadeInRef.current + dt); // fades in over ~1 s (~2 s on low quality)
+        u.uFade.value = fadeInRef.current * (1 - (fadeOutRef?.current ?? 0));
+```
+
+(replacing the existing `u.uFade.value = Math.min(1, u.uFade.value + dt);` line).
+
+- [ ] **Step 5: Particles disappear one by one** — in `LogoParticlesMaterial.js` add `uFadeStart: STREAM_FIBERS.PARTICLE_FADE_START` and `uFadeEnd: STREAM_FIBERS.PARTICLE_FADE_END` to the uniforms (import `STREAM_FIBERS` from `@canvas/features/streamFibers`) and rename `uStreamFade` to `uStream`. In `particles.vert.glsl` replace `uniform float uStreamFade;` with:
+
+```text
+uniform float uStream;
+uniform float uFadeStart;
+uniform float uFadeEnd;
+```
+
+and the `(1.0 - uStreamFade)` factor with `keep`, computed before the `gl_PointSize` line:
+
+```text
+    // Each particle disappears at its own moment over the morph (decorrelated from random.x, which sets its size).
+    float cut = mix(uFadeStart, uFadeEnd, fract(random.z * 7.31 + random.y * 3.17));
+    float keep = 1.0 - smoothstep(cut - 0.05, cut, uStream);
+```
+
+In `LogoParticles.jsx` replace the `fade` lines with:
+
+```text
+        // The dense logo thins out particle by particle over the morph; once past the last cut nothing is drawn.
+        points.visible = points.visible && stream < STREAM_FIBERS.PARTICLE_FADE_END;
+```
+
+and set `material.uStream = stream;` where `material.uStreamFade = fade;` was.
+
+- [ ] **Step 6: Checks** — `npm test && npm run lint && npm run fmt:check && npm run build`; `grep -rn "uStreamFade" src` returns nothing.
+
+- [ ] **Step 7: Browser check** (shared procedure), 1440×900: frames every ~100 ms during a menu Home → Work seek and at scroll positions 0.45, 0.5, 0.6, 0.75, 0.9, 1.1, 1.3 × innerHeight. Expected: no wide-angle warp at the end of Home; the video wall, title and laser fade and recede over the first half of the morph (no single-frame disappearance); the logo thins out gradually into strands (no sudden density change); the fibres brighten smoothly. Scroll back to 0.3 × and everything returns. No console errors.
+
+- [ ] **Step 8: Commit**
+
+```text
+git add src/config/animation.config.js src/canvas/scenes/home/HomeScene.jsx src/canvas/features/laser/LaserPlane.jsx src/canvas/features/logoParticles src/canvas/features/streamFibers/streamFibers.config.js
+git commit -m "feat(homework): gradual exit from Home — no warp, fading extras, particles thin out one by one"
+```
+
+---
+
+### Task 11: Verify the revisions
+
+**Files:** none changed unless a check fails (then report, do not fix).
+
+- [ ] **Step 1:** `npm test && npm run lint && npm run fmt:check && npm run build` pass.
+- [ ] **Step 2:** Browser sweep (shared procedure) at 1440×900 and 390×844: a full menu Home → Work seek and a Work → Home Back, captured every ~100 ms; scroll positions 0, 0.5, 1.0, 1.5, 2.0 (≈90 ms after setting), 2.5 × innerHeight. Check: Home overlay visible at the top; gradual exit (no warp, no poof, no density jump); fibres the whole way; cards grow in at the frame edge and shrink out; branch strands reach the centred card's four corners; URL `/work` in the carousel, `/` after Back; no console errors.
+- [ ] **Step 3:** Report per check with screenshot paths.
