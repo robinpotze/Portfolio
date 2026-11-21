@@ -1,5 +1,13 @@
 import { useQuality } from '@app/QualityContext';
-import { CAROUSEL_CONFIG, calculateCardCenteredness, calculateCardPosition, getCarouselFov, WorkCard } from '@canvas/features/carousel';
+import {
+    CAROUSEL_CONFIG,
+    calculateCardCenteredness,
+    calculateCardFrameScale,
+    calculateCardPosition,
+    getCarouselFov,
+    WorkCard,
+} from '@canvas/features/carousel';
+import { CARD_HEIGHT, CARD_WIDTH } from '@canvas/features/carousel/cardGeometry';
 import useNoiseTexture from '@canvas/core/textures/useNoiseTexture';
 import { StreamFibers } from '@canvas/features/streamFibers';
 import { STREAM } from '@config/animation.config';
@@ -80,10 +88,13 @@ export default function WorkScene({ items = [], segmentsRef, streamRef, onCardNa
         stream.trunkHalf = (CAROUSEL_CONFIG.CAMERA.POSITION[2] * Math.tan(degToRad(getCarouselFov()) / 2) * TRUNK_OVERSCAN) / scale;
         stream.velocity = velocity;
         stream.grow = grow;
-        // Branch from the axis at the card's height out to just short of the card centre (rig space).
+        // The centred card's centre and half-extents at its current on-screen scale (rig space), for the corner branch.
         const [cardX, cardY, cardZ] = calculateCardPosition(bestIndex);
-        stream.branchY = cardY;
-        stream.branchEnd.set(cardX * CAROUSEL_CONFIG.BRANCH.REACH, cardY, cardZ * CAROUSEL_CONFIG.BRANCH.REACH);
+        const angle = bestIndex * CAROUSEL_CONFIG.ANGLE_STEP;
+        const cardScale = calculateCardFrameScale(minCenteredness, morph);
+        stream.cardCenter.set(cardX, cardY, cardZ);
+        stream.cardRight.set(Math.cos(angle), 0, -Math.sin(angle)).multiplyScalar((CARD_WIDTH / 2) * cardScale);
+        stream.cardUp.set(0, (CARD_HEIGHT / 2) * cardScale, 0);
         // Flow: one shared phase for the sim and the fibres. velocity is viewport heights per frame.
         const scrollSpeed = delta > 0 ? Math.abs(velocity) / delta : 0;
         stream.flowStep = delta * (STREAM.FLOW_BASE + scrollSpeed * STREAM.FLOW_SCROLL_GAIN);
@@ -93,7 +104,7 @@ export default function WorkScene({ items = [], segmentsRef, streamRef, onCardNa
 
         // The frame fades in from morph 0.8; before that it is invisible.
         if (morph >= 0.8) {
-            onCenterednessChange?.(minCenteredness, bestIndex);
+            onCenterednessChange?.(minCenteredness, bestIndex, morph);
         }
     }, -1);
 

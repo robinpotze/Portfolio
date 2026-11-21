@@ -1,7 +1,7 @@
 import { useCallback, useRef } from 'react';
 import * as THREE from 'three';
 import { CARD_HEIGHT, CARD_WIDTH } from './cardGeometry';
-import { calculateCardPosition, calculateCardScale } from './carousel';
+import { calculateCardFrameScale, calculateCardPosition } from './carousel';
 import { CAROUSEL_CONFIG } from './carousel.config';
 
 // Reusable vectors to avoid allocation per frame
@@ -18,7 +18,7 @@ export default function useBorderProjection(containerRef, cameraRef, rigRef, { r
     const WARMUP_FRAMES = 3;
 
     const onCenterednessChange = useCallback(
-        (centeredness, bestIndex) => {
+        (centeredness, bestIndex, morph) => {
             const container = containerRef.current;
             const camera = cameraRef.current;
             const rig = rigRef.current;
@@ -40,7 +40,7 @@ export default function useBorderProjection(containerRef, cameraRef, rigRef, { r
 
             const localPos = calculateCardPosition(bestIndex);
             const angle = bestIndex * CAROUSEL_CONFIG.ANGLE_STEP;
-            const cardScale = calculateCardScale(centeredness);
+            const cardScale = calculateCardFrameScale(centeredness, morph);
             const halfW = CARD_WIDTH * 0.5 * cardScale;
             const halfH = CARD_HEIGHT * 0.5 * cardScale;
 

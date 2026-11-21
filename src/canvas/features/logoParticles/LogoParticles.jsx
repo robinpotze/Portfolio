@@ -120,10 +120,6 @@ function createSimulation(gl, size, halfFloat, { origins, randoms }, morph, { co
             uTrunkRadius: STREAM_FIBERS.SPREAD,
             uFlow: 0,
             uFlowStep: 0,
-            uBranchY: 0,
-            uBranchEnd: new THREE.Vector3(),
-            uBranchGrow: 0,
-            uBranchShare: LOGO_PARTICLES.BRANCH_SHARE,
             uSway: new THREE.Vector4(),
         })
     );
@@ -262,9 +258,6 @@ export default function LogoParticles({ timeline, gridSize, streamRef }) {
             s.localToStream.copy(u.uStreamToLocal.value).invert();
             u.uTrunkY.value = s.trunkY;
             u.uTrunkHalf.value = s.trunkHalf;
-            u.uBranchY.value = s.branchY;
-            u.uBranchEnd.value.copy(s.branchEnd);
-            u.uBranchGrow.value = s.grow;
             u.uSway.value.set(STREAM_FIBERS.SWAY_AMPLITUDE, STREAM_FIBERS.SWAY_FREQUENCY, time * STREAM.SWAY_SPEED, STREAM_FIBERS.STRAND_AMPLITUDE);
         }
         u.uFlow.value = s?.flow ?? 0;

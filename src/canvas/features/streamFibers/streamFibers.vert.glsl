@@ -3,8 +3,11 @@ uniform float uTrunkHalf;
 uniform float uSpread;
 uniform float uFlow;
 uniform float uTrail;
-uniform float uBranchY;
-uniform vec3 uBranchEnd;
+uniform vec3 uCardCenter;
+uniform vec3 uCardRight;
+uniform vec3 uCardUp;
+uniform float uBranchRise;
+uniform float uBranchOutward;
 uniform float uBranchGrow;
 uniform float uBranchShare;
 uniform vec4 uSway;
@@ -37,8 +40,13 @@ void main() {
     vec3 p = trunkPoint(along, angle, radius, uTrunkY, uTrunkHalf, uSway);
     float alpha = (1.0 - trail) * (1.0 - trail) * mix(0.25, 1.0, random.w);
     if (uSpark < 0.5 && random.y < uBranchShare && uBranchGrow > 0.0) {
+        // Corner pick: two bits from a decorrelated hash (random.y is the branch pick, random.x the radius).
+        float corner = floor(fract(seed * 7.31) * 4.0);
+        float sx = mod(corner, 2.0) * 2.0 - 1.0;
+        float sy = step(2.0, corner) * 2.0 - 1.0;
+        vec3 target = uCardCenter + uCardRight * sx + uCardUp * sy;
         float out_ = fract(seed + uFlow * 2.0) - trail * uTrail * 2.0;
-        p = branchPoint(clamp(out_, 0.0, 1.0) * uBranchGrow, angle, radius, uBranchY, uBranchEnd, uSway);
+        p = cornerBranchPoint(clamp(out_, 0.0, 1.0) * uBranchGrow, angle, radius, uCardCenter.y + sy * uBranchRise, target, uCardCenter, uBranchOutward, uSway);
         alpha *= step(0.0, out_);
     } else {
         // Hide the part of a tail that would wrap past the top of the trunk.

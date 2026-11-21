@@ -1,4 +1,5 @@
 import { useQuality } from '@app/QualityContext';
+import { CAROUSEL_CONFIG } from '@canvas/features/carousel';
 import { LOGO_PARTICLES, TIERS } from '@canvas/features/logoParticles/logoParticles.config';
 import { STREAM } from '@config/animation.config';
 import { useFrame, useThree } from '@react-three/fiber';
@@ -75,8 +76,11 @@ function createMaterial(color, { spark = 0, head = 0 }) {
             uSpread: { value: STREAM_FIBERS.SPREAD },
             uFlow: { value: 0 },
             uTrail: { value: STREAM_FIBERS.TRAIL },
-            uBranchY: { value: 0 },
-            uBranchEnd: { value: new THREE.Vector3() },
+            uCardCenter: { value: new THREE.Vector3() },
+            uCardRight: { value: new THREE.Vector3() },
+            uCardUp: { value: new THREE.Vector3() },
+            uBranchRise: { value: CAROUSEL_CONFIG.BRANCH.RISE },
+            uBranchOutward: { value: CAROUSEL_CONFIG.BRANCH.OUTWARD },
             uBranchGrow: { value: 0 },
             uBranchShare: { value: LOGO_PARTICLES.BRANCH_SHARE },
             uSway: { value: new THREE.Vector4() },
@@ -138,8 +142,9 @@ export default function StreamFibers({ streamRef }) {
             u.uTrunkY.value = s.trunkY;
             u.uTrunkHalf.value = s.trunkHalf;
             u.uFlow.value = s.flow;
-            u.uBranchY.value = s.branchY;
-            u.uBranchEnd.value.copy(s.branchEnd);
+            u.uCardCenter.value.copy(s.cardCenter);
+            u.uCardRight.value.copy(s.cardRight);
+            u.uCardUp.value.copy(s.cardUp);
             u.uBranchGrow.value = s.grow;
             u.uSway.value.set(
                 STREAM_FIBERS.SWAY_AMPLITUDE,

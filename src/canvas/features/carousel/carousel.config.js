@@ -33,7 +33,10 @@ export const CAROUSEL_CONFIG = {
     // The branch to the centred card: full length at centeredness 0, gone at RANGE (half a card step).
     BRANCH: {
         RANGE: 0.4 / Math.PI,
-        REACH: 0.85,
+        // Strands leave the trunk this far above/below the card centre (rig units) and bow outward past the corner
+        // by OUTWARD × the centre→corner distance before landing on it.
+        RISE: 3.0,
+        OUTWARD: 0.6,
     },
 
     // On-screen growth: full size within FULL_WITHIN of the centre, 0 at ENTER_FROM (about 1.5 card steps, just past the
