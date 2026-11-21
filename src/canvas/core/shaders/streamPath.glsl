@@ -21,16 +21,15 @@ vec3 trunkPoint(float along, float angle, float radius, float trunkY, float trun
     return vec3(offset.x, y, offset.y);
 }
 
-// Branch strand from the trunk (above or below the card) onto one card corner, as a cubic Bézier.
-// t 0 = on the trunk at startY, 1 = on the corner. The strand keeps the flow's sway and tapers onto the corner.
-vec3 cornerBranchPoint(float t, float angle, float radius, float startY, vec3 corner, vec3 cardCenter, float outward, vec4 sway) {
-    vec2 bend = swayBend(startY, sway);
-    vec3 p0 = vec3(bend.x, startY, bend.y);
-    // Leave along the flow first, then swing outward past the corner and land on it.
-    vec3 p1 = vec3(p0.x, mix(startY, corner.y, 0.6), p0.z);
-    vec3 p2 = corner + (corner - cardCenter) * outward;
-    float u = 1.0 - t;
-    vec3 p = u * u * u * p0 + 3.0 * u * u * t * p1 + 3.0 * u * t * t * p2 + t * t * t * corner;
-    vec2 offset = swayStrand(p.y, angle, sway) * (1.0 - t) + vec2(cos(angle), sin(angle)) * radius * (1.0 - t);
+// Branch strand on one face of a pyramid: apex on the trunk at the card's height, base on the card's edge.
+// t 0 = apex, 1 = target on the card. Mid-way the strand is pulled toward the pyramid axis (apex → card centre),
+// so the faces bow inward; the flow's sway and spread taper to 0 so it lands exactly on the edge.
+vec3 pyramidBranchPoint(float t, float angle, float radius, vec3 target, vec3 cardCenter, float bow, vec4 sway) {
+    vec2 bend = swayBend(cardCenter.y, sway);
+    vec3 apex = vec3(bend.x, cardCenter.y, bend.y);
+    vec3 straight = mix(apex, target, t);
+    vec3 axis = mix(apex, cardCenter, t);
+    vec3 p = straight + (axis - straight) * bow * sin(3.14159265 * t);
+    vec2 offset = (swayStrand(p.y, angle, sway) + vec2(cos(angle), sin(angle)) * radius) * (1.0 - t);
     return p + vec3(offset.x, 0.0, offset.y);
 }

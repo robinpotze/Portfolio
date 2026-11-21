@@ -6,8 +6,8 @@ uniform float uTrail;
 uniform vec3 uCardCenter;
 uniform vec3 uCardRight;
 uniform vec3 uCardUp;
-uniform float uBranchRise;
-uniform float uBranchOutward;
+uniform float uBranchInset;
+uniform float uBranchBow;
 uniform float uBranchGrow;
 uniform float uBranchShare;
 uniform vec4 uSway;
@@ -40,14 +40,18 @@ void main() {
     vec3 p = trunkPoint(along, angle, radius, uTrunkY, uTrunkHalf, uSway);
     float alpha = (1.0 - trail) * (1.0 - trail) * mix(0.25, 1.0, random.w);
     if (uSpark < 0.5 && random.y < uBranchShare && uBranchGrow > 0.0) {
-        // Corner pick: two bits from a decorrelated hash (random.y is the branch pick, random.x the radius).
-        float corner = floor(fract(seed * 7.31) * 4.0);
-        float sx = mod(corner, 2.0) * 2.0 - 1.0;
-        float sy = step(2.0, corner) * 2.0 - 1.0;
-        vec3 target = uCardCenter + uCardRight * sx + uCardUp * sy;
+        // Face (0 top, 1 bottom, 2 left, 3 right) and place across it from random.y, which is uniform 0–1 on this
+        // path and independent of the flow seed, so each face stays evenly filled.
+        float pick = random.y / uBranchShare;
+        float face = floor(pick * 4.0);
+        float across = (fract(pick * 4.0) * 2.0 - 1.0) * uBranchInset;
+        vec3 normal = face < 2.0 ? uCardUp * (1.0 - 2.0 * face) : uCardRight * (2.0 * face - 5.0);
+        vec3 side = face < 2.0 ? uCardRight : uCardUp;
+        vec3 target = uCardCenter + normal * uBranchInset + side * across;
         float out_ = fract(seed + uFlow * 2.0) - trail * uTrail * 2.0;
-        p = cornerBranchPoint(clamp(out_, 0.0, 1.0) * uBranchGrow, angle, radius, uCardCenter.y + sy * uBranchRise, target, uCardCenter, uBranchOutward, uSway);
-        alpha *= step(0.0, out_);
+        p = pyramidBranchPoint(clamp(out_, 0.0, 1.0) * uBranchGrow, angle, radius, target, uCardCenter, uBranchBow, uSway);
+        // Tail gate at the apex; soft fade at the card so heads don't pop when they wrap.
+        alpha *= step(0.0, out_) * (1.0 - smoothstep(0.92, 1.0, out_));
     } else {
         // Hide the part of a tail that would wrap past the top of the trunk.
         alpha *= step(0.0, along);
