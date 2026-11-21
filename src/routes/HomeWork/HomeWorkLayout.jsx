@@ -2,9 +2,10 @@ import { useWorkItems } from '@app/WorkContext';
 import { CAROUSEL_CONFIG } from '@canvas/features/carousel';
 import ErrorBoundary from '@components/ErrorBoundary';
 import LoadingScreen from '@components/navigation/LoadingScreen';
-import { HOME_WORK, SCENE, TIMEOUT } from '@config/animation.config';
+import { HOME_WORK, TIMEOUT } from '@config/animation.config';
 import { usePageTransition } from '@hooks/usePageTransition';
 import { useGLTF } from '@react-three/drei';
+import { easeInOutSine } from '@utils/easingFunctions';
 import Lenis from 'lenis';
 import { lazy, Suspense, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
@@ -156,7 +157,8 @@ export default function HomeWorkLayout() {
             }
             seekingRef.current = true;
             lenis.scrollTo(scrollForPath(pathname, boundsRef.current), {
-                duration: SCENE.CAMERA_DURATION,
+                duration: HOME_WORK.SEEK_DURATION,
+                easing: easeInOutSine,
                 force: true,
                 onComplete: () => {
                     seekingRef.current = false;

@@ -73,6 +73,8 @@ export const HOME_WORK = {
     // Home's video wall, title, subtitle and laser fade and recede over the first EXIT_END of the morph, by EXIT_RECEDE units.
     EXIT_END: 0.5,
     EXIT_RECEDE: 20,
+    // Menu/Back seek between Home and Work, seconds.
+    SEEK_DURATION: 3,
 };
 
 // Particle trunk flow: cycles per second at rest, plus extra cycles per second per viewport height per second of scroll.

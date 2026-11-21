@@ -29,3 +29,6 @@ export const easeCurve = (t) => {
  * @returns {number} Eased value between 0 and 1
  */
 export const entryEase = (t) => 1 - Math.pow(1 - t, 3); // cubic ease out
+
+/** Even ease-in-out (sine): slow start and end, steady through the middle. */
+export const easeInOutSine = (t) => 0.5 - 0.5 * Math.cos(Math.PI * t);
