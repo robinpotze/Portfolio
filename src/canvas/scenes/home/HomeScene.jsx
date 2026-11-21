@@ -3,7 +3,7 @@ import { CAROUSEL_CONFIG, getCarouselFov } from '@canvas/features/carousel';
 import { LaserPlane } from '@canvas/features/laser';
 import { LogoMesh } from '@canvas/features/logo';
 import { LogoParticles } from '@canvas/features/logoParticles';
-import { BREAKPOINTS, FLOAT_CONFIG, REVEAL, SCENE, SCROLL_THRESHOLDS } from '@config/animation.config';
+import { BREAKPOINTS, FLOAT_CONFIG, HOME_WORK, REVEAL, SCENE, SCROLL_THRESHOLDS } from '@config/animation.config';
 import { Float, Text } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
 import { easeCurve, entryEase } from '@utils/easingFunctions';
@@ -14,7 +14,7 @@ const { clamp, damp, lerp, smoothstep } = THREE.MathUtils;
 
 // Layout keyframes: [before the reveal, after the reveal, end of the home scroll]. Scales are multiplied by viewportScale.
 export const CAMERA_Z = [30, 20, 10];
-export const CAMERA_FOV = [70, 50, 100];
+export const CAMERA_FOV = [70, 50, 75];
 const LOGO_Z = [0, 0, -15];
 const LOGO_SCALE = [1, 1, 4];
 const BACKGROUND_Z = [-15, -30, -10];
@@ -47,6 +47,7 @@ export default function HomeScene({ segmentsRef, streamRef, startAnimations = tr
     const logoRef = useRef();
     const laserRef = useRef();
     const extrasRef = useRef();
+    const exitRef = useRef(0);
     const homeProgressRef = useRef(0);
     const titleRef = useRef();
     const [backgroundPaused, setBackgroundPaused] = useState(false);
@@ -122,12 +123,30 @@ export default function HomeScene({ segmentsRef, streamRef, startAnimations = tr
                 camera.updateProjectionMatrix();
             }
         }
-        // Home's extras are out of frame once the morph starts; hide them without unmounting (keeps the video loaded).
-        if (extrasRef.current) {
-            extrasRef.current.visible = streamProgress === 0;
+        // Home's extras fade and recede over the first part of the morph; they stop rendering once fully gone.
+        const exit = smoothstep(streamProgress, 0, HOME_WORK.EXIT_END);
+        exitRef.current = exit;
+        const extras = extrasRef.current;
+        if (extras) {
+            extras.visible = exit < 1;
+            extras.position.z = -exit * HOME_WORK.EXIT_RECEDE;
+            if (extras.visible) {
+                // Every frame: the video wall swaps its placeholder material, so new materials are caught before they first render.
+                extras.traverse((object) => {
+                    const material = object.material;
+                    if (material && !Array.isArray(material)) {
+                        // An opaque material ignores opacity until recompiled; transparent at opacity 1 looks the same as opaque.
+                        if (!material.transparent) {
+                            material.transparent = true;
+                            material.needsUpdate = true;
+                        }
+                        material.opacity = 1 - exit;
+                    }
+                });
+            }
         }
         if (laserRef.current) {
-            laserRef.current.visible = streamProgress === 0;
+            laserRef.current.visible = exit < 1;
         }
 
         const logo = logoRef.current;
@@ -180,7 +199,7 @@ export default function HomeScene({ segmentsRef, streamRef, startAnimations = tr
         <>
             {startAnimations && (
                 <group ref={laserRef}>
-                    <LaserPlane progressRef={homeProgressRef} />
+                    <LaserPlane progressRef={homeProgressRef} fadeOutRef={exitRef} />
                 </group>
             )}
             <ambientLight ref={lightRef} intensity={0} />

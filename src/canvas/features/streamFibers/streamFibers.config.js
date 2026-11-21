@@ -15,7 +15,9 @@ export const STREAM_FIBERS = {
     SPARK_EVERY: 10,
     SPARK_SPREAD: 3,
     SPARK_SIZE: 6,
-    // Morph progress (logo → stream, 0–1): the fibres fade in by FADE_IN_END, the dense logo particles fade out by PARTICLE_FADE_END.
-    FADE_IN_END: 0.1,
-    PARTICLE_FADE_END: 0.25,
+    // Morph progress (logo → stream, 0–1): the fibres brighten by FADE_IN_END; each dense logo particle disappears at
+    // its own moment between PARTICLE_FADE_START and PARTICLE_FADE_END, so the density drops gradually.
+    FADE_IN_END: 0.6,
+    PARTICLE_FADE_START: 0.05,
+    PARTICLE_FADE_END: 0.85,
 };

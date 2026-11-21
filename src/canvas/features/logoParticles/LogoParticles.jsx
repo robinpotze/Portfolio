@@ -14,7 +14,7 @@ import { LOGO_PARTICLES, TIERS } from './logoParticles.config';
 import LogoParticlesMaterial from './LogoParticlesMaterial';
 import positionFrag from './position.frag.glsl';
 
-const { clamp, lerp, smoothstep } = THREE.MathUtils;
+const { clamp, lerp } = THREE.MathUtils;
 
 // { a: 1 } → { a: { value: 1 } } for the GPUComputationRenderer's plain ShaderMaterial.
 const toUniforms = (values) => Object.fromEntries(Object.entries(values).map(([name, value]) => [name, { value }]));
@@ -225,9 +225,8 @@ export default function LogoParticles({ timeline, gridSize, streamRef }) {
             points.visible = false;
             return;
         }
-        // The dense logo fades out early in the morph; the sim keeps running to place the fibre heads.
-        const fade = smoothstep(stream, 0, STREAM_FIBERS.PARTICLE_FADE_END);
-        points.visible = points.visible && fade < 1;
+        // The dense logo thins out particle by particle over the morph; once past the last cut nothing is drawn.
+        points.visible = points.visible && stream < STREAM_FIBERS.PARTICLE_FADE_END;
         const time = clock.elapsedTime;
         const { width, height } = gridRef.current;
         const fluid = fluidRef.current;
@@ -273,7 +272,7 @@ export default function LogoParticles({ timeline, gridSize, streamRef }) {
         material.uIntro = intro;
         material.uTime = time;
         material.uGridSize.set(width, height);
-        material.uStreamFade = fade;
+        material.uStream = stream;
     });
 
     if (!sim || sim.error) {

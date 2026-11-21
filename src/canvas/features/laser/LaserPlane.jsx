@@ -15,8 +15,9 @@ const FOG_QUALITY = { low: 0, medium: 0.3, high: 1 };
 const geometry = new THREE.BufferGeometry().setAttribute('position', new THREE.BufferAttribute(new Float32Array([-1, -1, 0, 3, -1, 0, -1, 3, 0]), 3));
 
 /** Fullscreen laser overlay on the home scene; each LASER_PARAMS uniform is base + progress * scale (progressRef.current: 0…1). */
-export default function LaserPlane({ progressRef }) {
+export default function LaserPlane({ progressRef, fadeOutRef }) {
     const materialRef = useRef();
+    const fadeInRef = useRef(0);
     const frameCount = useRef(0);
     const { quality } = useQuality();
     // Brand color as sRGB 0–1, used as-is (the shader tone-maps intensity, not colour).
@@ -44,7 +45,8 @@ export default function LaserPlane({ progressRef }) {
         u.iMouse.value.set(((pointer.x + 1) / 2) * width, ((pointer.y + 1) / 2) * height, 0, 0);
         u.uFlowTime.value += dt;
         u.uFogTime.value += dt;
-        u.uFade.value = Math.min(1, u.uFade.value + dt); // fades in over ~1 s (~2 s on low quality)
+        fadeInRef.current = Math.min(1, fadeInRef.current + dt); // fades in over ~1 s (~2 s on low quality)
+        u.uFade.value = fadeInRef.current * (1 - (fadeOutRef?.current ?? 0));
         u.uFogQuality.value = damp(u.uFogQuality.value, FOG_QUALITY[quality], 2, dt);
         u.uWispDensity.value = damp(u.uWispDensity.value, quality === 'low' ? 0.3 : 1, 2, dt);
         const progress = progressRef.current;
