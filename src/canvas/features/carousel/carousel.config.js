@@ -30,11 +30,13 @@ export const CAROUSEL_CONFIG = {
         SCALE_FACTOR: 0.7,
     },
 
-    // Per-card sequence over its presence (0 at the frame edge → 1 near the centre): the branch reaches the card by
-    // GROW_BY, then the card dissolves in from DISSOLVE_FROM to 1. Leaving reverses it.
+    // Per-card sequence over its presence (0 at the frame edge → 1 near the centre): the branch grows from GROW_FROM and
+    // reaches the card at GROW_BY, before the card dissolves in from DISSOLVE_FROM to 1. Leaving reverses it. GROW_FROM
+    // sits above a resting neighbour's presence (≈ 0.352), so the side cards have no branch at rest.
     BRANCH: {
-        GROW_BY: 0.5,
-        DISSOLVE_FROM: 0.4,
+        GROW_FROM: 0.36,
+        GROW_BY: 0.55,
+        DISSOLVE_FROM: 0.6,
         // A pyramid from the trunk onto the card: faces land at INSET × the card's half-extents (inside the corners),
         // and mid-way each strand is pulled BOW of the way toward the pyramid axis, so the faces curve inward.
         INSET: 0.85,

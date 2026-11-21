@@ -39,7 +39,7 @@ void main() {
     float along = head - trail * uTrail;
     vec3 p = trunkPoint(along, angle, radius, uTrunkY, uTrunkHalf, uSway);
     float alpha = (1.0 - trail) * (1.0 - trail) * mix(0.25, 1.0, random.w);
-    // Eight faces: two pyramids (slot 0 = most present card) × four sides (0 top, 1 bottom, 2 left, 3 right), evenly
+    // Eight faces: two pyramids (slot = card index parity) × four sides (0 top, 1 bottom, 2 left, 3 right), evenly
     // filled. random.y is uniform 0–1 on this path and independent of the flow seed.
     float pick = random.y / uBranchShare;
     float slotFace = floor(pick * 8.0);

@@ -26,6 +26,7 @@ export default function WorkScene({ items = [], segmentsRef, streamRef, onCardNa
     const rigRef = useRef();
     const centerednessRef = useRef([]);
     const presenceRef = useRef([]);
+    const slotsRef = useRef([-1, -1]);
     const bestIndexRef = useRef(0);
     const [visibleCenter, setVisibleCenter] = useState(0);
     const camera = useThree((state) => state.camera);
@@ -87,20 +88,18 @@ export default function WorkScene({ items = [], segmentsRef, streamRef, onCardNa
         stream.trunkY = camera.position.y / scale;
         stream.trunkHalf = (CAROUSEL_CONFIG.CAMERA.POSITION[2] * Math.tan(degToRad(getCarouselFov()) / 2) * TRUNK_OVERSCAN) / scale;
         stream.velocity = velocity;
-        // Branches for the (at most two) cards on screen: the most and second-most present. Each slot holds the
-        // card's centre and half-extents at its on-screen scale (rig space).
-        let first = 0;
-        let second = -1;
+        // Branches for the (at most two) cards on screen. Slot = index parity, holding the most present card of that
+        // parity, so adjacent cards never share a slot and strands don't jump between pyramids at the midpoint. Each
+        // slot holds the card's centre and half-extents at its on-screen scale (rig space).
+        const slots = slotsRef.current.fill(-1);
         for (let i = 0; i < items.length; i++) {
             presenceRef.current[i] = calculateCardPresence(centerednessRef.current[i], morph);
-            if (presenceRef.current[i] > presenceRef.current[first]) {
-                second = first;
-                first = i;
-            } else if (i !== first && (second < 0 || presenceRef.current[i] > presenceRef.current[second])) {
-                second = i;
+            const slot = i % 2;
+            if (slots[slot] < 0 || presenceRef.current[i] > presenceRef.current[slots[slot]]) {
+                slots[slot] = i;
             }
         }
-        [first, second].forEach((index, slot) => {
+        slots.forEach((index, slot) => {
             const card = stream.cards[slot];
             if (index < 0) {
                 card.grow = 0;

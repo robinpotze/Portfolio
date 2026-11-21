@@ -27,7 +27,7 @@ export default function HomeWorkCanvas({ segmentsRef, startAnimations }) {
         trunkY: 0,
         trunkHalf: 10,
         velocity: 0,
-        // Branch slots: 0 = the most present card, 1 = the second-most.
+        // Branch slots by card index parity: 0 = even cards, 1 = odd cards.
         cards: [0, 1].map(() => ({ center: new THREE.Vector3(), right: new THREE.Vector3(), up: new THREE.Vector3(), grow: 0 })),
         flow: 0,
         flowStep: 0,

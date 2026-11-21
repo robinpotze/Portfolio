@@ -85,7 +85,8 @@ export default function HomeWorkLayout() {
             root.style.setProperty('--home-out', String(homeOut));
             // Fully faded Home overlay: not clickable or tabbable.
             root.toggleAttribute('data-home-hidden', homeOut >= 1);
-            root.style.setProperty('--work-in', String(clamp01((segments.morph - 0.8) / 0.2)));
+            // From 0.92: the frame arrives as the first card completes its dissolve.
+            root.style.setProperty('--work-in', String(clamp01((segments.morph - 0.92) / 0.08)));
             if (!seekingRef.current) {
                 syncUrl();
             }

@@ -116,5 +116,5 @@ void main() {
     float vignette = dot(vigUv, vigUv) * 1.5;
     color *= mix(0.55, 1.0, vignette);
 
-    gl_FragColor = vec4(mix(uEdgeColor * 1.6, color, edge * step(uDissolve, 0.999) + step(0.999, uDissolve)), 1.0);
+    gl_FragColor = vec4(mix(uEdgeColor * 1.6, color, max(edge, step(0.999, uDissolve))), 1.0);
 }

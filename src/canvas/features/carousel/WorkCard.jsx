@@ -26,6 +26,9 @@ const LABEL = { color: getCSSVariable('--c-LGHT') || '#eee', anchorX: 'center', 
 const MONO_FONT = '/assets/fonts/Kode_Mono/static/KodeMono-Regular.ttf';
 const TITLE_FONT = '/assets/fonts/Orbitron/static/Orbitron-Medium.ttf';
 
+// A card takes pointer events once it is at least half formed.
+const HIT_DISSOLVE = 0.5;
+
 // Raycasting ignores `visible`, so a hidden card (or one inside the hidden rig) must not take pointer events.
 function isShown(object) {
     for (let o = object; o; o = o.parent) {
@@ -42,6 +45,7 @@ export default function WorkCard({ item, index, visible = true, onNavigate, nois
     const overlayRef = useRef();
     const overlayMaterialRef = useRef();
     const textRefs = useRef([]);
+    const dissolveRef = useRef(0);
     const hoverRef = useRef(0);
     const [hovered, setHovered] = useState(false);
     // Resets the cursor on unmount too: clicking a card navigates away before onPointerLeave can fire.
@@ -65,13 +69,14 @@ export default function WorkCard({ item, index, visible = true, onNavigate, nois
             return;
         }
         // A card hidden under the pointer gets no pointer-leave; drop the hover so the cursor resets.
-        if (hovered && !isShown(group)) {
+        if (hovered && !(isShown(group) && dissolveRef.current >= HIT_DISSOLVE)) {
             setHovered(false);
         }
         // Presence drives the card: it forms by dissolve once its branch has arrived; nothing is drawn or hit-tested
         // while fully dissolved.
         const centeredness = centerednessRef.current[index] ?? 1;
         const dissolve = cardDissolve(calculateCardPresence(centeredness, segmentsRef.current.morph));
+        dissolveRef.current = dissolve;
         group.scale.setScalar(calculateCardScale(centeredness));
         group.visible = visible && dissolve > 0.001;
         if (!group.visible) {
@@ -103,14 +108,14 @@ export default function WorkCard({ item, index, visible = true, onNavigate, nois
                 position={position}
                 rotation={rotation}
                 onClick={(e) => {
-                    if (!isShown(e.eventObject)) {
+                    if (!isShown(e.eventObject) || dissolveRef.current < HIT_DISSOLVE) {
                         return;
                     }
                     e.stopPropagation();
                     onNavigate?.(pageKey);
                 }}
                 onPointerEnter={(e) => {
-                    if (!isShown(e.eventObject)) {
+                    if (!isShown(e.eventObject) || dissolveRef.current < HIT_DISSOLVE) {
                         return;
                     }
                     e.stopPropagation();
@@ -124,7 +129,6 @@ export default function WorkCard({ item, index, visible = true, onNavigate, nois
                     <workCardMaterial
                         ref={cardMaterialRef}
                         uEdgeColor={edgeColor}
-                        transparent={false}
                         uTexture={texture}
                         uNoiseTex={noiseTexture}
                         uTextureSize={textureSize}
