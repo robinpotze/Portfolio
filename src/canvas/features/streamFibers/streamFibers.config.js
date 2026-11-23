@@ -21,10 +21,13 @@ export const STREAM_FIBERS = {
     PARTICLE_FADE_START: 0.05,
     PARTICLE_FADE_END: 0.85,
     // Home's fibre beam, in HomeScene background-group units: strands as a share of FIBER_TIERS, bundle radius, depth
-    // (behind the title at 0, in front of the video wall), trunk length per frame height, and brightness (below the logo's).
+    // (behind the title at 0; BEAM_Z_MIN stays in front of the video wall's centre at local z -2.79), gap behind the
+    // logo in world units, trunk length per frame height, and brightness (below the logo's).
     BEAM_SHARE: 0.5,
     BEAM_SPREAD: 0.2,
     BEAM_Z: -0.5,
+    BEAM_Z_MIN: -2.6,
+    BEAM_LOGO_GAP: 2,
     BEAM_OVERSCAN: 1.1,
     BEAM_BRIGHTNESS: 0.45,
 };

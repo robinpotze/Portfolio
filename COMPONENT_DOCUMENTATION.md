@@ -661,9 +661,9 @@ Draws the logo-to-carousel stream as fibre strands (line segments, plus head and
 
 > **`src/canvas/features/streamFibers/StreamFibers.jsx`** (named export) — Home's fibre beam
 
-The same fibre strands, material and shader as `StreamFibers` (compiled with the `BEAM` define) as a background bundle on Home, inside HomeScene's background group just behind the title (`BEAM_Z`) and drawn after the video wall (`renderOrder` 1, depth-tested).
+The same fibre strands, material and shader as `StreamFibers` (compiled with the `BEAM` define) as a background bundle on Home, inside HomeScene's background group just behind the title (`BEAM_Z`). Each frame its depth is pulled back to stay `BEAM_LOGO_GAP` world units behind the logo, but never behind the video wall's centre (`BEAM_Z_MIN`). Drawn after the wall (`renderOrder` 1, depth-tested).
 
-- Props: `segmentsRef` (reads `home`, 0–1) and `streamRef` (reads the shared `flow` phase).
+- Props: `segmentsRef` (reads `home`, 0–1), `streamRef` (reads the shared `flow` phase) and `logoRef` (the logo group, for depth).
 - Analytic only: each strand carries its own `strandRandom` attribute instead of reading the particle sim; no morph or branches. Flows upward.
 - The trunk spans the frame height (`BEAM_OVERSCAN`); the beam's top (`uBeamTop`) climbs from the bottom of the frame at `home = 0` to the top at `home = 1`. Hidden at `home = 0`; hidden with the extras once HomeScene's exit completes.
 - Brightness `BEAM_BRIGHTNESS` × the exit fade HomeScene writes to `material.opacity`, kept below the logo's; `BEAM_SHARE` of `FIBER_TIERS` strands, radius `BEAM_SPREAD`.

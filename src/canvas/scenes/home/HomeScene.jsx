@@ -195,7 +195,7 @@ export default function HomeScene({ segmentsRef, streamRef, startAnimations = tr
                 {startAnimations && (
                     <group ref={backgroundRef}>
                         <BackgroundMesh paused={backgroundPaused} />
-                        <FibreBeam segmentsRef={segmentsRef} streamRef={streamRef} />
+                        <FibreBeam segmentsRef={segmentsRef} streamRef={streamRef} logoRef={logoRef} />
                         <group ref={titleRef}>
                             <Text font="/assets/fonts/Orbitron/static/Orbitron-Medium.ttf" color="#EEE">
                                 ROBIN POTZE

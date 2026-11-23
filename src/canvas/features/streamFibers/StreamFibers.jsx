@@ -11,11 +11,16 @@ import fibersFrag from './streamFibers.frag.glsl';
 import fibersVert from './streamFibers.vert.glsl';
 
 const { POINTS_PER_FIBER: K } = STREAM_FIBERS;
-const { degToRad, smoothstep } = THREE.MathUtils;
+const { clamp, degToRad, smoothstep } = THREE.MathUtils;
 
 function brandColor() {
     const { r, g, b } = getCSSColorRGBA('--c-brnd_100');
     return new THREE.Color().setRGB(r / 255, g / 255, b / 255, THREE.SRGBColorSpace);
+}
+
+/** Bundle sway uniform (amplitude, frequency, phase, per-strand amplitude) at `time` seconds. */
+function setSway(sway, time) {
+    sway.set(STREAM_FIBERS.SWAY_AMPLITUDE, STREAM_FIBERS.SWAY_FREQUENCY, time * STREAM.SWAY_SPEED, STREAM_FIBERS.STRAND_AMPLITUDE);
 }
 
 /** Texel-centre UVs of `count` sim particles spread evenly over the size² texture, starting at `offset`. */
@@ -92,7 +97,7 @@ function createMaterial(color, { spark = 0, head = 0, beam = false }) {
         uniforms: {
             uTrunkY: { value: 0 },
             uTrunkHalf: { value: 10 },
-            uSpread: { value: STREAM_FIBERS.SPREAD },
+            uSpread: { value: beam ? STREAM_FIBERS.BEAM_SPREAD : STREAM_FIBERS.SPREAD },
             uFlow: { value: 0 },
             uTrail: { value: STREAM_FIBERS.TRAIL },
             uCardCenter: { value: [new THREE.Vector3(), new THREE.Vector3()] },
@@ -165,12 +170,7 @@ export default function StreamFibers({ streamRef }) {
                 u.uCardUp.value[slot].copy(card.up);
                 u.uBranchGrow.value[slot] = card.grow;
             });
-            u.uSway.value.set(
-                STREAM_FIBERS.SWAY_AMPLITUDE,
-                STREAM_FIBERS.SWAY_FREQUENCY,
-                clock.elapsedTime * STREAM.SWAY_SPEED,
-                STREAM_FIBERS.STRAND_AMPLITUDE
-            );
+            setSway(u.uSway.value, clock.elapsedTime);
             u.uDpr.value = dpr;
             u.uStream.value = s.blend;
             u.tSimPosition.value = s.simPosition;
@@ -191,12 +191,13 @@ export default function StreamFibers({ streamRef }) {
 
 const beamPosition = new THREE.Vector3();
 const beamScale = new THREE.Vector3();
+const logoPosition = new THREE.Vector3();
 
 /**
  * Home's fibre beam: the stream's trails as a background bundle that grows up the frame with the Home scroll
  * (segmentsRef.current.home). Lives in HomeScene's background group, so it moves, fades and recedes with it.
  */
-export function FibreBeam({ segmentsRef, streamRef }) {
+export function FibreBeam({ segmentsRef, streamRef, logoRef }) {
     const { quality } = useQuality();
     const meshRef = useRef(null);
     const count = Math.round(FIBER_TIERS[quality] * STREAM_FIBERS.BEAM_SHARE);
@@ -213,36 +214,25 @@ export function FibreBeam({ segmentsRef, streamRef }) {
         if (!mesh.visible) {
             return;
         }
+        // Depth: just behind the title, but always BEAM_LOGO_GAP world units behind the logo (which ends the scroll behind
+        // the title), and never behind the video wall's centre.
+        mesh.parent.getWorldPosition(beamPosition);
+        mesh.parent.getWorldScale(beamScale);
+        const logoZ = logoRef.current ? logoRef.current.getWorldPosition(logoPosition).z : Infinity;
+        mesh.position.z = clamp((logoZ - STREAM_FIBERS.BEAM_LOGO_GAP - beamPosition.z) / beamScale.z, STREAM_FIBERS.BEAM_Z_MIN, STREAM_FIBERS.BEAM_Z);
+        beamPosition.z += mesh.position.z * beamScale.z;
         // Frame half-height in the beam's units: the trunk spans the frame, the top climbs from its bottom to its top.
-        mesh.getWorldPosition(beamPosition);
-        mesh.getWorldScale(beamScale);
         const half = (((camera.position.z - beamPosition.z) * Math.tan(degToRad(camera.fov / 2))) / beamScale.y) * STREAM_FIBERS.BEAM_OVERSCAN;
         const u = material.uniforms;
         u.uTrunkHalf.value = half;
         u.uBeamTop.value = half * (2 * home - 1);
-        u.uSpread.value = STREAM_FIBERS.BEAM_SPREAD;
         u.uFlow.value = streamRef.current.flow;
-        u.uSway.value.set(
-            STREAM_FIBERS.SWAY_AMPLITUDE,
-            STREAM_FIBERS.SWAY_FREQUENCY,
-            clock.elapsedTime * STREAM.SWAY_SPEED,
-            STREAM_FIBERS.STRAND_AMPLITUDE
-        );
+        setSway(u.uSway.value, clock.elapsedTime);
         // HomeScene's exit fade writes opacity on everything in the extras.
         u.uFade.value = STREAM_FIBERS.BEAM_BRIGHTNESS * material.opacity;
     });
 
-    // After the video wall (whose sort centre sits in front of the title); depth testing keeps it behind the title,
-    // subtitle and logo.
-    return (
-        <lineSegments
-            ref={meshRef}
-            renderOrder={1}
-            geometry={fibers}
-            material={material}
-            position-z={STREAM_FIBERS.BEAM_Z}
-            frustumCulled={false}
-            visible={false}
-        />
-    );
+    // After the video wall (whose sort centre sits in front of the title); depth testing then keeps it behind the title
+    // and subtitle glyphs, and the per-frame depth above keeps it behind the logo.
+    return <lineSegments ref={meshRef} renderOrder={1} geometry={fibers} material={material} frustumCulled={false} visible={false} />;
 }
