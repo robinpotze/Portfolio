@@ -11,7 +11,12 @@ import fibersFrag from './streamFibers.frag.glsl';
 import fibersVert from './streamFibers.vert.glsl';
 
 const { POINTS_PER_FIBER: K } = STREAM_FIBERS;
-const { smoothstep } = THREE.MathUtils;
+const { degToRad, smoothstep } = THREE.MathUtils;
+
+function brandColor() {
+    const { r, g, b } = getCSSColorRGBA('--c-brnd_100');
+    return new THREE.Color().setRGB(r / 255, g / 255, b / 255, THREE.SRGBColorSpace);
+}
 
 /** Texel-centre UVs of `count` sim particles spread evenly over the size² texture, starting at `offset`. */
 function simUvs(count, size, offset = 0) {
@@ -57,14 +62,28 @@ function createPoints(count, size, offset) {
         .setAttribute('trail', new THREE.BufferAttribute(new Float32Array(count), 1));
 }
 
+/** Beam geometry: fibre strands that carry their own random (the sim texture's role), so the beam needs no sim. */
+function createBeamFibers(count) {
+    const geometry = createFibers(count, 1).deleteAttribute('simUv');
+    const random = new Float32Array(count * K * 4);
+    for (let f = 0; f < count; f++) {
+        const strand = [Math.random(), Math.random(), Math.random(), Math.random()];
+        for (let k = 0; k < K; k++) {
+            random.set(strand, (f * K + k) * 4);
+        }
+    }
+    return geometry.setAttribute('strandRandom', new THREE.BufferAttribute(random, 4));
+}
+
 function createSparks(count, size) {
     const sparks = Math.max(1, Math.round(count / STREAM_FIBERS.SPARK_EVERY));
     // Half a stride off, so sparks sit on particles between the fibres' ones.
     return createPoints(sparks, size, Math.floor(simUvs(sparks, size).stride / 2));
 }
 
-function createMaterial(color, { spark = 0, head = 0 }) {
+function createMaterial(color, { spark = 0, head = 0, beam = false }) {
     return new THREE.ShaderMaterial({
+        defines: beam ? { BEAM: '' } : {},
         vertexShader: fibersVert,
         fragmentShader: fibersFrag,
         transparent: true,
@@ -97,6 +116,7 @@ function createMaterial(color, { spark = 0, head = 0 }) {
             uDpr: { value: 1 },
             uColor: { value: color },
             uFade: { value: 0 },
+            uBeamTop: { value: 0 },
         },
     });
 }
@@ -111,10 +131,7 @@ export default function StreamFibers({ streamRef }) {
     // Same tier as LogoParticles, so the UVs address its simulation texture.
     const { size } = TIERS[quality];
 
-    const color = useMemo(() => {
-        const { r, g, b } = getCSSColorRGBA('--c-brnd_100');
-        return new THREE.Color().setRGB(r / 255, g / 255, b / 255, THREE.SRGBColorSpace);
-    }, []);
+    const color = useMemo(brandColor, []);
     const fibers = useMemo(() => createFibers(count, size), [count, size]);
     const heads = useMemo(() => createPoints(count, size, 0), [count, size]);
     const sparks = useMemo(() => createSparks(count, size), [count, size]);
@@ -169,5 +186,63 @@ export default function StreamFibers({ streamRef }) {
             <points geometry={sparks} material={materials[1]} frustumCulled={false} />
             <points ref={headsRef} geometry={heads} material={materials[2]} frustumCulled={false} />
         </group>
+    );
+}
+
+const beamPosition = new THREE.Vector3();
+const beamScale = new THREE.Vector3();
+
+/**
+ * Home's fibre beam: the stream's trails as a background bundle that grows up the frame with the Home scroll
+ * (segmentsRef.current.home). Lives in HomeScene's background group, so it moves, fades and recedes with it.
+ */
+export function FibreBeam({ segmentsRef, streamRef }) {
+    const { quality } = useQuality();
+    const meshRef = useRef(null);
+    const count = Math.round(FIBER_TIERS[quality] * STREAM_FIBERS.BEAM_SHARE);
+    const color = useMemo(brandColor, []);
+    const fibers = useMemo(() => createBeamFibers(count), [count]);
+    const material = useMemo(() => createMaterial(color, { beam: true }), [color]);
+    useEffect(() => () => fibers.dispose(), [fibers]);
+    useEffect(() => () => material.dispose(), [material]);
+
+    useFrame(({ camera, clock }) => {
+        const mesh = meshRef.current;
+        const { home } = segmentsRef.current;
+        mesh.visible = home > 0;
+        if (!mesh.visible) {
+            return;
+        }
+        // Frame half-height in the beam's units: the trunk spans the frame, the top climbs from its bottom to its top.
+        mesh.getWorldPosition(beamPosition);
+        mesh.getWorldScale(beamScale);
+        const half = (((camera.position.z - beamPosition.z) * Math.tan(degToRad(camera.fov / 2))) / beamScale.y) * STREAM_FIBERS.BEAM_OVERSCAN;
+        const u = material.uniforms;
+        u.uTrunkHalf.value = half;
+        u.uBeamTop.value = half * (2 * home - 1);
+        u.uSpread.value = STREAM_FIBERS.BEAM_SPREAD;
+        u.uFlow.value = streamRef.current.flow;
+        u.uSway.value.set(
+            STREAM_FIBERS.SWAY_AMPLITUDE,
+            STREAM_FIBERS.SWAY_FREQUENCY,
+            clock.elapsedTime * STREAM.SWAY_SPEED,
+            STREAM_FIBERS.STRAND_AMPLITUDE
+        );
+        // HomeScene's exit fade writes opacity on everything in the extras.
+        u.uFade.value = STREAM_FIBERS.BEAM_BRIGHTNESS * material.opacity;
+    });
+
+    // After the video wall (whose sort centre sits in front of the title); depth testing keeps it behind the title,
+    // subtitle and logo.
+    return (
+        <lineSegments
+            ref={meshRef}
+            renderOrder={1}
+            geometry={fibers}
+            material={material}
+            position-z={STREAM_FIBERS.BEAM_Z}
+            frustumCulled={false}
+            visible={false}
+        />
     );
 }

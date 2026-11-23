@@ -564,11 +564,12 @@ One `EffectComposer` for the layout. Ambient occlusion (N8AO, absent on low) fad
 
 > **`src/canvas/scenes/home/HomeScene.jsx`** — Home 3D scene orchestrator
 
-Combines background mesh, logo, subtitle text, laser plane and camera into one scroll-aware scene. Post-processing lives in `PostFX`.
+Combines background mesh, fibre beam, logo, subtitle text and camera into one scroll-aware scene. Post-processing lives in `PostFX`.
 
 - Renders `LogoParticles` when float or half-float render targets are supported, otherwise the metallic `LogoMesh`.
 - One `useFrame` timeline drives the camera (z, FOV, damped pointer parallax, `lookAt` origin), logo, background and subtitle from two values: the eased reveal (time since `startAnimations`, `REVEAL`/`SCENE` timing) and `easeCurve(scrollProgress)`. Layout keyframes are module constants (`CAMERA_Z`, `CAMERA_FOV`, `LOGO_SCALE`, …) as `[before reveal, after reveal, end of scroll]`; scales are multiplied by `viewportScale`.
 - Damps the logo group's rotation toward the pointer (`THREE.MathUtils.damp`).
+- Renders `FibreBeam` in the background group, between the video wall and the title, so it moves, fades and recedes with the Home extras.
 - Raises the "ROBIN POTZE" title out of frame on scroll (`TITLE_RISE`), on the same curve the particles assimilate on.
 - Owns the particle timeline: writes `{ morph, intro }` to a ref that `LogoParticles` reads. The timeline `useFrame` runs at priority -1, so children read this frame's camera, logo transform and timeline.
 - Passes `streamRef` to `LogoParticles`, which feeds the particle sim's stream progress and writes the sim textures `StreamFibers` reads.
@@ -576,26 +577,9 @@ Combines background mesh, logo, subtitle text, laser plane and camera into one s
 - Pauses background video once scroll > 0.4.
 - Viewport-responsive scale via `BREAKPOINTS.REFERENCE_WIDTH`.
 
-| Hooks                                                    | Context          | Config                                                                | Children                                                     |
-| -------------------------------------------------------- | ---------------- | --------------------------------------------------------------------- | ------------------------------------------------------------ |
-| `useRef`, `useEffect`, `useMemo`, `useFrame`, `useThree` | **`useQuality`** | `FLOAT_CONFIG`, `REVEAL`, `SCENE`, `SCROLL_THRESHOLDS`, `BREAKPOINTS` | `BackgroundMesh`, `LogoParticles` / `LogoMesh`, `LaserPlane` |
-
----
-
-#### `LaserPlane`
-
-> **`src/canvas/features/laser/LaserPlane.jsx`** — Procedural laser/fog effect
-
-Procedural laser/fog layer driven by shader uniforms. Scales behavior by quality tier.
-
-- Prop: `progress` (0–1 scroll progress). Each key of `LASER_PARAMS` (colocated `laser.config.js`) is a uniform name, set to `base + progress * scale`; every other uniform keeps the material's default.
-- Updates flow/fog time, resolution, mouse, fade-in and quality-driven fog/wisp detail every frame (`THREE.MathUtils.damp`).
-- Updates uniforms every 2nd frame on low quality.
-- Render order 1000, ignores frustum culling — effectively a full-screen post effect.
-
-| Hooks                           | Context          | Config         | Children            |
-| ------------------------------- | ---------------- | -------------- | ------------------- |
-| `useRef`, `useMemo`, `useFrame` | **`useQuality`** | `LASER_PARAMS` | `LaserFlowMaterial` |
+| Hooks                                                    | Context          | Config                                                                | Children                                                    |
+| -------------------------------------------------------- | ---------------- | --------------------------------------------------------------------- | ----------------------------------------------------------- |
+| `useRef`, `useEffect`, `useMemo`, `useFrame`, `useThree` | **`useQuality`** | `FLOAT_CONFIG`, `REVEAL`, `SCENE`, `SCROLL_THRESHOLDS`, `BREAKPOINTS` | `BackgroundMesh`, `FibreBeam`, `LogoParticles` / `LogoMesh` |
 
 ---
 
@@ -673,6 +657,21 @@ Draws the logo-to-carousel stream as fibre strands (line segments, plus head and
 | -------------------------------------------------------- | ---------------- | --------------------------------------- | ------------------------ |
 | `useRef`, `useMemo`, `useEffect`, `useFrame`, `useThree` | **`useQuality`** | `STREAM_FIBERS`, `FIBER_TIERS`, `TIERS` | `lineSegments`, `points` |
 
+#### `FibreBeam`
+
+> **`src/canvas/features/streamFibers/StreamFibers.jsx`** (named export) — Home's fibre beam
+
+The same fibre strands, material and shader as `StreamFibers` (compiled with the `BEAM` define) as a background bundle on Home, inside HomeScene's background group just behind the title (`BEAM_Z`) and drawn after the video wall (`renderOrder` 1, depth-tested).
+
+- Props: `segmentsRef` (reads `home`, 0–1) and `streamRef` (reads the shared `flow` phase).
+- Analytic only: each strand carries its own `strandRandom` attribute instead of reading the particle sim; no morph or branches. Flows upward.
+- The trunk spans the frame height (`BEAM_OVERSCAN`); the beam's top (`uBeamTop`) climbs from the bottom of the frame at `home = 0` to the top at `home = 1`. Hidden at `home = 0`; hidden with the extras once HomeScene's exit completes.
+- Brightness `BEAM_BRIGHTNESS` × the exit fade HomeScene writes to `material.opacity`, kept below the logo's; `BEAM_SHARE` of `FIBER_TIERS` strands, radius `BEAM_SPREAD`.
+
+| Hooks                                        | Context          | Config                         | Children       |
+| -------------------------------------------- | ---------------- | ------------------------------ | -------------- |
+| `useRef`, `useMemo`, `useEffect`, `useFrame` | **`useQuality`** | `STREAM_FIBERS`, `FIBER_TIERS` | `lineSegments` |
+
 ---
 
 ### 6.3 — Shared Scene Nodes
@@ -705,12 +704,11 @@ Fallback logo for devices without float render targets. Renders the logo geometr
 
 These register custom JSX elements via `shaderMaterial` + `extend()` (or `RawShaderMaterial` + `extend()`). Used directly in scene component markup.
 
-| Primitive                   | File                                                         | Material Type       | Key Uniforms                                                                                                                                                               | Used By         |
-| --------------------------- | ------------------------------------------------------------ | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
-| **`WorkCardMaterial`**      | `src/canvas/features/carousel/WorkCardMaterial.js`           | `shaderMaterial`    | `uTexture`, `uNoiseTex`, `uTextureSize`, `uPlaneSize`, `uRoughness`, `uRefractPower`, `uChromaticAberration`, `uDissolve`, `uCells`, `uEdge`, `uEdgeColor`                 | `WorkCard`      |
-| **`LaserFlowMaterial`**     | `src/canvas/features/laser/LaserFlowMaterial.js`             | `RawShaderMaterial` | `iResolution`, `iMouse`, `uFlowTime`, `uFogTime`, `uFade`, `uFogQuality`, `uWispDensity`, `uColor`, the 7 `LASER_PARAMS` uniforms, and 7 constant look uniforms (22 total) | `LaserPlane`    |
-| **`PixelOverlayMaterial`**  | `src/canvas/features/carousel/PixelOverlayMaterial.js`       | `shaderMaterial`    | `uTime`, `uHover`, `uResolution`, `uColor1`, `uColor2`                                                                                                                     | `WorkCard`      |
-| **`LogoParticlesMaterial`** | `src/canvas/features/logoParticles/LogoParticlesMaterial.js` | `shaderMaterial`    | `tPosition`, `tMatcap`, `uColor`, `uPointSize`, `uDpr`, `uIntro`, `uGridSize`, `uTime`, `uStream`, `uFadeStart`, `uFadeEnd`                                                | `LogoParticles` |
+| Primitive                   | File                                                         | Material Type    | Key Uniforms                                                                                                                                               | Used By         |
+| --------------------------- | ------------------------------------------------------------ | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
+| **`WorkCardMaterial`**      | `src/canvas/features/carousel/WorkCardMaterial.js`           | `shaderMaterial` | `uTexture`, `uNoiseTex`, `uTextureSize`, `uPlaneSize`, `uRoughness`, `uRefractPower`, `uChromaticAberration`, `uDissolve`, `uCells`, `uEdge`, `uEdgeColor` | `WorkCard`      |
+| **`PixelOverlayMaterial`**  | `src/canvas/features/carousel/PixelOverlayMaterial.js`       | `shaderMaterial` | `uTime`, `uHover`, `uResolution`, `uColor1`, `uColor2`                                                                                                     | `WorkCard`      |
+| **`LogoParticlesMaterial`** | `src/canvas/features/logoParticles/LogoParticlesMaterial.js` | `shaderMaterial` | `tPosition`, `tMatcap`, `uColor`, `uPointSize`, `uDpr`, `uIntro`, `uGridSize`, `uTime`, `uStream`, `uFadeStart`, `uFadeEnd`                                | `LogoParticles` |
 
 ---
 
@@ -733,7 +731,7 @@ These register custom JSX elements via `shaderMaterial` + `extend()` (or `RawSha
 
 | Context Hook        | Consumers                                                                           |
 | ------------------- | ----------------------------------------------------------------------------------- |
-| `useQuality`        | `HomeScene`, `LaserPlane`, `WorkCard`, `LogoParticles`                              |
+| `useQuality`        | `HomeScene`, `WorkCard`, `LogoParticles`, `StreamFibers`, `FibreBeam`               |
 | `useWorkItems`      | `HomeWorkLayout`, `HomeWorkCanvas`                                                  |
 | `usePageTransition` | `HomeWorkLayout`, `HomeWorkCanvas`, `About`, `NavigationMenu`, `useAdaptiveQuality` |
 
@@ -744,7 +742,6 @@ These register custom JSX elements via `shaderMaterial` + `extend()` (or `RawSha
 | `animation.config.js`                                   | `EASING`, `REVEAL`, `STAGGER`, `TIMEOUT`, `LENIS`, `SCROLL_THRESHOLDS`, `FLOAT_CONFIG`, `SCENE`, `SPRING_CONFIG`, `TYPEWRITER`, `BREAKPOINTS` | Most components — see individual tables                                                            |
 | `canvas/core/canvas.config.js`                          | `CANVAS_GL_DEFAULTS`, `CANVAS_DPR`                                                                                                            | `CanvasRoot`                                                                                       |
 | `canvas/features/carousel/carousel.config.js`           | `CAROUSEL_CONFIG`                                                                                                                             | `HomeWorkCanvas`, `WorkScene`, `WorkCard`, `useBorderProjection`, `carousel.js`, `cardGeometry.js` |
-| `canvas/features/laser/laser.config.js`                 | `LASER_PARAMS`                                                                                                                                | `LaserPlane`                                                                                       |
 | `canvas/features/logoParticles/logoParticles.config.js` | `TIERS`, `LOGO_PARTICLES`                                                                                                                     | `LogoParticles`                                                                                    |
 
 ---

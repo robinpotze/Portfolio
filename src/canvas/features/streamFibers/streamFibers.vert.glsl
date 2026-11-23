@@ -25,20 +25,35 @@ uniform float uMorphStagger;
 attribute vec2 simUv;
 attribute float trail;
 varying float vAlpha;
+#ifdef BEAM
+// Home's beam: analytic only, so each strand carries its own random instead of reading the sim.
+attribute vec4 strandRandom;
+uniform float uBeamTop;
+#endif
 
 #include ../../core/shaders/streamPath.glsl;
 
 void main() {
     // The sim particle this strand grows out of: its random gives the same seed, angle, radius and branch pick.
+#ifdef BEAM
+    vec4 random = strandRandom;
+#else
     vec4 random = texture2D(tSimRandom, simUv);
+#endif
     float seed = streamSeed(random);
     float angle = random.z * 6.2831853;
     float radius = uSpread * sqrt(fract(random.x * 13.37)) * mix(1.0, uSparkSpread, uSpark);
     // Head at the flow position, tail sampled slightly earlier on the same path.
     float head = fract(seed + uFlow * mix(1.0, uSparkFlow, uSpark));
     float along = head - trail * uTrail;
-    vec3 p = trunkPoint(along, angle, radius, uTrunkY, uTrunkHalf, uSway);
     float alpha = (1.0 - trail) * (1.0 - trail) * mix(0.25, 1.0, random.w);
+    float sp = 1.0;
+#ifdef BEAM
+    // Flows up from the bottom; the part of a tail that would wrap and every point above the beam's top are hidden.
+    vec3 p = trunkPoint(1.0 - along, angle, radius, uTrunkY, uTrunkHalf, uSway);
+    alpha *= step(0.0, along) * (1.0 - smoothstep(uBeamTop - 0.1 * uTrunkHalf, uBeamTop, p.y));
+#else
+    vec3 p = trunkPoint(along, angle, radius, uTrunkY, uTrunkHalf, uSway);
     // Eight faces: two pyramids (slot = card index parity) × four sides (0 top, 1 bottom, 2 left, 3 right), evenly
     // filled. random.y is uniform 0–1 on this path and independent of the flow seed.
     float pick = random.y / uBranchShare;
@@ -63,11 +78,12 @@ void main() {
     }
     // Morph (same per-particle stagger as the sim): the strand stretches from its particle onto the path.
     // At sp = 1 the path is exact, so the (then frozen) sim texture is not read.
-    float sp = clamp((uStream - random.w * uMorphStagger) / (1.0 - uMorphStagger), 0.0, 1.0);
+    sp = clamp((uStream - random.w * uMorphStagger) / (1.0 - uMorphStagger), 0.0, 1.0);
     if (sp < 1.0) {
         vec3 particle = (uLocalToStream * vec4(texture2D(tSimPosition, simUv).xyz, 1.0)).xyz;
         p = mix(particle, p, sp);
     }
+#endif
     vAlpha = alpha;
     vec4 mvPosition = modelViewMatrix * vec4(p, 1.0);
     gl_Position = projectionMatrix * mvPosition;

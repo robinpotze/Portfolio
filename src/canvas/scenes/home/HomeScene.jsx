@@ -1,8 +1,8 @@
 import { BackgroundMesh } from '@canvas/features/background';
 import { CAROUSEL_CONFIG, getCarouselFov } from '@canvas/features/carousel';
-import { LaserPlane } from '@canvas/features/laser';
 import { LogoMesh } from '@canvas/features/logo';
 import { LogoParticles } from '@canvas/features/logoParticles';
+import { FibreBeam } from '@canvas/features/streamFibers';
 import { BREAKPOINTS, FLOAT_CONFIG, HOME_WORK, REVEAL, SCENE, SCROLL_THRESHOLDS } from '@config/animation.config';
 import { Float, Text } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
@@ -45,10 +45,7 @@ const BACKGROUND_PAUSE_AT = 0.4;
 
 export default function HomeScene({ segmentsRef, streamRef, startAnimations = true }) {
     const logoRef = useRef();
-    const laserRef = useRef();
     const extrasRef = useRef();
-    const exitRef = useRef(0);
-    const homeProgressRef = useRef(0);
     const titleRef = useRef();
     const [backgroundPaused, setBackgroundPaused] = useState(false);
     const backgroundRef = useRef();
@@ -89,7 +86,6 @@ export default function HomeScene({ segmentsRef, streamRef, startAnimations = tr
         const since = introStart.current === null ? -Infinity : clock.elapsedTime - introStart.current;
         const reveal = (delay, duration) => entryEase(clamp((since - delay) / duration, 0, 1));
         const { home: scrollProgress, morph: streamProgress } = segmentsRef.current;
-        homeProgressRef.current = scrollProgress;
         // Morph segment: blend from Home's end pose to the carousel's start pose.
         const blend = easeCurve(streamProgress);
         const scroll = easeCurve(scrollProgress);
@@ -125,7 +121,6 @@ export default function HomeScene({ segmentsRef, streamRef, startAnimations = tr
         }
         // Home's extras fade and recede over the first part of the morph; they stop rendering once fully gone.
         const exit = smoothstep(streamProgress, 0, HOME_WORK.EXIT_END);
-        exitRef.current = exit;
         const extras = extrasRef.current;
         if (extras) {
             extras.visible = exit < 1;
@@ -144,9 +139,6 @@ export default function HomeScene({ segmentsRef, streamRef, startAnimations = tr
                     }
                 });
             }
-        }
-        if (laserRef.current) {
-            laserRef.current.visible = exit < 1;
         }
 
         const logo = logoRef.current;
@@ -197,17 +189,13 @@ export default function HomeScene({ segmentsRef, streamRef, startAnimations = tr
 
     return (
         <>
-            {startAnimations && (
-                <group ref={laserRef}>
-                    <LaserPlane progressRef={homeProgressRef} fadeOutRef={exitRef} />
-                </group>
-            )}
             <ambientLight ref={lightRef} intensity={0} />
 
             <group ref={extrasRef}>
                 {startAnimations && (
                     <group ref={backgroundRef}>
                         <BackgroundMesh paused={backgroundPaused} />
+                        <FibreBeam segmentsRef={segmentsRef} streamRef={streamRef} />
                         <group ref={titleRef}>
                             <Text font="/assets/fonts/Orbitron/static/Orbitron-Medium.ttf" color="#EEE">
                                 ROBIN POTZE
