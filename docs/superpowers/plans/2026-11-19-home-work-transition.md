@@ -2015,3 +2015,27 @@ then use `uCardCenter[slot]`, `uCardRight[slot]`, `uCardUp[slot]`, `uBranchGrow[
 ### Task 14: Verify the revisions
 
 Same as Task 11, plus: the seek takes about 3 s and stays interruptible; cards form by dissolve after their pyramid arrives, and dissolve out before it retracts.
+
+---
+
+## Revisions (amendment 2026-11-23)
+
+### Task 15: Fibre beam replaces the laser
+
+**Files:**
+
+- Delete: `src/canvas/features/laser/` (all files)
+- Modify: `src/canvas/scenes/home/HomeScene.jsx`, `src/config/animation.config.js` (drop laser-only entries if any)
+- Modify: `src/canvas/features/streamFibers/{StreamFibers.jsx,streamFibers.vert.glsl,streamFibers.config.js,index.js}` (reuse for the beam)
+- Modify: `COMPONENT_DOCUMENTATION.md` (remove the laser entries, document the beam)
+
+**Requirements:**
+
+- Remove `LaserPlane`, its wrapper group, `laserRef`, `homeProgressRef` if it only served the laser, and the `fadeOutRef` plumbing; delete the laser feature folder and every import of it (`grep -rn "laser\|Laser" src COMPONENT_DOCUMENTATION.md` ends empty, apart from unrelated words).
+- Add a fibre beam on Home that reuses the fibre geometry, material and `streamPath.glsl` (no copied shader): brand cyan, same trail/sway look, inside the background group, placed just behind the "ROBIN POTZE" title (between the title and the video wall) so it is never in front of the logo or the DOM text. Rendered dimmer than the logo (a beam brightness factor in `STREAM_FIBERS`, e.g. `BEAM_BRIGHTNESS: 0.45`).
+- The beam's visible length grows from the bottom of the frame with the Home scroll: nothing at `home = 0`, full frame height at `home = 1` (a beam-length uniform that masks strand points above the current top; express the curve in `STREAM_FIBERS` as geometry, any timing in `animation.config.js`).
+- The beam does not read the particle simulation: it is analytic only (no morph stretch, no branch). If the shader needs a random source without the sim texture, add a `BEAM` define/uniform switch that reads a per-strand random attribute instead, keeping one shader.
+- Fewer strands than the stream (e.g. half of `FIBER_TIERS`).
+- Exit: it fades and recedes with the other Home extras (HomeScene's `exit`); `visible = false` when its length is 0 or `exit >= 1`. The bloom pass must not make it the brightest element on screen.
+
+- [ ] **Steps:** implement; `npm test && npm run lint && npm run fmt:check && npm run build`; browser at 1440×900 and 390×844: Home at scroll 0, 0.15, 0.3, 0.45, 0.6 × innerHeight — no beam at 0, a growing fibre beam behind the title and in front of the video wall, never over the logo or subtitle/DOM text, logo stays the brightest element; during a menu seek the beam fades with the extras while the stream fibres appear on the same axis; no console errors. Commit `feat(home): fibre beam replaces the laser`.
