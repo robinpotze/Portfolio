@@ -19,6 +19,8 @@ const LOGO_Z = [0, 0, -15];
 const LOGO_SCALE = [1, 1, 4];
 const BACKGROUND_Z = [-15, -30, -10];
 const BACKGROUND_SCALE = [8, 6, 5];
+// The background's depth stops shrinking with viewportScale below this, so the curved wall stays behind the logo on narrow screens.
+const BACKGROUND_MIN_DEPTH_SCALE = 0.6;
 const SUBTITLE_Y = [-10, -9, -7];
 const SUBTITLE_Z = [20, -5, -5];
 const SUBTITLE_SCALE = [1, 1, 0.9];
@@ -157,7 +159,12 @@ export default function HomeScene({ segmentsRef, streamRef, startAnimations = tr
         if (background) {
             const backgroundReveal = reveal(REVEAL.DELAY, REVEAL.DURATION);
             background.position.z = keyframe(BACKGROUND_Z, backgroundReveal, scroll);
-            background.scale.setScalar(keyframe(BACKGROUND_SCALE, backgroundReveal, scroll) * viewportScale);
+            const backgroundScale = keyframe(BACKGROUND_SCALE, backgroundReveal, scroll);
+            background.scale.set(
+                backgroundScale * viewportScale,
+                backgroundScale * viewportScale,
+                backgroundScale * Math.max(viewportScale, BACKGROUND_MIN_DEPTH_SCALE)
+            );
         }
         if (titleRef.current) {
             titleRef.current.position.y = (morph * TITLE_RISE) / viewportScale;
