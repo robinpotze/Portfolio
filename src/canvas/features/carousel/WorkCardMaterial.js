@@ -1,6 +1,7 @@
 import { shaderMaterial } from '@react-three/drei';
 import { extend } from '@react-three/fiber';
 import * as THREE from 'three';
+import { CAROUSEL_CONFIG } from './carousel.config';
 import fragShader from './workCard.frag.glsl?raw';
 import vertShader from './workCard.vert.glsl?raw';
 
@@ -14,6 +15,10 @@ const WorkCardMaterial = shaderMaterial(
         uNoiseScale: 2.0,
         uRefractPower: 0.006,
         uChromaticAberration: 0.8,
+        uDissolve: 1,
+        uCells: new THREE.Vector2(...CAROUSEL_CONFIG.DISSOLVE.CELLS),
+        uEdge: CAROUSEL_CONFIG.DISSOLVE.EDGE,
+        uEdgeColor: new THREE.Color(),
     },
     vertShader,
     fragShader

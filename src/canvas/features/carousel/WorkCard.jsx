@@ -2,17 +2,15 @@ import { useQuality } from '@app/QualityContext';
 import { FLOAT_CONFIG } from '@config/animation.config';
 import { Float, Text, useCursor, useTexture } from '@react-three/drei';
 import { useFrame } from '@react-three/fiber';
-import { getCSSVariable } from '@utils/cssUtils';
-import { entryEase } from '@utils/easingFunctions';
+import { getCSSColorRGBA, getCSSVariable } from '@utils/cssUtils';
 import { useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { CARD_HEIGHT, CARD_WIDTH } from './cardGeometry';
-import { calculateCardPosition, calculateCardRotation, calculateCardScale } from './carousel';
-import { CAROUSEL_CONFIG } from './carousel.config';
+import { calculateCardPosition, calculateCardRotation, calculateCardScale, cardDissolve } from './carousel';
 import './PixelOverlayMaterial';
 import './WorkCardMaterial';
 
-const { clamp, damp } = THREE.MathUtils;
+const { damp } = THREE.MathUtils;
 
 // Glass refraction per quality tier (off on low).
 const CARD_QUALITY = {
@@ -20,8 +18,7 @@ const CARD_QUALITY = {
     medium: { uRoughness: 0.05, uRefractPower: 0.003, uChromaticAberration: 0.4 },
     high: { uRoughness: 0.1, uRefractPower: 0.006, uChromaticAberration: 0.8 },
 };
-// Smoothing rates: scale toward its centeredness target (ln 1000: closes 99.9% of the gap per second), hover overlay in/out.
-const SCALE_DAMPING = Math.log(1000);
+// Smoothing rate of the hover overlay in/out.
 const HOVER_DAMPING = 4;
 
 const PLANE_SIZE = new THREE.Vector2(CARD_WIDTH, CARD_HEIGHT);
@@ -29,13 +26,27 @@ const LABEL = { color: getCSSVariable('--c-LGHT') || '#eee', anchorX: 'center', 
 const MONO_FONT = '/assets/fonts/Kode_Mono/static/KodeMono-Regular.ttf';
 const TITLE_FONT = '/assets/fonts/Orbitron/static/Orbitron-Medium.ttf';
 
-export default function WorkCard({ item, index, visible = true, onNavigate, noiseTexture, centerednessRef, entryComplete = false, entryDelay = 0 }) {
+// A card takes pointer events once it is at least half formed.
+const HIT_DISSOLVE = 0.5;
+
+// Raycasting ignores `visible`, so a hidden card (or one inside the hidden rig) must not take pointer events.
+function isShown(object) {
+    for (let o = object; o; o = o.parent) {
+        if (!o.visible) {
+            return false;
+        }
+    }
+    return true;
+}
+
+export default function WorkCard({ item, index, visible = true, onNavigate, noiseTexture, centerednessRef, presenceRef }) {
     const groupRef = useRef();
+    const cardMaterialRef = useRef();
     const overlayRef = useRef();
-    const scaleRef = useRef(0);
+    const overlayMaterialRef = useRef();
+    const textRefs = useRef([]);
+    const dissolveRef = useRef(0);
     const hoverRef = useRef(0);
-    const entryTimeRef = useRef(null);
-    const wasVisibleRef = useRef(false);
     const [hovered, setHovered] = useState(false);
     // Resets the cursor on unmount too: clicking a card navigates away before onPointerLeave can fire.
     useCursor(hovered);
@@ -47,40 +58,46 @@ export default function WorkCard({ item, index, visible = true, onNavigate, nois
     const textureSize = useMemo(() => new THREE.Vector2(texture.image?.width ?? 1, texture.image?.height ?? 1), [texture]);
     const position = useMemo(() => calculateCardPosition(index), [index]);
     const rotation = useMemo(() => calculateCardRotation(index), [index]);
+    const edgeColor = useMemo(() => {
+        const { r, g, b } = getCSSColorRGBA('--c-brnd_100');
+        return new THREE.Color().setRGB(r / 255, g / 255, b / 255, THREE.SRGBColorSpace);
+    }, []);
 
     useFrame(({ clock }, delta) => {
         const group = groupRef.current;
         if (!group) {
             return;
         }
-        // Stay hidden until the camera entry completes, then grow in with a per-card stagger.
-        if (!entryComplete) {
-            group.scale.setScalar(0);
-            scaleRef.current = 0;
+        // A card hidden under the pointer gets no pointer-leave; drop the hover so the cursor resets.
+        if (hovered && !(isShown(group) && dissolveRef.current >= HIT_DISSOLVE)) {
+            setHovered(false);
+        }
+        // Presence drives the card: it forms by dissolve once its branch has arrived; nothing is drawn or hit-tested
+        // while fully dissolved.
+        const centeredness = centerednessRef.current[index] ?? 1;
+        const dissolve = cardDissolve(presenceRef.current[index] ?? 0);
+        dissolveRef.current = dissolve;
+        group.scale.setScalar(calculateCardScale(centeredness));
+        group.visible = visible && dissolve > 0.001;
+        if (!group.visible) {
             return;
         }
-        if (entryTimeRef.current === null) {
-            entryTimeRef.current = clock.elapsedTime + entryDelay;
+        if (cardMaterialRef.current) {
+            cardMaterialRef.current.uDissolve = dissolve;
         }
-        const entryT = clamp((clock.elapsedTime - entryTimeRef.current) / CAROUSEL_CONFIG.ENTRY.CARD_DURATION, 0, 1);
-
-        // Re-grow from 0 whenever the card becomes visible again.
-        if (visible && !wasVisibleRef.current) {
-            scaleRef.current = 0;
+        for (const text of textRefs.current) {
+            if (text) {
+                text.fillOpacity = dissolve;
+            }
         }
-        wasVisibleRef.current = visible;
-        if (!visible) {
-            return;
+        if (overlayRef.current) {
+            overlayRef.current.visible = dissolve >= 1;
         }
-
-        const targetScale = calculateCardScale(centerednessRef.current[index] ?? 1);
-        scaleRef.current = damp(scaleRef.current, targetScale, SCALE_DAMPING, delta);
-        group.scale.setScalar(entryT < 1 ? scaleRef.current * entryEase(entryT) : scaleRef.current);
 
         hoverRef.current = damp(hoverRef.current, hovered ? 1 : 0, HOVER_DAMPING, delta);
-        if (overlayRef.current) {
-            overlayRef.current.uHover = hoverRef.current;
-            overlayRef.current.uTime = clock.elapsedTime;
+        if (overlayMaterialRef.current) {
+            overlayMaterialRef.current.uHover = hoverRef.current;
+            overlayMaterialRef.current.uTime = clock.elapsedTime;
         }
     });
 
@@ -90,12 +107,17 @@ export default function WorkCard({ item, index, visible = true, onNavigate, nois
                 ref={groupRef}
                 position={position}
                 rotation={rotation}
-                visible={visible}
                 onClick={(e) => {
+                    if (!isShown(e.eventObject) || dissolveRef.current < HIT_DISSOLVE) {
+                        return;
+                    }
                     e.stopPropagation();
                     onNavigate?.(pageKey);
                 }}
                 onPointerEnter={(e) => {
+                    if (!isShown(e.eventObject) || dissolveRef.current < HIT_DISSOLVE) {
+                        return;
+                    }
                     e.stopPropagation();
                     setHovered(true);
                 }}
@@ -105,6 +127,8 @@ export default function WorkCard({ item, index, visible = true, onNavigate, nois
                 <mesh>
                     <planeGeometry args={[CARD_WIDTH, CARD_HEIGHT]} />
                     <workCardMaterial
+                        ref={cardMaterialRef}
+                        uEdgeColor={edgeColor}
                         uTexture={texture}
                         uNoiseTex={noiseTexture}
                         uTextureSize={textureSize}
@@ -116,21 +140,33 @@ export default function WorkCard({ item, index, visible = true, onNavigate, nois
 
                 {/* Pixel hover overlay */}
                 {!isLowQuality && (
-                    <mesh position={[0, 0, CARD_WIDTH * 0.011]}>
+                    <mesh ref={overlayRef} position={[0, 0, CARD_WIDTH * 0.011]}>
                         <planeGeometry args={[CARD_WIDTH, CARD_HEIGHT]} />
-                        <pixelOverlayMaterial ref={overlayRef} transparent depthWrite={false} />
+                        <pixelOverlayMaterial ref={overlayMaterialRef} transparent depthWrite={false} />
                     </mesh>
                 )}
 
                 {/* Text content */}
                 <group position={[0, 0, CARD_WIDTH * 0.012]}>
-                    <Text {...LABEL} font={MONO_FONT} fontSize={CARD_HEIGHT * 0.045} position={[0, CARD_HEIGHT * 0.1, 0.1]}>
+                    <Text
+                        {...LABEL}
+                        font={MONO_FONT}
+                        fontSize={CARD_HEIGHT * 0.045}
+                        position={[0, CARD_HEIGHT * 0.1, 0.1]}
+                        ref={(el) => (textRefs.current[0] = el)}
+                    >
                         {data?.year?.toString() || ''}
                     </Text>
-                    <Text {...LABEL} font={TITLE_FONT} fontSize={CARD_HEIGHT * 0.11} position={[0, 0, 0.12]}>
+                    <Text {...LABEL} font={TITLE_FONT} fontSize={CARD_HEIGHT * 0.11} position={[0, 0, 0.12]} ref={(el) => (textRefs.current[1] = el)}>
                         {data?.title || pageKey}
                     </Text>
-                    <Text {...LABEL} font={MONO_FONT} fontSize={CARD_HEIGHT * 0.045} position={[0, -CARD_HEIGHT * 0.1, 0.1]}>
+                    <Text
+                        {...LABEL}
+                        font={MONO_FONT}
+                        fontSize={CARD_HEIGHT * 0.045}
+                        position={[0, -CARD_HEIGHT * 0.1, 0.1]}
+                        ref={(el) => (textRefs.current[2] = el)}
+                    >
                         {data?.client || ''}
                     </Text>
                 </group>

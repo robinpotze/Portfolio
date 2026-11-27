@@ -109,33 +109,43 @@ Simple context that holds the sorted project items array. Exposes `useWorkItems(
 
 > **`src/routes/Home/Home.jsx`** — Landing page
 
-Combines the loading sequence, hero copy, decorative overlays, and the home 3D scene. Uses `useScrollNavigation` to turn downward scroll progress into route-transition intent.
+Hero copy and decorative overlays for `/`. Rendered as the `HomeWorkLayout` outlet; the 3D scene, loading sequence, scrolling and GLB preloading belong to the layout (see `HomeWorkLayout`, `HomeWorkCanvas`).
 
+- Reads `showContent` from the layout's outlet context to fade the overlay in after loading.
+- The layout fades the overlay out over the end of the home segment (`--home-out`).
+
+| Hooks              | Context                 | Config                        | Children                                   |
+| ------------------ | ----------------------- | ----------------------------- | ------------------------------------------ |
+| `useOutletContext` | `HomeWorkLayout` outlet | `EASING`, `REVEAL`, `STAGGER` | `ScrollDown`, `RadialGrid`, `RedoAnimText` |
+
+---
+
+### `HomeWorkLayout`
+
+> **`src/routes/HomeWork/HomeWorkLayout.jsx`** — Layout route for `/` and `/work`
+
+Owns the single scroll timeline for Home and Work. Runs Lenis on a scroller with a synthetic-height spacer, splits the scroll position into `home`, `morph` and `carousel` segments (`homeWork.js`), and writes them to `segmentsRef` for the canvas. Mounts the loading screen, the Home/Work outlet and the lazily loaded `HomeWorkCanvas`.
+
+- Keeps the URL in sync with the segment: `/` until the carousel is entered, `/work` inside it (`decideUrl`); direct loads of either path seek to the matching scroll position (`scrollForPath`).
+- Snaps to the nearest card once scrolling settles inside the carousel; wheel/touch input interrupts a programmatic seek.
 - Skips the loading screen when arriving via internal navigation (`location.state.fromNavigation`).
-- Preloads GLB assets (`Logo.glb`, `Wall.glb`) on mount.
-- Resets scroll position and clears navigation state on entry.
-- `HomeCanvas` renders behind the DOM content; interaction enabled only after loading completes.
+- Preloads `Logo.glb` and `Wall.glb` on mount.
 
-| Hooks                                                                                                     | Context | Config                                                        | Children                                                                  |
-| --------------------------------------------------------------------------------------------------------- | ------- | ------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| `useState`, `useEffect`, `useRef`, `useCallback`, `useNavigate`, `useLocation`, **`useScrollNavigation`** | —       | `EASING`, `REVEAL`, `SCROLL_THRESHOLDS`, `STAGGER`, `TIMEOUT` | `HomeCanvas`, `LoadingScreen`, `ScrollDown`, `RadialGrid`, `RedoAnimText` |
+| Hooks                                                                                                        | Context                                 | Config                                    | Children                                                     |
+| ------------------------------------------------------------------------------------------------------------ | --------------------------------------- | ----------------------------------------- | ------------------------------------------------------------ |
+| `useState`, `useRef`, `useEffect`, `useLayoutEffect`, `useCallback`, `useNavigate`, `useLocation`, `useGLTF` | **`useWorkItems`**, `usePageTransition` | `HOME_WORK`, `TIMEOUT`, `CAROUSEL_CONFIG` | `LoadingScreen`, `Outlet`, `HomeWorkCanvas`, `ErrorBoundary` |
 
 ---
 
 ### `Work`
 
-> **`src/routes/Work/Work.jsx`** — 3D work carousel
+> **`src/routes/Work/Work.jsx`** — Work overlay
 
-The scrollable project carousel page. Delegates 3D presentation to `WorkCanvas`, translates card clicks into page transitions, and implements "scroll up at top to go home".
+DOM overlay for `/work`; the carousel itself is rendered by the shared `HomeWorkCanvas`. Shows a "Swipe to browse" hint on touch devices.
 
-- Uses `useWorkItems()` for the sorted project list.
-- Guards navigation with `hasNavigated` ref to prevent double-fires.
-- Accumulates upward wheel/touch input at the top of the carousel until it crosses `WORK_MAX_SCROLL`, then triggers transition home.
-- Detects touch devices for mobile swipe hint.
-
-| Hooks                                                                     | Context            | Config              | Children                      |
-| ------------------------------------------------------------------------- | ------------------ | ------------------- | ----------------------------- |
-| `useState`, `useCallback`, `useEffect`, `useRef`, **`usePageTransition`** | **`useWorkItems`** | `SCROLL_THRESHOLDS` | `WorkCanvas`, `ErrorBoundary` |
+| Hooks      | Context | Config | Children |
+| ---------- | ------- | ------ | -------- |
+| `useState` | —       | —      | —        |
 
 ---
 
@@ -333,7 +343,7 @@ Responsive decorative grid. Computes cell grid from container bounds, randomly a
 
 > **`src/components/ui/NineSliceBorder/NineSliceBorder.jsx`**
 
-Screen-space border overlay driven by Framer Motion values (`x`, `y`, `w`, `h`). Used by WorkCanvas to frame the currently centered 3D card after projection.
+Screen-space border overlay driven by Framer Motion values (`x`, `y`, `w`, `h`). Used by `HomeWorkCanvas` to frame the currently centered 3D card after projection.
 
 | Hooks             | Config |
 | ----------------- | ------ |
@@ -514,7 +524,7 @@ Standard hero section for every case-study page. Renders project banner, overlay
 
 - **`core/`**: generic 3D infrastructure (`CanvasRoot`, quality, texture hooks, the fluid simulation, shared shader chunks). Never imports features or scenes.
 - **`features/<name>/`**: one folder per visual unit, with its component, material, shaders and config colocated. `index.js` is the public API (shader-only folders such as `transition/` and `lab/` have none until a component consumes them). Features never import other features or scenes.
-- **`scenes/<route>/`**: composition roots (`HomeCanvas`/`HomeScene`, `WorkCanvas`/`WorkScene`). The only canvas modules routes import.
+- **`scenes/<route>/`**: composition roots (`homeWork/HomeWorkCanvas` with `PostFX`, `home/HomeScene`, `work/WorkScene`). `HomeWorkCanvas` is the only canvas module a route imports.
 
 Nothing in `src/canvas` imports `@routes/*`. Shaders are named `<name>.vert.glsl` / `<name>.frag.glsl` (a single-file shader stays `<name>.glsl`).
 
@@ -522,15 +532,31 @@ Nothing in `src/canvas` imports `@routes/*`. Shaders are named `<name>.vert.glsl
 
 ### 6.1 — Home Scene
 
-#### `HomeCanvas`
+#### `HomeWorkCanvas`
 
-> **`src/canvas/scenes/home/HomeCanvas.jsx`** — Canvas wrapper for home route
+> **`src/canvas/scenes/homeWork/HomeWorkCanvas.jsx`** — Shared canvas for `/` and `/work`
 
-Renders `CanvasRoot` (shared `<Canvas>` with project DPR/GL defaults and the adaptive quality monitor) inside a fixed container styled by `HomeCanvas.module.css`, and passes scroll/animation props to `HomeScene`.
+Renders one `CanvasRoot` (shared `<Canvas>` with project DPR/GL defaults and the adaptive quality monitor) containing `HomeScene`, `WorkScene` and `PostFX`, inside a fixed container styled by `HomeWorkCanvas.module.css`. Receives `segmentsRef` from `HomeWorkLayout`; there is no separate Home or Work canvas.
 
-| Hooks | Config | Children                  |
-| ----- | ------ | ------------------------- |
-| —     | —      | `CanvasRoot`, `HomeScene` |
+- Owns `streamRef`, the shared record `LogoParticles`, `StreamFibers` and `WorkScene` use for the trunk and the per-card branch slots.
+- Owns the Framer Motion springs and `useBorderProjection` that drive `NineSliceBorder` around the centred card.
+- Navigates to `/work/<key>` through `usePageTransition` on card click (guarded against double fires) and prefetches entry page bundles.
+
+| Hooks                                                                                                                    | Context                                 | Config                             | Children                                                            |
+| ------------------------------------------------------------------------------------------------------------------------ | --------------------------------------- | ---------------------------------- | ------------------------------------------------------------------- |
+| `useRef`, `useState`, `useMemo`, `useEffect`, `useCallback`, FM `useMotionValue`, `useSpring`, **`useBorderProjection`** | `usePageTransition`, **`useWorkItems`** | `SPRING_CONFIG`, `CAROUSEL_CONFIG` | `CanvasRoot`, `HomeScene`, `WorkScene`, `PostFX`, `NineSliceBorder` |
+
+---
+
+#### `PostFX`
+
+> **`src/canvas/scenes/homeWork/PostFX.jsx`** — Post-processing chain
+
+One `EffectComposer` for the layout. Ambient occlusion (N8AO, absent on low) fades out and is disabled as `morph` reaches 1; bloom intensity blends from the Home value to the Work value over the morph. Presets per quality tier.
+
+| Hooks                | Context          | Config | Children                          |
+| -------------------- | ---------------- | ------ | --------------------------------- |
+| `useRef`, `useFrame` | **`useQuality`** | —      | `EffectComposer`, `N8AO`, `Bloom` |
 
 ---
 
@@ -538,40 +564,22 @@ Renders `CanvasRoot` (shared `<Canvas>` with project DPR/GL defaults and the ada
 
 > **`src/canvas/scenes/home/HomeScene.jsx`** — Home 3D scene orchestrator
 
-Combines background mesh, logo, subtitle text, laser plane, camera and post-processing into one scroll-aware scene.
+Combines background mesh, fibre beam, logo, subtitle text and camera into one scroll-aware scene. Post-processing lives in `PostFX`.
 
 - Renders `LogoParticles` when float or half-float render targets are supported, otherwise the metallic `LogoMesh`.
 - One `useFrame` timeline drives the camera (z, FOV, damped pointer parallax, `lookAt` origin), logo, background and subtitle from two values: the eased reveal (time since `startAnimations`, `REVEAL`/`SCENE` timing) and `easeCurve(scrollProgress)`. Layout keyframes are module constants (`CAMERA_Z`, `CAMERA_FOV`, `LOGO_SCALE`, …) as `[before reveal, after reveal, end of scroll]`; scales are multiplied by `viewportScale`.
 - Damps the logo group's rotation toward the pointer (`THREE.MathUtils.damp`).
+- Renders `FibreBeam` in the background group, between the video wall and the title, so it moves, fades and recedes with the Home extras.
 - Raises the "ROBIN POTZE" title out of frame on scroll (`TITLE_RISE`), on the same curve the particles assimilate on.
 - Owns the particle timeline: writes `{ morph, intro }` to a ref that `LogoParticles` reads. The timeline `useFrame` runs at priority -1, so children read this frame's camera, logo transform and timeline.
-- Reads `quality` from context to select post-processing preset:
-    - **Low:** bloom only (intensity 0.3, 2 levels)
-    - **Medium:** N8AO (4 samples) + bloom (intensity 0.45, 4 levels)
-    - **High:** N8AO (8 samples) + bloom (intensity 0.55, 6 levels)
+- Passes `streamRef` to `LogoParticles`, which feeds the particle sim's stream progress and writes the sim textures `StreamFibers` reads.
+- Post-processing presets per quality tier live in `PostFX` (Home values: low bloom 0.3 / 2 levels; medium N8AO 4 samples + bloom 0.45 / 4 levels; high N8AO 8 samples + bloom 0.55 / 6 levels).
 - Pauses background video once scroll > 0.4.
 - Viewport-responsive scale via `BREAKPOINTS.REFERENCE_WIDTH`.
 
-| Hooks                                                    | Context          | Config                                                                | Children                                                                       |
-| -------------------------------------------------------- | ---------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| `useRef`, `useEffect`, `useMemo`, `useFrame`, `useThree` | **`useQuality`** | `FLOAT_CONFIG`, `REVEAL`, `SCENE`, `SCROLL_THRESHOLDS`, `BREAKPOINTS` | `BackgroundMesh`, `LogoParticles` / `LogoMesh`, `LaserPlane`, `EffectComposer` |
-
----
-
-#### `LaserPlane`
-
-> **`src/canvas/features/laser/LaserPlane.jsx`** — Procedural laser/fog effect
-
-Procedural laser/fog layer driven by shader uniforms. Scales behavior by quality tier.
-
-- Prop: `progress` (0–1 scroll progress). Each key of `LASER_PARAMS` (colocated `laser.config.js`) is a uniform name, set to `base + progress * scale`; every other uniform keeps the material's default.
-- Updates flow/fog time, resolution, mouse, fade-in and quality-driven fog/wisp detail every frame (`THREE.MathUtils.damp`).
-- Updates uniforms every 2nd frame on low quality.
-- Render order 1000, ignores frustum culling — effectively a full-screen post effect.
-
-| Hooks                           | Context          | Config         | Children            |
-| ------------------------------- | ---------------- | -------------- | ------------------- |
-| `useRef`, `useMemo`, `useFrame` | **`useQuality`** | `LASER_PARAMS` | `LaserFlowMaterial` |
+| Hooks                                                    | Context          | Config                                                                | Children                                                    |
+| -------------------------------------------------------- | ---------------- | --------------------------------------------------------------------- | ----------------------------------------------------------- |
+| `useRef`, `useEffect`, `useMemo`, `useFrame`, `useThree` | **`useQuality`** | `FLOAT_CONFIG`, `REVEAL`, `SCENE`, `SCROLL_THRESHOLDS`, `BREAKPOINTS` | `BackgroundMesh`, `FibreBeam`, `LogoParticles` / `LogoMesh` |
 
 ---
 
@@ -594,38 +602,24 @@ Simulates particles with `GPUComputationRenderer` between two targets: a viewpor
 
 ### 6.2 — Work Scene
 
-#### `WorkCanvas`
-
-> **`src/canvas/scenes/work/WorkCanvas.jsx`** — Canvas wrapper + scroll orchestration
-
-Fixed-position canvas paired with a scroll container. Runs Lenis smooth scrolling and feeds normalized scroll progress into the carousel scene.
-
-- Owns Framer Motion spring values for `NineSliceBorder` to frame the active card.
-- Synthetic scroll height = `items.length × 100vh`.
-- Snaps to nearest project once scrolling settles (idle frames ≥ 30, snap duration 400ms).
-- `useBorderProjection` projects 3D card bounds into 2D for the border overlay.
-
-| Hooks                                                                                          | Context | Config                             | Children                                                     |
-| ---------------------------------------------------------------------------------------------- | ------- | ---------------------------------- | ------------------------------------------------------------ |
-| `useRef`, `useEffect`, `useState`, FM `useMotionValue`, `useSpring`, **`useBorderProjection`** | —       | `SPRING_CONFIG`, `CAROUSEL_CONFIG` | `CanvasRoot`, `WorkScene`, `NineSliceBorder`, Lenis instance |
-
----
-
 #### `WorkScene`
 
 > **`src/canvas/scenes/work/WorkScene.jsx`** — Carousel rotation and centeredness manager
 
-Rotates the rig per scroll position, moves camera along the spiral, computes which card is most centered, culls distant cards.
+Rotates the rig per scroll position (`segmentsRef.carousel`), moves camera along the spiral once the morph completes, computes which card is most centered, culls distant cards. Runs inside `HomeWorkCanvas`; the rig is hidden until `morph > 0`.
 
 - Stores centeredness scores in a ref (no per-frame state updates).
+- Computes each card's on-screen presence (`calculateCardPresence`) into `presenceRef`, which `WorkCard` reads for its dissolve. The scene's `useFrame` runs at priority -1, ahead of the cards' and of `LogoParticles`.
+- Writes the shared `streamRef`: trunk position, flow phase, and one branch slot per card-index parity (the most present card of that parity) with its centre, half-extents and `branchGrow`.
+- Renders `StreamFibers` alongside the rig.
 - Updates `visibleCenter` only when best card index changes.
 - Notifies parent about centeredness/scroll for border projection and exit logic.
 - Visibility culling: only cards within distance ≤ 1 from visible center.
 - Responsive FOV adjustment for mobile via `BREAKPOINTS.TABLET`.
 
-| Hooks                                                     | Context | Config                           | Children       |
-| --------------------------------------------------------- | ------- | -------------------------------- | -------------- |
-| `useRef`, `useState`, `useEffect`, `useFrame`, `useThree` | —       | `BREAKPOINTS`, `CAROUSEL_CONFIG` | `WorkCard` × N |
+| Hooks                                                     | Context | Config                                     | Children                       |
+| --------------------------------------------------------- | ------- | ------------------------------------------ | ------------------------------ |
+| `useRef`, `useState`, `useEffect`, `useFrame`, `useThree` | —       | `BREAKPOINTS`, `CAROUSEL_CONFIG`, `STREAM` | `WorkCard` × N, `StreamFibers` |
 
 ---
 
@@ -640,12 +634,43 @@ Single project card in the 3D carousel. Combines refractive banner shader, optio
     - **Low:** no refraction, no chromatic aberration, no pixel overlay
     - **Medium:** `uRefractPower: 0.003`, `uChromaticAberration: 0.4`, pixel overlay enabled
     - **High:** `uRefractPower: 0.006`, `uChromaticAberration: 0.8`, pixel overlay enabled
-- Smoothly scales based on centeredness from `WorkScene`.
+- Forms by a cell dissolve (`uDissolve`) driven by its on-screen presence from `WorkScene`'s `presenceRef`; label text fades with it. A fully dissolved card is hidden and not hit-tested, and the pixel overlay shows only once the dissolve completes.
+- Size follows centeredness (`calculateCardScale`).
 - Sets `document.body.style.cursor` on hover; delegates navigation via callback.
 
 | Hooks                                                                            | Context          | Config                            | Children                                                  |
 | -------------------------------------------------------------------------------- | ---------------- | --------------------------------- | --------------------------------------------------------- |
 | `useRef`, `useState`, `useMemo`, `useFrame`, `useTexture`, **`useNoiseTexture`** | **`useQuality`** | `FLOAT_CONFIG`, `CAROUSEL_CONFIG` | `workCardMaterial`, `pixelOverlayMaterial`, `Text` labels |
+
+---
+
+#### `StreamFibers`
+
+> **`src/canvas/features/streamFibers/StreamFibers.jsx`** — Fibre-optic stream trails
+
+Draws the logo-to-carousel stream as fibre strands (line segments, plus head and spark points) in carousel space. Each strand is tied to one `LogoParticles` sim particle by texel UV, so it uses the same quality tier (`TIERS` size) as the sim. The share of strands that form the card branches is `BRANCH_SHARE` in `logoParticles.config.js`.
+
+- Reads `streamRef` (written by `WorkScene` and `LogoParticles`) every frame; visible from the start of the morph and only when the particle sim is running.
+- Strand count per tier from `FIBER_TIERS`.
+
+| Hooks                                                    | Context          | Config                                  | Children                 |
+| -------------------------------------------------------- | ---------------- | --------------------------------------- | ------------------------ |
+| `useRef`, `useMemo`, `useEffect`, `useFrame`, `useThree` | **`useQuality`** | `STREAM_FIBERS`, `FIBER_TIERS`, `TIERS` | `lineSegments`, `points` |
+
+#### `FibreBeam`
+
+> **`src/canvas/features/streamFibers/StreamFibers.jsx`** (named export) — Home's fibre beam
+
+The same fibre strands, material and shader as `StreamFibers` (compiled with the `BEAM` define) as a background bundle on Home, inside HomeScene's background group just behind the title (`BEAM_Z`). Each frame its depth is pulled back to stay `BEAM_LOGO_GAP` world units behind the logo, but never behind the video wall's centre (`BEAM_Z_MIN`). Drawn after the wall (`renderOrder` 1, depth-tested).
+
+- Props: `segmentsRef` (reads `home`, 0–1), `streamRef` (reads the shared `flow` phase) and `logoRef` (the logo group, for depth).
+- Analytic only: each strand carries its own `strandRandom` attribute instead of reading the particle sim; no morph or branches. Flows upward.
+- The trunk spans the frame height (`BEAM_OVERSCAN`); the beam's top (`uBeamTop`) climbs from the bottom of the frame at `home = 0` to the top at `home = 1`. Hidden at `home = 0`; hidden with the extras once HomeScene's exit completes.
+- Brightness `BEAM_BRIGHTNESS` × the exit fade HomeScene writes to `material.opacity`, kept below the logo's; `BEAM_SHARE` of `FIBER_TIERS` strands, radius `BEAM_SPREAD`.
+
+| Hooks                                        | Context          | Config                         | Children       |
+| -------------------------------------------- | ---------------- | ------------------------------ | -------------- |
+| `useRef`, `useMemo`, `useEffect`, `useFrame` | **`useQuality`** | `STREAM_FIBERS`, `FIBER_TIERS` | `lineSegments` |
 
 ---
 
@@ -679,12 +704,11 @@ Fallback logo for devices without float render targets. Renders the logo geometr
 
 These register custom JSX elements via `shaderMaterial` + `extend()` (or `RawShaderMaterial` + `extend()`). Used directly in scene component markup.
 
-| Primitive                   | File                                                         | Material Type       | Key Uniforms                                                                                                                                                               | Used By         |
-| --------------------------- | ------------------------------------------------------------ | ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
-| **`WorkCardMaterial`**      | `src/canvas/features/carousel/WorkCardMaterial.js`           | `shaderMaterial`    | `uTexture`, `uNoiseTex`, `uTextureSize`, `uPlaneSize`, `uRoughness`, `uRefractPower`, `uChromaticAberration`                                                               | `WorkCard`      |
-| **`LaserFlowMaterial`**     | `src/canvas/features/laser/LaserFlowMaterial.js`             | `RawShaderMaterial` | `iResolution`, `iMouse`, `uFlowTime`, `uFogTime`, `uFade`, `uFogQuality`, `uWispDensity`, `uColor`, the 7 `LASER_PARAMS` uniforms, and 7 constant look uniforms (22 total) | `LaserPlane`    |
-| **`PixelOverlayMaterial`**  | `src/canvas/features/carousel/PixelOverlayMaterial.js`       | `shaderMaterial`    | `uTime`, `uHover`, `uResolution`, `uColor1`, `uColor2`                                                                                                                     | `WorkCard`      |
-| **`LogoParticlesMaterial`** | `src/canvas/features/logoParticles/LogoParticlesMaterial.js` | `shaderMaterial`    | `tPosition`, `tMatcap`, `uColor`, `uPointSize`, `uDpr`, `uIntro`, `uGridSize`, `uTime`                                                                                     | `LogoParticles` |
+| Primitive                   | File                                                         | Material Type    | Key Uniforms                                                                                                                                               | Used By         |
+| --------------------------- | ------------------------------------------------------------ | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
+| **`WorkCardMaterial`**      | `src/canvas/features/carousel/WorkCardMaterial.js`           | `shaderMaterial` | `uTexture`, `uNoiseTex`, `uTextureSize`, `uPlaneSize`, `uRoughness`, `uRefractPower`, `uChromaticAberration`, `uDissolve`, `uCells`, `uEdge`, `uEdgeColor` | `WorkCard`      |
+| **`PixelOverlayMaterial`**  | `src/canvas/features/carousel/PixelOverlayMaterial.js`       | `shaderMaterial` | `uTime`, `uHover`, `uResolution`, `uColor1`, `uColor2`                                                                                                     | `WorkCard`      |
+| **`LogoParticlesMaterial`** | `src/canvas/features/logoParticles/LogoParticlesMaterial.js` | `shaderMaterial` | `tPosition`, `tMatcap`, `uColor`, `uPointSize`, `uDpr`, `uIntro`, `uGridSize`, `uTime`, `uStream`, `uFadeStart`, `uFadeEnd`                                | `LogoParticles` |
 
 ---
 
@@ -692,35 +716,33 @@ These register custom JSX elements via `shaderMaterial` + `extend()` (or `RawSha
 
 ### Custom Hook → Consumer Map
 
-| Hook                  | Consumers                                                             |
-| --------------------- | --------------------------------------------------------------------- |
-| `useAdaptiveQuality`  | `CanvasRoot` (via `AdaptiveQualityMonitor`)                           |
-| `useBorderProjection` | `WorkCanvas`                                                          |
-| `useLenisScroll`      | `Entry`                                                               |
-| `useNoiseTexture`     | `WorkCard`                                                            |
-| `useFluidSim`         | `LogoParticles`                                                       |
-| `usePageTransition`   | `Work`, `NavigationMenu`, `useScrollNavigation`, `useAdaptiveQuality` |
-| `useRandomNumber`     | `RAD_GRID_CRCL`, `RAD_GRID_TXT`                                       |
-| `useScrollNavigation` | `Home`                                                                |
-| `useWorkItems`        | `Work`                                                                |
+| Hook                  | Consumers                                                                           |
+| --------------------- | ----------------------------------------------------------------------------------- |
+| `useAdaptiveQuality`  | `CanvasRoot` (via `AdaptiveQualityMonitor`)                                         |
+| `useBorderProjection` | `HomeWorkCanvas`                                                                    |
+| `useLenisScroll`      | `Entry`                                                                             |
+| `useNoiseTexture`     | `WorkCard`                                                                          |
+| `useFluidSim`         | `LogoParticles`                                                                     |
+| `usePageTransition`   | `HomeWorkLayout`, `HomeWorkCanvas`, `About`, `NavigationMenu`, `useAdaptiveQuality` |
+| `useRandomNumber`     | `RAD_GRID_CRCL`, `RAD_GRID_TXT`                                                     |
+| `useWorkItems`        | `HomeWorkLayout`, `HomeWorkCanvas`                                                  |
 
 ### Context Consumer Map
 
-| Context Hook        | Consumers                                                             |
-| ------------------- | --------------------------------------------------------------------- |
-| `useQuality`        | `HomeScene`, `LaserPlane`, `WorkCard`, `LogoParticles`                |
-| `useWorkItems`      | `Work`                                                                |
-| `usePageTransition` | `Work`, `NavigationMenu`, `useScrollNavigation`, `useAdaptiveQuality` |
+| Context Hook        | Consumers                                                                           |
+| ------------------- | ----------------------------------------------------------------------------------- |
+| `useQuality`        | `HomeScene`, `WorkCard`, `LogoParticles`, `StreamFibers`, `FibreBeam`               |
+| `useWorkItems`      | `HomeWorkLayout`, `HomeWorkCanvas`                                                  |
+| `usePageTransition` | `HomeWorkLayout`, `HomeWorkCanvas`, `About`, `NavigationMenu`, `useAdaptiveQuality` |
 
 ### Config File → Consumer Map
 
-| Config Module                                           | Key Exports                                                                                                                                   | Consumers                                                                                      |
-| ------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| `animation.config.js`                                   | `EASING`, `REVEAL`, `STAGGER`, `TIMEOUT`, `LENIS`, `SCROLL_THRESHOLDS`, `FLOAT_CONFIG`, `SCENE`, `SPRING_CONFIG`, `TYPEWRITER`, `BREAKPOINTS` | Most components — see individual tables                                                        |
-| `canvas/core/canvas.config.js`                          | `CANVAS_GL_DEFAULTS`, `CANVAS_DPR`                                                                                                            | `CanvasRoot`                                                                                   |
-| `canvas/features/carousel/carousel.config.js`           | `CAROUSEL_CONFIG`                                                                                                                             | `WorkCanvas`, `WorkScene`, `WorkCard`, `useBorderProjection`, `carousel.js`, `cardGeometry.js` |
-| `canvas/features/laser/laser.config.js`                 | `LASER_PARAMS`                                                                                                                                | `LaserPlane`                                                                                   |
-| `canvas/features/logoParticles/logoParticles.config.js` | `TIERS`, `LOGO_PARTICLES`                                                                                                                     | `LogoParticles`                                                                                |
+| Config Module                                           | Key Exports                                                                                                                                   | Consumers                                                                                          |
+| ------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `animation.config.js`                                   | `EASING`, `REVEAL`, `STAGGER`, `TIMEOUT`, `LENIS`, `SCROLL_THRESHOLDS`, `FLOAT_CONFIG`, `SCENE`, `SPRING_CONFIG`, `TYPEWRITER`, `BREAKPOINTS` | Most components — see individual tables                                                            |
+| `canvas/core/canvas.config.js`                          | `CANVAS_GL_DEFAULTS`, `CANVAS_DPR`                                                                                                            | `CanvasRoot`                                                                                       |
+| `canvas/features/carousel/carousel.config.js`           | `CAROUSEL_CONFIG`                                                                                                                             | `HomeWorkCanvas`, `WorkScene`, `WorkCard`, `useBorderProjection`, `carousel.js`, `cardGeometry.js` |
+| `canvas/features/logoParticles/logoParticles.config.js` | `TIERS`, `LOGO_PARTICLES`                                                                                                                     | `LogoParticles`                                                                                    |
 
 ---
 

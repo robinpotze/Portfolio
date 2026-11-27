@@ -63,9 +63,28 @@ export const LENIS = {
 
 export const SCROLL_THRESHOLDS = {
     HOME_TRANSITION: 0.95,
-    WORK_TOP_THRESHOLD: 0.02,
-    WORK_SCROLL_TIMEOUT: 500,
-    WORK_MAX_SCROLL: 600,
+};
+
+// Home → Work layout: segment lengths in viewport heights (one card step per CARD_VH).
+export const HOME_WORK = {
+    HOME_VH: 0.5,
+    MORPH_VH: 1,
+    CARD_VH: 1,
+    // Home's video wall, title, fibre beam and subtitle fade and recede over the first EXIT_END of the morph, by EXIT_RECEDE units.
+    EXIT_END: 0.5,
+    EXIT_RECEDE: 20,
+    // Menu/Back seek between Home and Work, seconds.
+    SEEK_DURATION: 3,
+};
+
+// Particle trunk flow: cycles per second at rest, plus extra cycles per second per viewport height per second of scroll.
+export const STREAM = {
+    FLOW_BASE: 0.05,
+    FLOW_SCROLL_GAIN: 0.5,
+    // Bundle sway: radians of phase per second.
+    SWAY_SPEED: 0.4,
+    // Sparks drift at this fraction of the fibres' flow speed.
+    SPARK_FLOW: 0.5,
 };
 
 export const FLOAT_CONFIG = {

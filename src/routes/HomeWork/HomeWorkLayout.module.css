@@ -1,0 +1,16 @@
+.scroller {
+    position: fixed;
+    inset: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    scrollbar-width: none;
+    touch-action: pan-y;
+}
+
+.scroller::-webkit-scrollbar {
+    display: none;
+}
+
+.spacer {
+    pointer-events: none;
+}

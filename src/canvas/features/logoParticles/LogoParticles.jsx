@@ -1,8 +1,10 @@
 import { useQuality } from '@app/QualityContext';
 import useFluidSim from '@canvas/core/fluid/useFluidSim';
 import createMatcapTexture from '@canvas/core/textures/createMatcapTexture';
+import { STREAM_FIBERS } from '@canvas/features/streamFibers';
 import { useGLTF } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
+import { STREAM } from '@config/animation.config';
 import { getCSSColorRGBA } from '@utils/cssUtils';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
@@ -97,6 +99,9 @@ function createSimulation(gl, size, halfFloat, { origins, randoms }, morph, { co
             tFluid: null,
             uTime: 0,
             uDelta: 1,
+            uDt: 1 / 60,
+            uFollow: LOGO_PARTICLES.FOLLOW,
+            uTransitAmplitude: LOGO_PARTICLES.TRANSIT_AMPLITUDE,
             uMorph: morph,
             uMorphStagger: MORPH_STAGGER,
             uGridSize: new THREE.Vector2(width, height),
@@ -108,6 +113,14 @@ function createSimulation(gl, size, halfFloat, { origins, randoms }, morph, { co
             uFluidStrength: 0,
             uModelViewProjection: new THREE.Matrix4(),
             uScreenToLocal: new THREE.Matrix3(),
+            uStream: 0,
+            uStreamToLocal: new THREE.Matrix4(),
+            uTrunkY: 0,
+            uTrunkHalf: 10,
+            uTrunkRadius: STREAM_FIBERS.SPREAD,
+            uFlow: 0,
+            uFlowStep: 0,
+            uSway: new THREE.Vector4(),
         })
     );
     const error = gpu.init();
@@ -126,6 +139,7 @@ function createSimulation(gl, size, halfFloat, { origins, randoms }, morph, { co
 
     return {
         gpu,
+        randomTexture,
         variable,
         geometry,
         error,
@@ -141,9 +155,9 @@ function createSimulation(gl, size, halfFloat, { origins, randoms }, morph, { co
 
 /**
  * The logo as GPU particles: a dot-matrix panel at rest that swirls into the logo as `timeline.morph` rises.
- * timeline is a ref HomeScene writes each frame before this reads it: { morph: 0…1, intro: 0…1 }.
+ * timeline is a ref HomeScene writes each frame before this reads it: { morph: 0…1, intro: 0…1, stream: 0…1 }.
  */
-export default function LogoParticles({ timeline, gridSize }) {
+export default function LogoParticles({ timeline, gridSize, streamRef }) {
     const gl = useThree((state) => state.gl);
     const { quality } = useQuality();
     const { size, fluidIterations } = TIERS[quality];
@@ -182,21 +196,37 @@ export default function LogoParticles({ timeline, gridSize }) {
         setSim(next);
         return () => {
             simRef.current = null;
+            // The fibres sample these textures; drop them before they are freed.
+            if (streamRef?.current?.simRandom === next.randomTexture) {
+                Object.assign(streamRef.current, { simRandom: null, simPosition: null });
+            }
             next.dispose();
         };
-    }, [gl, size, halfFloat, targets, timeline, grid.columns, grid.rows]);
+    }, [gl, size, halfFloat, targets, timeline, streamRef, grid.columns, grid.rows]);
 
     useFrame(({ camera, clock, pointer, viewport }, delta) => {
         const current = simRef.current;
         const points = pointsRef.current;
         const material = materialRef.current;
-        const { morph, intro } = timeline.current;
+        const { morph, intro, stream } = timeline.current;
         // Nothing is visible until the panel powers on.
         if (!current || current.error || !points || !material || intro === 0) {
             return;
         }
         // Skip the one frame where <points> still holds the previous simulation's (disposed) geometry.
         points.visible = points.geometry === current.geometry;
+        // The fibres grow out of these particles: they read the sim's randoms (always) and positions (while it runs).
+        const s = streamRef?.current;
+        if (s) {
+            s.simRandom = current.randomTexture;
+        }
+        // Once the stream is complete the fibres follow the path analytically: stop simulating and drawing the particles.
+        if (stream >= 1) {
+            points.visible = false;
+            return;
+        }
+        // The dense logo thins out particle by particle over the morph; once past the last cut nothing is drawn.
+        points.visible = points.visible && stream < STREAM_FIBERS.PARTICLE_FADE_END;
         const time = clock.elapsedTime;
         const { width, height } = gridRef.current;
         const fluid = fluidRef.current;
@@ -206,6 +236,7 @@ export default function LogoParticles({ timeline, gridSize }) {
         const u = current.variable.material.uniforms;
         u.uTime.value = time;
         u.uDelta.value = Math.min(delta * 60, 2);
+        u.uDt.value = delta;
         u.uMorph.value = morph;
         u.uGridSize.value.set(width, height);
         // Fluid off on low tiers: a null sampler reads as black.
@@ -218,14 +249,30 @@ export default function LogoParticles({ timeline, gridSize }) {
         modelView.multiplyMatrices(camera.matrixWorldInverse, points.matrixWorld);
         u.uModelViewProjection.value.multiplyMatrices(camera.projectionMatrix, modelView);
         u.uScreenToLocal.value.setFromMatrix4(modelView).invert();
+        // Stream: carousel space → particle space, trunk placement and flow.
+        u.uStream.value = stream;
+        if (s?.space) {
+            s.space.updateWorldMatrix(true, false);
+            u.uStreamToLocal.value.copy(points.matrixWorld).invert().multiply(s.space.matrixWorld);
+            s.localToStream.copy(u.uStreamToLocal.value).invert();
+            u.uTrunkY.value = s.trunkY;
+            u.uTrunkHalf.value = s.trunkHalf;
+            u.uSway.value.set(STREAM_FIBERS.SWAY_AMPLITUDE, STREAM_FIBERS.SWAY_FREQUENCY, time * STREAM.SWAY_SPEED, STREAM_FIBERS.STRAND_AMPLITUDE);
+        }
+        u.uFlow.value = s?.flow ?? 0;
+        u.uFlowStep.value = s?.flowStep ?? 0;
         current.gpu.compute();
 
         // Render. uIntro: the panel powers on over the camera reveal.
         material.tPosition = current.gpu.getCurrentRenderTarget(current.variable).texture;
+        if (s) {
+            s.simPosition = material.tPosition;
+        }
         material.uDpr = viewport.dpr;
         material.uIntro = intro;
         material.uTime = time;
         material.uGridSize.set(width, height);
+        material.uStream = stream;
     });
 
     if (!sim || sim.error) {

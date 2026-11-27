@@ -1,0 +1,97 @@
+uniform float uTrunkY;
+uniform float uTrunkHalf;
+uniform float uSpread;
+uniform float uFlow;
+uniform float uTrail;
+uniform vec3 uCardCenter[2];
+uniform vec3 uCardRight[2];
+uniform vec3 uCardUp[2];
+uniform float uBranchInset;
+uniform float uBranchBow;
+uniform float uBranchGrow[2];
+uniform float uBranchShare;
+uniform vec4 uSway;
+uniform float uSpark;
+uniform float uHead;
+uniform float uSparkSpread;
+uniform float uSparkFlow;
+uniform float uPointSize;
+uniform float uDpr;
+uniform sampler2D tSimPosition;
+uniform sampler2D tSimRandom;
+uniform mat4 uLocalToStream;
+uniform float uStream;
+uniform float uMorphStagger;
+attribute vec2 simUv;
+attribute float trail;
+varying float vAlpha;
+#ifdef BEAM
+// Home's beam: analytic only, so each strand carries its own random instead of reading the sim.
+attribute vec4 strandRandom;
+uniform float uBeamTop;
+#endif
+
+#include ../../core/shaders/streamPath.glsl;
+
+void main() {
+    // The sim particle this strand grows out of: its random gives the same seed, angle, radius and branch pick.
+#ifdef BEAM
+    vec4 random = strandRandom;
+#else
+    vec4 random = texture2D(tSimRandom, simUv);
+#endif
+    float seed = streamSeed(random);
+    float angle = random.z * 6.2831853;
+    float radius = uSpread * sqrt(fract(random.x * 13.37)) * mix(1.0, uSparkSpread, uSpark);
+    // Head at the flow position, tail sampled slightly earlier on the same path.
+    float head = fract(seed + uFlow * mix(1.0, uSparkFlow, uSpark));
+    float along = head - trail * uTrail;
+    float alpha = (1.0 - trail) * (1.0 - trail) * mix(0.25, 1.0, random.w);
+    float sp = 1.0;
+#ifdef BEAM
+    // Flows up from the bottom; the part of a tail that would wrap and every point above the beam's top are hidden.
+    vec3 p = trunkPoint(1.0 - along, angle, radius, uTrunkY, uTrunkHalf, uSway);
+    alpha *= step(0.0, along) * (1.0 - smoothstep(uBeamTop - 0.1 * uTrunkHalf, uBeamTop, p.y));
+#else
+    vec3 p = trunkPoint(along, angle, radius, uTrunkY, uTrunkHalf, uSway);
+    // Eight faces: two pyramids (slot = card index parity) × four sides (0 top, 1 bottom, 2 left, 3 right), evenly
+    // filled. random.y is uniform 0–1 on this path and independent of the flow seed.
+    float pick = random.y / uBranchShare;
+    float slotFace = floor(pick * 8.0);
+    int slot = int(slotFace >= 4.0);
+    float face = mod(slotFace, 4.0);
+    float across = (fract(pick * 8.0) * 2.0 - 1.0) * uBranchInset;
+    if (uSpark < 0.5 && random.y < uBranchShare && uBranchGrow[slot] > 0.0) {
+        vec3 cardCenter = uCardCenter[slot];
+        vec3 cardRight = uCardRight[slot];
+        vec3 cardUp = uCardUp[slot];
+        vec3 normal = face < 2.0 ? cardUp * (1.0 - 2.0 * face) : cardRight * (2.0 * face - 5.0);
+        vec3 side = face < 2.0 ? cardRight : cardUp;
+        vec3 target = cardCenter + normal * uBranchInset + side * across;
+        float out_ = fract(seed + uFlow * 2.0) - trail * uTrail * 2.0;
+        p = pyramidBranchPoint(clamp(out_, 0.0, 1.0) * uBranchGrow[slot], angle, radius, target, cardCenter, uBranchBow, uSway);
+        // Tail gate at the apex; soft fade at the card so heads don't pop when they wrap.
+        alpha *= step(0.0, out_) * (1.0 - smoothstep(0.92, 1.0, out_));
+    } else {
+        // Hide the part of a tail that would wrap past the top of the trunk.
+        alpha *= step(0.0, along);
+    }
+    // Morph (same per-particle stagger as the sim): the strand stretches from its particle onto the path.
+    // At sp = 1 the path is exact, so the (then frozen) sim texture is not read.
+    sp = clamp((uStream - random.w * uMorphStagger) / (1.0 - uMorphStagger), 0.0, 1.0);
+    if (sp < 1.0) {
+        vec3 particle = (uLocalToStream * vec4(texture2D(tSimPosition, simUv).xyz, 1.0)).xyz;
+        p = mix(particle, p, sp);
+    }
+#endif
+    vAlpha = alpha;
+    vec4 mvPosition = modelViewMatrix * vec4(p, 1.0);
+    gl_Position = projectionMatrix * mvPosition;
+    // Sparks always; strand heads only while the strand is still collapsed onto its particle.
+    float size = max(uSpark, uHead * (1.0 - sp));
+    gl_PointSize = uPointSize * uDpr * size / -mvPosition.z;
+    // Size 0 is undefined in GLSL ES (some drivers draw 1 px): move empty points out of clip space.
+    if (uSpark + uHead > 0.5 && size <= 0.0) {
+        gl_Position = vec4(2.0, 2.0, 2.0, 1.0);
+    }
+}

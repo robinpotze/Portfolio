@@ -1,6 +1,7 @@
 import { shaderMaterial } from '@react-three/drei';
 import { extend } from '@react-three/fiber';
 import * as THREE from 'three';
+import { STREAM_FIBERS } from '@canvas/features/streamFibers';
 import { LOGO_PARTICLES } from './logoParticles.config';
 import particlesFrag from './particles.frag.glsl';
 import particlesVert from './particles.vert.glsl';
@@ -16,6 +17,9 @@ const LogoParticlesMaterial = shaderMaterial(
         uIntro: 0,
         uGridSize: new THREE.Vector2(),
         uTime: 0,
+        uStream: 0,
+        uFadeStart: STREAM_FIBERS.PARTICLE_FADE_START,
+        uFadeEnd: STREAM_FIBERS.PARTICLE_FADE_END,
     },
     particlesVert,
     particlesFrag
